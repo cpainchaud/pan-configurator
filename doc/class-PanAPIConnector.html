@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class PanAPIConnector | PAN-Configurator</title>
+
+	<script type="text/javascript" src="resources/combined.js?772778653"></script>
+	<script type="text/javascript" src="elementlist.js?1034045522"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Address.html">Address</a></li>
+				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
+				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-App.html">App</a></li>
+				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
+				<li><a href="class-AppStore.html">AppStore</a></li>
+				<li><a href="class-cidr.html">cidr</a></li>
+				<li><a href="class-CsvParser.html">CsvParser</a></li>
+				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
+				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
+				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
+				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
+				<li><a href="class-ObjStore.html">ObjStore</a></li>
+				<li class="active"><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
+				<li><a href="class-PANConf.html">PANConf</a></li>
+				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
+				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-Rule.html">Rule</a></li>
+				<li><a href="class-RuleStore.html">RuleStore</a></li>
+				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
+				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
+				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
+				<li><a href="class-Tag.html">Tag</a></li>
+				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
+				<li><a href="class-TagStore.html">TagStore</a></li>
+				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
+				<li><a href="class-Zone.html">Zone</a></li>
+				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
+				<li><a href="class-ZoneStore.html">ZoneStore</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
+				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
+				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
+				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
+				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
+				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
+				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
+				<li><a href="class-PathableName.html">PathableName</a></li>
+				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
+			</ul>
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-__CmpObjMemID.html">__CmpObjMemID</a></li>
+				<li><a href="function-__CmpObjName.html">__CmpObjName</a></li>
+				<li><a href="function-array_diff_no_cast.html">array_diff_no_cast</a></li>
+				<li><a href="function-array_to_devicequery.html">array_to_devicequery</a></li>
+				<li><a href="function-array_unique_no_cast.html">array_unique_no_cast</a></li>
+				<li><a href="function-cloneArray.html">cloneArray</a></li>
+				<li><a href="function-convert.html">convert</a></li>
+				<li><a href="function-derr.html">derr</a></li>
+				<li><a href="function-findConnector.html">findConnector</a></li>
+				<li><a href="function-findConnectorOrDie.html">findConnectorOrDie</a></li>
+				<li><a href="function-insertAfter.html">insertAfter</a></li>
+				<li><a href="function-lastIndex.html">lastIndex</a></li>
+				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mwarning.html">mwarning</a></li>
+				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
+				<li><a href="function-printn.html">printn</a></li>
+				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class PanAPIConnector</h1>
+
+
+	<div class="description">
+	
+<p>This class will allow you interact with PANOS API</p>
+
+<p>Code :</p>
+
+<p>$con = PanAPIConnector::findOrCreateConnectorFromHost( 'fw1.company.com'
+);</p>
+
+<p>$infos = $con-&gt;getSoftwareVersion();</p>
+
+<p>print "Platform: ".$infos['type']." Version: ".$infos['version'];</p>
+
+<p>$pan = new PANConf()</p>
+
+<p>$pan-&gt;API_load_from_candidate();</p>
+
+	</div>
+
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> class-PanAPIConnector.php<br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="getSoftwareVersion" id="_getSoftwareVersion">
+
+		<td class="attributes"><code>
+			 public 
+			string[]
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getSoftwareVersion">#</a>
+		<code><b>getSoftwareVersion</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string[]</code><br>Array('type'=&gt; pano|panorama, 'version'=&gt;61 ) (if PANOS=6.1)<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="loadConnectorsFromUserHome" id="_loadConnectorsFromUserHome">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_loadConnectorsFromUserHome">#</a>
+		<code><b>loadConnectorsFromUserHome</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="saveConnectorsToUserHome" id="_saveConnectorsToUserHome">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_saveConnectorsToUserHome">#</a>
+		<code><b>saveConnectorsToUserHome</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findOrCreateConnectorFromHost" id="_findOrCreateConnectorFromHost">
+
+		<td class="attributes"><code>
+			 public static
+			<code><a href="class-PanAPIConnector.html">PanAPIConnector</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findOrCreateConnectorFromHost">#</a>
+		<code><b>findOrCreateConnectorFromHost</b>( <span>string <var>$host</var></span>, <span>string <var>$apiKey</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$promptForKey</var> = <span class="php-keyword1">true</span></span>, <span>boolean <var>$checkConnectivity</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$host</var></dt>
+					<dd><code>string</code><br>$host</dd>
+					<dt><var>$apiKey</var></dt>
+					<dd><code>string</code><br>$apiKey</dd>
+					<dt><var>$promptForKey</var></dt>
+					<dd><code>boolean</code><br>$promptForKey</dd>
+					<dt><var>$checkConnectivity</var></dt>
+					<dd><code>boolean</code><br>$checkConnectivity</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-PanAPIConnector.html">PanAPIConnector</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="testConnectivity" id="_testConnectivity">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_testConnectivity">#</a>
+		<code><b>testConnectivity</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="toString" id="_toString">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_toString">#</a>
+		<code><b>toString</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setShowApiCalls" id="_setShowApiCalls">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setShowApiCalls">#</a>
+		<code><b>setShowApiCalls</b>( <span>mixed <var>$yes</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setType" id="_setType">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setType">#</a>
+		<code><b>setType</b>( <span>mixed <var>$type</var></span>, <span>mixed <var>$serial</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="PanAPIConnector" id="_PanAPIConnector">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_PanAPIConnector">#</a>
+		<code><b>PanAPIConnector</b>( <span>string <var>$host</var></span>, <span>string <var>$key</var></span>, <span>string <var>$type</var> = <span class="php-quote">'panos'</span></span>, <span>integer <var>$serial</var> = <span class="php-keyword1">null</span></span>, <span>string|null <var>$port</var> = <span class="php-num">443</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$host</var></dt>
+					<dd><code>string</code><br>$host</dd>
+					<dt><var>$key</var></dt>
+					<dd><code>string</code><br>$key</dd>
+					<dt><var>$type</var></dt>
+					<dd><code>string</code><br>$type</dd>
+					<dt><var>$serial</var></dt>
+					<dd><code>integer</code><br>$port</dd>
+					<dt><var>$port</var></dt>
+					<dd><code>string|null</code><br>$serial</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="userIDLogin" id="_userIDLogin">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_userIDLogin">#</a>
+		<code><b>userIDLogin</b>( <span>string|string[] <var>$ips</var></span>, <span>string|string[] <var>$users</var></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span> </span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$ips</var></dt>
+					<dd><code>string|string[]</code><br>$ips</dd>
+					<dt><var>$users</var></dt>
+					<dd><code>string|string[]</code><br>$users</dd>
+					<dt><var>$vsys</var></dt>
+					<dd><code>string</code><br>$vsys</dd>
+					<dt><var>$timeout</var></dt>
+					<dd><code>integer</code><br>$timeout</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sendRequest" id="_sendRequest">
+
+		<td class="attributes"><code>
+			 public 
+			mixed
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sendRequest">#</a>
+		<code><b>sendRequest</b>( <span>string <var>$url</var></span>, <span>boolean <var>$checkResultTag</var> = <span class="php-keyword1">false</span></span>, <span>string|null <var>&amp; $filecontent</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$filename</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$url</var></dt>
+					<dd><code>string</code><br>$url</dd>
+					<dt><var>$checkResultTag</var></dt>
+					<dd><code>boolean</code><br>$checkResultTag</dd>
+					<dt><var>$filecontent</var></dt>
+					<dd><code>string|null</code><br>$filecontent</dd>
+					<dt><var>$filename</var></dt>
+					<dd><code>string</code><br>$filename</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>mixed</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getReport" id="_getReport">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getReport">#</a>
+		<code><b>getReport</b>( <span>mixed <var>$req</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getRunningConfig" id="_getRunningConfig">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getRunningConfig">#</a>
+		<code><b>getRunningConfig</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getCandidateConfig" id="_getCandidateConfig">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getCandidateConfig">#</a>
+		<code><b>getCandidateConfig</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sendSetRequest" id="_sendSetRequest">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sendSetRequest">#</a>
+		<code><b>sendSetRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$element</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sendEditRequest" id="_sendEditRequest">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sendEditRequest">#</a>
+		<code><b>sendEditRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$element</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sendDeleteRequest" id="_sendDeleteRequest">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sendDeleteRequest">#</a>
+		<code><b>sendDeleteRequest</b>( <span>mixed <var>$xpath</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sendRenameRequest" id="_sendRenameRequest">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sendRenameRequest">#</a>
+		<code><b>sendRenameRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$newname</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="waitForJobFinished" id="_waitForJobFinished">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_waitForJobFinished">#</a>
+		<code><b>waitForJobFinished</b>( <span>mixed <var>$jobID</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getJobResult" id="_getJobResult">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getJobResult">#</a>
+		<code><b>getJobResult</b>( <span>mixed <var>$jobID</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sendJobRequest" id="_sendJobRequest">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sendJobRequest">#</a>
+		<code><b>sendJobRequest</b>( <span>mixed <var>$request</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="name" id="$name">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+<var>$name</var>		</td>
+		<td class="value"><code><span class="php-quote">'connector'</span></code></td>
+		<td class="description"><div>
+			<a href="#$name" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="apikey" id="$apikey">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+<var>$apikey</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$apikey" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="apihost" id="$apihost">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+<var>$apihost</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$apihost" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="isPANOS" id="$isPANOS">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$isPANOS</var>		</td>
+		<td class="value"><code><span class="php-num">1</span></code></td>
+		<td class="description"><div>
+			<a href="#$isPANOS" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="port" id="$port">
+		<td class="attributes"><code>
+			public  
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$port</var>		</td>
+		<td class="value"><code><span class="php-num">443</span></code></td>
+		<td class="description"><div>
+			<a href="#$port" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="showApiCalls" id="$showApiCalls">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$showApiCalls</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$showApiCalls" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		PAN-Configurator API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

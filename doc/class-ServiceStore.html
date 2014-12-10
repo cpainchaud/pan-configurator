@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class ServiceStore | PAN-Configurator</title>
+
+	<script type="text/javascript" src="resources/combined.js?772778653"></script>
+	<script type="text/javascript" src="elementlist.js?1034045522"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Address.html">Address</a></li>
+				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
+				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-App.html">App</a></li>
+				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
+				<li><a href="class-AppStore.html">AppStore</a></li>
+				<li><a href="class-cidr.html">cidr</a></li>
+				<li><a href="class-CsvParser.html">CsvParser</a></li>
+				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
+				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
+				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
+				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
+				<li><a href="class-ObjStore.html">ObjStore</a></li>
+				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
+				<li><a href="class-PANConf.html">PANConf</a></li>
+				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
+				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-Rule.html">Rule</a></li>
+				<li><a href="class-RuleStore.html">RuleStore</a></li>
+				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
+				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
+				<li class="active"><a href="class-ServiceStore.html">ServiceStore</a></li>
+				<li><a href="class-Tag.html">Tag</a></li>
+				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
+				<li><a href="class-TagStore.html">TagStore</a></li>
+				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
+				<li><a href="class-Zone.html">Zone</a></li>
+				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
+				<li><a href="class-ZoneStore.html">ZoneStore</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
+				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
+				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
+				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
+				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
+				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
+				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
+				<li><a href="class-PathableName.html">PathableName</a></li>
+				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
+			</ul>
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-__CmpObjMemID.html">__CmpObjMemID</a></li>
+				<li><a href="function-__CmpObjName.html">__CmpObjName</a></li>
+				<li><a href="function-array_diff_no_cast.html">array_diff_no_cast</a></li>
+				<li><a href="function-array_to_devicequery.html">array_to_devicequery</a></li>
+				<li><a href="function-array_unique_no_cast.html">array_unique_no_cast</a></li>
+				<li><a href="function-cloneArray.html">cloneArray</a></li>
+				<li><a href="function-convert.html">convert</a></li>
+				<li><a href="function-derr.html">derr</a></li>
+				<li><a href="function-findConnector.html">findConnector</a></li>
+				<li><a href="function-findConnectorOrDie.html">findConnectorOrDie</a></li>
+				<li><a href="function-insertAfter.html">insertAfter</a></li>
+				<li><a href="function-lastIndex.html">lastIndex</a></li>
+				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mwarning.html">mwarning</a></li>
+				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
+				<li><a href="function-printn.html">printn</a></li>
+				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class ServiceStore</h1>
+
+
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+<b><span>ServiceStore</span></b>			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> class-ServiceStore.php<br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="ServiceStore" id="_ServiceStore">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ServiceStore">#</a>
+		<code><b>ServiceStore</b>( <span>mixed <var>$owner</var></span>, <span>mixed <var>$centralrole</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_services_from_xml" id="_load_services_from_xml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_services_from_xml">#</a>
+		<code><b>load_services_from_xml</b>( <span>mixed <var>&amp; $xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_services_from_domxml" id="_load_services_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_services_from_domxml">#</a>
+		<code><b>load_services_from_domxml</b>( <span>mixed <var>$xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isAny" id="_isAny">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isAny">#</a>
+		<code><b>isAny</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isApplicationDefault" id="_isApplicationDefault">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isApplicationDefault">#</a>
+		<code><b>isApplicationDefault</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="all" id="_all">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_all">#</a>
+		<code><b>all</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="serviceObjects" id="_serviceObjects">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_serviceObjects">#</a>
+		<code><b>serviceObjects</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="serviceGroups" id="_serviceGroups">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_serviceGroups">#</a>
+		<code><b>serviceGroups</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_servicegroups_from_xml" id="_load_servicegroups_from_xml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_servicegroups_from_xml">#</a>
+		<code><b>load_servicegroups_from_xml</b>( <span>mixed <var>&amp; $xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_servicegroups_from_domxml" id="_load_servicegroups_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_servicegroups_from_domxml">#</a>
+		<code><b>load_servicegroups_from_domxml</b>( <span>mixed <var>$xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_local_objects_xml" id="_load_local_objects_xml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_local_objects_xml">#</a>
+		<code><b>load_local_objects_xml</b>( <span>mixed <var>&amp; $xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_local_objects_domxml" id="_load_local_objects_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_local_objects_domxml">#</a>
+		<code><b>load_local_objects_domxml</b>( <span>mixed <var>$xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setCentralStoreRole" id="_setCentralStoreRole">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setCentralStoreRole">#</a>
+		<code><b>setCentralStoreRole</b>( <span>mixed <var>$is</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="count" id="_count">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_count">#</a>
+		<code><b>count</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="countServiceGroups" id="_countServiceGroups">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_countServiceGroups">#</a>
+		<code><b>countServiceGroups</b>( )</code>
+
+		<div class="description short">
+			
+<p>returns the count of ServerGroups in this store</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>returns the count of ServerGroups in this store</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="countServices" id="_countServices">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_countServices">#</a>
+		<code><b>countServices</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="countTmpServices" id="_countTmpServices">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_countTmpServices">#</a>
+		<code><b>countTmpServices</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="find" id="_find">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_find">#</a>
+		<code><b>find</b>( <span>mixed <var>$fn</var></span>, <span>mixed <var>$ref</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$nested</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$type</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findOrCreate" id="_findOrCreate">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findOrCreate">#</a>
+		<code><b>findOrCreate</b>( <span>mixed <var>$fn</var></span>, <span>mixed <var>$ref</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$nested</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findTmpService" id="_findTmpService">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findTmpService">#</a>
+		<code><b>findTmpService</b>( <span>mixed <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="displayTmpServices" id="_displayTmpServices">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_displayTmpServices">#</a>
+		<code><b>displayTmpServices</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="toString_inline" id="_toString_inline">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_toString_inline">#</a>
+		<code><b>toString_inline</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="merge" id="_merge">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_merge">#</a>
+		<code><b>merge</b>( <span>mixed <var>$other</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="remove" id="_remove">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_remove">#</a>
+		<code><b>remove</b>( <span>mixed <var>$s</var></span>, <span>mixed <var>$rewritexml</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="rewriteServiceStoreXML" id="_rewriteServiceStoreXML">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_rewriteServiceStoreXML">#</a>
+		<code><b>rewriteServiceStoreXML</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="rewriteServiceGroupStoreXML" id="_rewriteServiceGroupStoreXML">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_rewriteServiceGroupStoreXML">#</a>
+		<code><b>rewriteServiceGroupStoreXML</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="add" id="_add">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_add">#</a>
+		<code><b>add</b>( <span>mixed <var>$s</var></span>, <span>mixed <var>$rewritexml</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getXPath" id="_getXPath">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getXPath">#</a>
+		<code><b>getXPath</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getServiceStoreXPath" id="_getServiceStoreXPath">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getServiceStoreXPath">#</a>
+		<code><b>getServiceStoreXPath</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getServiceGroupStoreXPath" id="_getServiceGroupStoreXPath">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getServiceGroupStoreXPath">#</a>
+		<code><b>getServiceGroupStoreXPath</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="rewriteXML" id="_rewriteXML">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_rewriteXML">#</a>
+		<code><b>rewriteXML</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="newService" id="_newService">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_newService">#</a>
+		<code><b>newService</b>( <span>mixed <var>$name</var></span>, <span>mixed <var>$proto</var></span>, <span>mixed <var>$dport</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="createTmp" id="_createTmp">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_createTmp">#</a>
+		<code><b>createTmp</b>( <span>mixed <var>$name</var></span>, <span>mixed <var>$ref</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="hostChanged" id="_hostChanged">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_hostChanged">#</a>
+		<code><b>hostChanged</b>( <span>mixed <var>$h</var></span>, <span>mixed <var>$oldname</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="inStore" id="_inStore">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_inStore">#</a>
+		<code><b>inStore</b>( <span>mixed <var>$object</var></span> )</code>
+
+		<div class="description short">
+			
+<p>returns true if $object is in this store. False if not</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>returns true if $object is in this store. False if not</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="regen_Indexes" id="_regen_Indexes">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_regen_Indexes">#</a>
+		<code><b>regen_Indexes</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="add_Obj_inIndex" id="_add_Obj_inIndex">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_add_Obj_inIndex">#</a>
+		<code><b>add_Obj_inIndex</b>( <span>mixed <var>$f</var></span>, <span>mixed <var>$index</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setAny" id="_setAny">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setAny">#</a>
+		<code><b>setAny</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setApplicationDefault" id="_setApplicationDefault">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setApplicationDefault">#</a>
+		<code><b>setApplicationDefault</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setApplicationDefault" id="_API_setApplicationDefault">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setApplicationDefault">#</a>
+		<code><b>API_setApplicationDefault</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setAny" id="_API_setAny">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setAny">#</a>
+		<code><b>API_setAny</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="equals" id="_equals">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_equals">#</a>
+		<code><b>equals</b>( <span>mixed <var>$other</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="equals_fasterHash" id="_equals_fasterHash">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_equals_fasterHash">#</a>
+		<code><b>equals_fasterHash</b>( <span>mixed <var>$other</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="replaceHostObject" id="_replaceHostObject">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_replaceHostObject">#</a>
+		<code><b>replaceHostObject</b>( <span>mixed <var>$old</var></span>, <span>mixed <var>$new</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="generateFastHashComp" id="_generateFastHashComp">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_generateFastHashComp">#</a>
+		<code><b>generateFastHashComp</b>( <span>mixed <var>$force</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFastHashComp" id="_getFastHashComp">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFastHashComp">#</a>
+		<code><b>getFastHashComp</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="includesStoreExpanded" id="_includesStoreExpanded">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_includesStoreExpanded">#</a>
+		<code><b>includesStoreExpanded</b>( <span><code><a href="class-ServiceStore.html">ServiceStore</a></code> <var>$other</var></span>, <span>mixed <var>$anyIsAcceptable</var> = <span class="php-keyword1">true</span> </span> )</code>
+
+		<div class="description short">
+			
+<p>To determine if a store has all the Service from another store, it will
+expand Service instead of looking for them directly. Very useful when looking to
+compare similar rules.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>To determine if a store has all the Service from another store, it will
+expand Service instead of looking for them directly. Very useful when looking to
+compare similar rules.</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>true if Service objects from $other are all in this store<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="owner" id="$owner">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$owner</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$owner" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="centralStore" id="$centralStore">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$centralStore</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$centralStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="parentCentralStore" id="$parentCentralStore">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$parentCentralStore</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$parentCentralStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="appdef" id="$appdef">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$appdef</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$appdef" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="all" id="$all">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$all</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$all" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="serv" id="$serv">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$serv</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$serv" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="servg" id="$servg">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$servg</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$servg" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="tmpserv" id="$tmpserv">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$tmpserv</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$tmpserv" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="fast" id="$fast">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$fast</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$fast" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="fastMemToIndex" id="$fastMemToIndex">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$fastMemToIndex</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$fastMemToIndex" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="fasthashcomp" id="$fasthashcomp">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$fasthashcomp</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$fasthashcomp" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="servroot" id="$servroot">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$servroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$servroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="servgroot" id="$servgroot">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$servgroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$servgroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		PAN-Configurator API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

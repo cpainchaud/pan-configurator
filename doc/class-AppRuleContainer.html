@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class AppRuleContainer | PAN-Configurator</title>
+
+	<script type="text/javascript" src="resources/combined.js?772778653"></script>
+	<script type="text/javascript" src="elementlist.js?1034045522"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Address.html">Address</a></li>
+				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
+				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-App.html">App</a></li>
+				<li class="active"><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
+				<li><a href="class-AppStore.html">AppStore</a></li>
+				<li><a href="class-cidr.html">cidr</a></li>
+				<li><a href="class-CsvParser.html">CsvParser</a></li>
+				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
+				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
+				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
+				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
+				<li><a href="class-ObjStore.html">ObjStore</a></li>
+				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
+				<li><a href="class-PANConf.html">PANConf</a></li>
+				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
+				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-Rule.html">Rule</a></li>
+				<li><a href="class-RuleStore.html">RuleStore</a></li>
+				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
+				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
+				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
+				<li><a href="class-Tag.html">Tag</a></li>
+				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
+				<li><a href="class-TagStore.html">TagStore</a></li>
+				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
+				<li><a href="class-Zone.html">Zone</a></li>
+				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
+				<li><a href="class-ZoneStore.html">ZoneStore</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
+				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
+				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
+				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
+				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
+				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
+				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
+				<li><a href="class-PathableName.html">PathableName</a></li>
+				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
+			</ul>
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-__CmpObjMemID.html">__CmpObjMemID</a></li>
+				<li><a href="function-__CmpObjName.html">__CmpObjName</a></li>
+				<li><a href="function-array_diff_no_cast.html">array_diff_no_cast</a></li>
+				<li><a href="function-array_to_devicequery.html">array_to_devicequery</a></li>
+				<li><a href="function-array_unique_no_cast.html">array_unique_no_cast</a></li>
+				<li><a href="function-cloneArray.html">cloneArray</a></li>
+				<li><a href="function-convert.html">convert</a></li>
+				<li><a href="function-derr.html">derr</a></li>
+				<li><a href="function-findConnector.html">findConnector</a></li>
+				<li><a href="function-findConnectorOrDie.html">findConnectorOrDie</a></li>
+				<li><a href="function-insertAfter.html">insertAfter</a></li>
+				<li><a href="function-lastIndex.html">lastIndex</a></li>
+				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mwarning.html">mwarning</a></li>
+				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
+				<li><a href="function-printn.html">printn</a></li>
+				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class AppRuleContainer</h1>
+
+
+	<div class="description">
+	
+<p>Class AppRuleContainer</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-ObjRuleContainer.html"><span>ObjRuleContainer</span></a>
+			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>AppRuleContainer</span></b>			
+			
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> class-AppRuleContainer.php<br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="AppRuleContainer" id="_AppRuleContainer">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_AppRuleContainer">#</a>
+		<code><b>AppRuleContainer</b>( <span>mixed <var>$owner</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="find" id="_find">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_find">#</a>
+		<code><b>find</b>( <span>mixed <var>$name</var></span>, <span>mixed <var>$ref</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addApp" id="_addApp">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addApp">#</a>
+		<code><b>addApp</b>( <span><code><a href="class-App.html">App</a></code> <var>$Obj</var></span>, <span>mixed <var>$rewritexml</var> = <span class="php-keyword1">true</span> </span> )</code>
+
+		<div class="description short">
+			
+<p>add a App to this store</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add a App to this store</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_addApp" id="_API_addApp">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_addApp">#</a>
+		<code><b>API_addApp</b>( <span><code><a href="class-App.html">App</a></code> <var>$Obj</var></span>, <span>mixed <var>$rewritexml</var> = <span class="php-keyword1">true</span> </span> )</code>
+
+		<div class="description short">
+			
+<p>add a App to this store</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>add a App to this store</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_synchronize" id="_API_synchronize">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_synchronize">#</a>
+		<code><b>API_synchronize</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="removeApp" id="_removeApp">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_removeApp">#</a>
+		<code><b>removeApp</b>( <span><code><a href="class-App.html">App</a></code> <var>$Obj</var></span>, <span>boolean <var>$rewritexml</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$forceAny</var> = <span class="php-keyword1">false</span> </span> )</code>
+
+		<div class="description short">
+			
+<p>remove an App to this store. Be careful if you remove last zone as it would
+become 'any' and won't let you do so.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>remove an App to this store. Be careful if you remove last zone as it would
+become 'any' and won't let you do so.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$Obj</var></dt>
+					<dd><code>boolean</code><br>$rewritexml</dd>
+					<dt><var>$rewritexml</var></dt>
+					<dd><code>boolean</code><br>$forceAny</dd>
+					<dt><var>$forceAny</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isAny" id="_isAny">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isAny">#</a>
+		<code><b>isAny</b>( )</code>
+
+		<div class="description short">
+			
+<p>returns true if rule app is Any</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>returns true if rule app is Any</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="apps" id="_apps">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_apps">#</a>
+		<code><b>apps</b>( )</code>
+
+		<div class="description short">
+			
+<p>return an array with all Apps in this store</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return an array with all Apps in this store</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="rewriteXML" id="_rewriteXML">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_rewriteXML">#</a>
+		<code><b>rewriteXML</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="toString_inline" id="_toString_inline">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_toString_inline">#</a>
+		<code><b>toString_inline</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-ObjRuleContainer.html#_toString_inline">ObjRuleContainer::toString_inline()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-ObjRuleContainer.html#methods">ObjRuleContainer</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjRuleContainer.html#_count"><b>count()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_display"><b>display()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_equals"><b>equals()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_equals_fasterHash"><b>equals_fasterHash()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_generateFastHashComp"><b>generateFastHashComp()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_getAll"><b>getAll()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_getFastHashComp"><b>getFastHashComp()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_has"><b>has()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_hostChanged"><b>hostChanged()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_remove"><b>remove()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_removeAll"><b>removeAll()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_replaceHostObject"><b>replaceHostObject()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_setName"><b>setName()</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="xmlroot" id="$xmlroot">
+		<td class="attributes"><code>
+			public  
+			null|string[]|<code><a href="class-DOMElement.html">DOMElement</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$xmlroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$xmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="childn" id="$childn">
+		<td class="attributes"><code>
+			public static 
+			string
+		</code></td>
+
+		<td class="name">
+<var>$childn</var>		</td>
+		<td class="value"><code><span class="php-quote">'App'</span></code></td>
+		<td class="description"><div>
+			<a href="#$childn" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="parentCentralStore" id="$parentCentralStore">
+		<td class="attributes"><code>
+			public  
+			null|<code><a href="class-AppStore.html">AppStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$parentCentralStore</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$parentCentralStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-ObjRuleContainer.html#properties">ObjRuleContainer</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjRuleContainer.html#$classn"><var>$classn</var></a>, 
+			<a href="class-ObjRuleContainer.html#$fasthashcomp"><var>$fasthashcomp</var></a>, 
+			<a href="class-ObjRuleContainer.html#$name"><var>$name</var></a>, 
+			<a href="class-ObjRuleContainer.html#$o"><var>$o</var></a>, 
+			<a href="class-ObjRuleContainer.html#$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+</div>
+
+	<div id="footer">
+		PAN-Configurator API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

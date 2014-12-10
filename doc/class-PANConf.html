@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class PANConf | PAN-Configurator</title>
+
+	<script type="text/javascript" src="resources/combined.js?772778653"></script>
+	<script type="text/javascript" src="elementlist.js?1034045522"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Address.html">Address</a></li>
+				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
+				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-App.html">App</a></li>
+				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
+				<li><a href="class-AppStore.html">AppStore</a></li>
+				<li><a href="class-cidr.html">cidr</a></li>
+				<li><a href="class-CsvParser.html">CsvParser</a></li>
+				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
+				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
+				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
+				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
+				<li><a href="class-ObjStore.html">ObjStore</a></li>
+				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
+				<li class="active"><a href="class-PANConf.html">PANConf</a></li>
+				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
+				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-Rule.html">Rule</a></li>
+				<li><a href="class-RuleStore.html">RuleStore</a></li>
+				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
+				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
+				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
+				<li><a href="class-Tag.html">Tag</a></li>
+				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
+				<li><a href="class-TagStore.html">TagStore</a></li>
+				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
+				<li><a href="class-Zone.html">Zone</a></li>
+				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
+				<li><a href="class-ZoneStore.html">ZoneStore</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
+				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
+				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
+				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
+				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
+				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
+				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
+				<li><a href="class-PathableName.html">PathableName</a></li>
+				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
+			</ul>
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-__CmpObjMemID.html">__CmpObjMemID</a></li>
+				<li><a href="function-__CmpObjName.html">__CmpObjName</a></li>
+				<li><a href="function-array_diff_no_cast.html">array_diff_no_cast</a></li>
+				<li><a href="function-array_to_devicequery.html">array_to_devicequery</a></li>
+				<li><a href="function-array_unique_no_cast.html">array_unique_no_cast</a></li>
+				<li><a href="function-cloneArray.html">cloneArray</a></li>
+				<li><a href="function-convert.html">convert</a></li>
+				<li><a href="function-derr.html">derr</a></li>
+				<li><a href="function-findConnector.html">findConnector</a></li>
+				<li><a href="function-findConnectorOrDie.html">findConnectorOrDie</a></li>
+				<li><a href="function-insertAfter.html">insertAfter</a></li>
+				<li><a href="function-lastIndex.html">lastIndex</a></li>
+				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mwarning.html">mwarning</a></li>
+				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
+				<li><a href="function-printn.html">printn</a></li>
+				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class PANConf</h1>
+
+
+	<div class="description">
+	
+<p>Your journey will start from PANConf or PanoramaConf</p>
+
+<p>Code:<br />
+$pan = new PANConf();<br />
+$pan-&gt;load_from_file('config.txt');<br />
+$vsys1 = $pan-&gt;findVirtualSystem('vsys1');<br />
+$vsys1-&gt;display_statistics();</p>
+
+<p>And there you go !</p>
+
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+<b><span>PANConf</span></b>			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-centralTagStore.html"><span>centralTagStore</span></a>, 
+			
+				<a href="class-centralAppStore.html"><span>centralAppStore</span></a>
+			
+		</dd>
+	</dl>
+
+
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> class-PANConf.php<br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="name" id="_name">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_name">#</a>
+		<code><b>name</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="PANConf" id="_PANConf">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_PANConf">#</a>
+		<code><b>PANConf</b>( <span><code><a href="class-PanoramaConf.html">PanoramaConf</a></code>|null <var>$withPanorama</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$serial</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$withPanorama</var></dt>
+					<dd><code><code><a href="class-PanoramaConf.html">PanoramaConf</a></code>|null</code><br>$withPanorama</dd>
+					<dt><var>$serial</var></dt>
+					<dd></dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_xml" id="_load_from_xml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_xml">#</a>
+		<code><b>load_from_xml</b>( <span>mixed <var>&amp; $xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_xmlstring" id="_load_from_xmlstring">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_xmlstring">#</a>
+		<code><b>load_from_xmlstring</b>( <span>mixed <var>&amp; $xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_domxml" id="_load_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_domxml">#</a>
+		<code><b>load_from_domxml</b>( <span><code><a href="class-DOMDocument.html">DOMDocument</a></code> <var>$xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_xmlarr" id="_load_from_xmlarr">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_xmlarr">#</a>
+		<code><b>load_from_xmlarr</b>( <span>mixed <var>&amp; $xmlArray</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findVSYS_by_Name" id="_findVSYS_by_Name">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-VirtualSystem.html">VirtualSystem</a></code>|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findVSYS_by_Name">#</a>
+		<code><b>findVSYS_by_Name</b>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+<p>!!OBSOLETE!!</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>!!OBSOLETE!!</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-VirtualSystem.html">VirtualSystem</a></code>|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findVirtualSystem" id="_findVirtualSystem">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-VirtualSystem.html">VirtualSystem</a></code>|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findVirtualSystem">#</a>
+		<code><b>findVirtualSystem</b>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-VirtualSystem.html">VirtualSystem</a></code>|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="save_to_file" id="_save_to_file">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_save_to_file">#</a>
+		<code><b>save_to_file</b>( <span>mixed <var>$filename</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_file" id="_load_from_file">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_file">#</a>
+		<code><b>load_from_file</b>( <span>mixed <var>$filename</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_load_from_running" id="_API_load_from_running">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_load_from_running">#</a>
+		<code><b>API_load_from_running</b>( <span><code><a href="class-PanAPIConnector.html">PanAPIConnector</a></code> <var>$conn</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_load_from_candidate" id="_API_load_from_candidate">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_load_from_candidate">#</a>
+		<code><b>API_load_from_candidate</b>( <span><code><a href="class-PanAPIConnector.html">PanAPIConnector</a></code> <var>$conn</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_uploadConfig" id="_API_uploadConfig">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_uploadConfig">#</a>
+		<code><b>API_uploadConfig</b>( <span>mixed <var>$config_name</var> = <span class="php-quote">'panconfigurator-default.xml'</span> </span> )</code>
+
+		<div class="description short">
+			
+<p>send current config to the firewall and save under name $config_name</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>send current config to the firewall and save under name $config_name</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getVirtualSystems" id="_getVirtualSystems">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-VirtualSystem.html">VirtualSystem</a>[]</code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getVirtualSystems">#</a>
+		<code><b>getVirtualSystems</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-VirtualSystem.html">VirtualSystem</a>[]</code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralTagStore.html#methods">centralTagStore</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralTagStore.html#_tagStore"><b>tagStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralAppStore.html#methods">centralAppStore</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAppStore.html#_appStore"><b>appStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="xmlroot" id="$xmlroot">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$xmlroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$xmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="sharedroot" id="$sharedroot">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$sharedroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$sharedroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="devicesroot" id="$devicesroot">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$devicesroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$devicesroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="localhostlocaldomain" id="$localhostlocaldomain">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$localhostlocaldomain</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$localhostlocaldomain" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="vsyssroot" id="$vsyssroot">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$vsyssroot</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$vsyssroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="addressStore" id="$addressStore">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-AddressStore.html">AddressStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$addressStore</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$addressStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="serviceStore" id="$serviceStore">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-ServiceStore.html">ServiceStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$serviceStore</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$serviceStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="version" id="$version">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$version</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$version" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="virtualSystems" id="$virtualSystems">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-VirtualSystem.html">VirtualSystem</a>[]</code>
+		</code></td>
+
+		<td class="name">
+<var>$virtualSystems</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$virtualSystems" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="connector" id="$connector">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-PanAPIConnector.html">PanAPIConnector</a></code>|null
+		</code></td>
+
+		<td class="name">
+<var>$connector</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$connector" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ipsecTunnels" id="$ipsecTunnels">
+		<td class="attributes"><code>
+			public  
+			null|<code><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$ipsecTunnels</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$ipsecTunnels" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralTagStore.html#properties">centralTagStore</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralTagStore.html#$tagStore"><var>$tagStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralAppStore.html#properties">centralAppStore</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAppStore.html#$appStore"><var>$appStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+</div>
+
+	<div id="footer">
+		PAN-Configurator API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="generator" content="ApiGen 2.8.0" />
+
+	<title>Class Rule | PAN-Configurator</title>
+
+	<script type="text/javascript" src="resources/combined.js?772778653"></script>
+	<script type="text/javascript" src="elementlist.js?1034045522"></script>
+	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
+
+</head>
+
+<body>
+<div id="left">
+	<div id="menu">
+		<a href="index.html" title="Overview"><span>Overview</span></a>
+
+
+		<div id="groups">
+			<h3>Namespaces</h3>
+			<ul>
+				<li class="active"><a href="namespace-None.html">None</a>
+						</li>
+				<li><a href="namespace-PHP.html">PHP</a>
+						</li>
+			</ul>
+		</div>
+
+		<hr />
+
+
+		<div id="elements">
+			<h3>Classes</h3>
+			<ul>
+				<li><a href="class-Address.html">Address</a></li>
+				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
+				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-App.html">App</a></li>
+				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
+				<li><a href="class-AppStore.html">AppStore</a></li>
+				<li><a href="class-cidr.html">cidr</a></li>
+				<li><a href="class-CsvParser.html">CsvParser</a></li>
+				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
+				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
+				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
+				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
+				<li><a href="class-ObjStore.html">ObjStore</a></li>
+				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
+				<li><a href="class-PANConf.html">PANConf</a></li>
+				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
+				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
+				<li class="active"><a href="class-Rule.html">Rule</a></li>
+				<li><a href="class-RuleStore.html">RuleStore</a></li>
+				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
+				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
+				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
+				<li><a href="class-Tag.html">Tag</a></li>
+				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
+				<li><a href="class-TagStore.html">TagStore</a></li>
+				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
+				<li><a href="class-Zone.html">Zone</a></li>
+				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
+				<li><a href="class-ZoneStore.html">ZoneStore</a></li>
+			</ul>
+
+
+			<h3>Traits</h3>
+			<ul>
+				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
+				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
+				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
+				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
+				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
+				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
+				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
+				<li><a href="class-PathableName.html">PathableName</a></li>
+				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
+			</ul>
+
+
+
+			<h3>Functions</h3>
+			<ul>
+				<li><a href="function-__CmpObjMemID.html">__CmpObjMemID</a></li>
+				<li><a href="function-__CmpObjName.html">__CmpObjName</a></li>
+				<li><a href="function-array_diff_no_cast.html">array_diff_no_cast</a></li>
+				<li><a href="function-array_to_devicequery.html">array_to_devicequery</a></li>
+				<li><a href="function-array_unique_no_cast.html">array_unique_no_cast</a></li>
+				<li><a href="function-cloneArray.html">cloneArray</a></li>
+				<li><a href="function-convert.html">convert</a></li>
+				<li><a href="function-derr.html">derr</a></li>
+				<li><a href="function-findConnector.html">findConnector</a></li>
+				<li><a href="function-findConnectorOrDie.html">findConnectorOrDie</a></li>
+				<li><a href="function-insertAfter.html">insertAfter</a></li>
+				<li><a href="function-lastIndex.html">lastIndex</a></li>
+				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mwarning.html">mwarning</a></li>
+				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
+				<li><a href="function-printn.html">printn</a></li>
+				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div id="splitter"></div>
+
+<div id="right">
+<div id="rightInner">
+	<form id="search">
+		<input type="hidden" name="cx" value="" />
+		<input type="hidden" name="ie" value="UTF-8" />
+		<input type="text" name="q" class="text" />
+		<input type="submit" value="Search" />
+	</form>
+
+	<div id="navigation">
+		<ul>
+			<li>
+				<a href="index.html" title="Overview"><span>Overview</span></a>
+			</li>
+			<li>
+				<a href="namespace-None.html" title="Summary of None"><span>Namespace</span></a>
+			</li>
+			<li class="active">
+<span>Class</span>			</li>
+		</ul>
+		<ul>
+			<li>
+				<a href="tree.html" title="Tree view of classes, interfaces, traits and exceptions"><span>Tree</span></a>
+			</li>
+		</ul>
+		<ul>
+		</ul>
+	</div>
+
+<div id="content" class="class">
+	<h1>Class Rule</h1>
+
+
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+<b><span>Rule</span></b>			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-centralServiceStoreUser.html"><span>centralServiceStoreUser</span></a>, 
+			
+				<a href="class-centralAddressStoreUser.html"><span>centralAddressStoreUser</span></a>
+			
+		</dd>
+	</dl>
+
+
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-DecryptionRule.html">DecryptionRule</a>, 
+			<a href="class-NatRule.html">NatRule</a>, 
+			<a href="class-SecurityRule.html">SecurityRule</a>
+	</div>
+
+
+
+
+
+
+	<div class="info">
+		
+		
+		
+		
+
+		<b>Located at</b> class-Rule.php<br />
+	</div>
+
+
+
+	<table class="summary" id="methods">
+	<caption>Methods summary</caption>
+	<tr data-order="name" id="_name">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_name">#</a>
+		<code><b>name</b>( )</code>
+
+		<div class="description short">
+			
+<p>Returns name of this rule</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns name of this rule</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isDisabled" id="_isDisabled">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isDisabled">#</a>
+		<code><b>isDisabled</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isEnabled" id="_isEnabled">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isEnabled">#</a>
+		<code><b>isEnabled</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="description" id="_description">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_description">#</a>
+		<code><b>description</b>( )</code>
+
+		<div class="description short">
+			
+<p>Returns description for this rule</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Returns description for this rule</p>
+
+
+
+
+
+
+				<h4>Var</h4>
+				<div class="list">
+						string<br />
+				</div>
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="init_from_with_store" id="_init_from_with_store">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init_from_with_store">#</a>
+		<code><b>init_from_with_store</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from" id="_load_from">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from">#</a>
+		<code><b>load_from</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_to" id="_load_to">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_to">#</a>
+		<code><b>load_to</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developer use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developer use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_tags" id="_load_tags">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_tags">#</a>
+		<code><b>load_tags</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developer use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developer use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_source" id="_load_source">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_source">#</a>
+		<code><b>load_source</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_destination" id="_load_destination">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_destination">#</a>
+		<code><b>load_destination</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="init_to_with_store" id="_init_to_with_store">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init_to_with_store">#</a>
+		<code><b>init_to_with_store</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="init_source_with_store" id="_init_source_with_store">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init_source_with_store">#</a>
+		<code><b>init_source_with_store</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="init_destination_with_store" id="_init_destination_with_store">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init_destination_with_store">#</a>
+		<code><b>init_destination_with_store</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="init_services_with_store" id="_init_services_with_store">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init_services_with_store">#</a>
+		<code><b>init_services_with_store</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="init_tags_with_store" id="_init_tags_with_store">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init_tags_with_store">#</a>
+		<code><b>init_tags_with_store</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="init_apps_with_store" id="_init_apps_with_store">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_init_apps_with_store">#</a>
+		<code><b>init_apps_with_store</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="extract_disabled_from_xml" id="_extract_disabled_from_xml">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_extract_disabled_from_xml">#</a>
+		<code><b>extract_disabled_from_xml</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="extract_disabled_from_domxml" id="_extract_disabled_from_domxml">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_extract_disabled_from_domxml">#</a>
+		<code><b>extract_disabled_from_domxml</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="extract_description_from_xml" id="_extract_description_from_xml">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_extract_description_from_xml">#</a>
+		<code><b>extract_description_from_xml</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="extract_description_from_domxml" id="_extract_description_from_domxml">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_extract_description_from_domxml">#</a>
+		<code><b>extract_description_from_domxml</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="rewriteSDisabled_XML" id="_rewriteSDisabled_XML">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_rewriteSDisabled_XML">#</a>
+		<code><b>rewriteSDisabled_XML</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developper use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developper use only</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setDisabled" id="_setDisabled">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setDisabled">#</a>
+		<code><b>setDisabled</b>( <span>boolean <var>$disabled</var></span> )</code>
+
+		<div class="description short">
+			
+<p>disable rule if $disabled = true, enable it if not</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>disable rule if $disabled = true, enable it if not</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$disabled</var></dt>
+					<dd><code>boolean</code><br>$disabled</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setDisabled" id="_API_setDisabled">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setDisabled">#</a>
+		<code><b>API_setDisabled</b>( <span>boolean <var>$disabled</var></span> )</code>
+
+		<div class="description short">
+			
+<p>disable rule if $disabled = true, enable it if not</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>disable rule if $disabled = true, enable it if not</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$disabled</var></dt>
+					<dd><code>boolean</code><br>$disabled</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setEnabled" id="_setEnabled">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setEnabled">#</a>
+		<code><b>setEnabled</b>( <span>mixed <var>$enabled</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setEnabled" id="_API_setEnabled">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setEnabled">#</a>
+		<code><b>API_setEnabled</b>( <span>mixed <var>$enabled</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setDescription" id="_setDescription">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setDescription">#</a>
+		<code><b>setDescription</b>( <span>mixed <var>$newdesc</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getXPath" id="_getXPath">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getXPath">#</a>
+		<code><b>getXPath</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="xmlroot" id="_xmlroot">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_xmlroot">#</a>
+		<code><b>xmlroot</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="setName" id="_setName">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setName">#</a>
+		<code><b>setName</b>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+<p>return true if change was successful false if not (duplicate rulename?)</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>return true if change was successful false if not (duplicate rulename?)</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name new name for the rule</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setName" id="_API_setName">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setName">#</a>
+		<code><b>API_setName</b>( <span>mixed <var>$newname</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralServiceStoreUser.html#methods">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#_findParentServiceStore"><b>findParentServiceStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralAddressStoreUser.html#methods">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#_findParentAddressStore"><b>findParentAddressStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+
+
+
+
+
+
+
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="name" id="$name">
+		<td class="attributes"><code>
+			protected  
+			string
+		</code></td>
+
+		<td class="name">
+<var>$name</var>		</td>
+		<td class="value"><code><span class="php-quote">'temporaryname'</span></code></td>
+		<td class="description"><div>
+			<a href="#$name" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="disabled" id="$disabled">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$disabled</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$disabled" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="description" id="$description">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$description</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$description" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="from" id="$from">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$from</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$from" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="to" id="$to">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$to</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$to" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="source" id="$source">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-AddressStore.html">AddressStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$source</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$source" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="destination" id="$destination">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-AddressStore.html">AddressStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$destination</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$destination" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="tags" id="$tags">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-TagRuleContainer.html">TagRuleContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$tags</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$tags" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="services" id="$services">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-ServiceStore.html">ServiceStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$services</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$services" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="owner" id="$owner">
+		<td class="attributes"><code>
+			public  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$owner</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$owner" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="xmlroot" id="$xmlroot">
+		<td class="attributes"><code>
+			public  
+			null|string[]|<code><a href="class-DOMNode.html">DOMNode</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$xmlroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$xmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="disabledroot" id="$disabledroot">
+		<td class="attributes"><code>
+			protected  
+			null|string[]|<code><a href="class-DOMNode.html">DOMNode</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$disabledroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$disabledroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="descroot" id="$descroot">
+		<td class="attributes"><code>
+			protected  
+			null|string[]|<code><a href="class-DOMNode.html">DOMNode</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$descroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$descroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
+
+
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralServiceStoreUser.html#properties">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#$parentServiceStore"><var>$parentServiceStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralAddressStoreUser.html#properties">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#$parentAddressStore"><var>$parentAddressStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+
+
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-centralAddressStoreUser.html#properties">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+
+</div>
+
+	<div id="footer">
+		PAN-Configurator API documentation generated by <a href="http://apigen.org">ApiGen 2.8.0</a>
+	</div>
+</div>
+</div>
+</body>
+</html>
