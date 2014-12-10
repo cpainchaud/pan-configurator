@@ -235,7 +235,7 @@ $supportedActions['tag-add'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->tags->parentCentralStore->find('!value!');"
 );
 $supportedActions['tag-add-force'] = Array(
-    'name' => 'tag-Add',
+    'name' => 'tag-Add-Force',
     'file' => "\$rule->tags->addTag(!value!);",
     'api' => "\$rule->tags->API_addTag(!value!);",
     'args' => true,
