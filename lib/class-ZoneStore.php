@@ -1,0 +1,215 @@
+<?php
+
+/**
+ * Class ZoneStore
+ *
+ * @property ZoneStore $parentCentralStore
+ * @property Zone[] $o
+ *
+ */
+class ZoneStore extends ObjStore
+{
+	public $xmlroot=null;
+	
+	public $parentCentralStore = null;
+	
+	public static $childn = 'Zone';
+
+    /**
+     * @param VirtualSystem|DeviceGroup|PanoramaConf $owner
+     */
+	public function ZoneStore($owner)
+	{
+		$this->classn = &self::$childn;
+		
+		$this->owner = $owner;
+		$this->o = Array();
+		
+		$this->findParentCentralStore();
+	}
+	
+	
+	/**
+	* looks for a zone named $name ,return that Zone object, null if not found
+	* @param string $name
+	* @return Zone
+	*/
+	public function find($name, $ref=null)
+	{
+		return $this->findByName($name,$ref);
+	}
+	
+	
+	/**
+	* add a Zone to this store. Use at your own risk.
+     * @param Zone
+	* @param bool
+	* @return bool
+	*/
+	public function addZone( Zone $Obj, $rewriteXML = true )
+	{
+		$fasthashcomp=null;
+
+		$ret = $this->add($Obj);
+		if( $ret && $rewriteXML )
+		{
+			$this->rewriteXML();
+		}
+		return $ret;			
+	}
+
+
+	/**
+	* remove a Zone a Zone to this store.
+     * @param Zone
+	* @param bool $rewriteXML
+	*
+	* @return bool  True if Zone was found and removed. False if not found.
+	*/
+	public function removeZone( Zone $Obj, $rewriteXML = true )
+	{
+		$ret = $this->remove($Obj);
+
+		if( $ret && $rewriteXML )
+		{
+			$this->rewriteXML();
+		}
+
+		return $ret;			
+	}
+
+    /**
+     * @param Zone|string $zone can be Zone object or zone name (string). this is case sensitive
+     * @return bool
+     */
+    public function hasZoneNamed( $zone, $caseSensitive = true )
+    {
+        return $this->has($zone, $caseSensitive);
+    }
+
+
+	
+	/**
+	* return an array with all Zones in this store
+	* @return Zone[]
+	*/
+	public function zones()
+	{
+		return $this->o;
+	}
+	
+	
+	/**
+	* should only be called from a Rule constructor
+	* @ignore
+	*/
+	public function load_from_xml(&$xml)
+	{
+		//print "started to extract '".$this->toString()."' from xml\n";
+		$this->xmlroot = &$xml;
+		$cur = &$xml['children'];
+		
+		foreach( $cur as &$x )
+        {
+			$newZone = new Zone('**tmp**', $this);
+            $newZone->load_from_xml($x);
+            //print "found zone '".$newZone->name()."'\n";
+			$this->o[] = $newZone;
+		}
+		
+	}
+
+	/**
+	* should only be called from a Rule constructor
+	* @ignore
+	*/
+	public function load_from_domxml($xml)
+	{
+        $this->xmlroot = $xml;
+
+        foreach( $this->xmlroot->childNodes as $node )
+        {
+            if( $node->nodeType != 1 ) continue;
+
+            $newZone = new Zone('**tmp**', $this);
+            $newZone->load_from_domxml($node);
+            //print $this->toString()." : new Zone '".$newZone->name()."' found\n";
+
+            $this->o[] = $newZone;
+        }
+	}
+	
+	
+	public function rewriteXML()
+	{
+		if( $this->xmlroot !== null )
+        {
+            $this->xmlroot['children'] = Array();
+            foreach( $this->o as $zone )
+            {
+                if( ! $zone->isTmp() )
+                    $this->xmlroot['children'][] = &$zone->xmlroot;
+            }
+        }
+
+	}
+
+	/**
+	*
+	* @ignore
+	*/
+	protected function findParentCentralStore()
+	{
+		$this->parentCentralStore = null;
+		
+		if( $this->owner )
+		{
+			$curo = $this;
+			while( isset($curo->owner) && !is_null($curo->owner) )
+			{
+				
+				if( isset($curo->owner->zoneStore) &&
+					!is_null($curo->owner->zoneStore)				)
+				{
+					$this->parentCentralStore = $curo->owner->zoneStore;
+					//print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
+					return;
+				}
+				$curo = $curo->owner;
+			}
+		}
+		
+		//print $this->toString().": no parent store found\n";
+
+	}
+
+
+    public function &getXPath()
+    {
+        if( $this->xmlroot === null )
+            derr('unsupported on virtual Stores');
+
+        $xpath = $this->owner->getXPath()."/zone/";
+
+        return $xpath;
+
+    }
+
+
+}
+
+
+trait centralZoneStore
+{
+    /**
+     * @var ZoneStore
+     */
+	public $zoneStore=null;
+	
+	public function zoneStore()
+	{
+		return $this->zoneStore;
+	}
+}
+
+

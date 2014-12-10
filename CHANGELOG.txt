@@ -1,0 +1,101 @@
+CHANGELOG
+
+
+version 1.1.4
+* rule-edit now support Nat and Decryption rules (look for argument 'ruletype=')
+* introduced CsvParser
+* introduced IPsecTunnel and IPsecTunnelStore (see PANConf->ipsecTunnels)
+* support for login+password API access to generate a key live
+* UserID API login PanAPIConnector::userIDLogin( ) implemented
+* AppRuleContainer introduced and replaces AppStore on rules
+* renamed rules stores to make better sense ie: VirtualSystem->secrules becomes VirtualSystem->securityRules
+* renamed VirtualSystem->allVSYS to VirtualSystem->virtualSystems and findVSYS_byName() to findVirtualSystem()
+* renamed class VSYS to VirtualSystem
+* added port for PanAPIConnector
+
+
+version 1.1.2
+* bash alias file in utils/alias.sh for easy summoning of utils scripts
+* new filters for rules-edit.php : from is.any, to is.any, app is.any, rule is.postrule, rule is.prerule, rule has.no.securityprofile
+      name eq, name contains, services is.any, services is.application-default, dst has.recursive, src has.recursive,
+      tag has, tag has.nocase
+* new actions for rules-edit.php : delete, invertPreAndPost, from-Remove, from-Remove-Force-Any, to-Remove, to-Move-Force-Any
+   src-Remove-Force-Any, dst-Remove-Force-Any, tag-Add, tag-Add-Force, tag-Remove
+* improved secrules-edit.php arguments sanitization and help message
+* changed Stores to Containers in Rules for Zones and Tags
+* DecryptionRule initial support
+* fix unsupported NAT issue
+* fix LogStart and LogEnd filters in secrules-edit.php
+
+version 1.1.0
+* adding folder 'utils' with scripts ready for the field
+* added script utils/checkpoint-exclude.php to process checkpoint exclusion groups into static objects
+* added script utils/grp-static-to-dynamic.php to convert static groups into dynamic based groups with Tags
+* added script utils/secrules-edit.php to mass edit rules
+* added class PH (PANConfigurator Helper) to gather utility functions
+* better support for V6 configs
+* implemented ZoneStore->has(Zone)
+* RQuery class created to parse & match rule filters
+* added more comments and fixed some typos
+
+version 1.0.4
+* implemented ZoneStore->includesStore() to know if one includes the other
+* implemented AddressStore->includesStoreExpanded() to know if one includes the other
+* implemented ServiceStore->includesStoreExpanded() to know if one includes the other
+* implemented ServiceGroup->expand() and AddressGroup->expand() to get a list of all objects (recursive) within that group
+* impelemented Address->resolveIP_Start_End()
+* fix cidr::netMatch() function for partial matches
+* fix in zones To/From setAny() and RemoveZone() functions
+* fix Store->replaceObject code to check if object already exists
+
+version 1.0.2
+* most objects now support ->getXPath() to get an object XPath
+* create and rename DeviceGroups functions implemented
+* Address->equals() , Address->sameValue() implemented
+* AddressGroup->equals(), AddressGroup->sameValue() implemented
+* AddressStore->merge())  ServiceStore->merge() ZoneStore->merge()  implemented
+* SecurityRule Log-Setting (forwarding profiles fixes)
+* few bugs fixes
+
+version 1.0.1
+* Address setValue() setType() implemented as well as their API counterparts
+* functions create Sec and Nat rules , create Address and Service objects
+* changes in AddressStore to make it case insensitive and performance tweaks
+* alternate XML engine for WAYYYY faster loading in huge configs and uses a lot less memory. Use variable $UseAlXml = TRUE variable to use it (still in beta)
+* new object->toXML() and toXML_inline() functions to convert an object to xml string
+* now supports local firewall API calls through Panorama
+* listing of firewalls serials managed by panorama PanoramaConf->getManagedFirewallsSerials()
+* load managed firewall configs with PanoramaConf->loadManagedFirewallsConfigs($fromDirectory = './')
+
+version 1.0.0
+* more API functions implemented
+* support for Panorama device-group -> device listing   DeviceGroup::getDevicesInGroup()
+* support for API report request via PanAPIConnector->getReport()
+* support for API rule application usage via SecurityRule->API_getAppStats() and SecurityRule->API_getAppContainerStats()
+* support for API rule cloning  RuleStore->API_cloneRule()
+* loading predefined apps by default and their containers
+* ServiceStore->isApplicationDefault() and isAny() implemented
+* looooooots of other new stuff I forgot about
+
+version 0.9c
+* PAN API support improved, can now load/save a config directly from API
+* fixed negate-destination
+* improved example-panorama-unused-objects.php example to count unused objects
+
+version 0.9a
+* new example-panorama-unused-objects.php
+* fixed removeZone() and removeApp()
+* added helpful error message in removeZone()
+* fixed some documentations
+
+version 0.9
+* fixed a bug when adding Zones to a rule, XML was not updated
+* added AddressGroup::removeAll() to clear a group from all its objects.
+* modified example-split-large-gorups accordingly and added some performance tweaks.
+* created panconfigurator.php for easier lib inclusion and fixed path shared.php to make them absolute
+* fixed object renaming in Address and Service Store
+* tons of documenting efforts
+* few more fixes I forgot about
+
+version 0.8
+ * fixed ServiceStore::remove() function to work with metlife example stage4 to merge service objects. Same fix applied to AddressStore class.
