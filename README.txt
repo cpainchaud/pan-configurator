@@ -24,4 +24,5 @@ File tree:
 - /utils/ contains ready to run scripts
 - /doc/index.html  has all classes documentations
 - /example-*.php are examples about using this library
+- /sample-configs/ hold dummy configuration files to run examples on
 
