@@ -2,7 +2,8 @@ CHANGELOG
 
 
 version 1.1.4
-* rule-edit now support Nat and Decryption rules (look for argument 'ruletype=')
+* rule-edit now supports multiple actions at the same time
+* rule-edit now supports Nat and Decryption rules (look for argument 'ruletype=')
 * introduced CsvParser
 * introduced IPsecTunnel and IPsecTunnelStore (see PANConf->ipsecTunnels)
 * support for login+password API access to generate a key live
@@ -11,7 +12,7 @@ version 1.1.4
 * renamed rules stores to make better sense ie: VirtualSystem->secrules becomes VirtualSystem->securityRules
 * renamed VirtualSystem->allVSYS to VirtualSystem->virtualSystems and findVSYS_byName() to findVirtualSystem()
 * renamed class VSYS to VirtualSystem
-* added port for PanAPIConnector
+* added port for PanAPIConnector (default is 443)
 
 
 version 1.1.2

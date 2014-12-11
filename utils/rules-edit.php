@@ -552,24 +552,32 @@ else
 //
 // Extracting actions
 //
-$doActions = explode(':', $doActions);
-if( count($doActions) > 2 )
-    display_error_usage_exit('"actions" argument has illegal syntax: '.PH::$args['actions']);
-
-$doActions[0] = strtolower($doActions[0]);
-
-if( !isset($supportedActions[$doActions[0]]) )
+$explodedActions = explode('/', $doActions);
+$doActions = Array();
+foreach( $explodedActions as &$exAction )
 {
-    display_error_usage_exit('unsupported Action: "'.$doActions[0].'"');
+    $newAction = Array();
+    $explodedAction = explode(':', $exAction);
+    if( count($explodedAction) > 2 )
+        display_error_usage_exit('"actions" argument has illegal syntax: '.PH::$args['actions']);
+    $newAction['name'] = strtolower($explodedAction[0]);
+
+    if( !isset($supportedActions[$newAction['name']]) )
+    {
+        display_error_usage_exit('unsupported Action: "'.$newAction['name'].'"');
+    }
+
+    if( count($explodedAction) > 1 )
+    {
+        if( $supportedActions[$newAction['name']]['args'] === false )
+            display_error_usage_exit('action "'.$newAction['name'].'" does not accept arguments');
+        $newAction['arguments'] = explode(',', $explodedAction[1]);
+    }
+    else if( $supportedActions[$newAction['name']]['args'] !== false )
+        display_error_usage_exit('action "'.$newAction['name'].'" requires arguments');
+
+    $doActions[] = $newAction;
 }
-if( count($doActions) > 1 )
-{
-    if( $supportedActions[$doActions[0]]['args'] === false )
-        display_error_usage_exit('action "'.$doActions[0].'" does not accept arguments');
-    $actionArgs = explode(',', $doActions[1]);
-}
-else if( $supportedActions[$doActions[0]]['args'] !== false )
-    display_error_usage_exit('action "'.$doActions[0].'" requires arguments');
 //
 // ---------
 
@@ -741,56 +749,57 @@ foreach( $rulesToProcess as &$rulesRecord )
                 continue;
         }
 
-        print "   - rule '".$rule->name()."' passing through Action='".$doActions[0]."'\n";
-        if( $supportedActions[$doActions[0]]['args'] !== false )
+        foreach( $doActions as &$doAction )
         {
-            foreach ($actionArgs as $arg)
+            print "   - rule '" . $rule->name() . "' passing through Action='" . $doAction['name'] . "'\n";
+            if ($supportedActions[$doAction['name']]['args'] !== false)
             {
-                $objectFind = null;
+                foreach($doAction['arguments'] as $arg)
+                {
+                    $objectFind = null;
 
 
+                    if ($configInput['type'] == 'file')
+                    {
+                        $toEval = $supportedActions[$doAction['name']['file']];
+                        $inputIsAPI = false;
+                    } else
+                    {
+                        $toEval = $supportedActions[$doAction['name']]['api'];
+                        $inputIsAPI = true;
+                    }
+
+                    if (isset($supportedActions[$doAction['name']]['argObjectFinder']))
+                    {
+                        $findObjectEval = $supportedActions[$doAction['name']]['argObjectFinder'];
+                        $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
+                        if (eval($findObjectEval) === false)
+                            die("\neval code was : $findObjectEval\n");
+                        if ($objectFind === null)
+                            display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
+                        $toEval = str_replace('!value!', '$objectFind', $toEval);
+                    } else
+                        $toEval = str_replace('!value!', $arg, $toEval);
+
+                    if (eval($toEval) === false)
+                        die("\neval code was : $toEval\n");
+
+                    //print $toEval;
+                    print "\n";
+                }
+            } else
+            {
                 if ($configInput['type'] == 'file')
-                {
-                    $toEval = $supportedActions[$doActions[0]]['file'];
-                    $inputIsAPI = false;
-                }
+                    $toEval = $supportedActions[$doAction['name']]['file'];
+                else if ($configInput['type'] == 'api')
+                    $toEval = $supportedActions[$doAction['name']]['api'];
                 else
-                {
-                    $toEval = $supportedActions[$doActions[0]]['api'];
-                    $inputIsAPI = true;
-                }
-
-                if (isset($supportedActions[$doActions[0]]['argObjectFinder']))
-                {
-                    $findObjectEval = $supportedActions[$doActions[0]]['argObjectFinder'];
-                    $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
-                    if (eval($findObjectEval) === false)
-                        die("\neval code was : $findObjectEval\n");
-                    if ($objectFind === null)
-                        display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
-                    $toEval = str_replace('!value!', '$objectFind', $toEval);
-                } else
-                    $toEval = str_replace('!value!', $arg, $toEval);
+                    derr('unsupported input type');
 
                 if (eval($toEval) === false)
                     die("\neval code was : $toEval\n");
 
-                //print $toEval;
-                print "\n";
             }
-        }
-        else
-        {
-            if ($configInput['type'] == 'file')
-                $toEval = $supportedActions[$doActions[0]]['file'];
-            else if ($configInput['type'] == 'api')
-                $toEval = $supportedActions[$doActions[0]]['api'];
-            else
-                derr('unsupported input type');
-
-            if (eval($toEval) === false)
-                die("\neval code was : $toEval\n");
-
         }
     }
 }
