@@ -459,10 +459,6 @@ if( isset(PH::$args['filter'])  )
 $configType = strtolower($configType);
 if( $configType != 'panos' && $configType != 'panorama' )
     display_error_usage_exit('"type" has unsupported value: '.$configType);
-if( $configType == 'panos' )
-    $pan = new PANConf();
-else
-    $pan = new PanoramaConf();
 
 //
 // Location provided in CLI ?
@@ -512,40 +508,6 @@ else
 
     $ruleTypes = array_unique($ruleTypes);
 }
-
-
-//
-// What kind of config input do we have.
-//     File or API ?
-//
-$configInput = PH::processIOMethod($configInput, true);
-
-if( $configInput['status'] == 'fail' )
-{
-    fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");exit(1);
-}
-
-if( $configInput['type'] == 'file' )
-{
-    if(isset(PH::$args['out']) )
-    {
-        $configOutput = PH::$args['out'];
-        if (!is_string($configOutput) || strlen($configOutput) < 1)
-            display_error_usage_exit('"out" argument is not a valid string');
-    }
-    else
-        display_error_usage_exit('"out" is missing from arguments');
-
-    $pan->load_from_file($configInput['filename']);
-}
-elseif ( $configInput['type'] == 'api'  )
-{
-    if($debugAPI)
-        $configInput['connector']->setShowApiCalls(true);
-    $pan->API_load_from_candidate($configInput['connector']);
-}
-else
-    derr('not supported yet');
 
 
 
@@ -604,6 +566,46 @@ if( $rulesFilter !== null )
     print "\n";
 }
 // --------------------
+
+
+//
+// What kind of config input do we have.
+//     File or API ?
+//
+if( $configType == 'panos' )
+    $pan = new PANConf();
+else
+    $pan = new PanoramaConf();
+$configInput = PH::processIOMethod($configInput, true);
+
+if( $configInput['status'] == 'fail' )
+{
+    fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");exit(1);
+}
+
+if( $configInput['type'] == 'file' )
+{
+    if(isset(PH::$args['out']) )
+    {
+        $configOutput = PH::$args['out'];
+        if (!is_string($configOutput) || strlen($configOutput) < 1)
+            display_error_usage_exit('"out" argument is not a valid string');
+    }
+    else
+        display_error_usage_exit('"out" is missing from arguments');
+
+    $pan->load_from_file($configInput['filename']);
+}
+elseif ( $configInput['type'] == 'api'  )
+{
+    if($debugAPI)
+        $configInput['connector']->setShowApiCalls(true);
+    $pan->API_load_from_candidate($configInput['connector']);
+}
+else
+    derr('not supported yet');
+
+
 
 
 //
