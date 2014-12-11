@@ -22,41 +22,46 @@ set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../'
 require_once("lib/panconfigurator.php");
 
 
-function display_usage_and_exit()
+function display_usage_and_exit($shortMessage = false)
 {
     global $argv;
     print PH::boldText("USAGE: ")."php ".basename(__FILE__)." type=panos|panorama in=inputfile.xml out=outputfile.xml location=all|shared|sub ".
         "actions=action1:arg1 ['filter=(from has external) or (to has dmz)']\n";
     print "php ".basename(__FILE__)." listactions   : list supported actions\n";
     print "php ".basename(__FILE__)." listfilters   : list supported filter\n";
+    print "php ".basename(__FILE__)." help          : more help messages\n";
     print PH::boldText("\nExamples:\n");
     print " - php ".basename(__FILE__)." type=panorama in=api://192.169.50.10 location=DMZ-Firewall-Group actions=from-add:dmz2,dmz3 'filter=(to has untrust) or (to is.any)'\n";
     print " - php ".basename(__FILE__)." type=panos in=config.xml out=output.xml location=any actions=setSecurityProfile:avProf1\n";
-    print PH::boldText("\nListing available arguments\n\n");
 
-    global $supportedArguments;
-
-    ksort($supportedArguments);
-    foreach( $supportedArguments as &$arg )
+    if( !$shortMessage )
     {
-        print " - ".PH::boldText($arg['niceName']);
-        if( isset( $arg['argDesc']))
-            print '='.$arg['argDesc'];
-        //."=";
-        if( isset($arg['shortHelp']))
-            print "\n     ".$arg['shortHelp'];
+        print PH::boldText("\nListing available arguments\n\n");
+
+        global $supportedArguments;
+
+        ksort($supportedArguments);
+        foreach( $supportedArguments as &$arg )
+        {
+            print " - ".PH::boldText($arg['niceName']);
+            if( isset( $arg['argDesc']))
+                print '='.$arg['argDesc'];
+            //."=";
+            if( isset($arg['shortHelp']))
+                print "\n     ".$arg['shortHelp'];
+            print "\n\n";
+        }
+
         print "\n\n";
     }
-
-    print "\n\n";
 
     exit(1);
 }
 
 function display_error_usage_exit($msg)
 {
-    fwrite(STDERR, PH::boldText("\n\n**ERROR** ").$msg."\n\n");
-    display_usage_and_exit();
+    fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
+    display_usage_and_exit(true);
 }
 
 print "\n";
@@ -573,7 +578,7 @@ else if( $supportedActions[$doActions[0]]['args'] !== false )
 // create a RQuery if a filter was provided
 //
 /**
- * @var null|RQuery $rulesFilterRQuery
+ * @var RQuery $rulesFilterRQuery
  */
 $rulesFilterRQuery = null;
 if( $rulesFilter !== null )
