@@ -503,7 +503,7 @@ public function load_from_domxml($xml)
 		//print "Now trying to extract associated security profile associated to '".$this->name."'\n";
 		
 		$grouproot = DH::findFirstElement('group', $xml);
-		$profilesroot = DH::findFirstElement('profiles', $xml);
+		$profilesRoot = DH::findFirstElement('profiles', $xml);
 		
 		if( $grouproot !== FALSE )
 		{
@@ -518,12 +518,12 @@ public function load_from_domxml($xml)
 				//print "Group name: ".$this->secprofgroup."\n";
 			}
 		}
-		else if( $profilesroot !== FALSE )
+		else if( $profilesRoot !== FALSE )
 		{
 			//print "Found SecProf <profiles> tag\n";
 			$this->secproftype = 'profile';
 			
-			foreach( $profilesroot->childNodes as $prof )
+			foreach( $profilesRoot->childNodes as $prof )
 			{
 				if( $prof->nodeType != 1 ) continue;
 				$firstE = DH::firstChildElement($prof);
