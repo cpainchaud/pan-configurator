@@ -523,6 +523,25 @@ RQuery::$defaultFilters['services']['operators']['is.application-default'] = Arr
 );
 
 
+//                                              //
+//                SecurityProfile properties    //
+//                                              //
+RQuery::$defaultFilters['secprof']['operators']['not.set'] = Array(
+    'eval' => '$rule->securityProfileType() == "none"',
+    'arg' => false
+);
+RQuery::$defaultFilters['secprof']['operators']['is.profile'] = Array(
+    'eval' => '$rule->securityProfileType() == "profile"',
+    'arg' => false
+);
+RQuery::$defaultFilters['secprof']['operators']['is.group'] = Array(
+    'eval' => '$rule->securityProfileType() == "group"',
+    'arg' => false
+);
+RQuery::$defaultFilters['secprof']['operators']['group.is'] = Array(
+    'eval' => '$rule->securityProfileType() == "group" && $rule->securityProfileGroup() == "!value!"',
+    'arg' => true
+);
 
 
 //                                              //
@@ -550,10 +569,6 @@ RQuery::$defaultFilters['rule']['operators']['is.prerule'] = Array(
 );
 RQuery::$defaultFilters['rule']['operators']['is.postrule'] = Array(
     'eval' => '$rule->owner->isPreRulebase()',
-    'arg' => false
-);
-RQuery::$defaultFilters['rule']['operators']['has.no.securityprofile'] = Array(
-    'eval' => '$rule->securityProfileType() == "none"',
     'arg' => false
 );
 

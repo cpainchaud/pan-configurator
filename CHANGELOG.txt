@@ -4,6 +4,7 @@ CHANGELOG
 version 1.1.4
 * rule-edit now supports multiple actions at the same time
 * rule-edit now supports Nat and Decryption rules (look for argument 'ruletype=')
+* rule-edit has new filters for security profiles
 * introduced CsvParser
 * introduced IPsecTunnel and IPsecTunnelStore (see PANConf->ipsecTunnels)
 * support for login+password API access to generate a key live

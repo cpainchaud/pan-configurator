@@ -465,7 +465,7 @@ public function load_from_domxml($xml)
 		else if( $profilesroot )
 		{
 			//print "Found SecProf <profiles> tag\n";
-			$this->secproftype = 'profiles';
+			$this->secproftype = 'profile';
 			
 			foreach( $profilesroot['children'] as &$prof )
 			{
@@ -475,20 +475,11 @@ public function load_from_domxml($xml)
 				$this->secprofprofiles[$prof['name']] = $n['content'];
 				
 				unset($prof);
-				
-				/* <virus>
-       
-                      </vulnerability>
-                      <url-filtering>
-
-                      </data-filtering>
-                      <file-blocking>
-
-                      </spyware>*/
-
 			}
 			
 		}
+		else
+			derr('unsupported Security Profile setting');
 		
 	}
 
@@ -530,7 +521,7 @@ public function load_from_domxml($xml)
 		else if( $profilesroot !== FALSE )
 		{
 			//print "Found SecProf <profiles> tag\n";
-			$this->secproftype = 'profiles';
+			$this->secproftype = 'profile';
 			
 			foreach( $profilesroot->childNodes as $prof )
 			{
