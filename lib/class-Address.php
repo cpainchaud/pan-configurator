@@ -268,8 +268,8 @@ class Address
 		$c['name'] = 'entry';
 		$c['attributes'] = Array( 'name' => $this->name);
 		$c['children'] = Array( 0 => &$a, 1 => &$b );
-		
-		$this->xmlroot = &$c;
+
+		$this->xmlroot = $c;
 	}
 	
 	/**

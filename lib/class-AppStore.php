@@ -442,6 +442,9 @@ class AppStore extends ObjStore
 
 trait centralAppStore
 {
+	/**
+	 * @var AppStore
+	 */
 	public $appStore=null;
 	
 	public function appStore()

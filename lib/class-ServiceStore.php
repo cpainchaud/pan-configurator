@@ -145,17 +145,26 @@ class ServiceStore
 
 		return false;
 	}
-	
+
+	/**
+	 * @return Service[]|ServiceGroup[]
+	 */
 	public function all()
 	{
 		return $this->all;
 	}
-	
+
+	/**
+	 * @return Service[]
+	 */
 	public function serviceObjects()
 	{
 		return $this->serv;
 	}
-	
+
+	/**
+	 * @return ServiceGroup[]
+	 */
 	public function serviceGroups()
 	{
 		return $this->servg;
@@ -228,6 +237,35 @@ class ServiceStore
 		}
 		
 		$this->regen_Indexes();
+	}
+
+	public function hasObject($object, $caseSensitive = true)
+	{
+		if( $this->centralStore )
+			derr('unsupported on central store');
+
+		if( is_string($object) )
+		{
+			if( !$caseSensitive )
+				$object = strtolower($object);
+
+			foreach( $this->all as $o )
+			{
+				if( !$caseSensitive )
+				{
+					if ($object == strtolower($o->name()))
+						return true;
+				}
+				else if( $object == $o->name() )
+					return true;
+			}
+
+			return false;
+		}
+		else
+			derr('unsupported');
+
+		return false;
 	}
 	
 	
