@@ -279,7 +279,8 @@ class ServiceStore
 		}
 		
 		$this->xmlroot = &$xml;
-		
+
+		// TODO switch to foreach
 		$cur = &$xml['children'];
 		$c = count($cur);
 		$k = array_keys($cur);
@@ -733,7 +734,10 @@ class ServiceStore
 			$this->fastMemToIndex[$ser] = lastIndex($this->all);
 				
 			if( !$this->centralStore )
+			{
+				$this->appdef = false;
 				$s->refInRule($this);
+			}
 			else
 				$s->owner = $this;
 			
@@ -813,9 +817,22 @@ class ServiceStore
 		if( !$this->centralStore )
 		{
 			if( PH::$UseDomXML === TRUE )
-				DH::Hosts_to_xmlDom( $this->xmlroot, $this->all );
+			{
+				if( $this->appdef )
+					DH::Hosts_to_xmlDom($this->xmlroot, $this->all, 'member', true, 'application-default');
+				else
+					DH::Hosts_to_xmlDom($this->xmlroot, $this->all);
+			}
 			else
-				Hosts_to_xmlA( $this->xmlroot['children'], $this->all );
+			{
+				if( $this->appdef )
+				{
+					Hosts_to_xmlA($this->xmlroot['children'], $this->all, 'member', true, 'application-default');
+					var_dump($this->xmlroot);
+				}
+				else
+					Hosts_to_xmlA($this->xmlroot['children'], $this->all);
+			}
 			
 			return;
 		}
@@ -935,7 +952,7 @@ class ServiceStore
 
 	public function setApplicationDefault()
 	{
-		if( $this->appdef )
+		if( $this->appdef === true )
 			return false;
 
 		$this->fasthashcomp = null;

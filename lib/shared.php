@@ -300,8 +300,9 @@ function clearA( &$a)
  * @param ReferencableObject[]|string[] $objs
  * @param string $tagName
  * @param bool $showAnyIfZero
+ * @param string $valueOfAny
 */
-function Hosts_to_xmlA(&$a, &$objs, $tagName = 'member', $showAnyIfZero=true)
+function Hosts_to_xmlA(&$a, &$objs, $tagName = 'member', $showAnyIfZero=true, $valueOfAny = 'any')
 {
 	//print_r($a);
 
@@ -313,7 +314,7 @@ function Hosts_to_xmlA(&$a, &$objs, $tagName = 'member', $showAnyIfZero=true)
 	$c = count($objs);
 	if( $c == 0 && $showAnyIfZero)
 	{
-		$a[] = Array( 'name' => $tagName, 'content' => 'any');
+		$a[] = Array( 'name' => $tagName, 'content' => $valueOfAny );
 		return;
 	}
 

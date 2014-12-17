@@ -19,7 +19,14 @@
 
 class DH
 {
-	static function Hosts_to_xmlDom(DOMNode $a, &$objects, $tagName = 'member', $showAnyIfZero=true)
+	/**
+	 * @param DOMNode $a
+	 * @param $objects
+	 * @param string $tagName
+	 * @param bool $showAnyIfZero
+	 * @param string $valueOfAny
+	 */
+	static function Hosts_to_xmlDom(DOMNode $a, &$objects, $tagName = 'member', $showAnyIfZero=true, $valueOfAny = 'any')
 	{
 		//print_r($a);
 		
@@ -31,7 +38,7 @@ class DH
 		{
 			$tmp = $a->ownerDocument->createElement($tagName);
 			$tmp = $a->appendChild($tmp);
-			$tmp->appendChild( $a->ownerDocument->createTextNode('any') );
+			$tmp->appendChild( $a->ownerDocument->createTextNode($valueOfAny) );
 			return;
 		}
 		
