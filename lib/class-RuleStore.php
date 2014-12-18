@@ -27,6 +27,9 @@ class RuleStore
      */
 	public $owner = null;
 	public $name = 'temporaryname';
+	/**
+	 * @var string[]|DOMElement
+	 */
 	public $xmlroot;
 	protected $type = '**needsomethinghere**';
 	protected $fastMemToIndex=null;
@@ -204,7 +207,10 @@ class RuleStore
 			$this->fastNameToIndex[$rule->name()] = $index;
 			if($this->isStore )
 			{
-				$this->xmlroot['children'][] = &$rule->xmlroot() ;
+				if( PH::$UseDomXML )
+					$this->xmlroot->appendChild($rule->xmlroot);
+				else
+					$this->xmlroot['children'][] = &$rule->xmlroot() ;
 			}
 			
 			return true;
@@ -416,17 +422,32 @@ class RuleStore
      */
 	public function cloneRule($rule, $newName)
 	{
-		$xml = &cloneArray($rule->xmlroot);
-
 		if( !$this->isRuleNameAvailable($newName) )
 			derr('this rule name is not available: '.$newName);
 
-		$nr = new $this->type($this);
+		if( PH::$UseDomXML )
+		{
+			$xml = $rule->xmlroot->cloneNode(true);
 
-		$nr->load_from_xml($xml);
-		$this->addRule($nr);
+			$nr = new $this->type($this);
 
-		$nr->setName($newName);
+			$nr->load_from_domxml($xml);
+			$this->addRule($nr);
+
+			$nr->setName($newName);
+		}
+		else{
+			$xml = &cloneArray($rule->xmlroot);
+
+			$nr = new $this->type($this);
+
+			$nr->load_from_xml($xml);
+			$this->addRule($nr);
+
+			$nr->setName($newName);
+
+		}
+
 
 		return $nr;
 	}

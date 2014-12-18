@@ -202,73 +202,16 @@ public function load_from_domxml($xml)
 		//												//
 		$this->extract_description_from_xml();
 		// End of <description> extraction 				//
-		
-		
-		
-		//										//
-		// Begin extraction of source IPs		//
-		//										//
-		$this->srcroot = &searchForName('name', 'source', $xml['children']);
-		if( is_null($this->srcroot ) )
-		{
-			$this->srcroot = Array('name' => 'source');
-			$xml['children'][] = &$this->srcroot;
-		}
-		if( !isset($this->srcroot['children']) )
-		{
-			$this->srcroot['children'] = Array();
-		}
-		$this->source->load_local_objects_xml($this->srcroot);
-		// end of source IPs extraction
+
 			
 		
-		//						//
-		// Begin extraction of destination IPs		//
-		//						//
-		$this->dstroot = &searchForName('name', 'destination', $xml['children']);
-		if( is_null($this->dstroot ) )
-			derr("<destination> not found\n");
-		
-		if( !isset($this->dstroot['children']) )
-		{
-			$this->dstroot['children'] = Array();
-		}
-		$this->destination->load_local_objects_xml($this->dstroot);
-		// end of destination IPs extraction
-		
-		
-		
+		$this->load_source();
+		$this->load_destination();
+
 		$this->load_tags();
 		
-		//						//
-		// Begin <from> zone extraction			//
-		//						//
-		$fromroot = &searchForName('name', 'from', $xml['children']);
-		if( ! $fromroot  )
-		{
-			$fromroot = Array('name'=>'from');
-			$xml['children'][] = &$fromroot;
-		}
-		if( ! isset($fromroot['children']) )
-			$fromroot['children'] = array();
-		
-		$this->from->load_from_xml($fromroot);
-		// end of <from> zone extraction
-		
-		//						//
-		// Begin <to> zone extraction			//
-		//						//
-		$toroot = &searchForName('name', 'to', $xml['children']);
-		if( ! $toroot  )
-		{
-			$toroot = Array('name'=>'to');
-			$xml['children'][] = &$toroot;
-		}
-		if( ! isset($toroot['children']) )
-			$toroot['children'] = array();
-		
-		$this->to->load_from_xml($toroot);
-		// end of <to> zone extraction
+		$this->load_from();
+		$this->load_to();
 		
 		
 		//						//

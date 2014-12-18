@@ -37,11 +37,11 @@ class Rule
 	*/
 	public $to = null;
 	/**
-	* @var AddressStore
+	* @var AddressRuleContainer
 	*/
 	public $source;
 	/**
-	* @var AddressStore
+	* @var AddressRuleContainer
 	*/
 	public $destination;
 
@@ -221,12 +221,12 @@ class Rule
             {
                 $srcRoot['children'] = Array();
             }
-            $this->source->load_local_objects_xml($srcRoot);
+            $this->source->load_from_xml($srcRoot);
         }
         else
         {
             $tmp = DH::findFirstElementOrCreate('source', $this->xmlroot);
-            $this->source->load_local_objects_domxml($tmp);
+            $this->source->load_from_domxml($tmp);
         }
     }
 
@@ -247,12 +247,12 @@ class Rule
             {
                 $dstRoot['children'] = Array();
             }
-            $this->destination->load_local_objects_xml($dstRoot);
+            $this->destination->load_from_xml($dstRoot);
         }
         else
         {
             $tmp = DH::findFirstElementOrCreate('destination', $this->xmlroot);
-            $this->destination->load_local_objects_domxml($tmp);
+            $this->destination->load_from_domxml($tmp);
         }
     }
 
@@ -274,7 +274,7 @@ class Rule
 	*/
 	protected function init_source_with_store()
 	{
-		$this->source = new AddressStore($this);
+		$this->source = new AddressRuleContainer($this);
 		$this->source->name = 'source';
 	}
 	
@@ -284,7 +284,7 @@ class Rule
 	*/
 	protected function init_destination_with_store()
 	{
-		$this->destination = new AddressStore($this);
+		$this->destination = new AddressRuleContainer($this);
 		$this->destination->name = 'destination';
 	}
 	
