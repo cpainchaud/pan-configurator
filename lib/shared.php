@@ -78,6 +78,7 @@ require_once dirname(__FILE__).'/'."class-ObjRuleContainer.php";
 require_once dirname(__FILE__).'/'."class-ZoneRuleContainer.php";
 require_once dirname(__FILE__).'/'."class-TagRuleContainer.php";
 require_once dirname(__FILE__).'/'."class-AppRuleContainer.php";
+require_once dirname(__FILE__).'/'."class-AddressRuleContainer.php";
 require_once dirname(__FILE__).'/'."class-TagStore.php";
 require_once dirname(__FILE__).'/'."class-ZoneStore.php";
 require_once dirname(__FILE__).'/'."class-AppStore.php";
