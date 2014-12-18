@@ -135,7 +135,7 @@ class Address
 	* @ignore
 	*
 	*/
-	public function load_from_domxml($xml)
+	public function load_from_domxml(DOMElement $xml)
 	{
 		
 		$this->xmlroot = $xml;
@@ -146,16 +146,28 @@ class Address
 		
 		//print "object named '".$this->name."' found\n";
 
-		$cur = DH::firstChildElement($xml);
 
-		if( $cur === FALSE )
-			derr("Cannot find object type for '".$this->name."'\n");
+		$typeFound = false;
 
-		$this->type = array_search($cur->nodeName, self::$AddressTypes);
-		if( $this->type === FALSE )
-			derr('invalid type found : '.$cur['name']);
+		foreach($xml->childNodes as $node)
+		{
+			if( $node->nodeType != 1  )
+				continue;
 
-		$this->value = $cur->textContent;
+			$lsearch = array_search($node->nodeName, self::$AddressTypes);
+			if( $lsearch !== FALSE )
+			{
+				$typeFound = true;
+				$this->type = $lsearch;
+				$this->value = $node->textContent;
+			}
+
+		}
+
+		if( !$typeFound )
+			derr('object type not found or not supported');
+
+
 	}
 
     /**
