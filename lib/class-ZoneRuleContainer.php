@@ -119,7 +119,12 @@ class ZoneRuleContainer extends ObjRuleContainer
         return $ret;
     }
 
-
+    /**
+     * @param Zone $Obj
+     * @param bool $rewritexml
+     * @param bool $forceAny
+     * @return bool
+     */
     public function API_removeZone( Zone $Obj, $rewritexml = true, $forceAny = false )
     {
         if( $this->removeZone($Obj, $rewritexml, $forceAny) )

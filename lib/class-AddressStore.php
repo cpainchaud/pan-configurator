@@ -245,7 +245,7 @@ class AddressStore
 	}
 	
 	/**
-	* For developper use only.
+	* For developer use only.
 	*
 	*/
 	public function load_addressgroups_from_xml(&$xml)
@@ -345,7 +345,8 @@ class AddressStore
 		}
 		
 		$this->xmlroot = &$xml;
-		
+
+		// TODO use foreach loop
 		$cur = &$xml['children'];
 		$c = count($cur);
 		$k = array_keys($cur);
@@ -517,7 +518,7 @@ class AddressStore
 	}
 	
 	/**
-	* Should only be called from a CentralStore or give unpredictible results
+	* Should only be called from a CentralStore or give unpredictable results
      * @param string $objectName
      * @return Address|AddressGroup|null
 	*/

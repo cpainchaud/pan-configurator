@@ -176,6 +176,7 @@ class ObjRuleContainer
         echo "$indent";
         print "Displaying the $c ".$this->classn."(s) in ".$this->toString()."\n";
 
+        // TODO use foreach
         for( $i=0; $i<$c ;$i++)
         {
             print $indent.$this->o[$k[$i]]->name."\n";
