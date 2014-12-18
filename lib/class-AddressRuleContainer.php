@@ -18,6 +18,8 @@
 */
 /**
  * Class AddressRuleContainer
+ * @property Address[]|AddressGroup[] $o
+ * @property Rule|SecurityRule|NatRule $owner
  *
  */
 class AddressRuleContainer extends ObjRuleContainer
@@ -191,22 +193,16 @@ class AddressRuleContainer extends ObjRuleContainer
      */
     public function load_from_xml(&$xml)
     {
-        //print "started to extract '".$this->toString()."' from xml\n";
         $this->xmlroot = &$xml;
-        $cur = &$xml['children'];
 
-        $c = count($cur);
-        $k = array_keys($cur);
-
-        for( $i=0; $i<$c; $i++ )
+        foreach( $xml['children'] as &$cur)
         {
-
-            if( $c == 1 && strtolower($cur[$k[$i]]['content']) == 'any' )
+            if( strtolower($cur['content']) == 'any' )
             {
                 return;
             }
 
-            $f = $this->parentCentralStore->findOrCreate( $cur[$k[$i]]['content'], $this);
+            $f = $this->parentCentralStore->findOrCreate( $cur['content'], $this);
             $this->o[] = $f;
         }
 
@@ -270,22 +266,22 @@ class AddressRuleContainer extends ObjRuleContainer
 
         if( $this->owner )
         {
-            $curo = $this;
-            while( isset($curo->owner) && !is_null($curo->owner) )
+            $currentObject = $this;
+            while( isset($currentObject->owner) && !is_null($currentObject->owner) )
             {
 
-                if( isset($curo->owner->addressStore) &&
-                    !is_null($curo->owner->addressStore)				)
+                if( isset($currentObject->owner->addressStore) &&
+                    !is_null($currentObject->owner->addressStore)				)
                 {
-                    $this->parentCentralStore = $curo->owner->addressStore;
+                    $this->parentCentralStore = $currentObject->owner->addressStore;
                     //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
                     return;
                 }
-                $curo = $curo->owner;
+                $currentObject = $currentObject->owner;
             }
         }
 
-        //print $this->toString().": no parent store found\n";
+        mwarning('no parent store found!');
 
     }
 
@@ -380,6 +376,95 @@ class AddressRuleContainer extends ObjRuleContainer
     {
         return ( count($this->o) == 0 );
     }
+
+
+    /**
+     * @param Address|AddressGroup
+     * @param bool $anyIsAcceptable
+     * @return bool
+     */
+    public function hasObjectRecursive( $object, $anyIsAcceptable=false)
+    {
+        if( $object === null )
+            derr('cannot work with null objects');
+
+        if( $anyIsAcceptable && $this->count() == 0 )
+            return false;
+
+        foreach( $this->o as $o )
+        {
+            if( $o === $object )
+                return true;
+            if( $o->isGroup() )
+                if( $o->hasObjectRecursive($object) ) return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * To determine if a store has all the Address from another store, it will expand AddressGroups instead of looking for them directly. Very useful when looking to compare similar rules.
+     * @param AddressRuleContainer $other
+     * @param bool $anyIsAcceptable if any of these objects is Any the it will return false
+     * @return bool true if Address objects from $other are all in this store
+     */
+    public function includesStoreExpanded(AddressRuleContainer $other, $anyIsAcceptable=true )
+    {
+
+        if( !$anyIsAcceptable )
+        {
+            if( $this->count() == 0 || $other->count() == 0 )
+                return false;
+        }
+
+        if( $this->count() == 0 )
+            return true;
+
+        if( $other->count() == 0 )
+            return false;
+
+        $localA = Array();
+        $A = Array();
+
+        foreach( $this->o as $object )
+        {
+            if( $object->isGroup() )
+            {
+                $flat = $object->expand();
+                $localA = array_merge($localA, $flat);
+            }
+            else
+                $localA[] = $object;
+        }
+        $localA = array_unique_no_cast($localA);
+
+        $otherAll = $other->all();
+
+        foreach( $otherAll as $object )
+        {
+            if( $object->isGroup() )
+            {
+                $flat = $object->expand();
+                $A = array_merge($A, $flat);
+            }
+            else
+                $A[] = $object;
+        }
+        $A = array_unique_no_cast($A);
+
+        $diff = array_diff_no_cast($A, $localA);
+
+        if( count($diff) > 0 )
+        {
+            return false;
+        }
+
+
+        return true;
+
+    }
+
 }
 
 

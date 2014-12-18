@@ -1100,7 +1100,7 @@ class AddressStore
 	}
 	
 	/**
-	* Compares adress objects with another store to see if they all match each other
+	* Compares address objects with another store to see if they all match each other
 	*
 	*/
 	public function equals( $other )
