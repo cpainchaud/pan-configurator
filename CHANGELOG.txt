@@ -1,5 +1,7 @@
 CHANGELOG
 
+version 1.1.5
+* new class AddressRuleContainer to replace AddressStore in rule (same way as ZoneRuleContainer in previous release)
 
 version 1.1.4
 * rule-edit now supports multiple actions at the same time
