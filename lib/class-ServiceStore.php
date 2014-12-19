@@ -23,7 +23,10 @@ class ServiceStore
 	public $owner;
 	
 	protected $centralStore = false;
-	
+
+	/**
+	 * @var null|ServiceStore
+	 */
 	protected $parentCentralStore = null;
 	
 	protected $appdef = false;
@@ -74,15 +77,10 @@ class ServiceStore
 		
 		$this->servroot = &$xml;
 		
-		$cur = &$xml['children'];
-		
-		$c = count($cur);
-		$k = array_keys($cur);
-		
-		for( $i=0; $i<$c; $i++ )
+		foreach( $xml['children'] as &$cur)
 		{
 			$ns = new Service('',$this);
-			$ns->load_from_xml($cur[$k[$i]]);
+			$ns->load_from_xml($cur);
 			//print $this->toString()." : new service '".$ns->name."' created\n";
 			$this->serv[] = $ns;
 			$this->all[] = $ns;
@@ -280,14 +278,9 @@ class ServiceStore
 		
 		$this->xmlroot = &$xml;
 
-		// TODO switch to foreach
-		$cur = &$xml['children'];
-		$c = count($cur);
-		$k = array_keys($cur);
-		
-		for( $i=0; $i<$c; $i++) 
+		foreach($xml['children'] as &$cur)
 		{
-			$lname = $cur[$k[$i]]['content'];
+			$lname = $cur['content'];
 			
 			if( $i == 0 )
 			{
