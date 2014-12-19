@@ -59,6 +59,7 @@ class ServiceRuleContainer extends ObjRuleContainer
         $ret = parent::add($Obj);
         if( $ret && $rewriteXml )
         {
+            $this->appDef = false;
             $this->rewriteXML();
         }
         return $ret;
@@ -163,6 +164,7 @@ class ServiceRuleContainer extends ObjRuleContainer
             $this->remove($o, false, true);
         }
 
+        $this->appDef = false;
         $this->rewriteXML();
     }
 
@@ -234,8 +236,17 @@ class ServiceRuleContainer extends ObjRuleContainer
 
         foreach( $xml['children'] as &$cur)
         {
-            if( strtolower($cur['content']) == 'any' )
+            $lower = strtolower($cur['content']);
+
+            if( $lower == 'any' )
             {
+                $this->o = Array();
+                return;
+            }
+            else if($lower == 'application-default')
+            {
+                $this->o = Array();
+                $this->appDef = true;
                 return;
             }
 
@@ -258,8 +269,17 @@ class ServiceRuleContainer extends ObjRuleContainer
         {
             if( $node->nodeType != 1 ) continue;
 
-            if( $i == 0 && strtolower($node->textContent) == 'any' )
+            $lower = strtolower($node->textContent);
+
+            if( $lower == 'any' )
             {
+                $this->o = Array();
+                return;
+            }
+            else if($lower == 'application-default')
+            {
+                $this->o = Array();
+                $this->appDef = true;
                 return;
             }
 
@@ -288,19 +308,6 @@ class ServiceRuleContainer extends ObjRuleContainer
         }
 
     }
-
-    public function &toString_inline()
-    {
-        if( count($this->o) == 0 )
-        {
-            $out = '**ANY**';
-            return $out;
-        }
-
-        $out = parent::toString_inline();
-        return $out;
-    }
-
 
 
     /**
@@ -564,6 +571,45 @@ class ServiceRuleContainer extends ObjRuleContainer
 
 
         return true;
+
+    }
+
+
+    public function &toString_inline()
+    {
+        $arr = &$this->o;
+        $c = count($arr);
+
+        if( $this->appDef )
+        {
+            $ret = 'application-default';
+            return $ret;
+        }
+
+        if( $c == 0 )
+        {
+            $ret = '*ANY*';
+            return $ret;
+        }
+
+        $first = true;
+
+        $ret = '';
+
+        foreach ( $arr as $s )
+        {
+            if( $first)
+            {
+                $ret .= $s->name();
+            }
+            else
+                $ret .= ','.$s->name();
+
+
+            $first = false;
+        }
+
+        return $ret;
 
     }
 
