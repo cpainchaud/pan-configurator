@@ -127,7 +127,7 @@ public function load_from_domxml($xml)
 		// Begin <service> extraction			//
 		//										//
 		$tmp = DH::findFirstElementOrCreate('service', $xml);
-		$this->services->load_local_objects_domxml($tmp);
+		$this->services->load_from_domxml($tmp);
 		// end of <service> zone extraction
 		
 		
@@ -228,9 +228,9 @@ public function load_from_domxml($xml)
 		
 		$this->apps->load_from_xml($approot);
 		// end of <application> application extraction
-		
-		
-		
+
+
+
 		//						//
 		// Begin <service> extraction			//
 		//						//
@@ -242,11 +242,11 @@ public function load_from_domxml($xml)
 		}
 		if( ! isset($serviceroot['children']) )
 			$serviceroot['children'] = array();
-		
-		$this->services->load_local_objects_xml($serviceroot);
+
+		$this->services->load_from_xml($serviceroot);
 		// end of <service> zone extraction
-		
-		
+
+
 		$this->extract_action_from_xml();
 		
 		

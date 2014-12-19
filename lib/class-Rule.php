@@ -51,7 +51,7 @@ class Rule
 	public $tags;
 
 	/**
-	* @var ServiceStore
+	* @var ServiceRuleContainer
 	*/
 	public $services;
 	
@@ -294,7 +294,7 @@ class Rule
 	*/
 	protected function init_services_with_store()
 	{
-		$this->services = new ServiceStore($this);
+		$this->services = new ServiceRuleContainer($this);
 		$this->services->name = 'service';
 	}
 	
