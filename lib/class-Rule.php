@@ -295,7 +295,7 @@ class Rule
 	protected function init_services_with_store()
 	{
 		$this->services = new ServiceStore($this);
-		$this->services->name = 'services';
+		$this->services->name = 'service';
 	}
 	
 	/**

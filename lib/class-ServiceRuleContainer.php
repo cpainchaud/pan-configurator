@@ -17,12 +17,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 /**
- * Class AddressRuleContainer
- * @property Address[]|AddressGroup[] $o
+ * Class ServiceRuleContainer
+ * @property Service[]|ServiceGroup[] $o
  * @property Rule|SecurityRule|NatRule $owner
  *
  */
-class AddressRuleContainer extends ObjRuleContainer
+class ServiceRuleContainer extends ObjRuleContainer
 {
     /**
      * @var null|string[]|DOMElement
@@ -30,13 +30,15 @@ class AddressRuleContainer extends ObjRuleContainer
     public $xmlroot=null;
 
     /**
-     * @var null|AddressStore
+     * @var null|ServiceStore
      */
     public $parentCentralStore = null;
 
+    private $appDef = false;
 
 
-    public function AddressRuleContainer($owner)
+
+    public function ServiceRuleContainer($owner)
     {
         $this->owner = $owner;
         $this->o = Array();
@@ -46,7 +48,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param Address|AddressGroup $Obj
+     * @param Service|ServiceGroup $Obj
      * @param bool $rewriteXml
      * @return bool
      */
@@ -63,7 +65,7 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @param Address|AddressGroup $Obj
+     * @param Service|ServiceGroup $Obj
      * @param bool $rewritexml
      * @return bool
      */
@@ -89,9 +91,14 @@ class AddressRuleContainer extends ObjRuleContainer
         return false;
     }
 
+    public function isApplicationDefault()
+    {
+        return $this->appDef;
+    }
+
 
     /**
-     * @param Address|AddressGroup $Obj
+     * @param Service|ServiceGroup $Obj
      * @param bool $rewriteXml
      * @param bool $forceAny
      *
@@ -117,7 +124,7 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @param Address|AddressGroup $Obj
+     * @param Service|ServiceGroup $Obj
      * @param bool $rewriteXml
      * @param bool $forceAny
      * @return bool
@@ -149,6 +156,8 @@ class AddressRuleContainer extends ObjRuleContainer
 
     public function setAny()
     {
+        $this->fasthashcomp = null;
+
         foreach( $this->o as $o )
         {
             $this->remove($o, false, true);
@@ -157,8 +166,27 @@ class AddressRuleContainer extends ObjRuleContainer
         $this->rewriteXML();
     }
 
+    function setApplicationDefault( )
+    {
+        if( $this->appDef )
+            return false;
+
+        $this->fasthashcomp = null;
+
+        $this->appDef = true;
+
+        foreach( $this->o as $o )
+        {
+            $this->remove($o, false, true);
+        }
+
+        $this->rewriteXML();
+
+        return true;
+    }
+
     /**
-     * @param Address|AddressGroup|string $object can be Address|AddressGroup object or object name (string)
+     * @param Service|ServiceGroup|string $object can be Service|ServiceGroup object or object name (string)
      * @return bool
      */
     public function has( $object, $caseSensitive = true )
@@ -170,7 +198,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
     /**
      * return an array with all objects
-     * @return Address[]|AddressGroup[]
+     * @return Service[]|ServiceGroup[]
      */
     public function members()
     {
@@ -179,7 +207,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
     /**
      * return an array with all objects
-     * @return Address[]|AddressGroup[]
+     * @return Service[]|ServiceGroup[]
      */
     public function all()
     {
@@ -236,9 +264,19 @@ class AddressRuleContainer extends ObjRuleContainer
     public function rewriteXML()
     {
         if( PH::$UseDomXML === TRUE )
-            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
+        {
+            if( $this->appDef )
+                DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true, 'application-default');
+            else
+                DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
+        }
         else
-            Hosts_to_xmlA($this->xmlroot['children'], $this->o, 'member', true);
+        {
+            if( $this->appDef )
+                Hosts_to_xmlA($this->xmlroot['children'], $this->o, 'member', true, 'application-default');
+            else
+                Hosts_to_xmlA($this->xmlroot['children'], $this->o, 'member', true);
+        }
 
     }
 
@@ -270,10 +308,10 @@ class AddressRuleContainer extends ObjRuleContainer
             while( isset($currentObject->owner) && !is_null($currentObject->owner) )
             {
 
-                if( isset($currentObject->owner->addressStore) &&
-                    !is_null($currentObject->owner->addressStore)				)
+                if( isset($currentObject->owner->serviceStore) &&
+                    !is_null($currentObject->owner->serviceStore)				)
                 {
-                    $this->parentCentralStore = $currentObject->owner->addressStore;
+                    $this->parentCentralStore = $currentObject->owner->serviceStore;
                     //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
                     return;
                 }
@@ -289,18 +327,23 @@ class AddressRuleContainer extends ObjRuleContainer
     /**
      * Merge this set of objects with another one (in paramater). If one of them is 'any'
      * then the result will be 'any'.
+     * @param ServiceRuleContainer $other
      *
      */
-    public function merge($other)
+    public function merge(ServiceRuleContainer $other)
     {
         $this->fasthashcomp = null;
 
-        // This is Any ? then merge = Any
-        if( count($this->o) == 0 )
+        if( $this->appDef && !$other->appDef || !$this->appDef && $other->appDef  )
+            derr("You cannot merge 'application-default' type service stores with app-default ones");
+
+        if( $this->appDef && $other->appDef )
             return;
 
-        // this other is Any ? then this one becomes Any
-        if( count($other->o) == 0 )
+        if( $this->isAny() )
+            return;
+
+        if( $other->isAny() )
         {
             $this->setAny();
             return;
@@ -308,9 +351,10 @@ class AddressRuleContainer extends ObjRuleContainer
 
         foreach($other->o as $s)
         {
-            $this->add($s);
+            $this->add($s, false);
         }
 
+        $this->rewriteXML();
     }
 
     /**
@@ -319,7 +363,7 @@ class AddressRuleContainer extends ObjRuleContainer
      * @param $anyIsAcceptable
      * @return boolean true if Zones from $other are all in this store
      */
-    public function includesContainer(AddressRuleContainer $other, $anyIsAcceptable=true )
+    public function includesContainer(ServiceRuleContainer $other, $anyIsAcceptable=true )
     {
 
         if( !$anyIsAcceptable )
@@ -359,7 +403,53 @@ class AddressRuleContainer extends ObjRuleContainer
         $con->sendRequest($url);
     }
 
+    /**
+     * @return bool true if not already App Default
+     */
+    public function API_setApplicationDefault()
+    {
+        $ret = $this->setApplicationDefault();
 
+        if( !$ret )
+            return false;
+
+        $con = findConnectorOrDie($this);
+        $xpath = &$this->getXPath();
+
+        $con->sendDeleteRequest($xpath);
+
+        $con->sendSetRequest($xpath, '<member>application-default</member>');
+
+        return true;
+    }
+
+    /**
+     * @param ServiceRuleContainer $other
+     * @return bool
+     */
+    public function equals( $other )
+    {
+
+        if( count($this->o) != count($other->o) )
+            return false;
+
+        if( $this->appDef != $other->appDef )
+            return false;
+
+        foreach($this->o as $o)
+        {
+            if( ! in_array($o, $other->o, true) )
+                return false;
+        }
+
+
+        return true;
+    }
+
+
+    /**
+     * @return string
+     */
     public function &getXPath()
     {
 
@@ -374,12 +464,15 @@ class AddressRuleContainer extends ObjRuleContainer
      */
     public function isAny()
     {
+        if( $this->appDef )
+            return false;
+
         return ( count($this->o) == 0 );
     }
 
 
     /**
-     * @param Address|AddressGroup
+     * @param Service|ServiceGroup
      * @param bool $anyIsAcceptable
      * @return bool
      */
@@ -404,12 +497,12 @@ class AddressRuleContainer extends ObjRuleContainer
 
 
     /**
-     * To determine if a store has all the Address from another store, it will expand AddressGroups instead of looking for them directly. Very useful when looking to compare similar rules.
-     * @param AddressRuleContainer $other
+     * To determine if a store has all the Service from another store, it will expand ServiceGroups instead of looking for them directly. Very useful when looking to compare similar rules.
+     * @param ServiceRuleContainer $other
      * @param bool $anyIsAcceptable if any of these objects is Any the it will return false
-     * @return bool true if Address objects from $other are all in this store
+     * @return bool true if Service objects from $other are all in this store
      */
-    public function includesStoreExpanded(AddressRuleContainer $other, $anyIsAcceptable=true )
+    public function includesStoreExpanded(ServiceRuleContainer $other, $anyIsAcceptable=true )
     {
 
         if( !$anyIsAcceptable )

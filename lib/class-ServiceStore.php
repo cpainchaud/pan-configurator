@@ -819,7 +819,7 @@ class ServiceStore
 			if( PH::$UseDomXML === TRUE )
 			{
 				if( $this->appdef )
-					DH::Hosts_to_xmlDom($this->xmlroot, $this->all, 'member', true, 'application-default');
+					DH::Hosts_to_xmlDom($this->xmlroot, $this->all, true, 'application-default');
 				else
 					DH::Hosts_to_xmlDom($this->xmlroot, $this->all);
 			}
@@ -827,8 +827,8 @@ class ServiceStore
 			{
 				if( $this->appdef )
 				{
-					Hosts_to_xmlA($this->xmlroot['children'], $this->all, 'member', true, 'application-default');
-					var_dump($this->xmlroot);
+					Hosts_to_xmlA($this->xmlroot['children'], $this->all, true, 'application-default');
+					vardump($this->xmlroot);
 				}
 				else
 					Hosts_to_xmlA($this->xmlroot['children'], $this->all);
