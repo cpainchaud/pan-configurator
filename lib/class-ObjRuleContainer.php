@@ -191,10 +191,9 @@ class ObjRuleContainer
 
     public function hostChanged($h)
     {
-        $fasthashcomp = null;
-
         if( in_array($h,$this->o) )
         {
+            $this->fasthashcomp = null;
             $this->rewriteXML();
         }
     }
