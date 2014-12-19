@@ -263,8 +263,8 @@ $supportedActions['tag-remove'] = Array(
 //                                                   //
 $supportedActions['service-set-appdefault'] = Array(
     'name' => 'service-Set-AppDefault',
-    'file' => "\$rule->setApplicationDefault();",
-    'api' => "\$rule->API_setApplicationDefault();",
+    'file' => "\$rule->services->setApplicationDefault();",
+    'api' => "\$rule->services->API_setApplicationDefault();",
     'args' => false
 );
 
