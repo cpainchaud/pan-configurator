@@ -29,7 +29,7 @@ File tree:
 
 PAN-Configurator is a PHP library aimed at making PANOS config changes easy (and XML free ;), maintainable and allowing complex scenarios like rule merging, unused object tracking, conversion of checkpoint exclusion groups, massive rule editing, AppID conversion … to name the ones I do on a regular basis and which are not offered by our GUI. It will work seamlessly on local config file or API.
 
-With 20 lines of code, you should be able to solve most of your needs. Brief overview:
+With less than 20 lines of code, you should be able to solve most of your needs. Brief overview:
 
 Loading a config from a file ?
 
@@ -58,11 +58,11 @@ Replace that object by another one ?
 
    $object->replaceMeGlobally($anotherObject);
 
-Want to add security profile group 'Webserver' in rules which have destination zone 'External' and source object 'N-Partner-VPN'?
+Want to add security profile group 'Block-Forward-Critical-High' in rules which have destination zone 'External' and source zone 'DMZ'?
 
    foreach( $vsys1->securityRules->rules() as $rule )
-      if( $rule->source->has('N-Partner') && $rule->to->has('External') )
-            $rule->setSecurityProfileGroup('Webserver');
+      if( $rule->from->has('DMZ') && $rule->to->has('External') )
+            $rule->setSecurityProfileGroup('Block-Forward-Critical-High');
 
 Do you hate scripting ? Utility script 'rules-edit.php' is a swiss knife to edit rules and takes advantage of PAN Configurator library from a single CLI query:
 
