@@ -18,6 +18,7 @@
 ******************************************************************************/
 
 Requirement : PHP 5.4 with curl module
+Use: include the file lib/panconfigurator.php in your own script to load the necessary classes.
 
 File tree:
 
