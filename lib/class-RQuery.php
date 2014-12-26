@@ -510,6 +510,7 @@ RQuery::$defaultFilters['app']['operators']['is.any'] = Array(
     'arg' => false
 );
 
+
 //                                              //
 //          Services properties                 //
 //                                              //
@@ -520,6 +521,11 @@ RQuery::$defaultFilters['services']['operators']['is.any'] = Array(
 RQuery::$defaultFilters['services']['operators']['is.application-default'] = Array(
     'eval' => '$rule->services->isApplicationDefault()',
     'arg' => false
+);
+RQuery::$defaultFilters['services']['operators']['has'] = Array(
+    'eval' => '$rule->services->has(!value!) === true',
+    'arg' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->services->parentCentralStore->find('!value!');"
 );
 
 

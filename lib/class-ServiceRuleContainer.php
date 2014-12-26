@@ -196,16 +196,6 @@ class ServiceRuleContainer extends ObjRuleContainer
         return parent::has($object, $caseSensitive);
     }
 
-    /**
-     * @param Service|ServiceGroup|string $object can be Service|ServiceGroup object or object name (string)
-     * @return bool
-     */
-    public function hasObject( $object, $caseSensitive = true )
-    {
-        return parent::has($object, $caseSensitive);
-    }
-
-
 
     /**
      * return an array with all objects
