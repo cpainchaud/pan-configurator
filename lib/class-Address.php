@@ -121,6 +121,10 @@ class Address
 				$this->type = $lsearch;
 				$this->value = $cur['content'];
 			}
+			elseif( $cur['name'] == 'description' )
+			{
+				$this->description = $cur['content'];
+			}
 
 		}
 
@@ -161,7 +165,10 @@ class Address
 				$this->type = $lsearch;
 				$this->value = $node->textContent;
 			}
-
+			elseif( $node->nodeName == 'description' )
+			{
+				$this->description = $node->textContent;
+			}
 		}
 
 		if( !$typeFound )
