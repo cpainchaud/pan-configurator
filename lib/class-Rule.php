@@ -483,23 +483,26 @@ class Rule
 
         if( PH::$UseDomXML )
         {
-            if( strlen($this->description) < 1 )
+            if( strlen($this->description) < 1 && $this->descroot !== null )
             {
                 $this->xmlroot->removeChild($this->descroot);
+				$this->descroot = null;
             }
             else
             {
                 if( $this->descroot === null )
-                    $this->descroot = DH::createElement($this->xmlroot, 'description');
-
-                DH::setDomNodeText($this->descroot, $this->description);
-                if( !$this->xmlroot->isSameNode($this->descroot->parentNode) )
-                    $this->descroot->appendChild($this->descroot);
+				{
+					$this->descroot = DH::createElement($this->xmlroot, 'description', $this->description);
+					$this->descroot->appendChild($this->descroot);
+				}
+				else
+				{
+					DH::setDomNodeText($this->descroot, $this->description);
+				}
             }
             return;
         }
 
-		$this->descroot['content'] = $newdesc;
 
         if( strlen($this->description) < 1 )
             $this->descroot['name'] = 'ignme';
@@ -511,6 +514,7 @@ class Rule
                 $xml['children'][] = &$this->descroot;
             }
             $this->descroot['name'] = 'description';
+			$this->descroot['content'] = $newdesc;
         }
 	}
 
