@@ -82,6 +82,11 @@ class ServiceGroup
 	
 	}
 
+
+	/**
+	 * returns number of members in this group
+	 * @return int
+	 */
 	public function count()
 	{
 		return count($this->services);
@@ -239,6 +244,10 @@ class ServiceGroup
 	}
 
 
+	/**
+	 * @param $otherObject
+	 * @return bool true if objects have same same and values
+	 */
 	public function equals( $otherObject )
 	{
 		if( ! $otherObject->isGroup() )
@@ -250,6 +259,10 @@ class ServiceGroup
 		return $this->sameValue( $otherObject);
 	}
 
+	/**
+	 * @param ServiceGroup $otherObject
+	 * @return bool true if both objects contain same objects names
+	 */
 	public function sameValue( ServiceGroup $otherObject)
 	{
 		if( $this->isTmpSrv() && !$otherObject->isTmpSrv() )
