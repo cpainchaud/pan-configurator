@@ -425,6 +425,7 @@ class Rule
 	/**
 	* disable rule if $disabled = true, enable it if not
 	* @param bool $disabled
+	 * @return bool true if value has changed
 	*/
 	public function setDisabled($disabled)
 	{
@@ -443,6 +444,7 @@ class Rule
 	/**
 	* disable rule if $disabled = true, enable it if not
 	* @param bool $disabled
+	 * @return bool true if value has changed
 	*/
 	public function API_setDisabled($disabled)
 	{
@@ -483,10 +485,13 @@ class Rule
 
         if( PH::$UseDomXML )
         {
-            if( strlen($this->description) < 1 && $this->descroot !== null )
+            if( strlen($this->description) < 1 )
             {
-                $this->xmlroot->removeChild($this->descroot);
-				$this->descroot = null;
+				if( $this->descroot !== null )
+				{
+					$this->xmlroot->removeChild($this->descroot);
+					$this->descroot = null;
+				}
             }
             else
             {
@@ -505,7 +510,12 @@ class Rule
 
 
         if( strlen($this->description) < 1 )
-            $this->descroot['name'] = 'ignme';
+		{
+			if( $this->descroot !== null )
+			{
+				$this->descroot['name'] = 'ignme';
+			}
+		}
         else
         {
             if( $this->descroot === null )
