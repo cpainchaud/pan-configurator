@@ -45,9 +45,8 @@ class AddressGroup
 	/**
 	* Constructor for AddressGroup. There is little chance that you will ever need that. Look at AddressStore if you want to create an AddressGroup
 	* @param string $name
-     * @param PANConf|PanoramaConf|VirtualSystem|DeviceGroup $owner
+	 * @param AddressStore|null $owner
      * @param bool $fromTemplateXml
-	* @param AddressStore|null $owner
 	*
 	*/
 	function AddressGroup($name,$owner, $fromTemplateXml = false)
