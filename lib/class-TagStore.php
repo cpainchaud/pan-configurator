@@ -71,8 +71,6 @@ class TagStore extends ObjStore
      */
     public function addTag( Tag $Obj, $rewriteXML = true )
     {
-        $fasthashcomp=null;
-
         $ret = $this->add($Obj);
         if( $ret && $rewriteXML )
         {
