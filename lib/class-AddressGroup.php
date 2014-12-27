@@ -469,11 +469,11 @@ class AddressGroup
 		return $ret;
 	}
 
-    /**
-     * @param Address|AddressGroup
-     * @return bool
-     */
-    public function hasObjectRecursive( $object, $anyIsAcceptable=false)
+	/**
+	 * @param Address|AddressGroup $object
+	 * @return bool
+	 */
+    public function hasObjectRecursive($object)
     {
         if( $object === null )
             derr('cannot work with null objects');
