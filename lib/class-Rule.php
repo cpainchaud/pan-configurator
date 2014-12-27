@@ -26,7 +26,7 @@ class Rule
 	
 	protected $name = 'temporaryname';
 	protected $disabled = false;
-	protected $description;
+	protected $description = '';
 	
 	/**
 	* @var ZoneRuleContainer
@@ -478,10 +478,44 @@ class Rule
 		else
 			return $this->API_setDisabled(true);
 	}
-	
-	public function setDescription($newdesc)
+
+
+	/**
+	 * @param string $newDescription
+	 * @return bool true if value was changed
+	 */
+	public function API_setDescription($newDescription)
 	{
-		$this->description = $newdesc;
+		$ret = $this->setDescription($newDescription);
+		if( $ret )
+		{
+			$xpath = $this->getXPath().'/description';
+			$con = findConnectorOrDie($this);
+
+			if( strlen($this->description) < 1 )
+				$con->sendDeleteRequest($xpath);
+			else
+				$con->sendSetRequest($xpath, $this->description);
+
+		}
+
+		return $ret;
+	}
+
+
+	/**
+	 * @param string $newDescription
+	 * @return bool true if value was changed
+	 */
+	public function setDescription($newDescription)
+	{
+		if( $newDescription === null )
+			$newDescription = '';
+
+		if( $this->description == $newDescription )
+			return false;
+
+		$this->description = $newDescription;
 
         if( PH::$UseDomXML )
         {
@@ -505,7 +539,7 @@ class Rule
 					DH::setDomNodeText($this->descroot, $this->description);
 				}
             }
-            return;
+            return true;
         }
 
 
@@ -524,8 +558,10 @@ class Rule
                 $xml['children'][] = &$this->descroot;
             }
             $this->descroot['name'] = 'description';
-			$this->descroot['content'] = $newdesc;
+			$this->descroot['content'] = $newDescription;
         }
+
+		return true;
 	}
 
     public function &getXPath()
