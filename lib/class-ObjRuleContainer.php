@@ -103,7 +103,6 @@ class ObjRuleContainer
         }
 
         $this->fasthashcomp = md5($fasthashcomp,true);
-        unset($fasthashcomp);
 
     }
 
