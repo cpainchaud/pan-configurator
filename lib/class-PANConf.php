@@ -48,6 +48,8 @@ class PANConf
 	public $localhostlocaldomain;
 	public $vsyssroot;
 
+	public $name = '';
+
     /**
      * @var AddressStore
      */
@@ -510,5 +512,64 @@ class PANConf
     {
         return $this->virtualSystems;
     }
+
+
+	public function display_statistics()
+	{
+
+		$numSecRules = 0;
+		$numNatRules = 0;
+		$numDecryptRules = 0;
+
+
+		$gnservices = $this->serviceStore->countServices();
+		$gnserviceGs = $this->serviceStore->countServiceGroups();
+		$gnTmpServices = $this->serviceStore->countTmpServices();
+
+		$gnaddresss = $this->addressStore->countAddresses();
+		$gnaddressGs = $this->addressStore->countAddressGroups();
+		$gnTmpAddresses = $this->addressStore->countTmpAddresses();
+
+
+		foreach($this->virtualSystems as $vsys )
+		{
+
+			$numSecRules += $vsys->securityRules->count();
+			$numNatRules += $vsys->natRules->count();
+			$numDecryptRules += $vsys->decryptionRules->count();
+
+			$gnservices += $vsys->serviceStore->countServices();
+			$gnserviceGs += $vsys->serviceStore->countServiceGroups();
+			$gnTmpServices += $vsys->serviceStore->countTmpServices();
+
+			$gnaddresss += $vsys->addressStore->countAddresses();
+			$gnaddressGs += $vsys->addressStore->countAddressGroups();
+			$gnTmpAddresses += $vsys->addressStore->countTmpAddresses();
+
+		}
+
+		print "Statistics for PANConf '".$this->name."'\n";
+		print "- ".$numSecRules." Security Rules\n";
+
+		print "- ".$numNatRules." Nat Rules\n";
+
+		print "- ".$numDecryptRules." Deryption Rules\n";
+
+		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects\n";
+
+		print "- ".$this->addressStore->countAddressGroups()." (".$gnaddressGs.") address groups\n";
+
+		print "- ".$this->serviceStore->countServices()." (".$gnservices.") service objects\n";
+
+		print "- ".$this->serviceStore->countServiceGroups()." (".$gnserviceGs.") service groups\n";
+
+		print "- ".$this->addressStore->countTmpAddresses()." (".$gnTmpAddresses.") temporary address objects\n";
+
+		print "- ".$this->serviceStore->countTmpServices()." (".$gnTmpServices.") temporary service objects\n";
+
+		print "- ".$this->zoneStore->count()." zones\n";
+		print "- ".$this->tagStore->count()." tags\n";
+	}
+
 }
 
