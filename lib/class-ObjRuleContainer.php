@@ -108,7 +108,9 @@ class ObjRuleContainer
 
     public function getFastHashComp()
     {
-        $this->generateFastHashComp( );
+        if( !isset($this->fasthashcomp) || $this->fasthashcomp === null )
+            $this->generateFastHashComp();
+        
         return $this->fasthashcomp;
     }
 
