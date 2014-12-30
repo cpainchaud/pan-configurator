@@ -603,6 +603,30 @@ class ServiceRuleContainer extends ObjRuleContainer
 
     }
 
+    public function generateFastHashComp($force=false )
+    {
+        if( !is_null($this->fasthashcomp) && !$force )
+            return;
+
+        $class = get_class($this);
+        $fasthashcomp = $class;
+
+        $tmpa = $this->o;
+
+        usort($tmpa, "__CmpObjName");
+
+        foreach( $tmpa as $o )
+        {
+            $fasthashcomp .= '.*/'.$o->name();
+        }
+
+        if( $this->appDef )
+            $fasthashcomp .= '.app-default';
+
+        $this->fasthashcomp = md5($fasthashcomp,true);
+
+    }
+
 }
 
 

@@ -91,12 +91,7 @@ class ObjRuleContainer
             return;
 
         $class = get_class($this);
-        if( $class == 'AppStore' )
-        {
-            $fasthashcomp = $class;
-        }
-        else
-            $fasthashcomp = 'ObjStore';
+        $fasthashcomp = $class;
 
         $tmpa = $this->o;
 
@@ -233,7 +228,7 @@ class ObjRuleContainer
     {
         if( !in_array($Obj,$this->o,true) )
         {
-            $fasthashcomp = null;
+            $this->fasthashcomp = null;
 
             $this->o[] = $Obj;
 
@@ -247,7 +242,7 @@ class ObjRuleContainer
 
     protected function removeAll()
     {
-        $fasthashcomp = null;
+        $this->fasthashcomp = null;
 
         foreach( $this->o as $o)
         {
@@ -260,7 +255,7 @@ class ObjRuleContainer
 
     protected function remove($Obj)
     {
-        $fasthashcomp = null;
+        $this->fasthashcomp = null;
 
         $pos = array_search($Obj,$this->o,true);
         if( $pos !== FALSE )
