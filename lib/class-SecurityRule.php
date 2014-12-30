@@ -46,7 +46,7 @@ class SecurityRule extends Rule
 	protected $secprofprofiles = Array();
 
     /**
-     * @var AppStore
+     * @var AppRuleContainer
      */
     public $apps = null;
 
