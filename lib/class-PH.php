@@ -20,7 +20,7 @@
 class PH
 {
 
-    public static $UseDomXML = false;
+    public static $UseDomXML = true;
 
     /**
      * @var null|mixed[]
@@ -35,15 +35,7 @@ class PH
         self::$UseDomXML = true;
         print "\n\nWARNING, Alternative Xml Lib (DOM XML) support is experimental, use at your own risk\n\n";
     }
-
-
-    /**
-     * @param bool $yes
-     */
-    public static function enableAlternativeXmlLib($yes)
-    {
-
-    }
+    
 
     public static function processCliArgs()
     {

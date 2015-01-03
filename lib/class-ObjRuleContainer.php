@@ -110,7 +110,7 @@ class ObjRuleContainer
     {
         if( !isset($this->fasthashcomp) || $this->fasthashcomp === null )
             $this->generateFastHashComp();
-        
+
         return $this->fasthashcomp;
     }
 
