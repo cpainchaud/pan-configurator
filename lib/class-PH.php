@@ -33,9 +33,17 @@ class PH
     static public function enableDomXMLSupport()
     {
         self::$UseDomXML = true;
-        print "\n\nWARNING, Alternative Xml Lib (DOM XML) support is experimental, use at your own risk\n\n";
     }
-    
+
+    /**
+     * disable DOM XML to switch back to old library (but can trigger unpredictable errors)
+     */
+    static public function disableDomXMLSupport()
+    {
+        self::$UseDomXML = false;
+        print "\n\nWARNING, disabling DOM XML support can trigger unpredictable errors\n\n";
+    }
+
 
     public static function processCliArgs()
     {
