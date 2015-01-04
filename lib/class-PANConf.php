@@ -378,6 +378,7 @@ class PANConf
 			//print "VSYS '$lvname' found\n";
 			
 			$lvsys = new VirtualSystem($this);
+
 			if( isset($this->panorama) )
 			{
 				$dg = $this->panorama->findApplicableDGForVsys($this->serial , $lvname);

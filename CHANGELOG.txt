@@ -5,6 +5,7 @@ version 1.2.0
 * switch to DOM XML lib for better and faster memory management
 * rule-edit new filter : 'services has'
 * rule->API_setDescription() implemented
+* skeleton for new classes : EthernetInterface and EthernetIfStore
 
 
 version 1.1.5
