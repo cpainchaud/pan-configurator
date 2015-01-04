@@ -26,11 +26,21 @@ class EthernetIfStore extends ObjStore
     public $owner;
 
     /**
+     * @var null|DOMNode
+     */
+    public $xmlroot = null;
+
+    /**
      * @param PANConf $owner
      */
     function EthernetIfStore($owner)
     {
         $this->owner = $owner;
+    }
+
+    function load_from_domxml( DOMElement $xml)
+    {
+        $this->xmlroot = $xml;
     }
 
 }

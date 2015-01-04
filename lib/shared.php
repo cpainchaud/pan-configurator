@@ -105,6 +105,7 @@ require_once dirname(__FILE__).'/'."class-PanoramaConf.php";
 require_once dirname(__FILE__).'/'."class-DeviceGroup.php";
 require_once dirname(__FILE__).'/interface-classes/'."class-EthernetInterface.php";
 require_once dirname(__FILE__).'/interface-classes/'."class-EthernetIfStore.php";
+require_once dirname(__FILE__).'/interface-classes/'."class-NetworkPropertiesContainer.php";
 
 
 function & array_diff_no_cast(&$ar1, &$ar2)
