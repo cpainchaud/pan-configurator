@@ -53,14 +53,14 @@ class Tag
             else
             {
                 $doc = new DOMDocument();
-                if( $this->owner->owner->version < 60 )
+                if( $owner->owner->version < 60 )
                     derr('tag stores were introduced in v6.0');
                 else
                     $doc->loadXML(self::$templatexml_v6);
 
                 $node = DH::findFirstElement('entry',$doc);
 
-                $rootDoc = $this->owner->xmlroot->ownerDocument;
+                $rootDoc = $owner->xmlroot->ownerDocument;
 
                 $this->xmlroot = $rootDoc->importNode($node, true);
                 $this->load_from_domxml($this->xmlroot);
