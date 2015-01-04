@@ -77,7 +77,7 @@ $mailServerRule->setName('Incoming SMTP');
 $vsys1->securityRules->moveRuleBefore($mailServerRule,'WebFarm access');
 
 // change action to deny
-$vsys1->securityRules->find('secrule5')->setAction('deny');
+$vsys1->securityRules->find('WebFarm access')->setAction('deny');
 
 // remove DNAT from a rule
 $vsys1->natRules->find('rule7 - dnat with port')->setNoDNAT();
