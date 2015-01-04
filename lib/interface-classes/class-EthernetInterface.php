@@ -27,16 +27,19 @@ class EthernetInterface
     public $xmlroot = null;
 
     /**
-     * @var EthernetInterfaceStore
+     * @var EthernetIfStore
      */
     public $owner;
 
 
+    /**
+     * @var string
+     */
     public $type = 'tmp';
 
     /**
      * @param string $name
-     * @param EthernetInterfaceStore $owner
+     * @param EthernetIfStore $owner
      */
     function EthernetInterface($name, $owner)
     {

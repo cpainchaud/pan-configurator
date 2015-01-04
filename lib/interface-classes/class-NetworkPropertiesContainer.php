@@ -28,7 +28,7 @@ class NetworkPropertiesContainer
     function NetworkPropertiesContainer(PANConf $owner)
     {
         $this->owner = $owner;
-        $this->ethernetIfStore = new EthernetIfStore($owner);
+        $this->ethernetIfStore = new EthernetIfStore('EthernetIfaces', $owner);
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
     }
 

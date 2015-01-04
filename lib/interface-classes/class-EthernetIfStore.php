@@ -33,9 +33,10 @@ class EthernetIfStore extends ObjStore
     /**
      * @param PANConf $owner
      */
-    function EthernetIfStore($owner)
+    function EthernetIfStore($name, $owner)
     {
         $this->owner = $owner;
+        $this->name = $name;
     }
 
     function load_from_domxml( DOMElement $xml)
