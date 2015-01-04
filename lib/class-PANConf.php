@@ -72,10 +72,10 @@ class PANConf
 	public $connector = null;
 
 
-    /**
-     * @var null|IPsecTunnelStore
-     */
-    public $ipsecTunnels = null;
+	/**
+	 * @var NetworkPropertiesContainer
+	 */
+	public $network;
 
 
 	public function name()
@@ -106,8 +106,6 @@ class PANConf
 		$this->appStore->setCentralStoreRole(true);
 		$this->appStore->load_from_predefinedfile();
 
-        $this->ipsecTunnels = new IPsecTunnelStore('ipsecTunnels', $this);
-		
 		$this->serviceStore = new ServiceStore($this,true);
 		$this->serviceStore->name = 'services';
 		if( !is_null($withPanorama) )
@@ -118,6 +116,8 @@ class PANConf
 		$this->addressStore->name = 'addresses';
 		if( !is_null($withPanorama) )
 			$this->addressStore->panoramaShared = $this->panorama->addressStore;
+
+		$this->network = new NetworkPropertiesContainer($this);
 
 		
 	}
@@ -179,16 +179,6 @@ class PANConf
 
 		$this->vsyssroot = DH::findFirstElementOrDie('vsys', $this->localhostroot);
 
-        $this->networkroot = DH::findFirstElementOrCreate('network', $this->localhostroot );
-
-
-        //
-        // Extract ipsec tunnels
-        //
-        $tmp = DH::findFirstElementOrCreate('tunnel', $this->networkroot);
-        $tmp = DH::findFirstElementOrCreate('ipsec', $tmp);
-        $this->ipsecTunnels->load_from_domxml($tmp);
-        // End of ipsec tunnels
 
 
 
@@ -231,6 +221,12 @@ class PANConf
 		$this->serviceStore->load_servicegroups_from_domxml($tmp);
 		// End of address groups extraction
 
+		//
+		// Extract network related configs
+		//
+		$tmp = DH::findFirstElementOrCreate('network', $this->localhostroot );
+		$this->network->load_from_domxml($tmp);
+		//
 		
 		
 		// Now listing and extracting all VirtualSystem configurations
