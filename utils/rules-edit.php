@@ -279,7 +279,7 @@ $supportedActions['logstart-enable'] = Array(
     'args' => false
 );
 $supportedActions['logstart-disable'] = Array(
-    'name' => 'logStart-enable',
+    'name' => 'logStart-disable',
     'file' => "\$rule->setLogStart(false);",
     'api' => "\$rule->API_setLogStart(false);",
     'args' => false
@@ -292,10 +292,16 @@ $supportedActions['logend-enable'] = Array(
 );
 
 $supportedActions['logend-disable'] = Array(
-    'name' => 'logEnd-enable',
+    'name' => 'logEnd-disable',
     'file' => "\$rule->setLogEnd(false);",
     'api' => "\$rule->API_setLogEnd(false);",
     'args' => false
+);
+$supportedActions['logsetting-set'] = Array(
+    'name' => 'logSetting-set',
+    'file' => "\$rule->setLogSetting('!value!');",
+    'api' => "\$rule->API_setLogSetting('!value!');",
+    'args' => true
 );
 
 
