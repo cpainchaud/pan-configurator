@@ -54,12 +54,14 @@ class Rule
 	* @var ServiceRuleContainer
 	*/
 	public $services;
-	
-	
+
+	/**
+	 * @var null|RuleStore
+	 */
 	public $owner = null;
 
     /**
-     * @var null|string[]|DOMNode
+     * @var null|string[]|DOMElement
      */
 	public $xmlroot = null;
 
@@ -104,7 +106,7 @@ class Rule
 	
 	/**
 	* Returns description for this rule
-	* @var string
+	* @return string
 	*/
 	public function description()
 	{
@@ -595,7 +597,7 @@ class Rule
 				$this->name = $name;
 				$this->owner->ruleWasRenamed($this,$oldname);
                 if( PH::$UseDomXML === TRUE )
-                    $this->xmlroot->getAttributeNode('name')->value = $name;
+                    $this->xmlroot->setAttribute('name', $name);
 				else
                     $this->xmlroot['attributes']['name'] = $name;
 			}
