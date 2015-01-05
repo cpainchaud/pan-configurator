@@ -87,8 +87,9 @@ class IPsecTunnel
 
                     $local = DH::findFirstElementOrDie('local', $proxyNode);
                     $remote = DH::findFirstElementOrDie('remote', $proxyNode);
+                    $proxyName = DH::findAttribute('name', $proxyNode);
 
-                    $record = Array('local' => $local->nodeValue, 'remote' => $remote->nodeValue, 'xmlroot' => $proxyNode );
+                    $record = Array('name' => $proxyName ,'local' => $local->nodeValue, 'remote' => $remote->nodeValue, 'xmlroot' => $proxyNode );
 
                     $this->proxys[] = &$record;
                     unset($record);
@@ -98,5 +99,117 @@ class IPsecTunnel
         }
     }
 
+    /**
+     * line structure: Array('local' => $local->nodeValue, 'remote' => $remote->nodeValue, 'xmlroot' => $proxyNode );
+     * @return string[][]
+     */
+    public function proxyIdList()
+    {
+        $this->proxys;
+    }
+
+    /**
+     * @param string $local
+     * @param string $remote
+     * @return string[]|null
+     */
+    public function searchProxyIdLine( $local, $remote)
+    {
+        foreach($this->proxys as &$proxy )
+        {
+            if( $proxy['local'] == $local && $proxy['remote'] == $remote )
+                return $proxy;
+        }
+
+        return null;
+    }
+
+    /**
+     * @param string $local
+     * @param string $remote
+     * @return bool
+     */
+    public function hasProxyId( $local, $remote)
+    {
+        $ret = $this->searchProxyIdLine($local, $remote);
+
+        if( $ret === null )
+            return false;
+
+        return true;
+    }
+
+    /**
+     * @param string $baseName
+     * @return string
+     */
+    public function findAvailableProxyIdName($baseName)
+    {
+        for($i=0; $i<10000; $i++)
+        {
+            $newName = $baseName.$i;
+
+            foreach($this->proxys as &$proxy )
+            {
+                if( $proxy['name'] == $newName )
+                    break;
+            }
+            return $newName;
+        }
+
+        derr("this should never happen");
+    }
+
+
+    /**
+     * @param string $local
+     * @param string $remote
+     * @return bool
+     */
+    function removeProxyId($local, $remote)
+    {
+        foreach($this->proxys as $index => &$proxy )
+        {
+            if( $proxy['local'] == $local && $proxy['remote'] == $remote )
+            {
+                unset($this->proxys[$index]);
+                $this->proxyIdRoot->removeChild($proxy['xmlroot']);
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * @param string $local
+     * @param string $remote
+     * @param null|string $name
+     * @return bool
+     */
+    public function addProxyId( $local, $remote, $name=null)
+    {
+        if( $name === null )
+            $name = $this->findAvailableProxyIdName('proxy-');
+
+        foreach($this->proxys as &$proxy )
+        {
+            if( $proxy['local'] == $local && $proxy['remote'] == $remote )
+                return false;
+
+        }
+
+        $newRoot = DH::createElement($this->proxyIdRoot, 'entry');
+        $newRoot->setAttribute('name', $name);
+
+        DH::createElement($newRoot, 'local', $local);
+        DH::createElement($newRoot, 'remote', $remote);
+
+        $newArray = Array('name' => $name, 'local' => $local, 'remote' => $remote, 'xmlroot' => $newRoot);
+
+        $this->proxys[] = &$newArray;
+
+        return true;
+    }
 
 }

@@ -80,7 +80,7 @@ class EthernetInterface
             elseif( $nodeName == 'comment' )
             {
                 $this->description = $node->textContent;
-                print "Desc found: {$this->description}\n";
+                //print "Desc found: {$this->description}\n";
             }
 
         }

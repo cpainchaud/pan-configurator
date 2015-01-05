@@ -3,9 +3,10 @@ CHANGELOG
 
 version 1.2.0
 * switch to DOM XML lib for better and faster memory management
+* skeleton for new classes : EthernetInterface, EthernetIfStore, NetworkPropertiesContainer
 * rule-edit new filter : 'services has'
 * rule->API_setDescription() implemented
-* skeleton for new classes : EthernetInterface, EthernetIfStore, NetworkPropertiesContainer
+* new function implemented for IpsecTunnels to help manipulate them : proxyIdList(), searchProxyIdLine($local,$remote), hasProxyId($local,$remote), findAvailableProxyIdName($baseName), removeProxyId($local,$remote), addProxyId($local,$remote,$name=null)
 
 
 version 1.1.5
