@@ -270,6 +270,37 @@ $supportedActions['service-set-appdefault'] = Array(
 
 
 //                                                   //
+//                Log based Actions       //
+//                                                   //
+$supportedActions['logstart-enable'] = Array(
+    'name' => 'logStart-enable',
+    'file' => "\$rule->setLogStart(true);",
+    'api' => "\$rule->API_setLogStart(true);",
+    'args' => false
+);
+$supportedActions['logstart-disable'] = Array(
+    'name' => 'logStart-enable',
+    'file' => "\$rule->setLogStart(false);",
+    'api' => "\$rule->API_setLogStart(false);",
+    'args' => false
+);
+$supportedActions['logend-enable'] = Array(
+    'name' => 'logEnd-enable',
+    'file' => "\$rule->setLogEnd(true);",
+    'api' => "\$rule->API_setLogEnd(true);",
+    'args' => false
+);
+
+$supportedActions['logend-disable'] = Array(
+    'name' => 'logEnd-enable',
+    'file' => "\$rule->setLogEnd(false);",
+    'api' => "\$rule->API_setLogEnd(false);",
+    'args' => false
+);
+
+
+
+//                                                   //
 //                Security profile Based Actions       //
 //                                                   //
 $supportedActions['setsecurityprofile'] = Array(
