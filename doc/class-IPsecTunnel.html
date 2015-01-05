@@ -7,7 +7,7 @@
 	<title>Class IPsecTunnel | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?2472150414"></script>
+	<script type="text/javascript" src="elementlist.js?4089374263"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -46,9 +46,12 @@
 				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
 				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
 				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
+				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li class="active"><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-NatRule.html">NatRule</a></li>
+				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
 				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
 				<li><a href="class-ObjStore.html">ObjStore</a></li>
 				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
@@ -267,6 +270,245 @@
 					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code></code><br>$xml</dd>
 				</dl></div>
 
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="proxyIdList" id="_proxyIdList">
+
+		<td class="attributes"><code>
+			 public 
+			string[][]
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_proxyIdList">#</a>
+		<code><b>proxyIdList</b>( )</code>
+
+		<div class="description short">
+			
+<p>line structure: Array('local' =&gt; $local-&gt;nodeValue, 'remote' =&gt;
+$remote-&gt;nodeValue, 'xmlroot' =&gt; $proxyNode );</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>line structure: Array('local' =&gt; $local-&gt;nodeValue, 'remote' =&gt;
+$remote-&gt;nodeValue, 'xmlroot' =&gt; $proxyNode );</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string[][]</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="searchProxyIdLine" id="_searchProxyIdLine">
+
+		<td class="attributes"><code>
+			 public 
+			string[]|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_searchProxyIdLine">#</a>
+		<code><b>searchProxyIdLine</b>( <span>string <var>$local</var></span>, <span>string <var>$remote</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$local</var></dt>
+					<dd><code>string</code><br>$local</dd>
+					<dt><var>$remote</var></dt>
+					<dd><code>string</code><br>$remote</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string[]|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="hasProxyId" id="_hasProxyId">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_hasProxyId">#</a>
+		<code><b>hasProxyId</b>( <span>string <var>$local</var></span>, <span>string <var>$remote</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$local</var></dt>
+					<dd><code>string</code><br>$local</dd>
+					<dt><var>$remote</var></dt>
+					<dd><code>string</code><br>$remote</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findAvailableProxyIdName" id="_findAvailableProxyIdName">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findAvailableProxyIdName">#</a>
+		<code><b>findAvailableProxyIdName</b>( <span>string <var>$baseName</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$baseName</var></dt>
+					<dd><code>string</code><br>$baseName</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="removeProxyId" id="_removeProxyId">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_removeProxyId">#</a>
+		<code><b>removeProxyId</b>( <span>string <var>$local</var></span>, <span>string <var>$remote</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$local</var></dt>
+					<dd><code>string</code><br>$local</dd>
+					<dt><var>$remote</var></dt>
+					<dd><code>string</code><br>$remote</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addProxyId" id="_addProxyId">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addProxyId">#</a>
+		<code><b>addProxyId</b>( <span>string <var>$local</var></span>, <span>string <var>$remote</var></span>, <span>null|string <var>$name</var> = <span class="php-keyword1">null</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$local</var></dt>
+					<dd><code>string</code><br>$local</dd>
+					<dt><var>$remote</var></dt>
+					<dd><code>string</code><br>$remote</dd>
+					<dt><var>$name</var></dt>
+					<dd><code>null|string</code><br>$name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
 
 
