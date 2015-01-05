@@ -26,7 +26,14 @@ class SecurityRule extends Rule
 
 	protected $logstart = false;
 	protected $logend = true;
+
+	/**
+	 * @var null|DOMElement
+	 */
 	protected $logstartroot;
+	/**
+	 * @var null|DOMElement
+	 */
 	protected $logendroot;
 	
 	protected $negatedSource = false;
@@ -717,7 +724,12 @@ public function load_from_domxml($xml)
 	public function setLogStart($yes)
 	{
 		if( $this->logstart != $yes )
-			$this->logstartroot['content'] = booYesNo($yes);
+		{
+			if( PH::$UseDomXML )
+				$this->logstartroot->textContent =  boolYesNo($yes);
+			else
+				$this->logstartroot['content'] = boolYesNo($yes);
+		}
 		
 		$this->logstart = $yes;
 	}
@@ -738,7 +750,12 @@ public function load_from_domxml($xml)
 	public function setLogEnd($yes)
 	{
 		if( $this->logend != $yes )
-			$this->logendroot['content'] = booYesNo($yes);
+		{
+			if( PH::$UseDomXML )
+				$this->logendroot->textContent =  boolYesNo($yes);
+			else
+				$this->logendroot['content'] = boolYesNo($yes);
+		}
 		
 		$this->logend = $yes;
 	}
