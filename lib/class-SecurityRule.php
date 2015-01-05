@@ -21,7 +21,11 @@
 class SecurityRule extends Rule
 {
 
+	/**
+	 * @var DOMElement
+	 */
 	protected $actionroot;
+
 	protected $action ='deny';
 
 	protected $logstart = false;
