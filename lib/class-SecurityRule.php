@@ -735,6 +735,7 @@ public function load_from_domxml($xml)
 	/**
 	* enabled or disabled logging at start
 	* @param bool $yes
+	 * @return bool
 	*/
 	public function setLogStart($yes)
 	{
@@ -744,9 +745,14 @@ public function load_from_domxml($xml)
 				$this->logstartroot->textContent =  boolYesNo($yes);
 			else
 				$this->logstartroot['content'] = boolYesNo($yes);
+
+			$this->logstart = $yes;
+
+			return true;
 		}
-		
-		$this->logstart = $yes;
+
+		return false;
+
 	}
 	
 	/**
