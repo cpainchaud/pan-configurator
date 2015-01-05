@@ -445,13 +445,13 @@ public function load_from_domxml($xml)
 		
 		//print "Now trying to extract associated security profile associated to '".$this->name."'\n";
 		
-		$grouproot = DH::findFirstElement('group', $xml);
+		$groupRoot = DH::findFirstElement('group', $xml);
 		$profilesRoot = DH::findFirstElement('profiles', $xml);
 		
-		if( $grouproot !== FALSE )
+		if( $groupRoot !== FALSE )
 		{
 			//print "Found SecProf <group> tag\n";
-			$firstE = DH::firstChildElement($grouproot);
+			$firstE = DH::firstChildElement($groupRoot);
 
 			if( $firstE !== FALSE )
 			{
