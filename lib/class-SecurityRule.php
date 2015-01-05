@@ -41,7 +41,10 @@ class SecurityRule extends Rule
 	protected $negatedSourceRoot = false;
 	protected $negatedDestinationRoot = false;
 	protected $logSetting = false;
-	
+
+	/**
+	 * @var null|DOMElement
+	 */
 	protected $logsettingroot = null;
 	
 	protected $secproftype = 'none';
@@ -139,6 +142,18 @@ public function load_from_domxml($xml)
 		
 		
 		$this->extract_action_from_domxml();
+
+		//
+		// Begin <log-setting> extraction
+		//
+		$tmp = $this->logstartroot = DH::findFirstElement('log-setting', $xml);
+		if( $tmp === false )
+			$this->logSetting = false;
+		else
+		{
+			$this->logSetting = $tmp->textContent;
+		}
+		// End of <log-setting>
 		
 		
 		//
@@ -810,16 +825,37 @@ public function load_from_domxml($xml)
 	
 	public function setLogSetting($newLogSetting)
 	{
-		if( strlen($newLogSetting) < 1 )
+		if( $newLogSetting === null || strlen($newLogSetting) < 1 )
 		{
 			$this->logSetting = false;
-			$this->logsettingroot['name'] = 'ignme';
+			if( PH::$UseDomXML )
+			{
+				if( $this->logsettingroot !== null )
+					$this->xmlroot->removeChild($this->logsettingroot);
+			}
+			else
+			{
+				$this->logsettingroot['name'] = 'ignme';
+			}
 			return;
 		}
 
 		$this->logSetting = $newLogSetting;
-		$this->logsettingroot['content'] = $newLogSetting;
-		$this->logsettingroot['name'] = 'log-setting';
+
+		if( PH::$UseDomXML )
+		{
+			if( $this->logsettingroot === null )
+			{
+				$this->logsettingroot = DH::createElement($this->xmlroot, 'log-setting', $newLogSetting);
+			}
+			else
+				$this->logsettingroot->textContent = $newLogSetting;
+		}
+		else
+		{
+			$this->logsettingroot['content'] = $newLogSetting;
+			$this->logsettingroot['name'] = 'log-setting';
+		}
 	}
 	
 	
