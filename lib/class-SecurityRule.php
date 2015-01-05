@@ -38,8 +38,15 @@ class SecurityRule extends Rule
 	
 	protected $negatedSource = false;
 	protected $negatedDestination = false;
-	protected $negatedSourceRoot = false;
-	protected $negatedDestinationRoot = false;
+
+	/**
+	 * @var null|DOMElement
+	 */
+	protected $negatedSourceRoot = null;
+	/**
+	 * @var null|DOMElement
+	 */
+	protected $negatedDestinationRoot = null;
 	protected $logSetting = false;
 
 	/**
@@ -888,13 +895,28 @@ public function load_from_domxml($xml)
 	{
 		return $this->negatedSource;
 	}
-	
+
+	/**
+	 * @param bool $yes
+	 * @return bool
+	 */
 	public function setSourceIsNegated($yes)
 	{
 		if( $this->negatedSource != $yes )
-			$this->negatedSourceRoot['content'] = booYesNo($yes);
+		{
+			if( PH::$UseDomXML )
+			{
+				$this->negatedSourceRoot->textContent = boolYesNo($yes);
+			}
+			else
+				$this->negatedSourceRoot['content'] = boolYesNo($yes);
+
+			$this->negatedSource = $yes;
+
+			return true;
+		}
 		
-		$this->negatedSource = $yes;
+		return false;
 	}
 	
 	
@@ -902,13 +924,28 @@ public function load_from_domxml($xml)
 	{
 		return $this->negatedDestination;
 	}
-	
+
+	/**
+	 * @param bool $yes
+	 * @return bool
+	 */
 	public function setDestinationIsNegated($yes)
 	{
 		if( $this->negatedDestination != $yes )
-			$this->negatedDestinationRoot['content'] = boolYesNo($yes);
-		
-		$this->negatedDestination = $yes;
+		{
+			if( PH::$UseDomXML )
+			{
+				$this->negatedDestinationRoot->textContent = boolYesNo($yes);
+			}
+			else
+				$this->negatedDestinationRoot['content'] = boolYesNo($yes);
+
+			$this->negatedDestination = $yes;
+
+			return true;
+		}
+
+		return false;
 	}
 	
 	
