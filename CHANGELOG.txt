@@ -7,6 +7,7 @@ version 1.2.0
 * rule-edit new filter : 'services has'
 * rule-edit new actions : logEnd-enable, logEnd-disable, logStart-enable, logStart-disable
 * rule->API_setDescription() implemented
+* SecurityRule->API_setLogSetting() implemented
 * new function implemented for IpsecTunnels to help manipulate them : proxyIdList(), searchProxyIdLine($local,$remote), hasProxyId($local,$remote), findAvailableProxyIdName($baseName), removeProxyId($local,$remote), addProxyId($local,$remote,$name=null)
 
 

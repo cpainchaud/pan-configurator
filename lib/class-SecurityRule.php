@@ -828,7 +828,10 @@ public function load_from_domxml($xml)
 	{
 		return $this->logSetting;
 	}
-	
+
+	/**
+	 * @param string $newLogSetting
+	 */
 	public function setLogSetting($newLogSetting)
 	{
 		if( $newLogSetting === null || strlen($newLogSetting) < 1 )
@@ -861,6 +864,22 @@ public function load_from_domxml($xml)
 		{
 			$this->logsettingroot['content'] = $newLogSetting;
 			$this->logsettingroot['name'] = 'log-setting';
+		}
+	}
+
+	public function API_setLogSetting($newLogSetting)
+	{
+		$this->setLogSetting($newLogSetting);
+
+		$con = findConnectorOrDie($this);
+
+		if( $this->logSetting === false )
+		{
+			$con->sendDeleteRequest($this->getXPath().'/log-setting');
+		}
+		else
+		{
+			$con->sendSetRequest($this->getXPath(), "<log-setting>$newLogSetting</log-setting>");
 		}
 	}
 	
