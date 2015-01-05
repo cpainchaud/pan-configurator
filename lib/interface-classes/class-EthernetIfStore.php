@@ -26,7 +26,7 @@ class EthernetIfStore extends ObjStore
     public $owner;
 
     /**
-     * @var null|DOMNode
+     * @var DOMNode|null
      */
     public $xmlroot = null;
 
@@ -42,6 +42,17 @@ class EthernetIfStore extends ObjStore
     function load_from_domxml( DOMElement $xml)
     {
         $this->xmlroot = $xml;
+
+        foreach( $xml->childNodes as $node )
+        {
+            if( $node->nodeType != 1 )
+                continue;
+
+            $new = new EthernetInterface('', $this);
+            $new->load_from_domxml($node);
+
+            $this->o[] = $new;
+        }
     }
 
 }

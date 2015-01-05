@@ -527,6 +527,8 @@ class PANConf
 		$gnaddressGs = $this->addressStore->countAddressGroups();
 		$gnTmpAddresses = $this->addressStore->countTmpAddresses();
 
+		$numInterfaces = $this->network->ipsecTunnelStore->count() + $this->network->ethernetIfStore->count();
+
 
 		foreach($this->virtualSystems as $vsys )
 		{
@@ -566,6 +568,7 @@ class PANConf
 
 		print "- ".$this->zoneStore->count()." zones\n";
 		print "- ".$this->tagStore->count()." tags\n";
+		print "- $numInterfaces interfaces\n";
 	}
 
 }

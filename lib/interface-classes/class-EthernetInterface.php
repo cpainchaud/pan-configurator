@@ -38,6 +38,14 @@ class EthernetInterface
     public $type = 'tmp';
 
     /**
+     * @var string
+     */
+    public $description;
+
+
+    static public $supportedTypes = Array( 'layer3', 'layer2', 'vwire', 'tap' );
+
+    /**
      * @param string $name
      * @param EthernetIfStore $owner
      */
@@ -45,6 +53,43 @@ class EthernetInterface
     {
         $this->name = $name;
         $this->owner = $owner;
+    }
+
+    /**
+     * @param DOMElement $xml
+     */
+    function load_from_domxml($xml)
+    {
+        $this->xmlroot = $xml;
+
+        $this->name = DH::findAttribute('name', $xml);
+        if( $this->name === FALSE )
+            derr("address name not found\n");
+
+        foreach( $xml->childNodes as $node )
+        {
+            if( $node->nodeType != 1 )
+                continue;
+
+            $nodeName = $node->nodeName;
+
+            if( array_search($nodeName, self::$supportedTypes) !== false )
+            {
+                $this->type = $nodeName;
+            }
+            elseif( $nodeName == 'comment' )
+            {
+                $this->description = $node->textContent;
+                print "Desc found: {$this->description}\n";
+            }
+
+        }
+
+        if( $this->type == 'tmp' )
+        {
+            derr('unsupported ethernet interface type : not found');
+        }
+
     }
 
 
