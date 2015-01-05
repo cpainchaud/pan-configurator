@@ -690,21 +690,21 @@ public function load_from_domxml($xml)
 		return false;
 	}
 	
-	public function setAction($newaction)
+	public function setAction($newAction)
 	{
 		static $allowed = Array('allow', 'deny');
 		
-		$newaction = strtolower($newaction);
-		if( in_array($newaction, $allowed) )
+		$newAction = strtolower($newAction);
+		if( in_array($newAction, $allowed) )
 		{
-			$this->action = $newaction;
+			$this->action = $newAction;
 			if( PH::$UseDomXML === TRUE )
-				DH::setDomNodeText($this->actionroot, $newaction);
+				DH::setDomNodeText($this->actionroot, $newAction);
 			else
-				$this->actionroot['content'] = $newaction;
+				$this->actionroot['content'] = $newAction;
 		}
 		
-		else derr($this->toString()." : error : '$newaction' is not supported action type\n");
+		else derr($this->toString()." : error : '$newAction' is not supported action type\n");
 	}
 	
 	
