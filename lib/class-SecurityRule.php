@@ -744,8 +744,9 @@ public function load_from_domxml($xml)
 	}
 	
 	/**
-	* enabled or disabled logging at end
+	* enable or disabled logging at end
 	* @param bool $yes
+	 * @return bool
 	*/
 	public function setLogEnd($yes)
 	{
@@ -755,9 +756,47 @@ public function load_from_domxml($xml)
 				$this->logendroot->textContent =  boolYesNo($yes);
 			else
 				$this->logendroot['content'] = boolYesNo($yes);
+
+			$this->logend = $yes;
+
+			return true;
 		}
 		
-		$this->logend = $yes;
+		return false;
+	}
+
+	/**
+	 * enable or disabled logging at end
+	 * @param bool $yes
+	 * @return bool
+	 */
+	public function API_setLogEnd($yes)
+	{
+		if( !$this->setLogEnd($yes) )
+		{
+			return false;
+		}
+
+		$con = findConnectorOrDie($this);
+
+		$con->sendSetRequest($this->getXPath(), "<log-end>".boolYesNo($yes)."</log-end>");
+	}
+
+	/**
+	 * enable or disabled logging at end
+	 * @param bool $yes
+	 * @return bool
+	 */
+	public function API_setLogStart($yes)
+	{
+		if( !$this->setLogStart($yes) )
+		{
+			return false;
+		}
+
+		$con = findConnectorOrDie($this);
+
+		$con->sendSetRequest($this->getXPath(), "<log-start>".boolYesNo($yes)."</log-start>");
 	}
 	
 	/**
