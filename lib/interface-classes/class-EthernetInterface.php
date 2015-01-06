@@ -22,9 +22,14 @@ class EthernetInterface
     use ReferencableObject;
 
     /**
-     * @var null|DOMNode
+     * @var null|DOMElement
      */
     public $xmlroot = null;
+
+    /**
+     * @var null|DOMElement
+     */
+    private $typeRoot = null;
 
     /**
      * @var EthernetIfStore
@@ -41,6 +46,26 @@ class EthernetInterface
      * @var string
      */
     public $description;
+
+    /**
+     * @var bool
+     */
+    private $isSubInterface = false;
+
+    /**
+     * @var EthernetInterface[]
+     */
+    private $subInterfaces = Array();
+
+    /**
+     * @var null|EthernetInterface
+     */
+    private $parentInterface = null;
+
+    /**
+     * @var int
+     */
+    private $tag;
 
 
     static public $supportedTypes = Array( 'layer3', 'layer2', 'vwire', 'tap' );
@@ -76,13 +101,13 @@ class EthernetInterface
             if( array_search($nodeName, self::$supportedTypes) !== false )
             {
                 $this->type = $nodeName;
+                $this->typeRoot = $node;
             }
             elseif( $nodeName == 'comment' )
             {
                 $this->description = $node->textContent;
                 //print "Desc found: {$this->description}\n";
             }
-
         }
 
         if( $this->type == 'tmp' )
@@ -90,7 +115,104 @@ class EthernetInterface
             derr('unsupported ethernet interface type : not found');
         }
 
+        foreach( $this->typeRoot->childNodes as $node )
+        {
+            if( $node->nodeType != 1 )
+                continue;
+
+            // sub interfaces here !
+            if( $node->nodeName == 'units' )
+            {
+                foreach( $node->childNodes as $unitsNode )
+                {
+                    if( $node->nodeType != 1 )
+                        continue;
+
+                    $newInterface = new EthernetInterface('tmp', null );
+                    $newInterface->isSubInterface = true;
+                    $newInterface->parentInterface = $this;
+                    $newInterface->type = $this->type;
+                    $newInterface->load_sub_from_domxml($unitsNode);
+
+                    $this->subInterfaces[] = $newInterface;
+
+                }
+            }
+        }
     }
 
+    /**
+     * @param DOMElement $xml
+     */
+    public function load_sub_from_domxml($xml)
+    {
+        $this->xmlroot = $xml;
+        $this->name = DH::findAttribute('name', $xml);
+        if( $this->name === FALSE )
+            derr("address name not found\n");
+
+        foreach( $xml->childNodes as $node )
+        {
+            if ($node->nodeType != 1)
+                continue;
+
+            $nodeName = $node->nodeName;
+
+            if( $nodeName == 'comment' )
+            {
+                $this->description = $node->textContent;
+                //print "Desc found: {$this->description}\n";
+            }
+            elseif( $nodeName == 'tag' )
+            {
+                $this->tag = $node->textContent;
+            }
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    public function isSubInterface()
+    {
+        return $this->isSubInterface;
+    }
+
+    /**
+     * @return string
+     */
+    public function type()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return int
+     */
+    public function tag()
+    {
+        return $this->tag;
+    }
+
+    /**
+     * @return int
+     */
+    public function subIfNumber()
+    {
+        if( !$this->isSubInterface )
+            derr('can be called in sub interfaces only');
+
+        $ar = explode('.', $this->name);
+
+        if( count($ar) != 2 )
+            derr('unsupported');
+
+        return $ar[1];
+    }
+
+    public function countSubInterfaces()
+    {
+        return count($this->subInterfaces);
+    }
 
 }

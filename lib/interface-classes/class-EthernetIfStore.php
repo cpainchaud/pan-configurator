@@ -16,7 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-
+/**
+ * Class EthernetIfStore
+ * @property EthernetInterface[] $o
+ */
 class EthernetIfStore extends ObjStore
 {
 
@@ -54,5 +57,19 @@ class EthernetIfStore extends ObjStore
             $this->o[] = $new;
         }
     }
+
+    function countSubInterfaces()
+    {
+        $count = 0;
+
+        foreach($this->o as $interface)
+        {
+            $count += $interface->countSubInterfaces();
+        }
+
+        return $count;
+    }
+
+
 
 }

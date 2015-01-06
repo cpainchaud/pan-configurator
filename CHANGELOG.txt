@@ -3,7 +3,7 @@ CHANGELOG
 
 version 1.2.0
 * switch to DOM XML lib for better and faster memory management
-* skeleton for new classes : EthernetInterface, EthernetIfStore, NetworkPropertiesContainer
+* skeleton for new classes : EthernetInterface, EthernetIfStore, NetworkPropertiesContainer to start supporting interface manipulation
 * rule-edit new filter : 'services has'
 * rule-edit new actions : logEnd-enable, logEnd-disable, logStart-enable, logStart-disable, logSettingSet
 * rule->API_setDescription() implemented
