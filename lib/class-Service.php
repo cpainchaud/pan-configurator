@@ -27,14 +27,29 @@ class Service
 	public $protocol = 'tcp';
 	public $dport = '';
 	public $sport = '';
-	
+
+	/**
+	 * @var null|DOMElement
+	 */
 	public $xmlroot = null;
+	/**
+	 * @var null|DOMElement
+	 */
 	public $protocolroot = null;
+	/**
+	 * @var null|DOMElement
+	 */
 	public $dportroot = null;
+	/**
+	 * @var null|DOMElement
+	 */
 	public $descroot = null;
 	
 	public $type = '';
-	
+
+	/**
+	 * @var ServiceStore
+	 */
 	public $owner=null;
 	
 	
