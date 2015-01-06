@@ -199,9 +199,9 @@ class PH
 
 foreach( $argv as $argIndex => &$arg )
 {
-    if( $arg == 'shadow-usedomxml')
+    if( $arg == 'shadow-disabledomxml')
     {
-        PH::enableDomXMLSupport();
+        PH::disableDomXMLSupport();
         unset($argv[$argIndex]);
         unset($argIndex);
         unset($arg);

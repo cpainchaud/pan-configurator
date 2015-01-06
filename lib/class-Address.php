@@ -190,15 +190,29 @@ class Address
 		return $this->description;
 	}
 
-	public function setValue( $newValue, $rewritexml = true )
+	public function setValue( $newValue, $rewriteXml = true )
 	{
-		if( $newValue === $this->value )
+		if( !is_string($newValue) )
+			derr('value can be text only');
+
+		if( $newValue == $this->value )
+			return false;
+
+		if( $this->isTmpAddr() )
 			return false;
 
 		$this->value = $newValue;
 
-		if( $rewritexml)
-			$this->rewriteXML();
+		if( $rewriteXml)
+		{
+			if( PH::$UseDomXML )
+			{
+				$valueRoot = DH::findFirstElementOrDie(self::$AddressTypes[$this->type], $this->xmlroot);
+				$valueRoot->nodeValue = $this->value;
+			}
+			else
+				$this->rewriteXML();
+		}
 
 		return true;
 	}
@@ -273,22 +287,34 @@ class Address
         if( $this->isTmpAddr() )
             return;
 
-        // TODO need DOMXML version
+        if( PH::$UseDomXML )
+		{
+			DH::clearDomNodeChilds($this->xmlroot);
 
-		$a = Array();
-		$a['name'] =  self::$AddressTypes[$this->type];
-		$a['content'] = $this->value;
+			$tmp = DH::createElement($this->xmlroot, self::$AddressTypes[$this->type], $this->value);
 
-		$b = Array();
-		$b['name'] = 'description';
-		$b['content'] = $this->description;
-		
-		$c = Array();
-		$c['name'] = 'entry';
-		$c['attributes'] = Array( 'name' => $this->name);
-		$c['children'] = Array( 0 => &$a, 1 => &$b );
+			if( $this->description !== null && strlen($this->description) > 0 )
+			{
+				DH::createElement($this->xmlroot, 'description', $this->description );
+			}
+		}
+		else
+		{
+			$a = Array();
+			$a['name'] =  self::$AddressTypes[$this->type];
+			$a['content'] = $this->value;
 
-		$this->xmlroot = $c;
+			$b = Array();
+			$b['name'] = 'description';
+			$b['content'] = $this->description;
+
+			$c = Array();
+			$c['name'] = 'entry';
+			$c['attributes'] = Array( 'name' => $this->name);
+			$c['children'] = Array( 0 => &$a, 1 => &$b );
+
+			$this->xmlroot = $c;
+		}
 	}
 	
 	/**

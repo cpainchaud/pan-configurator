@@ -212,7 +212,17 @@ class TagRuleContainer extends ObjRuleContainer
     {
         if( PH::$UseDomXML === TRUE )
         {
-            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
+            if( count($this->o) > 0 )
+            {
+                if( $this->xmlroot === null )
+                    $this->xmlroot = DH::createElement($this->owner->xmlroot, 'tag');
+                DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
+            }
+            else
+            {
+                if( $this->xmlroot !== null )
+                    $this->owner->xmlroot->removeChild($this->xmlroot);
+            }
         }
         else
         {

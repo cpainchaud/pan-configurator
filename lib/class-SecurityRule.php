@@ -753,7 +753,7 @@ public function load_from_domxml($xml)
 		if( $this->logstart != $yes )
 		{
 			if( PH::$UseDomXML )
-				$this->logstartroot->textContent =  boolYesNo($yes);
+				$this->logstartroot->nodeValue =  boolYesNo($yes);
 			else
 				$this->logstartroot['content'] = boolYesNo($yes);
 
@@ -785,7 +785,7 @@ public function load_from_domxml($xml)
 		if( $this->logend != $yes )
 		{
 			if( PH::$UseDomXML )
-				$this->logendroot->textContent =  boolYesNo($yes);
+				$this->logendroot->nodeValue =  boolYesNo($yes);
 			else
 				$this->logendroot['content'] = boolYesNo($yes);
 
@@ -869,7 +869,7 @@ public function load_from_domxml($xml)
 				$this->logsettingroot = DH::createElement($this->xmlroot, 'log-setting', $newLogSetting);
 			}
 			else
-				$this->logsettingroot->textContent = $newLogSetting;
+				$this->logsettingroot->nodeValue = $newLogSetting;
 		}
 		else
 		{
@@ -910,7 +910,7 @@ public function load_from_domxml($xml)
 		{
 			if( PH::$UseDomXML )
 			{
-				$this->negatedSourceRoot->textContent = boolYesNo($yes);
+				$this->negatedSourceRoot->nodeValue = boolYesNo($yes);
 			}
 			else
 				$this->negatedSourceRoot['content'] = boolYesNo($yes);
@@ -939,7 +939,7 @@ public function load_from_domxml($xml)
 		{
 			if( PH::$UseDomXML )
 			{
-				$this->negatedDestinationRoot->textContent = boolYesNo($yes);
+				$this->negatedDestinationRoot->nodeValue = boolYesNo($yes);
 			}
 			else
 				$this->negatedDestinationRoot['content'] = boolYesNo($yes);

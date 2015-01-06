@@ -200,8 +200,9 @@ class Rule
         }
         else
         {
-            $tmp = DH::findFirstElementOrCreate('tag', $this->xmlroot);
-            $this->tags->load_from_domxml($tmp);
+            $tmp = DH::findFirstElement('tag', $this->xmlroot);
+			if( $tmp !== false )
+	            $this->tags->load_from_domxml($tmp);
         }
     }
 
