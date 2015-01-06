@@ -638,7 +638,7 @@ public function load_from_domxml($xml)
 
 				$tmp = $this->secprofroot->ownerDocument->createElement('group');
 				$tmp = $this->secprofroot->appendChild($tmp);
-				$tmp = $this->secprofroot->appendChild( $this->secprofroot->ownerDocument->createElement('member') );
+				$tmp = $tmp->appendChild( $this->secprofroot->ownerDocument->createElement('member') );
 				$tmp->appendChild( $this->secprofroot->ownerDocument->createTextNode($this->secprofgroup) );
 			}
 			else if ( $this->secproftype == 'profiles' )
