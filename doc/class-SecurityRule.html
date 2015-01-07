@@ -152,6 +152,11 @@
 	<h1>Class SecurityRule</h1>
 
 
+	<div class="description">
+	
+<p>Class SecurityRule</p>
+
+	</div>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
@@ -205,7 +210,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_SecurityRule">#</a>
-		<code><b>SecurityRule</b>( <span>mixed <var>$owner</var></span>, <span>mixed <var>$fromTemplateXML</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>SecurityRule</b>( <span><code><a href="class-RuleStore.html">RuleStore</a></code> <var>$owner</var></span>, <span>boolean <var>$fromTemplateXML</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -215,6 +220,13 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$owner</var></dt>
+					<dd><code><code><a href="class-RuleStore.html">RuleStore</a></code></code><br>$owner</dd>
+					<dt><var>$fromTemplateXML</var></dt>
+					<dd><code>boolean</code><br>$fromTemplateXML</dd>
+				</dl></div>
 
 
 
@@ -1162,6 +1174,44 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="API_setSourceIsNegated" id="_API_setSourceIsNegated">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setSourceIsNegated">#</a>
+		<code><b>API_setSourceIsNegated</b>( <span>boolean <var>$yes</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$yes</var></dt>
+					<dd><code>boolean</code><br>$yes</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="destinationIsNegated" id="_destinationIsNegated">
 
 		<td class="attributes"><code>
@@ -1203,6 +1253,44 @@
 		<td class="name"><div>
 		<a class="anchor" href="#_setDestinationIsNegated">#</a>
 		<code><b>setDestinationIsNegated</b>( <span>boolean <var>$yes</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$yes</var></dt>
+					<dd><code>boolean</code><br>$yes</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_setDestinationIsNegated" id="_API_setDestinationIsNegated">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_setDestinationIsNegated">#</a>
+		<code><b>API_setDestinationIsNegated</b>( <span>boolean <var>$yes</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1602,50 +1690,6 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="negatedSourceRoot" id="$negatedSourceRoot">
-		<td class="attributes"><code>
-			protected  
-			null|<code><a href="class-DOMElement.html">DOMElement</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$negatedSourceRoot</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$negatedSourceRoot" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="negatedDestinationRoot" id="$negatedDestinationRoot">
-		<td class="attributes"><code>
-			protected  
-			null|<code><a href="class-DOMElement.html">DOMElement</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$negatedDestinationRoot</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$negatedDestinationRoot" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
 	<tr data-order="logSetting" id="$logSetting">
 		<td class="attributes"><code>
 			protected  
@@ -1886,16 +1930,32 @@
 	</tr>
 	</table>
 
-
-
-	<table class="summary used">
-	<caption>Magic properties used from <a href="class-centralAddressStoreUser.html#properties">centralAddressStoreUser</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-centralAddressStoreUser.html#m$owner"><var>$owner</var></a>
+	<table class="summary" id="magicProperties">
+	<caption>Magic properties summary</caption>
+	<tr data-order="owner" id="m$owner">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-RuleStore.html">RuleStore</a></code>
 		</code></td>
+
+		<td class="name">
+<var>$owner</var>		</td>
+		<td class="description"><div>
+			<a href="#m$owner" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
 	</tr>
 	</table>
+
+
 
 </div>
 
