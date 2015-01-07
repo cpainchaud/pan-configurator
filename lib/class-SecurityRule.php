@@ -97,7 +97,7 @@ class SecurityRule extends Rule
 
 
 
-public function load_from_domxml($xml)
+	public function load_from_domxml($xml)
 	{
 		$this->xmlroot = $xml;
 		
