@@ -190,6 +190,56 @@ class Address
 		return $this->description;
 	}
 
+	/**
+	 * @param string|null $newDesc
+	 * @return bool
+	 */
+	public function setDescription($newDesc)
+	{
+		if( $newDesc === null || strlen($newDesc) < 1)
+		{
+			if($this->description === null )
+				return false;
+
+			$this->description = null;
+			$tmpRoot = DH::findFirstElement('description', $this->xmlroot);
+
+			if( $tmpRoot === false )
+				return true;
+			$this->xmlroot->removeChild($tmpRoot);
+		}
+		else
+		{
+			if( $this->description == $newDesc )
+				return false;
+			$this->description = $newDesc;
+			$tmpRoot = DH::findFirstElementOrCreate('description', $this->xmlroot);
+			$tmpRoot->nodeValue = $this->description();
+		}
+
+		return true;
+	}
+
+	/**
+	 * @param string|null $newDesc
+	 * @return bool
+	 */
+	public function API_setDescription($newDesc)
+	{
+		$ret = $this->setDescription($newDesc);
+
+		if( $ret )
+		{
+			$con = findConnectorOrDie($this);
+			if( $this->description === null )
+				$con->sendDeleteRequest($this->getXPath().'/description');
+			else
+				$con->sendSetRequest($this->getXPath(), '<description>'.$this->description.'</description>');
+		}
+
+		return $ret;
+	}
+
 	public function setValue( $newValue, $rewriteXml = true )
 	{
 		if( !is_string($newValue) )
@@ -246,7 +296,7 @@ class Address
      */
 	public function API_setType($newType)
 	{
-		if( !$this->owner->setType($newType) )
+		if( !$this->setType($newType) )
 			return false;
 
 		$c = findConnectorOrDie($this);
@@ -266,7 +316,7 @@ class Address
      */
 	public function API_setValue($newValue)
 	{
-		if( !$this->owner->setValue($newValue) )
+		if( !$this->setValue($newValue) )
 			return false;
 
 		$c = findConnectorOrDie($this);

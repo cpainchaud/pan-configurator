@@ -2,6 +2,7 @@ CHANGELOG
 
 version 1.2.1
 * SecurityRule->API_setSourceIsNegated and SecurityRule->API_setDestinationIsNegated implemented
+* Address->setDescription() and API_setDescription implemented
 
 
 version 1.2.0
