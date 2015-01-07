@@ -90,23 +90,19 @@ trait ReferencableObject
 	
 	public function findAssociatedRule_byType($type)
 	{
-		$cur = &$this->refrules;
-		$c = count($cur);
-		$k = array_keys($cur);
-		
 		$ret = Array();
-		
-		for($i=0; $i<$c; $i++)
+
+		foreach( $this->refrules as $cur)
 		{
-			if( isset($cur[$k[$i]]->owner) && !is_null($cur[$k[$i]]->owner) )
+			if( isset($cur->owner) && !is_null($cur->owner) )
 			{
-				$class = get_class($cur[$k[$i]]->owner);
-				//print $cur[$k[$i]]->owner->toString()."\n";
+				$class = get_class($cur->owner);
+				//print $cur->owner->toString()."\n";
 				if( $class == $type )
 				{
-					if( !in_array($cur[$k[$i]]->owner, $ret, TRUE) )
+					if( !in_array($cur->owner, $ret, TRUE) )
 					{
-						$ret[] = $cur[$k[$i]]->owner;
+						$ret[] = $cur->owner;
 					}
 				}
 				
