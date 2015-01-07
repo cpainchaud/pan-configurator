@@ -125,7 +125,7 @@ class EthernetInterface
             {
                 foreach( $node->childNodes as $unitsNode )
                 {
-                    if( $node->nodeType != 1 )
+                    if( $unitsNode->nodeType != 1 )
                         continue;
 
                     $newInterface = new EthernetInterface('tmp', null );
