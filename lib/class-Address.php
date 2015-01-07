@@ -44,6 +44,11 @@ class Address
      */
 	public $owner;
 
+	/**
+	 * @var TagStore
+	 */
+	public $tags;
+
 	const TypeTmp = 0;
 	const TypeIpNetmask = 1;
 	const TypeIpRange = 2;
@@ -93,6 +98,8 @@ class Address
         }
 
         $this->name = $name;
+
+		$this->tags = new TagRuleContainer('tag', $this);
 		
 	}
 	
@@ -173,6 +180,13 @@ class Address
 
 		if( !$typeFound )
 			derr('object type not found or not supported');
+
+		if( $this->owner->owner->version >= 60 )
+		{
+			$tagRoot = DH::findFirstElement('tag', $xml);
+			if( $tagRoot !== false )
+				$this->tags->load_from_domxml($tagRoot);
+		}
 
 
 	}

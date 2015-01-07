@@ -39,11 +39,11 @@ class AddressGroup
      */
 	private $members = Array();
 
+	/**
+	 * @var TagStore
+	 */
+	public $tags;
 
-    public function isDynamic()
-    {
-        return $this->isDynamic;
-    }
 	
 	/**
 	* Constructor for AddressGroup. There is little chance that you will ever need that. Look at AddressStore if you want to create an AddressGroup
@@ -88,7 +88,12 @@ class AddressGroup
 		
 		$this->name = $name;
 
-		
+		$this->tags = new TagRuleContainer('tag', $this);
+	}
+
+	public function isDynamic()
+	{
+		return $this->isDynamic;
 	}
 	
 	/**
@@ -171,7 +176,13 @@ class AddressGroup
 			$this->members[] = $f;
 			
 		}
-		
+
+		if( $this->owner->owner->version >= 60 )
+		{
+			$tagRoot = DH::findFirstElement('tag', $xml);
+			if( $tagRoot !== false )
+				$this->tags->load_from_domxml($tagRoot);
+		}
 	}
 
     /**

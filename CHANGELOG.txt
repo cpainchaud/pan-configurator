@@ -3,6 +3,7 @@ CHANGELOG
 version 1.2.1
 * SecurityRule->API_setSourceIsNegated and SecurityRule->API_setDestinationIsNegated implemented
 * Address->setDescription() and API_setDescription implemented
+* Address and AddressGroup now have Tag support
 
 version 1.2.0
 * switch to DOM XML lib for better and faster memory management
