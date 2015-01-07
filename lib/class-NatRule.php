@@ -97,7 +97,7 @@ class NatRule extends Rule
 		//print "found rule name '".$this->name."'\n";
 
         $this->extract_disabled_from_xml();
-        $this->extract_disabled_from_xml();
+        $this->extract_description_from_xml();
         $this->load_tags();
 		$this->load_from();
 		$this->load_to();

@@ -398,8 +398,8 @@ class Rule
             $this->descroot = null;
             return;
         }
-
-		$this->description = $this->descroot->textContent;
+		else
+			$this->description = $this->descroot->textContent;
 
 	}
 	
