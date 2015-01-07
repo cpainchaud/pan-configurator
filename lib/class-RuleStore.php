@@ -151,12 +151,12 @@ class RuleStore
 		
 		$this->regen_Indexes();
 	}
-	
+
 
 	/**
-	* For developper use only
-	*
-	*/
+	 * For developper use only
+	 * @param DOMElement $xml
+	 */
 	public function load_from_domxml($xml)
 	{
 		global $PANC_DEBUG;
@@ -183,12 +183,12 @@ class RuleStore
 		$this->regen_Indexes();
 	}
 
-	
+
 	/**
-	* Add a rule to the Store.
-	*
-	*/
-	public function addRule( $rule)
+	 * @param Rule $rule
+	 * @return bool
+	 */
+	public function addRule($rule)
 	{
 		
 		if( !is_object($rule) )
@@ -224,6 +224,10 @@ class RuleStore
 	}
 
 
+	/**
+	 * @param Rule $rule
+	 * @return bool
+	 */
 	public function API_addRule( $rule )
 	{
 		if( ! $this->addRule($rule) )
@@ -237,6 +241,10 @@ class RuleStore
         return true;
 	}
 
+	/**
+	 * @param Rule $rule
+	 * @return bool
+	 */
 	public function moveRuleToPostRulebase( $rule )
 	{
 
@@ -251,6 +259,10 @@ class RuleStore
 		return true;
 	}
 
+	/**
+	 * @param Rule $rule
+	 * @return bool
+	 */
 	public function API_moveRuleToPostRulebase( $rule )
 	{
         if( $this->isPreRulebase !== true )
@@ -265,7 +277,10 @@ class RuleStore
 	}
 
 
-
+	/**
+	 * @param Rule $rule
+	 * @return bool
+	 */
 	public function moveRuleToPreRulebase( $rule )
 	{
         if( $this->isPreRulebase !== false )
@@ -280,6 +295,10 @@ class RuleStore
 	}
 
 
+	/**
+	 * @param Rule $rule
+	 * @return bool
+	 */
 	public function API_moveRuleToPreRulebase( $rule )
 	{
         if( $this->isPreRulebase !== false )
@@ -359,6 +378,9 @@ class RuleStore
         return $this->owner->$varName;
     }
 
+	/**
+	 * @return string
+	 */
     function &getStoreVarName()
     {
         $varName = self::$storeNameByType[$this->type]['varName'];
@@ -371,6 +393,11 @@ class RuleStore
     }
 
 
+	/**
+	 * @param string $base
+	 * @param string $suffix
+	 * @return string
+	 */
 	public function findAvailableName($base, $suffix)
 	{
 		$maxl = 31;
@@ -452,9 +479,14 @@ class RuleStore
 		return $nr;
 	}
 
-	public function API_cloneRule($rule, $newname)
+	/**
+	 * @param Rule $rule
+	 * @param string $newName
+	 * @return NatRule|SecurityRule
+	 */
+	public function API_cloneRule($rule, $newName)
 	{
-		$nr = $this->cloneRule($rule, $newname);
+		$nr = $this->cloneRule($rule, $newName);
 
 		$con = findConnectorOrDie($this);
 
@@ -465,12 +497,14 @@ class RuleStore
 
 		return $nr;
 	}
-	
-	
+
+
 	/**
-	* this function will move $ruleToBeMoved after $ruleRef.
-	*
-	*/
+	 * this function will move $ruleToBeMoved after $ruleRef.
+	 * @param Rule $ruleToBeMoved
+	 * @param Rule $ruleRef
+	 * @param bool $rewritexml
+	 */
 	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
 		if( is_string($ruleToBeMoved) )
@@ -536,6 +570,11 @@ class RuleStore
 			$this->rewriteXML();
 	}
 
+	/**
+	 * @param Rule $ruleToBeMoved
+	 * @param Rule $ruleRef
+	 * @param bool $rewritexml
+	 */
 	public function API_moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
 		$this->moveRuleAfter($ruleToBeMoved , $ruleRef, $rewritexml);
@@ -547,11 +586,14 @@ class RuleStore
 		$con->sendRequest($url);
 
 	}
-	
+
+
 	/**
-	* this function will move $ruleToBeMoved before $ruleRef.
-	*
-	*/
+	 * this function will move $ruleToBeMoved before $ruleRef.
+	 * @param Rule $ruleToBeMoved
+	 * @param Rule $ruleRef
+	 * @param bool $rewritexml
+	 */
 	public function moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
 		if( is_string($ruleToBeMoved) )
@@ -619,6 +661,11 @@ class RuleStore
 			$this->rewriteXML();
 	}
 
+	/**
+	 * @param Rule $ruleToBeMoved
+	 * @param Rule $ruleRef
+	 * @param bool $rewritexml
+	 */
 	public function API_moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
 		$this->moveRuleBefore($ruleToBeMoved , $ruleRef, $rewritexml);
