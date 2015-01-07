@@ -28,6 +28,9 @@ class Tag
 
     private $isTmp = true;
 
+    /**
+     * @var DOMNode|null
+     */
     public $xmlroot = null;
 
     /**
