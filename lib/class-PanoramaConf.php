@@ -729,36 +729,24 @@ class PanoramaConf
 		$gnaddresss = $this->addressStore->countAddresses();
 		$gnaddressGs = $this->addressStore->countAddressGroups();
 		$gnTmpAddresses = $this->addressStore->countTmpAddresses();
-		
 
-        // TODO replace with foreach()
-		$cur = &$this->deviceGroups;
-		$c = count($cur);
-		$k = array_keys($cur);
-		
-		for($i=0; $i<$c; $i++)
+		foreach( $this->deviceGroups as $cur)
 		{
+			$gpreSecRules += $cur->preSecurityRules->count();
+			$gpreNatRules += $cur->preNatRules->count();
+            $gpreDecryptRules += $cur->preDecryptionRules->count();
 
-			$gpreSecRules += $cur[$k[$i]]->preSecurityRules->count();
-			$gpreNatRules += $cur[$k[$i]]->preNatRules->count();
-            $gpreDecryptRules += $cur[$k[$i]]->preDecryptionRules->count();
+			$gpostSecRules += $cur->postSecurityRules->count();
+			$gpostNatRules += $cur->postNatRules->count();
+            $gpostDecryptRules += $cur->postDecryptionRules->count();
 
-			$gpostSecRules += $cur[$k[$i]]->postSecurityRules->count();
-			$gpostNatRules += $cur[$k[$i]]->postNatRules->count();
-            $gpostDecryptRules += $cur[$k[$i]]->postDecryptionRules->count();
-
-			$gnservices += $cur[$k[$i]]->serviceStore->countServices();
-			$gnserviceGs += $cur[$k[$i]]->serviceStore->countServiceGroups();
-			$gnTmpServices += $cur[$k[$i]]->serviceStore->countTmpServices();
+			$gnservices += $cur->serviceStore->countServices();
+			$gnserviceGs += $cur->serviceStore->countServiceGroups();
+			$gnTmpServices += $cur->serviceStore->countTmpServices();
 			
-			$gnaddresss += $cur[$k[$i]]->addressStore->countAddresses();
-			$gnaddressGs += $cur[$k[$i]]->addressStore->countAddressGroups();
-			$gnTmpAddresses += $cur[$k[$i]]->addressStore->countTmpAddresses();
-			
-			//print $cur[$k[$i]]->serviceStore->count()."\n";
-			
-			//$cur[$k[$i]]->serviceStore->displayTmpServices();
-			
+			$gnaddresss += $cur->addressStore->countAddresses();
+			$gnaddressGs += $cur->addressStore->countAddressGroups();
+			$gnTmpAddresses += $cur->addressStore->countTmpAddresses();
 		}
 		
 		print "Statistics for PanoramaConf '".$this->name."'\n";

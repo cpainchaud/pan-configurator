@@ -167,15 +167,13 @@ class ObjRuleContainer
         }
 
         $c = count($this->o);
-        $k = array_keys($this->o);
 
         echo "$indent";
         print "Displaying the $c ".$this->classn."(s) in ".$this->toString()."\n";
 
-        // TODO use foreach
-        for( $i=0; $i<$c ;$i++)
+        foreach( $this->o as $o)
         {
-            print $indent.$this->o[$k[$i]]->name."\n";
+            print $indent.$o->name()."\n";
         }
     }
 
