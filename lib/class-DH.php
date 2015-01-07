@@ -284,5 +284,26 @@ class DH
 
 		return $out;	
 	}
+
+
+	/**
+	 * @param DOMDocument $xmlDoc
+	 * @param string $xmlString
+	 * @return DOMElement
+	 */
+	static public function importXmlStringOrDie(DOMDocument $xmlDoc, $xmlString)
+	{
+		$fragment = $xmlDoc->createDocumentFragment();
+		if( !$fragment->appendXML($xmlString) )
+			derr('malformed xml: '.$xmlString);
+
+		$element = DH::firstChildElement($fragment);
+
+		if( $element === null or $element === false )
+			derr('cannot find first element in :'.$xmlString);
+
+		return $element;
+
+	}
 }
 

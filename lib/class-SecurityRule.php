@@ -18,6 +18,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/**
+ * Class SecurityRule
+ * @property RuleStore $owner
+ */
 class SecurityRule extends Rule
 {
 
@@ -63,7 +67,11 @@ class SecurityRule extends Rule
      */
     public $apps = null;
 
-	
+
+	/**
+	 * @param RuleStore $owner
+	 * @param bool $fromTemplateXML
+	 */
 	public function SecurityRule($owner,$fromTemplateXML=false)
 	{
 		$this->owner = $owner;
@@ -82,15 +90,23 @@ class SecurityRule extends Rule
 		
 		if( $fromTemplateXML )
 		{
-			if( is_null(self::$templatexmlroot) )
+			if( PH::$UseDomXML )
 			{
-				$xmlobj = new XmlArray();
-				self::$templatexmlroot = $xmlobj->load_string(self::$templatexml);
-				//print_r(self::$templatexmlroot);
-				//die();
+				$xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
+				$this->load_from_domxml($xmlElement);
 			}
-			$tmparr = cloneArray(self::$templatexmlroot);
-			$this->load_from_xml($tmparr);
+			else
+			{
+				if( is_null(self::$templatexmlroot) )
+				{
+					$xmlobj = new XmlArray();
+					self::$templatexmlroot = $xmlobj->load_string(self::$templatexml);
+					//print_r(self::$templatexmlroot);
+					//die();
+				}
+				$tmparr = cloneArray(self::$templatexmlroot);
+				$this->load_from_xml($tmparr);
+			}
 		}
 		
 	}
