@@ -20,6 +20,7 @@
 class ObjStore
 {
 	use PathableName;
+	use XmlConvertible;
 	
 	
 	public $owner = null;

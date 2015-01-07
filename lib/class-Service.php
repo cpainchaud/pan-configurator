@@ -22,6 +22,7 @@ class Service
 
 	use ReferencableObject;
 	use PathableName;
+	use XmlConvertible;
 	
 	public $description = '';
 	public $protocol = 'tcp';

@@ -20,6 +20,7 @@ class ServiceGroup
 {
 	use PathableName;
 	use ReferencableObject;
+	use XmlConvertible;
 
     /**
      * @var Service|ServiceGroup[]

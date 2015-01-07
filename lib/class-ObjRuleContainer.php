@@ -20,6 +20,7 @@
 class ObjRuleContainer
 {
     use PathableName;
+    use XmlConvertible;
 
 
     public $owner = null;

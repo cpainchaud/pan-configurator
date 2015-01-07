@@ -21,6 +21,7 @@ class Zone
 
 	use ReferencableObject;
 	use PathableName;
+    use XmlConvertible;
 
     /**
      * @var null|ZoneStore

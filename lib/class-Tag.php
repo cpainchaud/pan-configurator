@@ -20,6 +20,7 @@ class Tag
 {
 	use ReferencableObject;
 	use PathableName;
+    use XmlConvertible;
 
     /**
      * @var TagStore|null

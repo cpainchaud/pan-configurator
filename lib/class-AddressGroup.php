@@ -21,6 +21,7 @@ class AddressGroup
 {
 	use PathableName;
 	use ReferencableObject;
+	use XmlConvertible;
 
     private $isDynamic = false;
 

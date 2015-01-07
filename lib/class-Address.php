@@ -22,6 +22,7 @@ class Address
 {
 	use ReferencableObject;
 	use PathableName;
+	use XmlConvertible;
 
     /**
      * @var string|null
