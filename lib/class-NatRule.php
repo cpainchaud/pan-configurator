@@ -32,10 +32,10 @@ class NatRule extends Rule
 	
 	public $dnathost = null;
 	public $dnatports = null;
-	
-	
-	
-	
+
+	/**
+	 * @var DOMElement
+	 */
 	public $xmlroot;
 	
 	/** @ignore */
@@ -49,6 +49,10 @@ class NatRule extends Rule
 <source><member>any</member></source><destination><member>any</member></destination><service>any</service><disabled>no</disabled></entry>';
 	static protected $templatexmlroot = null;
 
+	/**
+	 * @param RuleStore $owner
+	 * @param bool $fromtemplatexml
+	 */
 	public function NatRule($owner, $fromtemplatexml=false)
 	{
 		$this->owner = $owner;
@@ -466,8 +470,6 @@ class NatRule extends Rule
 		
 	}
 
-
-	
 	
 	public function hostChanged($h)
 	{
@@ -506,16 +508,7 @@ class NatRule extends Rule
 			$new->refInRule($this);
 		
 	}
-	
-	
-	
-	
-	
-	
-	/**************************************************************
-	**  rewriteSNAT_XML()
-	**
-	**************************************************************/
+
 	public function rewriteSNAT_XML()
 	{
 		if( PH::$UseDomXML === TRUE )
@@ -591,13 +584,8 @@ class NatRule extends Rule
 		//print_r($this->snatroot);
 	
 	}
-	/**  end of rewriteSNATRule_XML() **/
 
 
-	/**************************************************************
-	**  rewriteSNAT_XML()
-	**
-	**************************************************************/
 	public function dom_rewriteSNAT_XML()
 	{
 		
@@ -672,10 +660,11 @@ class NatRule extends Rule
 		//print_r($this->snatroot);
 	
 	}
-	/**  end of rewriteSNATRule_XML() **/
 
 
-	
+	/**
+	 * @param bool $yes
+	 */
 	public function setBiDirectional( $yes )
 	{
 		if( is_string($yes) )
@@ -707,11 +696,7 @@ class NatRule extends Rule
 		$this->rewriteSNATRule_XML();
 	}
 	
-	
-	/**************************************************************
-	**           rewriteRuleXML()
-	**
-	**************************************************************/
+
 	public function rewriteRuleXML()
 	{
 		$this->xmlroot['attributes']['name'] = $this->name;
@@ -725,10 +710,7 @@ class NatRule extends Rule
 		$this->rewriteRuleDescription_XML();
 	}
 	
-	/**************************************************************
-	**           rewriteRuleDescription_XML()
-	**
-	**************************************************************/
+
 	public function rewriteRuleDescription_XML()
 	{
 		$this->descroot['content'] = $this->description;

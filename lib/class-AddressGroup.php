@@ -23,7 +23,10 @@ class AddressGroup
 	use ReferencableObject;
 
     private $isDynamic = false;
-	
+
+	/**
+	 * @var DOMElement
+	 */
 	public $xmlroot;
 
     /**
