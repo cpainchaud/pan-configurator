@@ -42,7 +42,7 @@ class SecurityRule extends Rule
 	
 	protected $negatedSource = false;
 	protected $negatedDestination = false;
-	
+
 	protected $logSetting = false;
 
 	/**
@@ -191,7 +191,7 @@ public function load_from_domxml($xml)
 		//
 		$negatedSourceRoot = DH::findFirstElement('negate-source', $xml);
 		if( $negatedSourceRoot !== false )
-			$this->negatedSource = yesNoBool($this->negatedSourceRoot->textContent);
+			$this->negatedSource = yesNoBool($negatedSourceRoot->textContent);
 		else
 			$this->negatedSource = false;
 		// End of <negate-source>
@@ -199,9 +199,9 @@ public function load_from_domxml($xml)
 		
 		// Begin <negate-destination> extraction
 		//
-		$this->negatedDestinationRoot = DH::findFirstElementOrCreate('negate-destination', $xml);
-		if( $negatedSourceRoot !== false )
-			$this->negatedDestination = yesNoBool($this->negatedDestinationRoot->textContent);
+		$negatedDestinationRoot = DH::findFirstElementOrCreate('negate-destination', $xml);
+		if( $negatedDestinationRoot !== false )
+			$this->negatedDestination = yesNoBool($negatedDestinationRoot->textContent);
 		else
 			$this->negatedDestination = false;
 		// End of <negate-destination>
