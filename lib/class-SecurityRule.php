@@ -42,15 +42,7 @@ class SecurityRule extends Rule
 	
 	protected $negatedSource = false;
 	protected $negatedDestination = false;
-
-	/**
-	 * @var null|DOMElement
-	 */
-	protected $negatedSourceRoot = null;
-	/**
-	 * @var null|DOMElement
-	 */
-	protected $negatedDestinationRoot = null;
+	
 	protected $logSetting = false;
 
 	/**
@@ -197,15 +189,21 @@ public function load_from_domxml($xml)
 		//
 		// Begin <negate-source> extraction
 		//
-		$this->negatedSourceRoot = DH::findFirstElementOrCreate('negate-source', $xml, 'no');
-		$this->negatedSource = yesNoBool($this->negatedSourceRoot->textContent);
+		$negatedSourceRoot = DH::findFirstElement('negate-source', $xml);
+		if( $negatedSourceRoot !== false )
+			$this->negatedSource = yesNoBool($this->negatedSourceRoot->textContent);
+		else
+			$this->negatedSource = false;
 		// End of <negate-source>
 		//
 		
 		// Begin <negate-destination> extraction
 		//
-		$this->negatedDestinationRoot = DH::findFirstElementOrCreate('negate-destination', $xml, 'no');
-		$this->negatedDestination = yesNoBool($this->negatedDestinationRoot->textContent);
+		$this->negatedDestinationRoot = DH::findFirstElementOrCreate('negate-destination', $xml);
+		if( $negatedSourceRoot !== false )
+			$this->negatedDestination = yesNoBool($this->negatedDestinationRoot->textContent);
+		else
+			$this->negatedDestination = false;
 		// End of <negate-destination>
 		
 		
@@ -910,7 +908,20 @@ public function load_from_domxml($xml)
 		{
 			if( PH::$UseDomXML )
 			{
-				$this->negatedSourceRoot->nodeValue = boolYesNo($yes);
+				$tmpRoot = DH::findFirstElement('negate-source', $this->xmlroot);
+				if( $tmpRoot === false )
+				{
+					if($yes)
+						DH::createElement($this->xmlroot, 'negate-source', 'yes');
+				}
+				else
+				{
+					if( !$yes )
+						$this->xmlroot->removeChild($tmpRoot);
+					else
+						$tmpRoot->nodeValue = 'yes';
+				}
+
 			}
 			else
 				$this->negatedSourceRoot['content'] = boolYesNo($yes);
@@ -939,7 +950,20 @@ public function load_from_domxml($xml)
 		{
 			if( PH::$UseDomXML )
 			{
-				$this->negatedDestinationRoot->nodeValue = boolYesNo($yes);
+				$tmpRoot = DH::findFirstElement('negate-destination', $this->xmlroot);
+				if( $tmpRoot === false )
+				{
+					if($yes)
+						DH::createElement($this->xmlroot, 'negate-destination', 'yes');
+				}
+				else
+				{
+					if( !$yes )
+						$this->xmlroot->removeChild($tmpRoot);
+					else
+						$tmpRoot->nodeValue = 'yes';
+				}
+
 			}
 			else
 				$this->negatedDestinationRoot['content'] = boolYesNo($yes);
