@@ -574,10 +574,6 @@ class Rule
         return $str;
     }
 	
-	public function &xmlroot()
-	{
-		return $this->xmlroot;
-	}
 	
 	/**
 	* return true if change was successful false if not (duplicate rulename?)

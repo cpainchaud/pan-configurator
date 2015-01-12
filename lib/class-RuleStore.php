@@ -210,7 +210,7 @@ class RuleStore
 				if( PH::$UseDomXML )
 					$this->xmlroot->appendChild($rule->xmlroot);
 				else
-					$this->xmlroot['children'][] = &$rule->xmlroot() ;
+					$this->xmlroot['children'][] = &$rule->xmlroot;
 			}
 			
 			return true;
