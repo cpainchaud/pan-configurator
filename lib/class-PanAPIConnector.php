@@ -94,11 +94,11 @@ class PanAPIConnector
 
             if ($res['content'] == 'Panorama')
             {
-                $resul['type'] = 'panorama';
+                $result['type'] = 'panorama';
                 //print "Panorama found!\n";
             } else
             {
-                $resul['type'] = 'panos';
+                $result['type'] = 'panos';
                 //print "PANOS found!\n";
             }
 
@@ -246,19 +246,42 @@ class PanAPIConnector
 
                 print "* Now generating an API key from '$host'...";
                 $con = new PanAPIConnector($host, '');
-                $res = &$con->sendRequest("type=keygen&user=$user&password=$password");
-                $res = &searchForName('name', 'result', $res);
-                if( $res === null )
-                    derr('unsupported response from PANOS API');
 
-                $res = &searchForName('name', 'key', $res['children']);
-                if( $res === null )
-                    derr('unsupported response from PANOS API');
+                if( PH::$UseDomXML )
+                {
+                    $res = $con->sendRequest("type=keygen&user=$user&password=$password");
 
-                if( strlen($res['content']) < 1 )
-                    derr('unsupported response from PANOS API');
+                    $res = DH::findFirstElement('response', $res);
+                    if ($res === false)
+                        derr('missing <response> from API answer');
 
-                $apiKey = $res['content'];
+                    $res = DH::findFirstElement('result', $res);
+                    if ($res === false)
+                        derr('missing <result> from API answer');
+
+                    $res = DH::findFirstElement('key', $res);
+                    if ($res === false)
+                        derr('unsupported response from PANOS API');
+
+                    $apiKey = $res->textContent;
+                }
+                else
+                {
+                    $res = &$con->sendRequest("type=keygen&user=$user&password=$password");
+                    $res = &searchForName('name', 'result', $res);
+                    if ($res === null)
+                        derr('unsupported response from PANOS API');
+
+                    $res = &searchForName('name', 'key', $res['children']);
+                    if ($res === null)
+                        derr('unsupported response from PANOS API');
+
+                    if (strlen($res['content']) < 1)
+                        derr('unsupported response from PANOS API');
+
+                    $apiKey = $res['content'];
+                }
+
                 print "OK, key is $apiKey\n\n";
 
             }
@@ -284,31 +307,45 @@ class PanAPIConnector
 
         print " Testing API connectivity: ";
 
-        $res = &searchForName('name', 'result', $res);
-        if( $res === null )
-            derr('error');
-        $res = &searchForName('name', 'system', $res['children']);
-        if( $res === null )
-            derr('error');
-
-        $version = &searchForName('name', 'sw-version', $res['children']);
-        if( $version === null )
-            derr('cannot find PANOS version');
-
-
-        $res = &searchForName('name', 'model', $res['children']);
-        if( $res === null )
-            derr('cannot find host type');
-
-        if( $res['content'] == 'Panorama' )
+        if( PH::$UseDomXML )
         {
-            $panos = false;
-            print "Panorama found!\n";
+            $res = DH::findFirstElement('response', $res);
+            if ($res === false)
+                derr('missing <response> from API answer');
+
+            $res = DH::findFirstElement('result', $res);
+            if ($res === false)
+                derr('missing <result> from API answer');
+
         }
         else
         {
-            $panos = true;
-            print "PANOS found!\n";
+            $res = &searchForName('name', 'result', $res);
+            if( $res === null )
+                derr('error');
+            $res = &searchForName('name', 'system', $res['children']);
+            if( $res === null )
+                derr('error');
+
+            $version = &searchForName('name', 'sw-version', $res['children']);
+            if( $version === null )
+                derr('cannot find PANOS version');
+
+
+            $res = &searchForName('name', 'model', $res['children']);
+            if( $res === null )
+                derr('cannot find host type');
+
+            if( $res['content'] == 'Panorama' )
+            {
+                $panos = false;
+                print "Panorama found!\n";
+            }
+            else
+            {
+                $panos = true;
+                print "PANOS found!\n";
+            }
         }
     }
 
@@ -409,7 +446,7 @@ class PanAPIConnector
      * @param bool $checkResultTag
      * @param string|null $filecontent
      * @param string $filename
-     * @return mixed
+     * @return string[]|DomDocument
      */
 	public function & sendRequest($url, $checkResultTag=false, &$filecontent=null, $filename = '')
 	{
@@ -669,7 +706,8 @@ class PanAPIConnector
 
     public function &getCandidateConfig()
     {
-        $url = 'action=get&type=config&xpath=/config';
+        //$url = 'action=get&type=config&xpath=/config';
+        $url = 'type=op&cmd=<show><config><saved>candidate-config</saved></config></show>';
         
         $r = &$this->sendRequest($url, true);
 
