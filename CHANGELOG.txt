@@ -1,9 +1,11 @@
 CHANGELOG
 
 version 1.2.1
+* speed improvment when loading candidate config from a firewall, call API "show config saved candidate-config" now.
 * SecurityRule->API_setSourceIsNegated and SecurityRule->API_setDestinationIsNegated implemented
 * Address->setDescription() and API_setDescription implemented
 * Address and AddressGroup now have Tag support
+* bugfix : load api key from login & password fixed with DomXML
 
 version 1.2.0
 * switch to DOM XML lib for better and faster memory management
