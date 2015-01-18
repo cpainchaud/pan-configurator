@@ -429,13 +429,19 @@ class PanAPIConnector
         $ipsIndex = array_keys($ips);
         $usersIndex = array_keys($users);
 
-        $cmd = '&type=user-id&action=set&vsys='.$vsys.'&cmd=<uid-message><version>1.0</version><type>update</type><payload><login>';
+        $cmd = '<uid-message><version>1.0</version><type>update</type><payload><login>';
 
         for( $i=0; $i<count($ips); $i++ )
         {
             $cmd .= '<entry name="'.$users[$usersIndex[$i]].'" ip="'.$ips[$ipsIndex[$i]].'" timeout="'.$timeout.'"></entry>';;
         }
         $cmd .= '</login></payload></uid-message>';
+
+        $params = Array();
+        $params['type'] = 'user-id';
+        $params['action'] = 'set';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
 
         return $this->sendRequest($cmd, true);
 
