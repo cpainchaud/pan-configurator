@@ -442,41 +442,84 @@ class PanAPIConnector
     }
 
     /**
-     * @param string $url
+     * @param string $parameters
      * @param bool $checkResultTag
      * @param string|null $filecontent
      * @param string $filename
      * @return string[]|DomDocument
      */
-	public function & sendRequest($url, $checkResultTag=false, &$filecontent=null, $filename = '')
+	public function & sendRequest(&$parameters, $checkResultTag=false, &$filecontent=null, $filename = '')
 	{
-        $url = str_replace('#', '%23',$url);
+
+        $sendThroughPost = false;
+
+        if( is_array($parameters) )
+            $sendThroughPost = true;
+
+        //
 
         $host = $this->apihost;
         if( $this->port != 443 )
             $host .= ':'.$this->port;
 
         if( isset($this->serial) && !is_null($this->serial) )
-            $url = 'https://'.$this->apihost.'/api/?key='.$this->apikey.'&target='.$this->serial.'&'.$url;
-        else
-            $url = 'https://'.$this->apihost.'/api/?key='.$this->apikey.'&'.$url;
-
-        if( $this->showApiCalls )
         {
-            print("API call: \"".$url."\"\r\n");
+            $finalUrl = 'https://'.$this->apihost.'/api/';
+            if( !$sendThroughPost )
+             $finalUrl .= '?key='.$this->apikey.'&target='.$this->serial;
+        }
+        else
+        {
+            $finalUrl = 'https://' . $this->apihost . '/api/';
+            if( !$sendThroughPost )
+                $finalUrl .= '?key=' . $this->apikey;
         }
 
-		$c = new mycurl($url);
+        if( !$sendThroughPost )
+        {
+            $url = str_replace('#', '%23',$parameters);
+            $finalUrl .= '&'.$parameters;
+        }
+
+
+		$c = new mycurl($finalUrl);
 
         if( !is_null($filecontent) )
         {
             $c->setInfile($filecontent, $filename);
         }
 
+        if( $sendThroughPost )
+        {
+            if( isset($this->serial) && !is_null($this->serial) )
+            {
+                $parameters['target'] = $this->serial;
+            }
+            $parameters['key'] = $this->apikey;
+            $c->setPost(http_build_query($parameters));
+        }
+
+        if( $this->showApiCalls )
+        {
+            if( $sendThroughPost)
+            {
+                $paramURl = '?';
+                foreach( $parameters as $paramIndex => &$param )
+                {
+                    $paramURl .= '&'.$paramIndex.'='.str_replace('#', '%23',$param);
+                }
+
+
+                print("API call through POST: \"".$finalUrl.'?'.$paramURl."\"\r\n");
+            }
+            else
+                print("API call: \"".$finalUrl."\"\r\n");
+        }
+
 
 		if( ! $c->createCurl() )
 		{
-			derr('Could not retrieve URL: '.$url.' because of the following error: '.$c->last_error);
+			derr('Could not retrieve URL: '.$finalUrl.' because of the following error: '.$c->last_error);
 		}
 
 		$xmlobj = new XmlArray();
@@ -741,26 +784,49 @@ class PanAPIConnector
 
     public function &sendSetRequest($xpath, $element)
     {
-        $url = "type=config&action=set&xpath=$xpath&element=$element";
-        return $this->sendRequest($url);
+        $params = Array();
+
+        $params['type']  = 'config';
+        $params['action']  = 'set';
+        $params['xpath']  = &$xpath;
+        $params['element']  = &$element;
+
+        return $this->sendRequest($params);
     }
 
     public function &sendEditRequest($xpath, $element)
     {
-        $url = "type=config&action=edit&xpath=$xpath&element=$element";
-        return $this->sendRequest($url);
+        $params = Array();
+
+        $params['type']  = 'config';
+        $params['action']  = 'edit';
+        $params['xpath']  = &$xpath;
+        $params['element']  = &$element;
+
+        return $this->sendRequest($params);
     }
 
     public function &sendDeleteRequest($xpath)
     {
-        $url = "type=config&action=delete&xpath=$xpath";
-        return $this->sendRequest($url);
+        $params = Array();
+
+        $params['type']  = 'config';
+        $params['action']  = 'delete';
+        $params['xpath']  = &$xpath;
+
+        return $this->sendRequest($params);
     }
 
     public function &sendRenameRequest($xpath, $newname)
     {
-        $url = "type=config&action=rename&xpath=$xpath&newname=$newname";
-        return $this->sendRequest($url);
+        $params = Array();
+
+        $params['type']  = 'config';
+        $params['action']  = 'rename';
+        $params['xpath']  = &$xpath;
+        $params['newname']  = &$newname;
+
+        return $this->sendRequest($params);
     }
 
     public function waitForJobFinished($jobID)
