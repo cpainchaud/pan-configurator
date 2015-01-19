@@ -707,16 +707,12 @@ class ServiceStore
 				else
 				{
 					$this->serv[] = $s;
-					if( $rewritexml && $this->centralStore )
-						$this->servroot['children'][] = &$s->xmlroot;
 				}
 	
 			}
 			elseif ( $class == 'ServiceGroup' )
 			{
 				$this->servg[] = $s;
-				if( $rewritexml && $this->centralStore )
-						$this->servgroot['children'][] = &$s->xmlroot;
 				
 			}
 			else
@@ -726,13 +722,8 @@ class ServiceStore
 			$this->fast[$s->name()] = $s;
 			$this->fastMemToIndex[$ser] = lastIndex($this->all);
 				
-			if( !$this->centralStore )
-			{
-				$this->appdef = false;
-				$s->refInRule($this);
-			}
-			else
-				$s->owner = $this;
+
+			$s->owner = $this;
 			
 
 			if( $rewritexml )

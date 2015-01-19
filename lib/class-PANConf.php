@@ -46,6 +46,10 @@ class PANConf
 	public $sharedroot;
 	public $devicesroot;
 	public $localhostlocaldomain;
+
+	/**
+	 * @var DOMElement|null
+	 */
 	public $vsyssroot;
 
 	public $name = '';

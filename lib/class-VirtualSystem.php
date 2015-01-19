@@ -49,7 +49,10 @@ class VirtualSystem
      * @var PANConf|null
      */
 	public $owner = null;
-	
+
+	/**
+	 * @var DOMElement
+	 */
 	public $xmlroot;
 
 
