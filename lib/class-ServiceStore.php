@@ -725,7 +725,8 @@ class ServiceStore
 
 			$s->owner = $this;
 			
-
+			// TODO improve with atomic addition instead of rewriting everything
+			// TODO cleanup central store stuff
 			if( $rewritexml )
 			{
 				if( !$this->centralStore )
