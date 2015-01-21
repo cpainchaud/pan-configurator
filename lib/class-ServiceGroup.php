@@ -25,10 +25,16 @@ class ServiceGroup
     /**
      * @var Service|ServiceGroup[]
      */
-	public $services = Array();
-	
-	public $xmlroot = null; 
-	 
+	public $members = Array();
+
+	/**
+	 * @var null|DOMElement
+	 */
+	public $xmlroot = null;
+
+	/**
+	 * @var null|ServiceStore
+	 */
 	public $owner = null;
 
 	
@@ -78,7 +84,7 @@ class ServiceGroup
 			if( !$f )
 				derr($this->toString().' '.__FUNCTION__."() Error: unknown object named '".$r['content']."\n");
 			
-			$this->services[] = $f;
+			$this->members[] = $f;
 		}
 	
 	}
@@ -90,7 +96,7 @@ class ServiceGroup
 	 */
 	public function count()
 	{
-		return count($this->services);
+		return count($this->members);
 	}
 
 
@@ -108,7 +114,7 @@ class ServiceGroup
 			if( $node->nodeType != 1 ) continue;
 
 			$f = $this->owner->findOrCreate($node->textContent, $this, true);
-			$this->services[] = $f;
+			$this->members[] = $f;
 			
 		}
 	
@@ -131,9 +137,9 @@ class ServiceGroup
 		if( !is_object($newO) )
 			derr("Only objects can be passed to this function");
 		
-		if( ! in_array($newO, $this->services, true) )
+		if( ! in_array($newO, $this->members, true) )
 		{
-			$this->services[] = $newO;
+			$this->members[] = $newO;
 			$newO->refInRule($this);
 			if( $rewritexml )
 			{
@@ -157,14 +163,14 @@ class ServiceGroup
 		
 		
 		$found = false;
-		$pos = array_search($old, $this->services, TRUE);
+		$pos = array_search($old, $this->members, TRUE);
 		
 		if( $pos === FALSE )
 			return false;
 		else
 		{
 			$found = true;
-			unset($this->services[$pos]);
+			unset($this->members[$pos]);
 			$old->unRefInRule($this);
 			if($rewritexml)
 				$this->rewriteXML();
@@ -187,7 +193,7 @@ class ServiceGroup
 			derr("\$old cannot be null");
 		
 
-		if( in_array($old, $this->services, true) !== FALSE )
+		if( in_array($old, $this->members, true) !== FALSE )
 		{
 			if( !is_null($new) )
 				$this->add($new,false);
@@ -203,13 +209,13 @@ class ServiceGroup
 	public function rewriteXML()
 	{
 		if( PH::$UseDomXML === TRUE )
-			DH::Hosts_to_xmlDom($this->xmlroot, $this->services, 'member', false);
+			DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
 		else
         {
             if( $this->owner->version >= 60 )
-                Hosts_to_xmlA($this->membersRoot['children'], $this->services, 'member', false);
+                Hosts_to_xmlA($this->membersRoot['children'], $this->members, 'member', false);
             else
-                Hosts_to_xmlA($this->xmlroot['children'], $this->services, 'member', false);
+                Hosts_to_xmlA($this->xmlroot['children'], $this->members, 'member', false);
         }
 	}
 	
@@ -220,7 +226,7 @@ class ServiceGroup
 	public function hostChanged($h)
 	{
 		//derr("****  SG hostChanged was called  ****\n");
-		if( in_array($h, $this->services) )
+		if( in_array($h, $this->members) )
 			$this->rewriteXML();
 	}
 	
@@ -278,13 +284,13 @@ class ServiceGroup
 		$lO = Array();
 		$oO = Array();
 
-		foreach($this->services as $a)
+		foreach($this->members as $a)
 		{
 			$lO[] = $a->name();
 		}
 		sort($lO);
 
-		foreach($otherObject->services as $a)
+		foreach($otherObject->members as $a)
 		{
 			$oO[] = $a->name();
 		}
@@ -301,6 +307,46 @@ class ServiceGroup
 			return false;
 
 		return true;
+	}
+
+
+	public function displayValueDiff( ServiceGroup $otherObject)
+	{
+
+		print "Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+
+		$lO = Array();
+		$oO = Array();
+
+		foreach($this->members as $a)
+		{
+			$lO[] = $a->name();
+		}
+		sort($lO);
+
+		foreach($otherObject->members as $a)
+		{
+			$oO[] = $a->name();
+		}
+		sort($oO);
+
+		$diff = array_diff($oO, $lO);
+
+		if( count($diff) != 0 )
+		{
+			foreach($diff as $d )
+			{
+				print " - $d\n";
+			}
+		}
+
+		$diff = array_diff($lO, $oO);
+		if( count($diff) != 0 )
+			foreach($diff as $d )
+			{
+				print " + $d\n";
+			}
+
 	}
 
 
