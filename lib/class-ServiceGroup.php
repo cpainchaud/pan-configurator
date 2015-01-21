@@ -107,15 +107,35 @@ class ServiceGroup
 		$this->name = DH::findAttribute('name', $xml);
 		if( $this->name === FALSE )
 			derr("name not found\n");
-		
-		
-		foreach( $xml->childNodes as $node)
-		{
-			if( $node->nodeType != 1 ) continue;
 
-			$f = $this->owner->findOrCreate($node->textContent, $this, true);
-			$this->members[] = $f;
-			
+		if( $this->owner->owner->version >= 60 )
+		{
+			$membersRoot = DH::findFirstElement('static', $this->xmlroot);
+
+			if( $membersRoot === false )
+			{
+				derr('unsupported non static type ServiceGroup', $this->xmlroot);
+			}
+
+			foreach( $membersRoot->childNodes as $node)
+			{
+				if( $node->nodeType != 1 ) continue;
+
+				$f = $this->owner->findOrCreate($node->textContent, $this, true);
+				$this->members[] = $f;
+			}
+
+		}
+		else
+		{
+			foreach( $xml->childNodes as $node)
+			{
+				if( $node->nodeType != 1 ) continue;
+
+				$f = $this->owner->findOrCreate($node->textContent, $this, true);
+				$this->members[] = $f;
+
+			}
 		}
 	
 	}
@@ -131,19 +151,34 @@ class ServiceGroup
 		
 	}
 	
-	public function add($newO, $rewritexml = true)
+	public function add($newObject, $rewriteXml = true)
 	{
 		
-		if( !is_object($newO) )
+		if( !is_object($newObject) )
 			derr("Only objects can be passed to this function");
 		
-		if( ! in_array($newO, $this->members, true) )
+		if( ! in_array($newObject, $this->members, true) )
 		{
-			$this->members[] = $newO;
-			$newO->refInRule($this);
-			if( $rewritexml )
+			$this->members[] = $newObject;
+			$newObject->refInRule($this);
+			if( $rewriteXml )
 			{
-				$this->rewriteXML();
+				if( $this->owner->owner->version >= 60 )
+				{
+					$membersRoot = DH::findFirstElement('static', $this->xmlroot);
+					if( $membersRoot === false )
+					{
+						derr('<static> not found');
+					}
+
+					$tmpElement = $membersRoot->appendChild($this->xmlroot->ownerDocument->createElement('member'));
+					$tmpElement->nodeValue = $newObject->name();
+				}
+				else
+				{
+					$tmpElement = $this->xmlroot->appendChild($this->xmlroot->ownerDocument->createElement('member'));
+					$tmpElement->nodeValue = $newObject->name();
+				}
 			}
 			
 			return true;
@@ -209,7 +244,19 @@ class ServiceGroup
 	public function rewriteXML()
 	{
 		if( PH::$UseDomXML === TRUE )
-			DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
+		{
+			if( $this->owner->version >= 60 )
+			{
+				$membersRoot = DH::findFirstElement('static', $this->xmlroot);
+				if( $membersRoot === false )
+				{
+					derr('<static> not found');
+				}
+				DH::Hosts_to_xmlDom($membersRoot, $this->members, 'member', false);
+			}
+			else
+				DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
+		}
 		else
         {
             if( $this->owner->version >= 60 )
@@ -252,7 +299,7 @@ class ServiceGroup
 
 
 	/**
-	 * @param $otherObject
+	 * @param Service|ServiceGroup $otherObject
 	 * @return bool true if objects have same same and values
 	 */
 	public function equals( $otherObject )

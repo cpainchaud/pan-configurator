@@ -672,6 +672,7 @@ class AddressStore
 			else
 				derr('this class is not supported: '.$class);
 
+			// TODO DOM XML compliant
 			$con->sendDeleteRequest($xpath, array_to_xml($s->xmlroot, -1, false) );
 
 		}
@@ -687,6 +688,7 @@ class AddressStore
 	*/
 	public function add($s, $rewritexml = true)
 	{
+		//TODO remove strtolower from everywhere
 		$this->fasthashcomp = null;
 
 		$tmpobj = false;
