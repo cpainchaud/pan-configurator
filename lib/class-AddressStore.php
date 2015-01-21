@@ -605,7 +605,13 @@ class AddressStore
 	
 	public function displayTmpAddresss()
 	{
-		$this->addressStore->displayTmpAddresss();
+		print "Tmp addresses for ".$this->toString()."\n";
+		foreach($this->tmpaddr as $object)
+		{
+			print " - ".$object->name()."\n";
+		}
+
+		print "\n";
 	}
 	
 	
@@ -1359,8 +1365,8 @@ class AddressStore
 
 	}
 	
-	
 }
+
 
 
 trait centralAddressStore
