@@ -808,7 +808,6 @@ class AddressStore
     /**
      * @param Address|AddressGroup $s
      * @param bool $rewriteXML
-     * @param bool $forceAny
      * @return bool
      */
 	public function remove($s, $rewriteXML = true)
