@@ -759,7 +759,7 @@ store</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_find">#</a>
-		<code><b>find</b>( <span>string <var>$objectName</var></span>, <span>mixed <var>$ref</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$nested</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$type</var> = <span class="php-quote">''</span></span> )</code>
+		<code><b>find</b>( <span>string <var>$objectName</var></span>, <span>ReferenceableObject <var>$ref</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$nested</var> = <span class="php-keyword1">true</span></span>, <span>string <var>$type</var> = <span class="php-quote">''</span></span> )</code>
 
 		<div class="description short">
 			
@@ -778,11 +778,11 @@ store</p>
 					<dt><var>$objectName</var></dt>
 					<dd><code>string</code><br>$objectName</dd>
 					<dt><var>$ref</var></dt>
-					<dd></dd>
+					<dd><code>ReferenceableObject</code><br>$ref</dd>
 					<dt><var>$nested</var></dt>
-					<dd></dd>
+					<dd><code>boolean</code><br>$nested</dd>
 					<dt><var>$type</var></dt>
-					<dd></dd>
+					<dd><code>string</code><br>$type</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -1413,41 +1413,6 @@ other</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="merge" id="_merge">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_merge">#</a>
-		<code><b>merge</b>( <span>mixed <var>$other</var></span> )</code>
-
-		<div class="description short">
-			
-<p>Merge this set of services with another one (in paramater). If one of them is
-'any' then the result will be 'any'.</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Merge this set of services with another one (in paramater). If one of them is
-'any' then the result will be 'any'.</p>
-
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="hostChanged" id="_hostChanged">
 
 		<td class="attributes"><code>
@@ -1459,7 +1424,7 @@ other</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_hostChanged">#</a>
-		<code><b>hostChanged</b>( <span>mixed <var>$h</var></span>, <span>mixed <var>&amp; $oldname</var></span> )</code>
+		<code><b>hostChanged</b>( <span>mixed <var>$h</var></span>, <span>mixed <var>&amp; $oldName</var></span> )</code>
 
 		<div class="description short">
 			
