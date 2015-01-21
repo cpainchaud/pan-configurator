@@ -68,7 +68,7 @@ class Address
 	/**
 	* you should not need this one for normal use
      * @param string name
-     * @param PANConf|PanoramaConf|VirtualSystem|DeviceGroup $owner
+     * @param AddressStore $owner
      * @param bool $fromXmlTemplate
 	*/
 	function Address( $name, $owner, $fromXmlTemplate = false)

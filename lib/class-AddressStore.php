@@ -897,6 +897,7 @@ class AddressStore
 		$ns = new Address($name,$this, true);
 		$ns->setType($type);
 		$ns->setValue($value);
+		$ns->setDescription($description);
 
 		
 		$this->add($ns, $rewriteXML);
@@ -1049,33 +1050,33 @@ class AddressStore
 	}
 
 
-	public function hostChanged($h, &$oldname)
+	public function hostChanged($h, &$oldName)
 	{
 		if( ! $this->inStore($h) )
 			return false;
 
-		$lower = strtolower($newname);
+		$lower = strtolower($oldName);
 
-		unset($this->all[strtolower($oldname)]);
+		unset($this->all[strtolower($oldName)]);
 		$this->all[$lower] = $h;
 
 		$this->fasthashcomp = null;
 
-		$class = get_class($h)
+		$class = get_class($h);
 
 		if( $class == 'Address' )
 		{
-			unset($this->addr[strtolower($oldname)]);
+			unset($this->addr[strtolower($oldName)]);
 			$this->addr[$lower] = $h;
 		}
 		elseif( $class == 'AddressGroup' )
 		{
-			unset($this->addrg[strtolower($oldname)]);
+			unset($this->addrg[strtolower($oldName)]);
 			$this->addrg[$lower] = $h;
 		}
 		else
 			derr('unsupported class');
-		
+
 
 		return true;
 		
