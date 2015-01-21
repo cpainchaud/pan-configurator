@@ -66,7 +66,7 @@ class NatRule extends Rule
 		$this->init_source_with_store();
 		$this->init_destination_with_store();
 		
-		$this->snathosts = new AddressStore($this);
+		$this->snathosts = new AddressRuleContainer($this);
 		$this->snathosts->name = 'snathosts';
 
 		if( $fromtemplatexml )
