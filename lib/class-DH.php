@@ -89,6 +89,10 @@ class DH
 			$node->removeChild($node->childNodes->item(0));
 	}
 
+	/**
+	 * @param DOMNode $node
+	 * @return bool|DOMElement
+	 */
 	static function firstChildElement(DOMNode $node)
 	{
 		foreach( $node->childNodes as $child )

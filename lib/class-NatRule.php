@@ -34,6 +34,11 @@ class NatRule extends Rule
 	public $dnatports = null;
 
 	/**
+	 * @var null|DOMElement
+	 */
+	public $snatroot = null;
+
+	/**
 	 * @var DOMElement
 	 */
 	public $xmlroot;
@@ -482,17 +487,6 @@ class NatRule extends Rule
 	public function replaceHostObject($old, $new )
 	{
 		$found = false;
-		
-		
-		if( in_array($old,$this->snathosts,TRUE) )
-		{
-			$found = true;
-			$pos = array_search($old, $this->snathosts, TRUE);
-			unset($this->snathosts[$pos]);
-			$this->snathosts[] = $new;
-			//print "replaced with '".$this->snathosts[$pos]->name."'\n";
-			$this->rewriteSNAT_XML();
-		}
 		
 		if( $this->service === $old )
 		{
