@@ -295,6 +295,11 @@ class ServiceGroup
 		if( count($diff) != 0 )
 			return false;
 
+		$diff = array_diff($lO, $oO);
+
+		if( count($diff) != 0 )
+			return false;
+
 		return true;
 	}
 

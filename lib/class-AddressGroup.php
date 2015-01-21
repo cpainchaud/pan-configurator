@@ -458,7 +458,50 @@ class AddressGroup
 		if( count($diff) != 0 )
 			return false;
 
+		$diff = array_diff($lO, $oO);
+		if( count($diff) != 0 )
+			return false;
+
 		return true;
+	}
+
+	public function displayValueDiff( AddressGroup $otherObject)
+	{
+
+		print "Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+
+		$lO = Array();
+		$oO = Array();
+
+		foreach($this->members as $a)
+		{
+			$lO[] = $a->name();
+		}
+		sort($lO);
+
+		foreach($otherObject->members as $a)
+		{
+			$oO[] = $a->name();
+		}
+		sort($oO);
+
+		$diff = array_diff($oO, $lO);
+
+		if( count($diff) != 0 )
+		{
+			foreach($diff as $d )
+			{
+				print " - $d\n";
+			}
+		}
+
+		$diff = array_diff($lO, $oO);
+		if( count($diff) != 0 )
+			foreach($diff as $d )
+			{
+				print " + $d\n";
+			}
+
 	}
 
 	/**
