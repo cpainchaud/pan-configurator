@@ -46,7 +46,9 @@ class NatRule extends Rule
 	/** @ignore */
 	public $srcroot=Array();
 	/** @ignore */
-	public $dstroot=Array(),$snatroot=Array(),$dnatroot=Array();
+	public $dstroot=Array();
+	/** @ignore */
+	public $dnatroot=Array();
 	/** @ignore */
 	public $serviceroot = null;
 
