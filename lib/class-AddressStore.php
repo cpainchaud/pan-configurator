@@ -657,39 +657,23 @@ class AddressStore
 			if( !is_object($s) )
 				$s = $this->find( $s );
 
-			if( $this->centralStore )
+
+			$class = get_class($s);
+			$con = findConnectorOrDie($this);
+
+			if( $class == 'Address' )
 			{
-				$class = get_class($s);
-				$con = findConnectorOrDie($this);
-
-				if( $class == 'Address' )
-				{
-					$xpath = $this->getAddressStoreXPath();
-				}
-				else if( $class == 'AddressGroup' )
-				{
-					$xpath = $this->getAddressGroupStoreXPath();
-				}
-				else 
-					derr('this class is not supported: '.$class);
-
-				$con->sendDeleteRequest($xpath, array_to_xml($s->xmlroot, -1, false) );
+				$xpath = $this->getAddressStoreXPath();
+			}
+			else if( $class == 'AddressGroup' )
+			{
+				$xpath = $this->getAddressGroupStoreXPath();
 			}
 			else
-			{
-				$xpath = &$this->getXPath();
-				$con = findConnectorOrDie($this);
+				derr('this class is not supported: '.$class);
 
-				if( $this->count() == 1 )
-				{
-					$url = 'type=config&action=delete&xpath='.$xpath.'&element=<member>any</member>';
-					$con->sendRequest($url);
-				}
+			$con->sendDeleteRequest($xpath, array_to_xml($s->xmlroot, -1, false) );
 
-				$url = 'type=config&action=set&xpath='.$xpath.'&element=<member>'.$s->name().'</member>';
-
-				$con->sendRequest($url);
-			}
 		}
 
 
@@ -735,9 +719,7 @@ class AddressStore
 		{
 			if( $s->type() == 'tmp' )
 			{
-				$tmpobj = true;
-				if( $this->centralStore )
-					$this->tmpaddr[$lower] = $s;
+				$this->tmpaddr[$lower] = $s;
 			}
 			else
 			{
@@ -788,18 +770,9 @@ class AddressStore
 		{
 			$con = findConnectorOrDie($this);
 
-			if( !$this->centralStore )
-			{
-				$xpath = &$this->getXPath();
-				$con->sendDeleteRequest($xpath);
-                $url = 'type=config&action=set&xpath='.$xpath.'&element=<member>any</member>';
-                $con->sendRequest($url);
-			}
-			else
-			{
-				$xpath = &$s->getXPath();
-				$con->sendDeleteRequest($xpath);
-			}
+			$xpath = &$s->getXPath();
+			$con->sendDeleteRequest($xpath);
+
 		}
 
 		return $ret;
@@ -1074,36 +1047,6 @@ class AddressStore
 		$this->generateFastHashComp();
 		return $this->fasthashcomp;
 	}
-	
-	/**
-	* Merge this set of services with another one (in paramater). If one of them is 'any'
-	* then the result will be 'any'.
-	*
-	*/
-	public function merge($other)
-	{
-		$this->fasthashcomp = null;
-		
-		if( $this->centralStore )
-			derr("Should never be called from a Central Store");
-		
-		// we should check if we are negated?
-		
-		if( count($this->all) == 0 )
-			return;
-		
-		if( count($other->all) == 0 )
-		{
-			$this->setAny();
-			return;
-		}
-		
-		foreach($other->all as $s)
-		{
-			$this->add($s);
-		}
-		
-	}
 
 
 	public function hostChanged($h, &$oldname)
@@ -1111,17 +1054,28 @@ class AddressStore
 		if( ! $this->inStore($h) )
 			return false;
 
-		$lower = strtolower($oldname);
+		$lower = strtolower($newname);
+
+		unset($this->all[strtolower($oldname)]);
+		$this->all[$lower] = $h;
 
 		$this->fasthashcomp = null;
 
-		if( ! $this->centralStore )
-		{
-			$this->rewriteXML();
-			return true;
-		}
+		$class = get_class($h)
 
-		unset($this->fast[$lower]);
+		if( $class == 'Address' )
+		{
+			unset($this->addr[strtolower($oldname)]);
+			$this->addr[$lower] = $h;
+		}
+		elseif( $class == 'AddressGroup' )
+		{
+			unset($this->addrg[strtolower($oldname)]);
+			$this->addrg[$lower] = $h;
+		}
+		else
+			derr('unsupported class');
+		
 
 		return true;
 		
