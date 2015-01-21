@@ -82,12 +82,19 @@ trait ReferencableObject
 			print $o->toString()."\n";
 		}
 	}
-	
+
+	/**
+	 * @return SecurityRule[]
+	 */
 	public function findAssociatedSecurityRules()
 	{
 		return $this->findAssociatedRule_byType('SecurityRule');
 	}
-	
+
+	/**
+	 * @param string $type
+	 * @return Rule[]
+	 */
 	public function findAssociatedRule_byType($type)
 	{
 		$ret = Array();

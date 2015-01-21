@@ -36,7 +36,7 @@ class Address
 
 
     /**
-     * @var null|string[]|DOMNode
+     * @var null|string[]|DOMElement
      */
 	public $xmlroot = null;
 
@@ -67,7 +67,7 @@ class Address
 	
 	/**
 	* you should not need this one for normal use
-     * @param string name
+     * @param string $name
      * @param AddressStore $owner
      * @param bool $fromXmlTemplate
 	*/

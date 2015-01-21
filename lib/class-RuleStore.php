@@ -20,7 +20,10 @@
 class RuleStore
 {
 	use PathableName;
-	
+
+	/**
+	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]
+	 */
 	protected $o = Array();
     /**
      * @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf

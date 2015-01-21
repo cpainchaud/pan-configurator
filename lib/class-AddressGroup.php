@@ -117,7 +117,7 @@ class AddressGroup
 		
 		$a = &$this->xmlroot['children'];
 
-        if( $this->owner->version >= 60 )
+        if( $this->owner->owner->version >= 60 )
         {
             $this->membersRoot = &searchForName('name', 'static', $this->xmlroot['children']);
 

@@ -761,7 +761,7 @@ function findConnector( $object )
 function findConnectorOrDie( $object )
 {
 	if( isset($object->connector) )
-		return connector;
+		return $object->connector;
 
 	if( !isset($object->owner) )
 		derr("cannot find API connector");

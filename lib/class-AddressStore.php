@@ -33,7 +33,10 @@ class AddressStore
 	public $owner;
 	
 	protected $centralStore = false;
-	
+
+	/**
+	 * @var null|AddressStore
+	 */
 	public $parentCentralStore = null;
 
     /**
@@ -691,7 +694,6 @@ class AddressStore
 		//TODO remove strtolower from everywhere
 		$this->fasthashcomp = null;
 
-		$tmpobj = false;
 
 		if( !is_object($s) )
 		{
@@ -787,9 +789,6 @@ class AddressStore
      */
 	public function remove($s, $rewriteXML = true)
 	{
-		
-		global $PANC_DEBUG;
-		
 		$this->fasthashcomp = null;
 		$class = get_class($s);
 
@@ -935,15 +934,17 @@ class AddressStore
 	
 	/**
 	* Returns an Array with all AddressGroup in this store.
+	 * @return AddressGroup[]
 	*
 	*/
-	public function &addressGroups()
+	public function addressGroups()
 	{
 		return $this->addrg;
 	}
 	
 	/**
 	* Returns an Array with all Address object in this store (which are not 'tmp');
+	 * @return Address[]
 	*
 	*/
 	public function addressObjects()
