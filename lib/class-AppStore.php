@@ -117,14 +117,16 @@ class AppStore extends ObjStore
 	/**
 	* remove an App to this store. Be careful if you remove last zone as
 	* it would become 'any' and won't let you do so.
-	* @param bool $rewritexml
+	 * @param App $Object
+	* @param bool $rewriteXml
 	* @param bool $forceAny
+	 * @return bool
 	*/
-	public function removeApp( App $Obj, $rewritexml = true, $forceAny = false )
+	public function removeApp( App $Object, $rewriteXml = true, $forceAny = false )
 	{
 		$count = count($this->o);
 
-		$ret = $this->remove($Obj);
+		$ret = $this->remove($Object);
 
 		if( $ret && $count == 1 && !$forceAny && !$this->centralStore )
 		{
@@ -132,7 +134,7 @@ class AppStore extends ObjStore
 				 .$this->toString() ) ;
 		}
 
-		if( $ret && $rewritexml && !$this->centralStore)
+		if( $ret && $rewriteXml && !$this->centralStore)
 		{
 			$this->rewriteXML();
 		}

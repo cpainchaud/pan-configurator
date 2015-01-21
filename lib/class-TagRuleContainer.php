@@ -74,7 +74,11 @@ class TagRuleContainer extends ObjRuleContainer
             $con = findConnectorOrDie($this);
             $xpath = $this->getXPath()."/member[text()='".$tag->name()."']";
             $con->sendDeleteRequest($xpath);
+
+            return true;
         }
+
+        return false;
     }
 
     /**
@@ -123,8 +127,11 @@ class TagRuleContainer extends ObjRuleContainer
             $con = findConnectorOrDie($this);
 
             $con->sendSetRequest($this->getXPath(), '<member>'.$Obj->name().'</member>');
+
+            return true;
         }
 
+        return false;
     }
 
     public function &getXPath()
@@ -164,10 +171,9 @@ class TagRuleContainer extends ObjRuleContainer
     }
 
 
-
     /**
      * returns a copy of current Tag array
-     *
+     * @return Tag[]
      */
     public function tags()
     {

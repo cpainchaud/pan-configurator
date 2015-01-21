@@ -475,13 +475,13 @@ class PanAPIConnector
 
         if( isset($this->serial) && !is_null($this->serial) )
         {
-            $finalUrl = 'https://'.$this->apihost.'/api/';
+            $finalUrl = 'https://'.$host.'/api/';
             if( !$sendThroughPost )
              $finalUrl .= '?key='.$this->apikey.'&target='.$this->serial;
         }
         else
         {
-            $finalUrl = 'https://' . $this->apihost . '/api/';
+            $finalUrl = 'https://' . $host . '/api/';
             if( !$sendThroughPost )
                 $finalUrl .= '?key=' . $this->apikey;
         }
