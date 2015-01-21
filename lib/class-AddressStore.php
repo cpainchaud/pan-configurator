@@ -520,13 +520,13 @@ class AddressStore
 	/**
 	* Should only be called from a CentralStore or give unpredictable results
      * @param string $objectName
+	 * @param ReferenceableObject $ref
+	 * @param bool $nested
+	 * @param string $type
      * @return Address|AddressGroup|null
 	*/
 	public function find( $objectName , $ref=null, $nested=true, $type = '')
 	{
-        if( !$this->centralStore )
-            derr("can be called only from a central store");
-
 		$f = null;
 
 		$lower = strtolower($objectName);
