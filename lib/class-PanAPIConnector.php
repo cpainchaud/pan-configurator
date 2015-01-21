@@ -75,7 +75,8 @@ class PanAPIConnector
 
         if( !PH::$UseDomXML )
         {
-            $res = $this->sendRequest("type=op&cmd=<show><system><info></info></system></show>");
+            $url = "type=op&cmd=<show><system><info></info></system></show>";
+            $res = $this->sendRequest($url);
             $res = &searchForName('name', 'result', $res);
             if ($res === null)
                 derr('error');
@@ -110,7 +111,8 @@ class PanAPIConnector
         }
         else
         {
-            $res = $this->sendRequest("type=op&cmd=<show><system><info></info></system></show>", true);
+            $url = "type=op&cmd=<show><system><info></info></system></show>";
+            $res = $this->sendRequest($url, true);
             $orig = $res;
             $res = DH::findFirstElement('result', $res);
             if ($res === false )
@@ -249,7 +251,8 @@ class PanAPIConnector
 
                 if( PH::$UseDomXML )
                 {
-                    $res = $con->sendRequest("type=keygen&user=$user&password=$password");
+                    $url = "type=keygen&user=$user&password=$password";
+                    $res = $con->sendRequest($url);
 
                     $res = DH::findFirstElement('response', $res);
                     if ($res === false)
@@ -267,7 +270,8 @@ class PanAPIConnector
                 }
                 else
                 {
-                    $res = &$con->sendRequest("type=keygen&user=$user&password=$password");
+                    $url = "type=keygen&user=$user&password=$password";
+                    $res = &$con->sendRequest($url);
                     $res = &searchForName('name', 'result', $res);
                     if ($res === null)
                         derr('unsupported response from PANOS API');
@@ -303,7 +307,8 @@ class PanAPIConnector
 
     public function testConnectivity()
     {
-        $res = $this->sendRequest("type=op&cmd=<show><system><info></info></system></show>");
+        $url = "type=op&cmd=<show><system><info></info></system></show>";
+        $res = $this->sendRequest($url);
 
         print " Testing API connectivity: ";
 
