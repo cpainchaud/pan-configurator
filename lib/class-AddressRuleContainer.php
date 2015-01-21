@@ -239,7 +239,7 @@ class AddressRuleContainer extends ObjRuleContainer
         {
             if( $this->xmlroot === null )
                 return;
-            
+
             if( $this->xmlroot !== null && $this->name == 'snathosts' && count($this->all) == 0 )
                 DH::clearDomNodeChilds($this->xmlroot);
             else

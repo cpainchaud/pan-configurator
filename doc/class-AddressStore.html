@@ -1031,7 +1031,7 @@ name.<br />
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove">#</a>
-		<code><b>remove</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$s</var></span>, <span>boolean <var>$rewriteXML</var> = <span class="php-keyword1">true</span></span>, <span>boolean <var>$forceAny</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>remove</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$s</var></span>, <span>boolean <var>$rewriteXML</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1047,43 +1047,12 @@ name.<br />
 					<dd><code><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code></code><br>$s</dd>
 					<dt><var>$rewriteXML</var></dt>
 					<dd><code>boolean</code><br>$rewriteXML</dd>
-					<dt><var>$forceAny</var></dt>
-					<dd><code>boolean</code><br>$forceAny</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>boolean</code><br />
 				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="rewriteXML" id="_rewriteXML">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_rewriteXML">#</a>
-		<code><b>rewriteXML</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
 
 
 
@@ -1479,70 +1448,6 @@ other</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="setAny" id="_setAny">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_setAny">#</a>
-		<code><b>setAny</b>( )</code>
-
-		<div class="description short">
-			
-<p>Usually called when this object is attached to a Rule to make its target
-'Any'</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Usually called when this object is attached to a Rule to make its target
-'Any'</p>
-
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="API_setAny" id="_API_setAny">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_API_setAny">#</a>
-		<code><b>API_setAny</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="hostChanged" id="_hostChanged">
 
 		<td class="attributes"><code>
@@ -1565,94 +1470,6 @@ other</p>
 
 
 
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="hasObjectRecursive" id="_hasObjectRecursive">
-
-		<td class="attributes"><code>
-			 public 
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_hasObjectRecursive">#</a>
-		<code><b>hasObjectRecursive</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$object</var></span>, <span>boolean <var>$anyIsAcceptable</var> = <span class="php-keyword1">false</span></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$object</var></dt>
-					<dd><code><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code></code></dd>
-					<dt><var>$anyIsAcceptable</var></dt>
-					<dd><code>boolean</code><br>$anyIsAcceptable</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="includesStoreExpanded" id="_includesStoreExpanded">
-
-		<td class="attributes"><code>
-			 public 
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_includesStoreExpanded">#</a>
-		<code><b>includesStoreExpanded</b>( <span><code><a href="class-AddressStore.html">AddressStore</a></code> <var>$other</var></span>, <span>boolean <var>$anyIsAcceptable</var> = <span class="php-keyword1">true</span> </span> )</code>
-
-		<div class="description short">
-			
-<p>To determine if a store has all the Address from another store, it will
-expand AddressGroups instead of looking for them directly. Very useful when
-looking to compare similar rules.</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>To determine if a store has all the Address from another store, it will
-expand AddressGroups instead of looking for them directly. Very useful when
-looking to compare similar rules.</p>
-
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$other</var></dt>
-					<dd><code><code><a href="class-AddressStore.html">AddressStore</a></code></code><br>$other</dd>
-					<dt><var>$anyIsAcceptable</var></dt>
-					<dd><code>boolean</code><br>$anyIsAcceptable if any of these objects is Any the it will return false</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean</code><br>true if Address objects from $other are all in this store<br />
-				</div>
 
 
 

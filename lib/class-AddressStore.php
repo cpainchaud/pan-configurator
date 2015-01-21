@@ -729,7 +729,6 @@ class AddressStore
 			derr('You cannot add object with same name in a store');
 		}
 
-		
 		$class = get_class($s);
 		
 		if( $class == 'Address' )
@@ -742,14 +741,15 @@ class AddressStore
 			}
 			else
 			{
-				if( $this->centralStore )
-					$this->addr[$lower] = $s;
-				if( $rewritexml && $this->centralStore )
+				$this->addr[$lower] = $s;
+				if( $rewritexml )
                 {
                     if( !PH::$UseDomXML )
                         $this->addrroot['children'][] = &$s->xmlroot;
                     else
-                        $this->addrroot->appendChild($s->xmlroot);
+					{
+						$this->addrroot->appendChild($s->xmlroot);
+					}
                 }
 			}
 				
@@ -758,11 +758,10 @@ class AddressStore
 		}
 		elseif ( $class == 'AddressGroup' )
 		{
-			if( $this->centralStore )
-				$this->addrg[] = $s;
-			
+			$this->addrg[$lower] = $s;
 			$this->all[$lower] = $s;
-			if( $rewritexml && $this->centralStore )
+
+			if( $rewritexml )
             {
                 if( !PH::$UseDomXML )
                     $this->addrgroot['children'][] = &$s->xmlroot;
@@ -773,25 +772,10 @@ class AddressStore
 		}
 		else
 			derr('invalid class found');
-		
-			
-		if( !$this->centralStore )
-		{
-			$s->refInRule($this);
-		}
-		
-		if( $this->centralStore )
-				$s->owner = $this;
-			
-		if( $rewritexml )
-		{
-			if( !$this->centralStore )
-				$this->rewriteXML();
-			//else if( $class == "Address" && !$tmpobj )
-			//	$this->rewriteAddressStoreXML();
-			//else if( $class == "AddressGroup" )
-            //    $this->rewriteAddressGroupStoreXML();
-		}
+
+
+		$s->owner = $this;
+
 
 		return true;
 	}
@@ -827,7 +811,7 @@ class AddressStore
      * @param bool $forceAny
      * @return bool
      */
-	public function remove($s, $rewriteXML = true, $forceAny = false)
+	public function remove($s, $rewriteXML = true)
 	{
 		
 		global $PANC_DEBUG;
@@ -844,45 +828,33 @@ class AddressStore
 			return false;
 		}
 
-		if( !$this->centralStore && count($this->all) == 1 && !$forceAny )
-		{
-			derr('You are removing last address object from a rule, thus making it "ANY":'.$s->toString());
-		}
-
 		unset( $this->all[$lower]);
-		
-		if( $this->centralStore )
+
+
+		if(  $class == 'Address' )
 		{
-			if(  $class == 'Address' )
+			if( $s->isTmpAddr() )
 			{
-				if( $s->isTmpAddr() )
-				{
-					unset($this->tmpaddr[$lower]);
-				}
-				else
-				{
-					unset($this->addr[$lower]);
-				}
-			}
-			else if( $class == 'AddressGroup' )
-			{
-				unset($this->addrg[$lower]);
+				unset($this->tmpaddr[$lower]);
 			}
 			else
-				derr('invalid class found');
+			{
+				unset($this->addr[$lower]);
+			}
 		}
-				
-		if( !$this->centralStore )
-			$s->unrefInRule($this);
+		else if( $class == 'AddressGroup' )
+		{
+			unset($this->addrg[$lower]);
+		}
 		else
-			$s->owner = null;
+			derr('invalid class found');
+
+		$s->owner = null;
 
 		
 		if( $rewriteXML )
 		{
-			if( !$this->centralStore )
-				$this->rewriteXML();
-			else if( $class == "Address" && !$s->isTmpAddr() )
+			if( $class == "Address" && !$s->isTmpAddr() )
             {
                 if(!PH::$UseDomXML)
                     $this->rewriteAddressStoreXML();
@@ -902,53 +874,10 @@ class AddressStore
 		
 		return true;
 	}
-	
-	public function rewriteXML()
-	{
-		if( $this->centralStore )
-			derr('cannot be called from a centralStore');
 
-		// specific if this is a Source NAT host list
-		if( !is_null($this->owner) && $this->name == 'snathosts' && count($this->all) == 0)
-		{
-			if( PH::$UseDomXML === TRUE )
-			{
-				DH::clearDomNodeChilds($this->xmlroot);
-			}
-			else
-			{
-				$this->xmlroot['children'] = Array();
-				$this->xmlroot['content'] = null;
-			}
-			
-			
-			return;
-		}
-		
-		
-		if( is_null($this->xmlroot) )
-			return;
-		
-		
-		if( !$this->centralStore )
-		{
-			if( PH::$UseDomXML === TRUE )
-				DH::Hosts_to_xmlDom( $this->xmlroot, $this->all );
-			else
-				Hosts_to_xmlA( $this->xmlroot['children'], $this->all );
-			
-			return;
-		}
-		
-		
-	}
 
 	public function rewriteAddressStoreXML()
 	{
-		if( !$this->centralStore )
-			derr('can be called only from a central store');
-
-
 		if( PH::$UseDomXML === TRUE )
 		{
 			DH::clearDomNodeChilds($this->addrroot);
@@ -967,8 +896,6 @@ class AddressStore
 
 	public function rewriteAddressGroupStoreXML()
 	{
-		if( !$this->centralStore )
-			derr('can be called only from a central store');
 
 		if( PH::$UseDomXML === TRUE )
 		{
@@ -989,12 +916,6 @@ class AddressStore
 	
 	public function newAddress($name , $type, $value, $description = '', $rewriteXML = true)
 	{
-		
-		if( ! $this->centralStore )
-		{
-			derr("can be called only from a central store");
-		}
-
         $found = $this->find($name,null, true);
         if( $found )
             derr("cannot create Address named '".$name."' as this name is already in use");
@@ -1021,11 +942,7 @@ class AddressStore
 	**/
 	public function newAddressGroup($name)
 	{
-		
-		if( ! $this->centralStore )
-		{
-			derr("can be called only from a central store");
-		}
+
 		
 		$this->fasthashcomp = null;
 		
@@ -1038,8 +955,7 @@ class AddressStore
 		$this->add($newGroup);
 		
 		return $newGroup;
-		
-			
+
 	}
 	
 	/**
@@ -1048,18 +964,7 @@ class AddressStore
 	*/
 	public function &addressGroups()
 	{
-		if( $this->centralStore)
-			return $this->addrg;
-
-		$ret = Array();
-
-		foreach( $this->all as $o)
-		{
-			if( $o->isGroup() )
-				$ret[] = $o;
-		}
-
-		return $ret;
+		return $this->addrg;
 	}
 	
 	/**
@@ -1068,18 +973,7 @@ class AddressStore
 	*/
 	public function addressObjects()
 	{
-		if( $this->centralStore)
-			return $this->addr;
-
-		$ret = Array();
-
-		foreach( $this->all as $o)
-		{
-			if( $o->isAddress() )
-				$ret[] = $o;
-		}
-
-		return $ret;
+		return $this->addr;
 	}
 	
 	/**
@@ -1089,10 +983,6 @@ class AddressStore
 	*/
 	function createTmp($name, $ref=null)
 	{
-		// of course it can't work on non CentralStore objects
-		if( !$this->centralStore )
-			derr("You cannot create an object from this Store: '".$this->toString()."'\n");
-
 		$this->fasthashcomp = null;
 		
 		$f = new Address($name,$this);
@@ -1215,43 +1105,8 @@ class AddressStore
 		}
 		
 	}
-	
-	/**
-	* Usually called when this object is attached to a Rule to make its target 'Any'
-	*
-	*/
-	public function setAny()
-	{
-		if( $this->centralStore )
-			derr('cannot be called from a central store');
-		
-		
-		$this->fasthashcomp = null;
-		
-		foreach( $this->all as $s )
-		{
-			$s->unrefInRule($this);
-		}
-		$this->all = Array();
-		$this->rewriteXML();
-		
-	}
 
-	public function API_setAny()
-	{
-		$this->setAny();
-		$xpath = &$this->getXPath();
-		$con = findConnectorOrDie($this);
 
-		$url = "type=config&action=delete&xpath=".$xpath;
-		$con->sendRequest($url);
-
-		$url = "type=config&action=set&xpath=$xpath&element=<member>any</member>";
-		$con->sendRequest($url);
-	}
-
-	
-	
 	public function hostChanged($h, &$oldname)
 	{
 		if( ! $this->inStore($h) )
@@ -1273,97 +1128,7 @@ class AddressStore
 		
 	}
 
-    /**
-     * @param Address|AddressGroup
-     * @param bool $anyIsAcceptable
-     * @return bool
-     */
-    public function hasObjectRecursive( $object, $anyIsAcceptable=false)
-    {
-        if( $this->centralStore )
-            derr("Should never be called from a Central Store");
 
-        if( $object === null )
-            derr('cannot work with null objects');
-
-        if( $anyIsAcceptable && $this->count() == 0 )
-            return false;
-
-        foreach( $this->all as $o )
-        {
-            if( $o === $object )
-                return true;
-            if( $o->isGroup() )
-                if( $o->hasObjectRecursive($object) ) return true;
-        }
-
-        return false;
-    }
-
-
-	/**
-	* To determine if a store has all the Address from another store, it will expand AddressGroups instead of looking for them directly. Very useful when looking to compare similar rules.
-    * @param AddressStore $other
-     * @param bool $anyIsAcceptable if any of these objects is Any the it will return false
-	* @return bool true if Address objects from $other are all in this store
-	*/
-	public function includesStoreExpanded(AddressStore $other, $anyIsAcceptable=true )
-	{
-		if( $this->centralStore )
-			derr("Should never be called from a Central Store");
-
-		if( !$anyIsAcceptable )
-		{
-			if( $this->count() == 0 || $other->count() == 0 )
-				return false;
-		}
-
-		if( $this->count() == 0 )
-			return true;
-
-		if( $other->count() == 0 )
-			return false;
-
-		$localA = Array();
-		$A = Array();
-
-		foreach( $this->all as $object )
-		{
-			if( $object->isGroup() )
-			{
-				$flat = $object->expand();
-				$localA = array_merge($localA, $flat);
-			}
-			else
-				$localA[] = $object;
-		}
-		$localA = array_unique_no_cast($localA);
-
-		$otherAll = $other->all();
-
-		foreach( $otherAll as $object )
-		{
-			if( $object->isGroup() )
-			{
-				$flat = $object->expand();
-				$A = array_merge($A, $flat);
-			}
-			else
-				$A[] = $object;
-		}
-		$A = array_unique_no_cast($A);
-
-		$diff = array_diff_no_cast($A, $localA);
-
-		if( count($diff) > 0 )
-		{
-			return false;
-		}
-		
-
-		return true;
-
-	}
 	
 }
 
