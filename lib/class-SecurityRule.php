@@ -215,7 +215,7 @@ class SecurityRule extends Rule
 		
 		// Begin <negate-destination> extraction
 		//
-		$negatedDestinationRoot = DH::findFirstElementOrCreate('negate-destination', $xml);
+		$negatedDestinationRoot = DH::findFirstElement('negate-destination', $xml);
 		if( $negatedDestinationRoot !== false )
 			$this->negatedDestination = yesNoBool($negatedDestinationRoot->textContent);
 		else

@@ -507,7 +507,8 @@ class PanAPIConnector
                 $parameters['target'] = $this->serial;
             }
             $parameters['key'] = $this->apikey;
-            $c->setPost(http_build_query($parameters));
+            $properParams = http_build_query($parameters);
+            $c->setPost($properParams);
         }
 
         if( $this->showApiCalls )
