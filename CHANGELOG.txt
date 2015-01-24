@@ -2,6 +2,7 @@ CHANGELOG
 
 version 1.2.2
 * switch API calls from GET to POST for larger requests
+* implemented new timeouts system for API calls for people with slow connection to the device
 
 version 1.2.1
 * speed improvment when loading candidate config from a firewall, call API "show config saved candidate-config" now.
