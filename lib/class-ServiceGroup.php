@@ -231,8 +231,15 @@ class ServiceGroup
 		if( in_array($old, $this->members, true) !== FALSE )
 		{
 			if( !is_null($new) )
-				$this->add($new,false);
-			$this->remove($old);
+			{
+				$this->add($new, false);
+				if( $old->name() == $new->name() )
+					$this->remove($old, false);
+				else
+					$this->remove($old);
+			}
+			else
+				$this->remove($old);
 			
 			return true;
 		}
