@@ -245,7 +245,7 @@ class ServiceGroup
 	{
 		if( PH::$UseDomXML === TRUE )
 		{
-			if( $this->owner->version >= 60 )
+			if( $this->owner->owner->version >= 60 )
 			{
 				$membersRoot = DH::findFirstElement('static', $this->xmlroot);
 				if( $membersRoot === false )
@@ -259,7 +259,7 @@ class ServiceGroup
 		}
 		else
         {
-            if( $this->owner->version >= 60 )
+            if( $this->owner->owner->version >= 60 )
                 Hosts_to_xmlA($this->membersRoot['children'], $this->members, 'member', false);
             else
                 Hosts_to_xmlA($this->xmlroot['children'], $this->members, 'member', false);
