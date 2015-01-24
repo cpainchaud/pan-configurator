@@ -998,7 +998,11 @@ class mycurl
 
          curl_setopt($s,CURLOPT_URL, str_replace(' ', '%20',$this->_url) ); 
          //curl_setopt($s,CURLOPT_HTTPHEADER,array('Expect:')); 
-         curl_setopt($s,CURLOPT_TIMEOUT,$this->_timeout); 
+         curl_setopt($s,CURLOPT_CONNECTTIMEOUT,3);
+         curl_setopt($s,CURLOPT_TIMEOUT,3600);
+         curl_setopt($s,CURLOPT_LOW_SPEED_LIMIT,500);
+         curl_setopt($s,CURLOPT_LOW_SPEED_TIME,60);
+
          curl_setopt($s,CURLOPT_MAXREDIRS,$this->_maxRedirects); 
          curl_setopt($s,CURLOPT_RETURNTRANSFER,true); 
          curl_setopt($s,CURLOPT_FOLLOWLOCATION,$this->_followlocation);
