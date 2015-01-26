@@ -108,13 +108,34 @@ class ServiceGroup
 		if( $this->name === FALSE )
 			derr("name not found\n");
 
-		foreach( $xml->childNodes as $node)
+		if( $this->owner->owner->version >= 60 )
 		{
-			if( $node->nodeType != 1 ) continue;
+			$membersRoot = DH::findFirstElement('static', $this->xmlroot);
 
-			$f = $this->owner->findOrCreate($node->textContent, $this, true);
-			$this->members[] = $f;
+			if( $membersRoot === false )
+			{
+				derr('unsupported non static type ServiceGroup', $this->xmlroot);
+			}
 
+			foreach( $membersRoot->childNodes as $node)
+			{
+				if( $node->nodeType != 1 ) continue;
+
+				$f = $this->owner->findOrCreate($node->textContent, $this, true);
+				$this->members[] = $f;
+			}
+
+		}
+		else
+		{
+			foreach( $xml->childNodes as $node)
+			{
+				if( $node->nodeType != 1 ) continue;
+
+				$f = $this->owner->findOrCreate($node->textContent, $this, true);
+				$this->members[] = $f;
+
+			}
 		}
 	
 	}
