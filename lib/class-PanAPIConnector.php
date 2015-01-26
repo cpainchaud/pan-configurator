@@ -184,6 +184,8 @@ class PanAPIConnector
                     self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1] );
             }
         }
+        else
+            mwarn("$file was not read as it does not exist");
     }
 
     static public function saveConnectorsToUserHome()
