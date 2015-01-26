@@ -185,7 +185,7 @@ class PanAPIConnector
             }
         }
         else
-            mwarn("$file was not read as it does not exist");
+            mwarning("$file was not read as it does not exist");
     }
 
     static public function saveConnectorsToUserHome()
