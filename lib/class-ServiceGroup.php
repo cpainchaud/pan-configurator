@@ -52,16 +52,16 @@ class ServiceGroup
 		if( is_null($this->name) )
 			derr("service group name not found\n");
 
-        if( $this->owner->version >= 60 )
+        if( $this->owner->owner->version >= 60 )
         {
             if( !isset($this->xmlroot['children']) )
                 $this->xmlroot['children'] = Array();
 
-            $this->membersRoot = &searchForName('name', 'static', $this->xmlroot['children']);
+            $this->membersRoot = &searchForName('name', 'members', $this->xmlroot['children']);
 
             if( $this->membersRoot === null )
             {
-                $this->membersRoot = Array( 'name' => 'static' , 'children' => Array() );
+                $this->membersRoot = Array( 'name' => 'members' , 'children' => Array() );
                 $this->xmlroot['children'][] = &$this->membersRoot;
             }
             if( !isset($membersRoot['children']) )
@@ -110,11 +110,11 @@ class ServiceGroup
 
 		if( $this->owner->owner->version >= 60 )
 		{
-			$membersRoot = DH::findFirstElement('static', $this->xmlroot);
+			$membersRoot = DH::findFirstElement('members', $this->xmlroot);
 
 			if( $membersRoot === false )
 			{
-				derr('unsupported non static type ServiceGroup', $this->xmlroot);
+				derr('unsupported non v6 syntax type ServiceGroup', $this->xmlroot);
 			}
 
 			foreach( $membersRoot->childNodes as $node)

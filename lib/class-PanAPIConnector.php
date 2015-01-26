@@ -165,7 +165,7 @@ class PanAPIConnector
             $file = getenv('HOMEPATH').'/'.self::$keyStoreFileName;
         else
             $file = getenv('HOME').'/'.self::$keyStoreFileName;
-        
+
         if( file_exists($file) )
         {
             $content = file_get_contents($file);
