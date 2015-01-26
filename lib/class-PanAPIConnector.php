@@ -161,7 +161,11 @@ class PanAPIConnector
 
         self::$keyStoreInitialized = true;
 
-        $file = getenv('HOME').'/'.self::$keyStoreFileName;
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            $file = getenv('HOMEPATH').'/'.self::$keyStoreFileName;
+        else
+            $file = getenv('HOME').'/'.self::$keyStoreFileName;
+        
         if( file_exists($file) )
         {
             $content = file_get_contents($file);
@@ -199,7 +203,10 @@ class PanAPIConnector
                 $content = $content.$conn->apihost.':'.$conn->apikey."\n";
         }
 
-        $file = getenv('HOME').'/'.self::$keyStoreFileName;
+        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            $file = getenv('HOMEPATH').'/'.self::$keyStoreFileName;
+        else
+            $file = getenv('HOME').'/'.self::$keyStoreFileName;
 
         file_put_contents($file, $content);
     }
