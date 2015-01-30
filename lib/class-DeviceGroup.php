@@ -53,8 +53,7 @@ class DeviceGroup
      */
     public $serviceStore=null;
 
-	public static $templatexml = '<entry name="**Need a Name**"><address></address>
-									<post-rulebase><security><rules></rules></security><nat><rules></rules></nat></post-rulebase>
+	public static $templatexml = '<entry name="**Need a Name**"><address></address><post-rulebase><security><rules></rules></security><nat><rules></rules></nat></post-rulebase>
 									<pre-rulebase><security><rules></rules></security><nat><rules></rules></nat></pre-rulebase>
 									</entry>';
 
@@ -137,8 +136,22 @@ class DeviceGroup
 
         $this->postDecryptionRules= new RuleStore($this);
         $this->postDecryptionRules->setStoreRole(true,"DecryptionRule", false);
-		
 
+	}
+
+	public function load_from_templateXml()
+	{
+		if( $this->owner === null )
+			derr('cannot be used if owner === null');
+
+		$fragment = $this->owner->xmlroot->ownerDocument->createDocumentFragment();
+
+		if( ! $fragment->appendXML(self::$templatexml) )
+			derr('error occured while loading device group template xml');
+
+		$element = $this->owner->xmlroot->appendChild($fragment);
+
+		$this->load_from_domxml($element);
 	}
 	
 	
@@ -645,7 +658,11 @@ class DeviceGroup
 
 	public function setName($newName)
 	{
-		$this->xmlroot['attributes']['name'] = $newName;
+		if( PH::$UseDomXML )
+			$this->xmlroot->setAttribute('name', $newName);
+		else
+			$this->xmlroot['attributes']['name'] = $newName;
+
 		$this->name = $newName;
 	}
 	

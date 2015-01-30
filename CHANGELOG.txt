@@ -2,6 +2,7 @@ CHANGELOG
 
 version 1.2.3
 * fix for ServiceGroup with PANOS6 when reading from XML
+* fixes for DOM XML use vs DeviceGroup creation
 
 version 1.2.2
 * switch API calls from GET to POST for larger requests

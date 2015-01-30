@@ -912,17 +912,12 @@ class PanoramaConf
 	**/
 	public function createDeviceGroup($newDV_Name)
 	{
-		$xmlobj = new XmlArray();
-		$xmlarr = $xmlobj->load_string(DeviceGroup::$templatexml);
-		$this->devicegrouproot['children'][] = &$xmlarr;
+		$newDG = new DeviceGroup($this);
+		$newDG->load_from_templateXml();
 
-		$ldv = new DeviceGroup($this);
-		$ldv->load_from_xml($xmlarr,$this);
-		$this->deviceGroups[] = $ldv;
+		$newDG->setName($newDV_Name);
 
-		$ldv->setName($newDV_Name);
-
-		return $ldv;
+		return $newDG;
 
 	}
 
