@@ -406,6 +406,32 @@ class ServiceGroup
 
 	public function xml_convert_to_v6()
 	{
+
+		if( PH::$UseDomXML )
+		{
+			$newElement = $this->xmlroot->ownerDocument->createElement('members');
+			$nodes = Array();
+
+			foreach($this->xmlroot->childNodes as $node)
+			{
+				if( $node->nodeType != 1 )
+					continue;
+
+				$nodes[] = $node;
+			}
+
+
+			foreach($nodes as $node)
+			{
+				$newElement->appendChild($node);
+			}
+
+
+			$this->xmlroot->appendChild($newElement);
+
+			return;
+		}
+
 		$ar = Array('name' => 'members'  );
 
 		$ar['children'] = &$this->xmlroot['children'];
