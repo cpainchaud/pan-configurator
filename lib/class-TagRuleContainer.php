@@ -81,6 +81,38 @@ class TagRuleContainer extends ObjRuleContainer
         return false;
     }
 
+
+    public function merge(TagRuleContainer $container, $exclusionFilter = null)
+    {
+        $change = false;
+        foreach( $container->o as $obj )
+        {
+            if( !$this->has($obj) )
+            {
+                $exclude = false;
+                if( $exclusionFilter !== null )
+                {
+                    foreach( $exclusionFilter as &$filter )
+                    {
+                        if( strpos($obj->name(), $filter) === 0 )
+                        {
+                            $exclude = true;
+                            break;
+                        }
+                    }
+                }
+
+                if( !$exclude )
+                {
+                    $change = true;
+                    $this->addTag($obj);
+                }
+            }
+        }
+
+        return $change;
+    }
+
     /**
      * @param Tag|string can be Tag object or tag name (string). this is case sensitive
      * @param bool

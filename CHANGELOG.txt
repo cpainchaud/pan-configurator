@@ -1,6 +1,8 @@
 CHANGELOG
 
 version 1.2.3
+* serious bug fixes , upgrade is recommanded
+* TagRuleContainer->merge() implemented
 * fix for ServiceGroup with PANOS6 when reading from XML
 * fixes for DOM XML use vs DeviceGroup creation
 
