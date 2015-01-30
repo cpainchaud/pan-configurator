@@ -417,7 +417,7 @@ class AddressRuleContainer extends ObjRuleContainer
      * @param bool $anyIsAcceptable if any of these objects is Any the it will return false
      * @return bool true if Address objects from $other are all in this store
      */
-    public function includesStoreExpanded(AddressRuleContainer $other, $anyIsAcceptable=true )
+    public function includesContainerExpanded(AddressRuleContainer $other, $anyIsAcceptable=true )
     {
 
         if( !$anyIsAcceptable )

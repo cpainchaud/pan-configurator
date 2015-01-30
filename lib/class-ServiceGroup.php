@@ -425,7 +425,7 @@ class ServiceGroup
 	{
 		$ret = Array();
 
-		foreach( $this->addresses as  $object )
+		foreach( $this->members as  $object )
 		{
 			if( $object->isGroup() )
 			{

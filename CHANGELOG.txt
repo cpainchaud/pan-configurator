@@ -71,8 +71,8 @@ version 1.1.0
 
 version 1.0.4
 * implemented ZoneStore->includesStore() to know if one includes the other
-* implemented AddressStore->includesStoreExpanded() to know if one includes the other
-* implemented ServiceStore->includesStoreExpanded() to know if one includes the other
+* implemented AddressStore->includesContainerExpanded() to know if one includes the other
+* implemented ServiceStore->includesContainerExpanded() to know if one includes the other
 * implemented ServiceGroup->expand() and AddressGroup->expand() to get a list of all objects (recursive) within that group
 * impelemented Address->resolveIP_Start_End()
 * fix cidr::netMatch() function for partial matches

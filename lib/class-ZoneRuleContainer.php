@@ -339,7 +339,7 @@ class ZoneRuleContainer extends ObjRuleContainer
 
         foreach( $zones as $zone )
         {
-            if( !$this->inStore($zone) )
+            if( !$this->hasZone($zone) )
                 return false;
         }
 
