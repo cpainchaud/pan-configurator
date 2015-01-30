@@ -818,7 +818,10 @@ class PanoramaConf
 
 		$url = "&type=import&category=configuration&category=configuration";
 
-		$answer = &$this->connector->sendRequest($url, false, array_to_xml($this->xmlroot), $config_name );
+		if( PH::$UseDomXML )
+			$answer = &$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
+		else
+			$answer = &$this->connector->sendRequest($url, false, array_to_xml($this->xmlroot), $config_name );
 
 		print "OK!\n";
 	}

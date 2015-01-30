@@ -45,7 +45,7 @@ class RuleStore
 
     static private $storeNameByType = Array(
 
-        'SecurityRule' => Array( 'name' => 'Security', 'varName' => 'SecRules', 'xpathRoot' => 'security' ),
+        'SecurityRule' => Array( 'name' => 'Security', 'varName' => 'SecurityRules', 'xpathRoot' => 'security' ),
         'NatRule' => Array( 'name' => 'NAT', 'varName' => 'NatRules', 'xpathRoot' => 'nat' ),
         'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'DecryptRules', 'xpathRoot' => 'decryption' )
 

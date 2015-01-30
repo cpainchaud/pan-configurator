@@ -149,7 +149,7 @@ class DeviceGroup
 		if( ! $fragment->appendXML(self::$templatexml) )
 			derr('error occured while loading device group template xml');
 
-		$element = $this->owner->xmlroot->appendChild($fragment);
+		$element = $this->owner->devicegrouproot->appendChild($fragment);
 
 		$this->load_from_domxml($element);
 	}

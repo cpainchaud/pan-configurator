@@ -273,9 +273,9 @@ class DH
 			else
 			{
 				if( $lineReturn )
-					$out .= $firstTag.'>'.$node->textContent.'</'.$node->nodeName.">\n";
+					$out .= $firstTag.'>'.str_replace( self::$charsToConvert, self::$charsToConvertInto, $node->nodeValue).'</'.$node->nodeName.">\n";
 				else
-					$out .= $firstTag.'>'.$node->textContent.'</'.$node->nodeName.">";
+					$out .= $firstTag.'>'.str_replace( self::$charsToConvert, self::$charsToConvertInto, $node->nodeValue).'</'.$node->nodeName.">";
 			}
 		}
 		else
@@ -288,6 +288,9 @@ class DH
 
 		return $out;	
 	}
+
+	static private $charsToConvert = array('&','>','<','"');
+	static private $charsToConvertInto = array('&amp;','&gt;','&lt;','&quot;');
 
 
 	/**
