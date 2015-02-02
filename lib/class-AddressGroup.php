@@ -442,11 +442,11 @@ class AddressGroup
 			derr('unsupported with Dynamic Address Groups');
 		return count($this->members);
 	}
-	
+
 	/**
-	* returns the member list as an Array of objects (mix of Address, AddressGroups, Regions..)
-	*
-	*/
+	 * returns the member list as an Array of objects (mix of Address, AddressGroups, Regions..)
+	 * @return Address[]|AddressGroup[]
+	 */
 	public function members()
 	{
 		return $this->members;
