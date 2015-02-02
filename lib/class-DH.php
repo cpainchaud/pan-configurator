@@ -202,15 +202,13 @@ class DH
 	static function findAttribute($attrName, DOMElement $node)
 	{
 
-		foreach( $node->attributes as $child )
-		{
-			if( $child->nodeName == $attrName )
-			{
-				return $child->nodeValue;
-			}
-		}
+		$node = $node->getAttributeNode($attrName);
 
-		return FALSE;
+		if( $node === false )
+				return false;
+
+		return $node->nodeValue;
+
 	}
 
     /**

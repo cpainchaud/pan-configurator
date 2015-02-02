@@ -41,6 +41,11 @@ class AddressGroup
 	private $members = Array();
 
 	/**
+	 * @var DOMElement
+	 */
+	private $membersRoot = null;
+
+	/**
 	 * @var TagStore
 	 */
 	public $tags;
@@ -194,23 +199,44 @@ class AddressGroup
 		$this->name = DH::findAttribute('name', $xml);
 		if( $this->name === FALSE )
 			derr("name not found\n");
-		
-		
-		foreach( $xml->childNodes as $node)
-		{
-			if( $node->nodeType != 1 ) continue;
-
-			$f = $this->owner->findOrCreate($node->textContent, $this, true);
-			$this->members[] = $f;
-			
-		}
 
 		if( $this->owner->owner->version >= 60 )
 		{
-			$tagRoot = DH::findFirstElement('tag', $xml);
+			$tagRoot = DH::findFirstElement('tag', $this->xmlroot);
+
 			if( $tagRoot !== false )
 				$this->tags->load_from_domxml($tagRoot);
+
+			$this->membersRoot = DH::findFirstElement('static', $xml);
+
+			if( $this->membersRoot === false )
+			{
+				$this->isDynamic = true;
+			}
+			else
+			{
+				foreach( $this->membersRoot->childNodes as $node)
+				{
+					if( $node->nodeType != 1 ) continue;
+
+					$f = $this->owner->findOrCreate($node->textContent, $this, true);
+					$this->members[] = $f;
+
+				}
+			}
 		}
+		else
+		{
+			foreach( $xml->childNodes as $node)
+			{
+				if( $node->nodeType != 1 ) continue;
+
+				$f = $this->owner->findOrCreate($node->textContent, $this, true);
+				$this->members[] = $f;
+
+			}
+		}
+
 	}
 
     /**
@@ -255,7 +281,9 @@ class AddressGroup
 	*/
 	public function add($newO, $rewriteXml = true)
 	{
-		
+		if( $this->isDynamic )
+			derr('cannot be used on Dynamic Address Groups');
+
 		if( !is_object($newO) )
 			derr("Only objects can be passed to this function");
 		
@@ -282,6 +310,9 @@ class AddressGroup
      */
 	public function remove( $old, $rewriteXml = true )
 	{
+		if( $this->isDynamic )
+			derr('cannot be used on Dynamic Address Groups');
+
 		if( !is_object($old) )
 			derr("Only objects can be passed to this function");
 
@@ -371,11 +402,14 @@ class AddressGroup
 
 		if( PH::$UseDomXML === TRUE)
 		{
-			DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
+			if( $this->owner->owner->version >= 60 )
+				DH::Hosts_to_xmlDom($this->membersRoot, $this->members, 'member', false);
+			else
+				DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
 		}
 		else
         {
-            if( $this->owner->version >= 60 )
+            if( $this->owner->owner->version >= 60 )
                 Hosts_to_xmlA($this->membersRoot['children'], $this->members, 'member', false);
             else
                 Hosts_to_xmlA($this->xmlroot['children'], $this->members, 'member', false);
@@ -389,6 +423,8 @@ class AddressGroup
 	*/
 	public function count()
 	{
+		if( $this->isDynamic )
+			derr('unsupported with Dynamic Address Groups');
 		return count($this->members);
 	}
 	

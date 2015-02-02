@@ -189,7 +189,6 @@ class Address
 				$this->tags->load_from_domxml($tagRoot);
 		}
 
-
 	}
 
     /**

@@ -182,7 +182,6 @@ class RQuery
     /**
      * @param string $text
      * @param string $errorMessage
-     * @param string[] $supportedFilters
      * @return bool|int
      */
     public function parseFromString($text, &$errorMessage)
@@ -406,6 +405,7 @@ class RQuery
     }
 }
 
+// <editor-fold desc=" ***** Rule filters *****" defaultstate="collapsed" >
 
 //                                              //
 //                Zone Based Actions            //
@@ -598,3 +598,30 @@ RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
     'eval' => "stripos(\$rule->name(), '!value!') !== false",
     'arg' => true
 );
+
+// </editor-fold>
+
+// <editor-fold desc=" ***** Address filters *****" defaultstate="collapsed" >
+RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
+    'eval' => "strtolower(\$object->name()) == '!value!'",
+    'arg' => true
+);
+RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
+    'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
+    'arg' => true
+);
+// </editor-fold>
+
+// <editor-fold desc=" ***** Service filters *****" defaultstate="collapsed" >
+RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(
+    'eval' => "strtolower(\$object->name()) == '!value!'",
+    'arg' => true
+);
+RQuery::$defaultFilters['service']['name']['operators']['eq.nocase'] = Array(
+    'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
+    'arg' => true
+);
+// </editor-fold>
+
+
+

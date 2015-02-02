@@ -74,12 +74,13 @@ trait ReferencableObject
 		return $c;
 	}
 	
-	public function display_references()
+	public function display_references($indent=0)
 	{
-		print "Displaying referencers for ".$this->toString()."\n";
+		$strpad = str_pad('',$indent);
+		print $strpad."* Displaying referencers for ".$this->toString()."\n";
 		foreach( $this->refrules as $o )
 		{
-			print $o->toString()."\n";
+			print $strpad.'  -'.$o->toString()."\n";
 		}
 	}
 
