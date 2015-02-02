@@ -150,7 +150,12 @@ class ServiceGroup
 		$this->setRefName($newname);
 		
 	}
-	
+
+	/**
+	 * @param Service|ServiceGroup $newObject
+	 * @param bool $rewriteXml
+	 * @return bool
+	 */
 	public function add($newObject, $rewriteXml = true)
 	{
 		
@@ -186,11 +191,12 @@ class ServiceGroup
 		
 		return false;
 	}
-	
+
 	/**
-	* Removes a member from this group
-	*
-	*/
+	 * @param Service|ServiceGroup $old
+	 * @param bool $rewritexml
+	 * @return bool
+	 */
 	public function remove( $old , $rewritexml = true)
 	{
 		if( !is_object($old) )
