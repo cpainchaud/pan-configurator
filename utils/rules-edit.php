@@ -420,11 +420,11 @@ if( isset(PH::$args['listactions']) )
 
 if( isset(PH::$args['listfilters']) )
 {
-    ksort(RQuery::$defaultFilters);
+    ksort(RQuery::$defaultFilters['rule']);
 
     print "Listing of supported filters:\n\n";
 
-    foreach(RQuery::$defaultFilters as $index => &$filter )
+    foreach(RQuery::$defaultFilters['rule'] as $index => &$filter )
     {
         print "* ".$index."\n";
         ksort( $filter['operators'] );
@@ -585,13 +585,13 @@ foreach( $explodedActions as &$exAction )
 // create a RQuery if a filter was provided
 //
 /**
- * @var RQuery $rulesFilterRQuery
+ * @var RQuery $objectFilterRQuery
  */
-$rulesFilterRQuery = null;
+$objectFilterRQuery = null;
 if( $rulesFilter !== null )
 {
-    $rulesFilterRQuery = new RQuery();
-    $res = $rulesFilterRQuery->parseFromString($rulesFilter, $errorMessage);
+    $objectFilterRQuery = new RQuery('rule');
+    $res = $objectFilterRQuery->parseFromString($rulesFilter, $errorMessage);
     if( $res === false )
     {
         fwrite(STDERR, "\n\n**ERROR** Rule filter parser: " . $errorMessage . "\n\n");
@@ -599,7 +599,7 @@ if( $rulesFilter !== null )
     }
 
     print "Parsing Rule filter and output it after sanitization: ";
-    $rulesFilterRQuery->display();
+    $objectFilterRQuery->display();
     print "\n";
 }
 // --------------------
@@ -781,9 +781,9 @@ foreach( $rulesToProcess as &$rulesRecord )
 
     foreach($rules as $rule )
     {
-        if( $rulesFilterRQuery !== null )
+        if( $objectFilterRQuery !== null )
         {
-            $queryResult = $rulesFilterRQuery->matchSingleRule($rule);
+            $queryResult = $objectFilterRQuery->matchSingleRule($rule);
             if( !$queryResult )
                 continue;
         }
