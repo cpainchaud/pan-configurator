@@ -254,10 +254,10 @@ class ServiceGroup
 		{
 			if( $this->owner->owner->version >= 60 )
 			{
-				$membersRoot = DH::findFirstElement('static', $this->xmlroot);
+				$membersRoot = DH::findFirstElement('members', $this->xmlroot);
 				if( $membersRoot === false )
 				{
-					derr('<static> not found');
+					derr('<members> not found');
 				}
 				DH::Hosts_to_xmlDom($membersRoot, $this->members, 'member', false);
 			}
