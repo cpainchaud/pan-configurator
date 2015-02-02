@@ -275,30 +275,45 @@ class AddressGroup
 	
 	/**
 	* Add a member to this group, it must be passed as an object
-	* @param Address|AddressGroup $newO Object to be added
+	* @param Address|AddressGroup $newObject Object to be added
 	* @param bool $rewriteXml
      * @return bool
 	*/
-	public function add($newO, $rewriteXml = true)
+	public function add($newObject, $rewriteXml = true)
 	{
 		if( $this->isDynamic )
 			derr('cannot be used on Dynamic Address Groups');
 
-		if( !is_object($newO) )
+		if( !is_object($newObject) )
 			derr("Only objects can be passed to this function");
-		
-		if( ! in_array($newO, $this->members, true) )
+
+		if( ! in_array($newObject, $this->members, true) )
 		{
-			$this->members[] = $newO;
-			$newO->refInRule($this);
+			$this->members[] = $newObject;
+			$newObject->refInRule($this);
 			if( $rewriteXml )
 			{
-				$this->rewriteXML();
+				if( $this->owner->owner->version >= 60 )
+				{
+					$membersRoot = DH::findFirstElement('static', $this->xmlroot);
+					if( $membersRoot === false )
+					{
+						derr('<static> not found');
+					}
+
+					$tmpElement = $membersRoot->appendChild($this->xmlroot->ownerDocument->createElement('member'));
+					$tmpElement->nodeValue = $newObject->name();
+				}
+				else
+				{
+					$tmpElement = $this->xmlroot->appendChild($this->xmlroot->ownerDocument->createElement('member'));
+					$tmpElement->nodeValue = $newObject->name();
+				}
 			}
-			
+
 			return true;
 		}
-		
+
 		return false;
 	}
 
@@ -339,6 +354,9 @@ class AddressGroup
 	public function removeAll($rewriteXml = true)
 	{
 
+		if( $this->isDynamic )
+			derr('cannot be called on Dynamic Address Group');
+
 		foreach( $this->members as $a)
 		{
 			$a->unRefInRule($this);
@@ -348,10 +366,7 @@ class AddressGroup
 
 		if( $rewriteXml )
 		{
-			if( PH::$UseDomXML === TRUE)
-				DH::clearNodeChilds($this->xmlroot);
-			else	
-				$this->xmlroot['children'] = Array();
+			$this->rewriteXML();
 		}
 
 	}

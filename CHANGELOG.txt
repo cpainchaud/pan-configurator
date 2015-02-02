@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.3.0
+* introduction of address-edit.php and service-edit.php on same basis than rules-edit.php for objects manipulations
+
 version 1.2.3
 * serious bug fixes , upgrade is recommended
 * TagRuleContainer->merge() implemented
