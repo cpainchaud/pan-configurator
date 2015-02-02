@@ -625,6 +625,14 @@ class AddressGroup
         return false;
     }
 
+	public function API_delete()
+	{
+		$connector = findConnectorOrDie($this);
+		$xpath = $this->getXPath();
+
+		$connector->sendDeleteRequest($xpath);
+	}
+
 	
 
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"></entry>';

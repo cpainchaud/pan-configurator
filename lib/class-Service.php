@@ -258,8 +258,19 @@ class Service
 
 		return true;
 	}
-	
-	
+
+
+	public function API_delete()
+	{
+		if($this->isTmpSrv())
+			derr('cannot be called on a Tmp service object');
+
+		$connector = findConnectorOrDie($this);
+		$xpath = $this->getXPath();
+
+		$connector->sendDeleteRequest($xpath);
+	}
+
 	
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"><protocol><tcp><port>0</port></tcp></protocol></entry>'; 
 	static protected $templatexmlroot = null;

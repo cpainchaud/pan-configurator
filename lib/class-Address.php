@@ -103,6 +103,18 @@ class Address
 		$this->tags = new TagRuleContainer('tag', $this);
 		
 	}
+
+	public function API_delete()
+	{
+		if($this->isTmpAddr())
+			derr('cannot be called on a Tmp address object');
+
+		$connector = findConnectorOrDie($this);
+		$xpath = $this->getXPath();
+
+		$connector->sendDeleteRequest($xpath);
+	}
+
 	
 	/**
 	* @ignore
