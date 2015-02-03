@@ -783,7 +783,7 @@ foreach( $rulesToProcess as &$rulesRecord )
     {
         if( $objectFilterRQuery !== null )
         {
-            $queryResult = $objectFilterRQuery->matchSingleRule($rule);
+            $queryResult = $objectFilterRQuery->matchSingleObject($rule);
             if( !$queryResult )
                 continue;
         }

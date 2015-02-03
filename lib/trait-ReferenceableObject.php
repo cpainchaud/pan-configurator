@@ -69,10 +69,9 @@ trait ReferencableObject
 	
 	public function countReferences()
 	{
-		$c = count($this->refrules);
-		
-		return $c;
+		return count($this->refrules);
 	}
+
 	
 	public function display_references($indent=0)
 	{
@@ -80,7 +79,7 @@ trait ReferencableObject
 		print $strpad."* Displaying referencers for ".$this->toString()."\n";
 		foreach( $this->refrules as $o )
 		{
-			print $strpad.'  -'.$o->toString()."\n";
+			print $strpad.'  - '.$o->toString()."\n";
 		}
 	}
 

@@ -60,10 +60,10 @@ class RQuery
     }
 
     /**
-     * @param SecurityRule $rule
+     * @param SecurityRule $object
      * @return bool
      */
-    public function matchSingleRule($rule)
+    public function matchSingleObject($object)
     {
         if( count($this->subQueries) == 0 )
         {
@@ -124,15 +124,15 @@ class RQuery
         if( count($queries) == 1 )
         {
             if( $this->inverted )
-                return !$queries[0]->matchSingleRule($rule);
-            return $queries[0]->matchSingleRule($rule);
+                return !$queries[0]->matchSingleObject($object);
+            return $queries[0]->matchSingleObject($object);
         }
 
         $results = Array();
 
         foreach( $queries as $query )
         {
-            $results[] = $query->matchSingleRule($rule);
+            $results[] = $query->matchSingleObject($object);
         }
         //print_r($results);
 
@@ -411,33 +411,33 @@ class RQuery
 //                Zone Based Actions            //
 //                                              //
 RQuery::$defaultFilters['rule']['from']['operators']['has'] = Array(
-    'eval' => '$rule->from->hasZone(!value!) === true',
+    'eval' => '$object->from->hasZone(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->from->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->from->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['from']['operators']['has.only'] = Array(
-    'eval' => '$rule->from->count() == 1 && $rule->from->hasZone(!value!) === true',
+    'eval' => '$object->from->count() == 1 && $object->from->hasZone(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->from->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->from->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
-    'eval' => '$rule->to->hasZone(!value!) === true',
+    'eval' => '$object->to->hasZone(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->to->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->to->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['to']['operators']['has.only'] = Array(
-    'eval' => '$rule->to->count() == 1 && $rule->to->hasZone(!value!) === true',
+    'eval' => '$object->to->count() == 1 && $object->to->hasZone(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->to->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->to->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['from']['operators']['is.any'] = Array(
-    'eval' => '$rule->from->isAny()',
+    'eval' => '$object->from->isAny()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
-    'eval' => '$rule->to->isAny()',
+    'eval' => '$object->to->isAny()',
     'arg' => false
 );
 
@@ -445,51 +445,51 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
 //                Dst/Src Based Actions            //
 //                                              //
 RQuery::$defaultFilters['rule']['src']['operators']['has'] = Array(
-    'eval' => '$rule->source->inStore(!value!) === true',
+    'eval' => '$object->source->inStore(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->source->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['src']['operators']['has.only'] = Array(
-    'eval' => '$rule->source->count() == 1 && $rule->source->inStore(!value!) === true',
+    'eval' => '$object->source->count() == 1 && $object->source->inStore(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->source->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['src']['operators']['has.recursive'] = Array(
-    'eval' => '$rule->source->hasObjectRecursive(!value!, false) === true',
+    'eval' => '$object->source->hasObjectRecursive(!value!, false) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->source->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['has'] = Array(
-    'eval' => '$rule->destination->inStore(!value!) === true',
+    'eval' => '$object->destination->inStore(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->destination->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['has.only'] = Array(
-    'eval' => '$rule->destination->count() == 1 && $rule->destination->inStore(!value!) === true',
+    'eval' => '$object->destination->count() == 1 && $object->destination->inStore(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->destination->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive'] = Array(
-    'eval' => '$rule->destination->hasObjectRecursive(!value!, false) === true',
+    'eval' => '$object->destination->hasObjectRecursive(!value!, false) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->destination->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['src']['operators']['is.any'] = Array(
-    'eval' => '$rule->source->count() == 0',
+    'eval' => '$object->source->count() == 0',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['is.any'] = Array(
-    'eval' => '$rule->destination->count() == 0',
+    'eval' => '$object->destination->count() == 0',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['src']['operators']['is.negated'] = Array(
-    'eval' => '$rule->sourceIsNegated()',
+    'eval' => '$object->sourceIsNegated()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['is.negated'] = Array(
-    'eval' => '$rule->destinationIsNegated()',
+    'eval' => '$object->destinationIsNegated()',
     'arg' => false
 );
 
@@ -498,17 +498,17 @@ RQuery::$defaultFilters['rule']['dst']['operators']['is.negated'] = Array(
 //                Tag Based filters         //
 //                                              //
 RQuery::$defaultFilters['rule']['tag']['operators']['has'] = Array(
-    'eval' => '$rule->tags->hasTag(!value!) === true',
+    'eval' => '$object->tags->hasTag(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->tags->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 //                                              //
 //                Tag Based filters         //
 //                                              //
 RQuery::$defaultFilters['rule']['tag']['operators']['has.nocase'] = Array(
-    'eval' => '$rule->tags->hasTag("!value!", false) === true',
+    'eval' => '$object->tags->hasTag("!value!", false) === true',
     'arg' => true
-    //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->tags->parentCentralStore->find('!value!');"
+    //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 
 
@@ -517,7 +517,7 @@ RQuery::$defaultFilters['rule']['tag']['operators']['has.nocase'] = Array(
 //          Application properties              //
 //                                              //
 RQuery::$defaultFilters['rule']['app']['operators']['is.any'] = Array(
-    'eval' => '$rule->apps->isAny()',
+    'eval' => '$object->apps->isAny()',
     'arg' => false
 );
 
@@ -526,17 +526,17 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.any'] = Array(
 //          Services properties                 //
 //                                              //
 RQuery::$defaultFilters['rule']['services']['operators']['is.any'] = Array(
-    'eval' => '$rule->services->isAny()',
+    'eval' => '$object->services->isAny()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['services']['operators']['is.application-default'] = Array(
-    'eval' => '$rule->services->isApplicationDefault()',
+    'eval' => '$object->services->isApplicationDefault()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['services']['operators']['has'] = Array(
-    'eval' => '$rule->services->has(!value!) === true',
+    'eval' => '$object->services->has(!value!) === true',
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->services->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
 );
 
 
@@ -544,19 +544,19 @@ RQuery::$defaultFilters['rule']['services']['operators']['has'] = Array(
 //                SecurityProfile properties    //
 //                                              //
 RQuery::$defaultFilters['rule']['secprof']['operators']['not.set'] = Array(
-    'eval' => '$rule->securityProfileType() == "none"',
+    'eval' => '$object->securityProfileType() == "none"',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.profile'] = Array(
-    'eval' => '$rule->securityProfileType() == "profile"',
+    'eval' => '$object->securityProfileType() == "profile"',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.group'] = Array(
-    'eval' => '$rule->securityProfileType() == "group"',
+    'eval' => '$object->securityProfileType() == "group"',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = Array(
-    'eval' => '$rule->securityProfileType() == "group" && $rule->securityProfileGroup() == "!value!"',
+    'eval' => '$object->securityProfileType() == "group" && $object->securityProfileGroup() == "!value!"',
     'arg' => true
 );
 
@@ -565,43 +565,52 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = Array(
 //                Other properties              //
 //                                              //
 RQuery::$defaultFilters['rule']['action']['operators']['is.deny'] = Array(
-    'eval' => '$rule->isDeny()',
+    'eval' => '$object->isDeny()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['action']['operators']['is.allow'] = Array(
-    'eval' => '$rule->isAllow()',
+    'eval' => '$object->isAllow()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['log']['operators']['at.start'] = Array(
-    'eval' => '$rule->logStart()',
+    'eval' => '$object->logStart()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['log']['operators']['at.end'] = Array(
-    'eval' => '$rule->logEnd()',
+    'eval' => '$object->logEnd()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.prerule'] = Array(
-    'eval' => '$rule->owner->isPreRulebase()',
+    'eval' => '$object->owner->isPreRulebase()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.postrule'] = Array(
-    'eval' => '$rule->owner->isPreRulebase()',
+    'eval' => '$object->owner->isPreRulebase()',
     'arg' => false
 );
 
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
-    'eval' => "strtolower(\$rule->name()) == strtolower('!value!')",
+    'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
-    'eval' => "stripos(\$rule->name(), '!value!') !== false",
+    'eval' => "stripos(\$object->name(), '!value!') !== false",
     'arg' => true
 );
 
 // </editor-fold>
 
+
+//
+//          Address Filters
+//
+
 // <editor-fold desc=" ***** Address filters *****" defaultstate="collapsed" >
+RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = Array(
+    'eval' => '$object->countReferences() == 0',
+    'arg' => false
+);
 RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
     'eval' => "strtolower(\$object->name()) == '!value!'",
     'arg' => true
@@ -611,6 +620,11 @@ RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
     'arg' => true
 );
 // </editor-fold>
+
+
+//
+//          Service Filters
+//
 
 // <editor-fold desc=" ***** Service filters *****" defaultstate="collapsed" >
 RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(

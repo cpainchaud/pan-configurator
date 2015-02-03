@@ -72,7 +72,7 @@ $configOutput = null;
 $doActions = null;
 $dryRun = false;
 $objectsLocation = 'shared';
-$rulesFilter = null;
+$objectsFilter = null;
 $errorMessage = '';
 $debugAPI = false;
 
@@ -87,7 +87,7 @@ $supportedArguments['listactions'] = Array('niceName' => 'ListActions', 'shortHe
 $supportedArguments['listfilters'] = Array('niceName' => 'ListFilters', 'shortHelp' => 'lists available Filters');
 $supportedArguments['actions'] = Array('niceName' => 'Actions', 'shortHelp' => 'action to apply on each rule matched by Filter. ie: actions=from-Add:net-Inside,netDMZ', 'argDesc' => 'action:arg1[,arg2]' );
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
-$supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "filters rules based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator value)');
+$supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "filters objects based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator value)');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 
@@ -188,11 +188,11 @@ if( isset(PH::$args['listactions']) )
 
 if( isset(PH::$args['listfilters']) )
 {
-    ksort(RQuery::$defaultFilters['rule']);
+    ksort(RQuery::$defaultFilters['address']);
 
     print "Listing of supported filters:\n\n";
 
-    foreach(RQuery::$defaultFilters['rule'] as $index => &$filter )
+    foreach(RQuery::$defaultFilters['address'] as $index => &$filter )
     {
         print "* ".$index."\n";
         ksort( $filter['operators'] );
@@ -252,8 +252,8 @@ if( isset(PH::$args['debugapi'])  )
 //
 if( isset(PH::$args['filter'])  )
 {
-    $rulesFilter = PH::$args['filter'];
-    if( !is_string($rulesFilter) || strlen($rulesFilter) < 1 )
+    $objectsFilter = PH::$args['filter'];
+    if( !is_string($objectsFilter) || strlen($objectsFilter) < 1 )
         display_error_usage_exit('"filter" argument is not a valid string');
 }
 
@@ -329,10 +329,10 @@ foreach( $explodedActions as &$exAction )
  * @var RQuery $objectFilterRQuery
  */
 $objectFilterRQuery = null;
-if( $rulesFilter !== null )
+if( $objectsFilter !== null )
 {
-    $objectFilterRQuery = new RQuery('rule');
-    $res = $objectFilterRQuery->parseFromString($rulesFilter, $errorMessage);
+    $objectFilterRQuery = new RQuery('address');
+    $res = $objectFilterRQuery->parseFromString($objectsFilter, $errorMessage);
     if( $res === false )
     {
         fwrite(STDERR, "\n\n**ERROR** Rule filter parser: " . $errorMessage . "\n\n");
@@ -484,14 +484,14 @@ foreach( $objectsToProcess as &$objectsRecord )
 
     $objects = &$objectsRecord['objects'];
 
-    print "\n* processing ruleset '".$ruleStore->toString()." that holds ".count($objects)." rules\n";
+    print "\n* processing store '".$ruleStore->toString()." that holds ".count($objects)." objects\n";
 
 
     foreach($objects as $object )
     {
         if( $objectFilterRQuery !== null )
         {
-            $queryResult = $objectFilterRQuery->matchSingleRule($object);
+            $queryResult = $objectFilterRQuery->matchSingleObject($object);
             if( !$queryResult )
                 continue;
         }
