@@ -472,6 +472,11 @@ class ServiceGroup
 		return $ret;
 	}
 
+	public function members()
+	{
+		return $this->members;
+	}
+
 
 	public function API_delete()
 	{

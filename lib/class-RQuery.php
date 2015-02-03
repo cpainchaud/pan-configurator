@@ -638,6 +638,14 @@ RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = Array(
     'eval' => '$object->countReferences() == 0',
     'arg' => false
 );
+RQuery::$defaultFilters['address']['object']['operators']['is.group'] = Array(
+    'eval' => '$object->isGroup() == 0',
+    'arg' => false
+);
+RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
+    'eval' => '$object->isTmpAddr() == 0',
+    'arg' => false
+);
 RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
     'eval' => "strtolower(\$object->name()) == '!value!'",
     'arg' => true
@@ -664,6 +672,14 @@ RQuery::$defaultFilters['service']['refcount']['operators']['>,<,=,!'] = Array(
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
     'eval' => '$object->countReferences() == 0',
+    'arg' => false
+);
+RQuery::$defaultFilters['service']['object']['operators']['is.group'] = Array(
+    'eval' => '$object->isGroup() == 0',
+    'arg' => false
+);
+RQuery::$defaultFilters['service']['object']['operators']['is.tmp'] = Array(
+    'eval' => '$object->isTmpSrv() == 0',
     'arg' => false
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(
