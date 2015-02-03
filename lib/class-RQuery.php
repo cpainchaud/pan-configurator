@@ -646,6 +646,10 @@ RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
     'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
     'arg' => true
 );
+RQuery::$defaultFilters['address']['members.count']['operators']['>,<,=,!'] = Array(
+    'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
+    'arg' => true
+);
 // </editor-fold>
 
 
@@ -654,12 +658,24 @@ RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
 //
 
 // <editor-fold desc=" ***** Service filters *****" defaultstate="collapsed" >
+RQuery::$defaultFilters['service']['refcount']['operators']['>,<,=,!'] = Array(
+    'eval' => '$object->countReferences() !operator! !value!',
+    'arg' => true
+);
+RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
+    'eval' => '$object->countReferences() == 0',
+    'arg' => false
+);
 RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(
     'eval' => "strtolower(\$object->name()) == '!value!'",
     'arg' => true
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq.nocase'] = Array(
     'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
+    'arg' => true
+);
+RQuery::$defaultFilters['service']['members.count']['operators']['>,<,=,!'] = Array(
+    'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
     'arg' => true
 );
 // </editor-fold>
