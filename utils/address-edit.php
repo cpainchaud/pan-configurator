@@ -87,7 +87,7 @@ $supportedArguments['listactions'] = Array('niceName' => 'ListActions', 'shortHe
 $supportedArguments['listfilters'] = Array('niceName' => 'ListFilters', 'shortHelp' => 'lists available Filters');
 $supportedArguments['actions'] = Array('niceName' => 'Actions', 'shortHelp' => 'action to apply on each rule matched by Filter. ie: actions=from-Add:net-Inside,netDMZ', 'argDesc' => 'action:arg1[,arg2]' );
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
-$supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "filters objects based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator value)');
+$supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "filters objects based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator [value])');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 
@@ -97,14 +97,23 @@ $supportedActions = Array();
 
 
 
-$supportedActions['to-remove-force-any'] = Array(
-    'name' => 'to-Remove-Force-Any',
-    'file' => "\$rule->to->removeZone(!value!, true, true);",
-    'api' => "\$rule->to->API_removeZone(!value!, true, true);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->to->parentCentralStore->find('!value!');"
+$supportedActions['delete'] = Array(
+    'name' => 'delete',
+    'file' => 'if( $object->countReferences() != 0)
+                    derr("this object by other objects and cannot be deleted (use deleteForce to try anyway)");
+                $object->owner->remove($object);',
+    'api' => 'if( $object->countReferences() != 0)
+                    derr("this object by other objects and cannot be deleted (use deleteForce to try anyway)");
+                $object->owner->API_remove($object);',
+    'args' => false,
 );
 
+$supportedActions['deleteforce'] = Array(
+    'name' => 'deleteForce',
+    'file' => '$object->owner->remove($object);',
+    'api' => '$object->owner->API_remove($object);',
+    'args' => false,
+);
 
 
 $supportedActions['displayreferences'] = Array(
