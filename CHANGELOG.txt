@@ -1,6 +1,6 @@
 CHANGELOG
 
-1.2.5
+1.2.4
 * introduction of address-edit.php and service-edit.php on same basis than rules-edit.php for objects manipulations
 * API_delete() implemented for Address, AddressGroup, Service, ServiceGroup
 * RQuery now supports math operators, opening the way for new filters ( >,<,=,!,>= ....)
