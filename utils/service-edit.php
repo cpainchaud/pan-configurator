@@ -100,10 +100,10 @@ $supportedActions = Array();
 $supportedActions['delete'] = Array(
     'name' => 'delete',
     'file' => 'if( $object->countReferences() != 0)
-                    derr("this object by other objects and cannot be deleted (use deleteForce to try anyway)");
+                    derr("this object is used by other objects and cannot be deleted (use deleteForce to try anyway)");
                 $object->owner->remove($object);',
     'api' => 'if( $object->countReferences() != 0)
-                    derr("this object by other objects and cannot be deleted (use deleteForce to try anyway)");
+                    derr("this object is used by other objects and cannot be deleted (use deleteForce to try anyway)");
                 $object->owner->API_remove($object);',
     'args' => false,
 );

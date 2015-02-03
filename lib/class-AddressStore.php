@@ -742,17 +742,25 @@ class AddressStore
 		return true;
 	}
 
+	/**
+	 * @param Address|AddressGroup $s
+	 * @param bool $rewritexml
+	 * @param bool $forceAny
+	 * @return bool
+	 */
 	public function API_remove($s, $rewritexml = true, $forceAny = false)
 	{
+		$xpath = null;
+
+		if( !$s->isTmpAddr() )
+			$xpath = $s->getXPath();
+
 		$ret = $this->remove($s, $rewritexml, $forceAny);
 
-		if( $ret )
+		if( $ret && !$s->isTmpAddr())
 		{
 			$con = findConnectorOrDie($this);
-
-			$xpath = &$s->getXPath();
 			$con->sendDeleteRequest($xpath);
-
 		}
 
 		return $ret;

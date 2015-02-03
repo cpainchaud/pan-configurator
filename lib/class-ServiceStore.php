@@ -579,7 +579,12 @@ class ServiceStore
 			$this->add($s);
 		}
 	}
-	
+
+	/**
+	 * @param Service|ServiceGroup $s
+	 * @param bool $rewritexml
+	 * @return bool
+	 */
 	public function remove($s , $rewritexml=true)
 	{	
 		$this->fasthashcomp = null;
@@ -635,10 +640,33 @@ class ServiceStore
 			}
 			return true;
 		}
-
 		return false;
-		
 	}
+
+	/**
+	 * @param Service|ServiceGroup $s
+	 * @param bool $rewritexml
+	 * @param bool $forceAny
+	 * @return bool
+	 */
+	public function API_remove($s, $rewritexml = true, $forceAny = false)
+	{
+		$xpath = null;
+
+		if( !$s->isTmpSrv() )
+			$xpath = $s->getXPath();
+
+		$ret = $this->remove($s, $rewritexml, $forceAny);
+
+		if( $ret && !$s->isTmpSrv())
+		{
+			$con = findConnectorOrDie($this);
+			$con->sendDeleteRequest($xpath);
+		}
+
+		return $ret;
+	}
+
 	
 	public function rewriteServiceStoreXML()
 	{
@@ -919,74 +947,9 @@ class ServiceStore
 		$this->fastMemToIndex[spl_object_hash($f)] = $index;
 	}
 	
-	public function setAny()
-	{
-		$this->fasthashcomp = null;
-		
-		foreach( $this->all as $s )
-		{
-			$s->unrefInRule($this);
-		}
-		$this->all = Array();
-		$this->appdef = false;
-		$this->regen_Indexes();
-		$this->rewriteXML();
 
-		return true;
-	}
 
-	public function setApplicationDefault()
-	{
-		if( $this->appdef === true )
-			return false;
 
-		$this->fasthashcomp = null;
-		
-		foreach( $this->all as $s )
-		{
-			$s->unrefInRule($this);
-		}
-		$this->all = Array();
-		$this->appdef = true;
-		$this->regen_Indexes();
-		$this->rewriteXML();
-
-		return true;
-	}
-
-	public function API_setApplicationDefault()
-	{
-		$ret = $this->setApplicationDefault();
-
-		if( !$ret )
-			return false;
-
-		$con = findConnectorOrDie($this);
-		$xpath = &$this->owner->getXPath();
-		
-		$con->sendDeleteRequest($xpath.'/service');
-
-		$con->sendSetRequest($xpath.'/service', '<member>application-default</member>');
-
-		return true;
-	}
-
-	public function API_setAny()
-	{
-		$ret = $this->setAny();
-
-		if( !$ret )
-			return false;
-
-		$con = findConnectorOrDie($this);
-		$xpath = &$this->owner->getXPath();
-		
-		$con->sendDeleteRequest($xpath.'/service');
-
-		$con->sendSetRequest($xpath.'/service', '<member>any</member>');
-
-		return true;
-	}
 	
 	
 	
