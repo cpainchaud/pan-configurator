@@ -197,11 +197,11 @@ if( isset(PH::$args['listactions']) )
 
 if( isset(PH::$args['listfilters']) )
 {
-    ksort(RQuery::$defaultFilters['address']);
+    ksort(RQuery::$defaultFilters['service']);
 
     print "Listing of supported filters:\n\n";
 
-    foreach(RQuery::$defaultFilters['address'] as $index => &$filter )
+    foreach(RQuery::$defaultFilters['service'] as $index => &$filter )
     {
         print "* ".$index."\n";
         ksort( $filter['operators'] );
@@ -340,7 +340,7 @@ foreach( $explodedActions as &$exAction )
 $objectFilterRQuery = null;
 if( $objectsFilter !== null )
 {
-    $objectFilterRQuery = new RQuery('address');
+    $objectFilterRQuery = new RQuery('service');
     $res = $objectFilterRQuery->parseFromString($objectsFilter, $errorMessage);
     if( $res === false )
     {
@@ -426,14 +426,14 @@ foreach( $objectsLocation as $location )
     {
         if( $location == 'shared' || $location == 'any'  )
         {
-            $objectsToProcess[] = Array('store' => $pan->addressStore, 'objects' => $pan->addressStore->all());
+            $objectsToProcess[] = Array('store' => $pan->serviceStore, 'objects' => $pan->serviceStore->all());
             $locationFound = true;
         }
         foreach ($pan->getVirtualSystems() as $sub)
         {
             if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
             {
-                $objectsToProcess[] = Array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all());
+                $objectsToProcess[] = Array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all());
                 $locationFound = true;
             }
         }
@@ -443,7 +443,7 @@ foreach( $objectsLocation as $location )
         if( $location == 'shared' || $location == 'any' )
         {
 
-            $objectsToProcess[] = Array('store' => $pan->addressStore, 'objects' => $pan->addressStore->all());
+            $objectsToProcess[] = Array('store' => $pan->serviceStore, 'objects' => $pan->serviceStore->all());
             $locationFound = true;
         }
 
@@ -451,7 +451,7 @@ foreach( $objectsLocation as $location )
         {
             if( ($location == 'any' || $location == 'all' || $location == $sub->name()) && !isset($ruleStoresToProcess[$sub->name().'%pre']) )
             {
-                $objectsToProcess[] = Array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all() );
+                $objectsToProcess[] = Array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all() );
                 $locationFound = true;
             }
         }
