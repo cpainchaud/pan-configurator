@@ -36,6 +36,8 @@ class RQuery
 
     static public $defaultFilters = Array();
 
+    static public $mathOps = Array( '>' => '>', '<' => '<', '=' => '==', '==' => '==', '!=' => '!=', '<=' => '<=', '>=' => '>=' );
+
     public $objectType = null;
 
 
@@ -95,6 +97,12 @@ class RQuery
                 else
                 {
                     $eval = '$boolReturn = ('.str_replace('!value!', $this->argument, $this->refOperator['eval']).');';
+
+                    if( isset(self::$mathOps[$this->operator]))
+                    {
+                        $eval = str_replace('!operator!', self::$mathOps[$this->operator],$eval);
+                    }
+
                     if( eval($eval) === FALSE )
                     {
                         derr("\neval code was : $eval\n");
@@ -107,6 +115,7 @@ class RQuery
             else
             {
                 $eval = '$boolReturn = ('.$this->refOperator['eval'].');';
+
                 if( eval($eval) === FALSE )
                 {
                     derr("\neval code was : $eval\n");
@@ -304,24 +313,38 @@ class RQuery
 
 
         $this->operator = strtolower(substr($subtext, 0, $pos));
-        if( strlen($this->field) < 1 || !isset($supportedOperations[$this->field]['operators'][$this->operator]) )
+
+
+        $isMathOp = false;
+
+        if( isset(self::$mathOps[$this->operator]) )
+        {
+            $isMathOp = true;
+        }
+
+        if( strlen($this->field) < 1 ||
+              !( isset($supportedOperations[$this->field]['operators'][$this->operator]) ||
+                  ($isMathOp && isset($supportedOperations[$this->field]['operators']['>,<,=,!'])) ) )
         {
             $errorMessage = "unsupported operator name '".$this->operator."' in expression '$text'";
             return false;
         }
 
-        $operator = &$supportedOperations[$this->field]['operators'][$this->operator];
-        $this->refOperator = &$supportedOperations[$this->field]['operators'][$this->operator];
+        if( $isMathOp )
+            $this->refOperator = &$supportedOperations[$this->field]['operators']['>,<,=,!'];
+        else
+            $this->refOperator = &$supportedOperations[$this->field]['operators'][$this->operator];
+
         $subtext = substr($subtext, $pos+1);
 
-        if( $operator['arg'] === false && strlen(trim($subtext)) != 0 )
+        if( $this->refOperator['arg'] === false && strlen(trim($subtext)) != 0 )
         {
             $errorMessage = "this field/operator does not support argument in expression '$text'";
             return false;
         }
 
 
-        if( $operator['arg'] === false )
+        if( $this->refOperator['arg'] === false )
             return true;
 
 
@@ -607,6 +630,10 @@ RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
 //
 
 // <editor-fold desc=" ***** Address filters *****" defaultstate="collapsed" >
+RQuery::$defaultFilters['address']['refcount']['operators']['>,<,=,!'] = Array(
+    'eval' => '$object->countReferences() !operator! !value!',
+    'arg' => true
+);
 RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = Array(
     'eval' => '$object->countReferences() == 0',
     'arg' => false

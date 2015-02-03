@@ -78,43 +78,19 @@ class AddressStore
 			
 	}
 
-	public function &getXPath()
+	private function &getBaseXPath()
 	{
 		$str = '';
 
-		if( $this->centralStore )
+		$class = get_class($this->owner);
+
+		if ($class == 'PanoramaConf' ||  $class == 'PANConf' )
 		{
-			$str = '';
-
-			$class = get_class($this->owner);
-
-			if( $class == 'VirtualSystem' )
-			{
-				$str = "/config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='".$this->owner->name."']";
-			}
-			else if ($class == 'DeviceGroup' )
-			{
-				$str = "/config/devices/entry[@name='localhost.localdomain']/device-group/entry[@name='".$this->owner->name."']";
-			}
-			else if ($class == 'PanoramaConf' ||  $class == 'PANConf' )
-			{
-				$str = "/config/devices/entry[@name='localhost.localdomain']/shared/";
-			}
-			else
-				derr('unsupported mode');
-
+			$str = "/config/shared";
 		}
 		else
-		{
-			$classname = get_class($this->owner);
-			if( $classname == 'SecurityRule' )
-			{
-				$str = $this->owner->getXPath().'/'.$this->name;
-				return $str;
-			}
-		}
+			$str = $this->owner->getXPath();
 
-		derr('not supported');
 
         return $str;
 	}
@@ -123,7 +99,7 @@ class AddressStore
 	{
 		if( !$this->centralStore )
 			derr('cannot be called from a non central store object');
-		$path = $this->getXPath().'/address';
+		$path = $this->getBaseXPath().'/address';
 		return $path;
 	}
 
@@ -131,7 +107,7 @@ class AddressStore
 	{
 		if( !$this->centralStore )
 			derr('cannot be called from a non central store object');
-		$path = $this->getXPath().'/address-group';
+		$path = $this->getBaseXPath().'/address-group';
 		return $path;
 	}
 	
