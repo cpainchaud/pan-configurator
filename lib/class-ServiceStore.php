@@ -128,22 +128,6 @@ class ServiceStore
 		$this->regen_Indexes();
 	}
 
-	public function isAny()
-	{
-		if( !$this->appdef && $this->count() == 0 )
-			return true;
-
-		return false;
-	}
-
-	public function isApplicationDefault()
-	{
-		if($this->appdef)
-			return true;
-
-		return false;
-	}
-
 	/**
 	 * @return Service[]|ServiceGroup[]
 	 */
@@ -237,35 +221,6 @@ class ServiceStore
 		$this->regen_Indexes();
 	}
 
-	public function hasObject($object, $caseSensitive = true)
-	{
-		if( $this->centralStore )
-			derr('unsupported on central store');
-
-		if( is_string($object) )
-		{
-			if( !$caseSensitive )
-				$object = strtolower($object);
-
-			foreach( $this->all as $o )
-			{
-				if( !$caseSensitive )
-				{
-					if ($object == strtolower($o->name()))
-						return true;
-				}
-				else if( $object == $o->name() )
-					return true;
-			}
-
-			return false;
-		}
-		else
-			derr('unsupported');
-
-		return false;
-	}
-	
 	
 	public function load_local_objects_xml(&$xml)
 	{
@@ -549,36 +504,6 @@ class ServiceStore
 		return $ret;
 		
 	}
-	
-	public function merge($other)
-	{
-		$this->fasthashcomp = null;
-		
-		if( $this->centralStore )
-			derr("Should never be called from a Central Store");
-		
-		if( $this->appdef && !$other->appdef || !$this->appdef && $other->appdef  )
-			derr("You cannot merge 'application-default' type service stores with app-default ones");
-		
-		if( $this->appdef && $other->appdef )
-			return;
-		
-		if( count($this->all) == 0 && !$other->appdef )
-			return;
-		
-		if( count($other->all) == 0  && !$other->appdef)
-		{
-			$this->setAny();
-			return;
-		}
-		
-		foreach($other->all as $s)
-		{
-			if( count($this->all) == 0 )
-				break;
-			$this->add($s);
-		}
-	}
 
 	/**
 	 * @param Service|ServiceGroup $s
@@ -624,14 +549,11 @@ class ServiceStore
 			unset($this->all[$this->fastMemToIndex[$ser]]);
 			unset($this->fastMemToIndex[$ser]);
 
-			if( !$this->centralStore )
-				$s->unrefInRule($this);
-			
+			$s->owner = null;
+
 			if( $rewritexml )
 			{
-				if( !$this->centralStore )
-					$this->rewriteXML();
-				else if( $class == "Service" )
+				if( $class == "Service" )
 				{
 					$this->rewriteServiceStoreXML();
 				}
