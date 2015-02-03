@@ -52,7 +52,7 @@ Delete unused objects from a config ?
 Want to know where an object is used ?
 
    $object = $pan->addressStore->find('H-WebServer4');
-   foreach( $object->getReferencers() as $ref )
+   foreach( $object->getReferences() as $ref )
       print $ref->toString()."\n";
 
 Replace that object by another one ?

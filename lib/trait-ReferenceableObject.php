@@ -146,7 +146,7 @@ trait ReferencableObject
 		return $this->refcomphash;
 	}
 
-    public function getReferencers()
+    public function getReferences()
     {
         return $this->refrules;
     }
