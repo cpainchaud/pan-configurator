@@ -148,7 +148,7 @@ class TagStore extends ObjStore
 
         foreach( $cur as &$x )
         {
-            $newTag = new Zone('**tmp**', $this);
+            $newTag = new self::$childn('**tmp**', $this);
             $newTag->load_from_xml($x);
             //print "found zone '".$newTag->name()."'\n";
             $this->o[] = $newTag;
@@ -168,7 +168,7 @@ class TagStore extends ObjStore
         {
             if( $node->nodeType != 1 ) continue;
 
-            $newTag = new Zone('**tmp**', $this);
+            $newTag = new self::$childn('**tmp**', $this);
             $newTag->load_from_domxml($node);
             //print $this->toString()." : new Tag '".$newTag->name()."' found\n";
 

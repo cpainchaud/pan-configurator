@@ -63,7 +63,9 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
     return false; //Will trigger PHP's default handler if reaches this point.
 }
 
+
 set_error_handler('myErrorHandler');
+
 
 require_once dirname(__FILE__).'/'."class-PH.php";
 require_once dirname(__FILE__).'/'."class-CsvParser.php";

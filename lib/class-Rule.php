@@ -307,8 +307,7 @@ class Rule
 	*/
 	protected function init_tags_with_store()
 	{
-		$this->tags = new TagRuleContainer($this);
-		$this->tags->setName('tags');
+		$this->tags = new TagRuleContainer('tag', $this);
 	}
 	
 	/**

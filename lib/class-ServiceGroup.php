@@ -110,6 +110,7 @@ class ServiceGroup
 
 		if( $this->owner->owner->version >= 60 )
 		{
+			print "v6\n";
 			$membersRoot = DH::findFirstElement('members', $this->xmlroot);
 
 			if( $membersRoot === false )

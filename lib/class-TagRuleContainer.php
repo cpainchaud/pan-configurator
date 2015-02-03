@@ -36,8 +36,9 @@ class TagRuleContainer extends ObjRuleContainer
 
     public static $childn = 'Tag';
 
-    public function TagRuleContainer($owner)
+    public function TagRuleContainer($name, $owner)
     {
+        $this->name = $name;
         $this->classn = &self::$childn;
 
         $this->owner = $owner;

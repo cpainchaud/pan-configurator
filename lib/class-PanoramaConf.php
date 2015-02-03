@@ -182,6 +182,21 @@ class PanoramaConf
 		$this->configroot = DH::findFirstElementOrDie('config', $this->xmldoc);
         $this->xmlroot = $this->configroot;
 
+		$versionAttr = DH::findAttribute('version', $this->configroot);
+		if( $versionAttr !== false )
+		{
+			$this->version = PH::versionFromString($versionAttr);
+		}
+		else
+		{
+			if( isset($this->connector) && $this->connector !== null )
+				$version = $this->connector->getSoftwareVersion();
+			else
+				derr('cannot find PANOS version used for make this config');
+
+			$this->version = $version['version'];
+		}
+
 
 		$tmp = DH::findFirstElementOrCreate('mgt-config', $this->configroot);
 
@@ -205,7 +220,6 @@ class PanoramaConf
 		$this->localhostroot = DH::findFirstElementByNameAttrOrDie('entry', 'localhost.localdomain',$this->devicesroot);
 
 		$this->devicegrouproot = DH::findFirstElementOrDie('device-group', $this->localhostroot);
-
 
         //
         // Extract Tag objects
