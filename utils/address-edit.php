@@ -519,7 +519,7 @@ foreach( $objectsToProcess as &$objectsRecord )
 
                     if ($configInput['type'] == 'file')
                     {
-                        $toEval = $supportedActions[$doAction['name']['file']];
+                        $toEval = $supportedActions[$doAction['name']]['file'];
                         $inputIsAPI = false;
                     } else
                     {
