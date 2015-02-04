@@ -614,6 +614,10 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.postrule'] = Array(
 
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
+    'eval' => "\$object->name() == '!value!'",
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['name']['operators']['eq.nocase'] = Array(
     'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
     'arg' => true
 );
@@ -647,7 +651,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
     'arg' => false
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
-    'eval' => "strtolower(\$object->name()) == '!value!'",
+    'eval' => "\$object->name() == '!value!'",
     'arg' => true
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
@@ -683,7 +687,7 @@ RQuery::$defaultFilters['service']['object']['operators']['is.tmp'] = Array(
     'arg' => false
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(
-    'eval' => "strtolower(\$object->name()) == '!value!'",
+    'eval' => "\$object->name() == '!value!'",
     'arg' => true
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq.nocase'] = Array(
