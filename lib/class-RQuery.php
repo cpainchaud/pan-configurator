@@ -211,7 +211,7 @@ class RQuery
         while( $findOpen !== FALSE && ($findClose > $findOpen))
         {
 
-            $newQuery = new RQuery($this.objectType, $this->level + 1);
+            $newQuery = new RQuery($this->objectType, $this->level + 1);
             $this->subQueries[] = $newQuery;
 
             $res = $newQuery->parseFromString(substr($text, $findOpen+1), $errorMessage, $supportedFilters );
