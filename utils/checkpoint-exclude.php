@@ -37,7 +37,7 @@ function display_error_usage_exit($msg)
     display_usage_and_exit();
 }
 
-
+// load arguments in PH::$args for easy use
 PH::processCliArgs();
 
 //default values
