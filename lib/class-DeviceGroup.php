@@ -22,6 +22,7 @@ class DeviceGroup
 {
 	
 	use PathableName;
+	use PanSubHelperTrait;
 
     /**
      * @var PanoramaConf
@@ -664,6 +665,11 @@ class DeviceGroup
 			$this->xmlroot['attributes']['name'] = $newName;
 
 		$this->name = $newName;
+	}
+
+	public function isDeviceGroup()
+	{
+		return true;
 	}
 	
 	

@@ -40,6 +40,7 @@ class PANConf
 	use PathableName;
 	use centralTagStore;
 	use centralAppStore;
+	use PanSubHelperTrait;
 
 	public $xmlroot;
 	
@@ -575,6 +576,12 @@ class PANConf
 		print "- ".$this->tagStore->count()." tags\n";
 		print "- $numInterfaces interfaces (Ethernet:{$this->network->ethernetIfStore->count()})\n";
 		print "- $numSubInterfaces sub-interfaces (Ethernet:{$this->network->ethernetIfStore->countSubInterfaces()})\n";
+	}
+
+
+	public function isPanOS()
+	{
+		return true;
 	}
 
 }

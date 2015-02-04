@@ -20,6 +20,7 @@ class VirtualSystem
 {
 	use PathableName;
     use centralZoneStore;
+	use PanSubHelperTrait;
 
     /**
      * @var AddressStore
@@ -518,6 +519,11 @@ class VirtualSystem
 			$rule->rewriteSNAT_XML();
 			$rule->rewriteDNAT_XML();
 		}
+	}
+
+	public function isVirtualSystem()
+	{
+		return true;
 	}
 
     /**

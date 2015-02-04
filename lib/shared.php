@@ -73,6 +73,7 @@ require_once dirname(__FILE__).'/'."class-RQuery.php";
 require_once dirname(__FILE__).'/'."class-PanAPIConnector.php";
 require_once dirname(__FILE__).'/'."trait-ReferenceableObject.php";
 require_once dirname(__FILE__).'/'."trait-XmlConvertible.php";
+require_once dirname(__FILE__).'/'."trait-PanSubHelperTrait.php";
 require_once dirname(__FILE__).'/'."class-DH.php";
 require_once dirname(__FILE__).'/'."class-ObjStore.php";
 require_once dirname(__FILE__).'/'."class-IPsecTunnelStore.php";

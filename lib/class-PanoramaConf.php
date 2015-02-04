@@ -37,6 +37,7 @@ class PanoramaConf
 	use centralTagStore;
 	use centralZoneStore;
 	use centralAppStore;
+	use PanSubHelperTrait;
 
 
     /**
@@ -945,6 +946,11 @@ class PanoramaConf
     {
         return $this->deviceGroups;
     }
+
+	public function isPanorama()
+	{
+		return true;
+	}
 
 }
 
