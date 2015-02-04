@@ -402,7 +402,7 @@ class ServiceStore
 			
 			if( isset($this->fast[$fn] ) )
 			{
-				if( $ref )
+				if( $ref !== null )
 					$this->fast[$fn]->refInRule($ref);
 				return $this->fast[$fn];
 			}
@@ -423,7 +423,7 @@ class ServiceStore
 			}
 
 			
-			if( $nested && $this->parentCentralStore)
+			if( $nested && $this->parentCentralStore !== null )
 			{
 
 				$f = $this->parentCentralStore->find( $fn , $ref, $nested);
