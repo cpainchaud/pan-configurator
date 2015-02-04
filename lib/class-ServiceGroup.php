@@ -140,9 +140,7 @@ class ServiceGroup
 	
 	}
 	
-	
-	
- 
+
  
 	public function setName($newname)
 	{
@@ -484,6 +482,26 @@ class ServiceGroup
 		$xpath = $this->getXPath();
 
 		$connector->sendDeleteRequest($xpath);
+	}
+
+	/**
+	 * @param Service|ServiceGroup $object
+	 * @return bool
+	 */
+	public function hasObjectRecursive($object)
+	{
+		if( $object === null )
+			derr('cannot work with null objects');
+
+		foreach( $this->members as $o )
+		{
+			if( $o === $object )
+				return true;
+			if( $o->isGroup() )
+				if( $o->hasObjectRecursive($object) ) return true;
+		}
+
+		return false;
 	}
 	
 	
