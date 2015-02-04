@@ -151,6 +151,14 @@ class ServiceStore
 	{
 		return $this->servg;
 	}
+
+	/**
+	 * @return Service[]
+	 */
+	public function serviceTmpObjects()
+	{
+		return $this->tmpserv;
+	}
 	
 	
 	public function load_servicegroups_from_xml(&$xml)
