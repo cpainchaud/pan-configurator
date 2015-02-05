@@ -127,27 +127,15 @@ class PANConf
 		
 	}
 
-	public function load_from_xml(&$xml)
-	{
-		$xmlobj = new XmlArray();
-		$xmlarr = $xmlobj->load_string($xml);
-
-		return $this->load_from_xmlarr($xmlarr);
-	}
 
 	public function load_from_xmlstring(&$xml)
 	{
 		$xmlDoc = new DOMDocument();
 
-        if( PH::$UseDomXML )
-        {
-            if ($xmlDoc->loadXML($xml, LIBXML_PARSEHUGE) !== TRUE)
-                derr('Invalid XML file found');
+		if ($xmlDoc->loadXML($xml, LIBXML_PARSEHUGE) !== TRUE)
+			derr('Invalid XML file found');
 
-            $this->load_from_domxml($xmlDoc);
-        }
-        else
-            derr('unsupported');
+		$this->load_from_domxml($xmlDoc);
 	}
 
 	public function load_from_domxml(DOMDocument $xml)
@@ -263,141 +251,6 @@ class PANConf
 
 	}
 
-	public function load_from_xmlarr(&$xmlArray)
-	{		
-		$this->xmlroot = &$xmlArray;
-
-		
-		if( $xmlArray['name'] != 'config' )
-			derr("Error: <config ...> not found\n");
-
-        if( isset( $xmlArray['attributes']['version']) )
-        {
-            $this->version = PH::versionFromString($xmlArray['attributes']['version']);
-        }
-        else
-        {
-            if( isset($this->connector) && $this->connector !== null )
-                $version = $this->connector->getSoftwareVersion();
-            else
-                derr('cannot find PANOS version used for make this config');
-
-            $this->version = $version['version'];
-        }
-
-        //print "PANOS version is ".$this->version."\n";
-		
-		$this->sharedroot = &searchForName('name', 'shared', $xmlArray['children']);
-		
-		if( is_null($this->sharedroot) )
-			derr("Error: <shared ...> not found\n");
-		
-		$this->devicesroot = &searchForName('name', 'devices', $xmlArray['children']);
-		
-		if( is_null($this->devicesroot) )
-			derr("Error: <devices ...> not found\n");
-		
-		// Now look for entry name="localhost.localdomain"
-		$this->localhostlocaldomain = &searchForNameAndAttribute('name', 'entry', 'name', 'localhost.localdomain', $this->devicesroot['children']);
-				
-		if( is_null($this->localhostlocaldomain) )
-			derr("Error: <entry name=\"localhost.localdomain\" ...> not found\n");
-		
-		
-		// Look for <VSYS> 
-		$this->vsyssroot = &searchForName('name', 'vsys', $this->localhostlocaldomain['children']);
-		
-		if( is_null($this->vsyssroot ) )
-			derr("Error: <vsys> not found\n");
-
-
-        //
-        // Extract Tags objects
-        //
-        if( $this->version >= 60 )
-        {
-            $tagRoot = &searchForName('name', 'tag', $this->sharedroot['children']);
-            if (is_null($tagRoot))
-            {
-                // no object section, lets create one
-                $tagRoot = Array('name' => 'tag');
-                $this->sharedroot['children'][] = &$tagRoot;
-            }
-            if (!isset($tagRoot['children']))
-            {
-                $tagRoot['children'] = Array();
-            }
-            $this->tagStore->load_from_xml($tagRoot);
-        }
-        // end of Tags extraction
-		
-		//
-		// Shared address objects extraction
-		//
-		$this->addressroot = &searchForName('name', 'address', $this->sharedroot['children'] );
-		if( is_null($this->addressroot) )
-		{
-			$this->addressroot = Array( 'name' => 'address' );
-			$this->sharedroot['children'][] = &$this->addressroot ;
-		}
-		if( !isset($this->addressroot['children']) )
-		{
-			$this->addressroot['children'] = Array();
-		}
-		$this->addressStore->load_addresses_from_xml($this->addressroot);
-		// end of address extraction
-		
-		
-		
-		//
-		// Extract address groups 
-		//
-		$this->addressGsroot = &searchForName('name', 'address-group', $this->sharedroot['children'] );
-		if( is_null($this->addressGsroot) )
-		{
-			// no object group section, lets create one
-			$this->addressGsroot = Array( 'name' => 'address-group' );
-			$this->sharedroot['children'][] = &$this->addressGsroot ;
-		}
-		if( !isset($this->addressGsroot['children']) )
-		{
-			$this->addressGsroot['children'] = Array();
-		}
-		$this->addressStore->load_addressgroups_from_xml($this->addressGsroot);
-		// End of address groups extraction
-		
-		
-		// Now listing and extracting all VSYS configurations
-        // TODO replace with foreach()
-		$cur = &$this->vsyssroot['children'];
-		$c = count($cur);
-		$k = array_keys($cur);
-		
-		for( $i=0; $i<$c; $i++ )
-		{
-			$lvname = $cur[$i]['attributes']['name'];
-			//print "VSYS '$lvname' found\n";
-			
-			$lvsys = new VirtualSystem($this);
-
-			if( isset($this->panorama) )
-			{
-				$dg = $this->panorama->findApplicableDGForVsys($this->serial , $lvname);
-				if( $dg !== FALSE )
-				{
-					$lvsys->addressStore->panoramaDG = $dg->addressStore;
-					$lvsys->serviceStore->panoramaDG = $dg->serviceStore;
-				}
-			}
-
-
-			$lvsys->load_from_xml($cur[$k[$i]]);
-			$this->virtualSystems[] = $lvsys;
-		}
-		
-		
-				
-	}
 
     /**
      * !!OBSOLETE!!
@@ -475,16 +328,8 @@ class PANConf
 	{
 		$this->connector = $conn;
 
-        if( PH::$UseDomXML === TRUE )
-        {
-            $xmlDoc = $this->connector->getCandidateConfig();
-            $this->load_from_domxml($xmlDoc);
-        }
-        else
-        {
-            $xmlArray = $this->connector->getCandidateConfig();
-            $this->load_from_xmlarr($xmlArray);
-        }
+		$xmlDoc = $this->connector->getCandidateConfig();
+		$this->load_from_domxml($xmlDoc);
 	}
 
 	/**
@@ -498,10 +343,7 @@ class PANConf
 
 		$url = "&type=import&category=configuration&category=configuration";
 
-        if( PH::$UseDomXML )
-            $answer = &$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
-        else
-		    $answer = &$this->connector->sendRequest($url, false, array_to_xml($this->xmlroot), $config_name );
+		$answer = &$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
 
 		print "OK!\n";
 

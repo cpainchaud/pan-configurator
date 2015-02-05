@@ -157,13 +157,6 @@ class PanoramaConf
 		
 	}
 
-	public function load_from_xml(&$xml)
-	{
-		$xmlobj = new XmlArray();
-		$xmlarr = $xmlobj->load_string($xml);
-
-		return $this->load_from_xmlarr($xmlarr);
-	}
 
 	public function load_from_xmlstring(&$xml)
 	{
@@ -303,386 +296,7 @@ class PanoramaConf
 		}
 
 	}
-	
-	
-	public function load_from_xmlarr(&$xmlArray)
-	{
-		$this->xmlroot = &$xmlArray;
 
-		
-		if( $xmlArray['name'] != 'config' )
-			derr("Error: <config ...> not found\n");
-
-        if( isset( $xmlArray['attributes']['version']) )
-        {
-            $this->version = PH::versionFromString($xmlArray['attributes']['version']);
-        }
-        else
-        {
-            if( isset($this->connector) && $this->connector !== null )
-                $version = $this->connector->getSoftwareVersion();
-            else
-                derr('cannot find PANOS version used for make this config');
-
-            $this->version = $version['version'];
-        }
-		
-
-		$tmp = &searchForName('name', 'mgt-config', $xmlArray['children']);
-		if( is_null($tmp) )
-			derr("Error: <mgt-config> not found\n");
-
-		$tmp = &searchForName('name', 'devices', $tmp['children']);
-		if( is_null($tmp) )
-			derr("Error: <devices> not found\n");
-
-        if( isset($tmp['children']) )
-        {
-            foreach ($tmp['children'] as &$serial)
-                $this->managedFirewallsSerials[] = $serial['attributes']['name'];
-        }
-
-
-		$this->sharedroot = &searchForName('name', 'shared', $xmlArray['children']);
-		
-		if( is_null($this->sharedroot) )
-			derr("Error: <shared ...> not found\n");
-
-
-        //
-        // Extract Tags objects
-        //
-        if( $this->version >= 60 )
-        {
-            $tagRoot = &searchForName('name', 'tag', $this->sharedroot['children']);
-
-            if (is_null($tagRoot))
-            {
-                // no object section, lets create one
-                $tagRoot = Array('name' => 'tag');
-                $this->sharedroot['children'][] = &$tagRoot;
-            }
-            if (!isset($tagRoot['children']))
-            {
-                $tagRoot['children'] = Array();
-            }
-            $this->tagStore->load_from_xml($tagRoot);
-        }
-        // end of Tags extraction
-
-		
-		$this->devicesroot = &searchForName('name', 'devices', $xmlArray['children']);
-		
-		if( is_null($this->devicesroot) )
-			derr("Error: <devices ...> not found\n");
-		
-		// Now look for entry name="localhost.localdomain"
-		$this->localhostlocaldomain = &searchForNameAndAttribute('name', 'entry', 'name', 'localhost.localdomain', $this->devicesroot['children']);
-				
-		if( is_null($this->localhostlocaldomain) )
-			derr("Error: <entry name=\"localhost.localdomain\" ...> not found\n");
-		
-		
-		// Look for <device-group> 
-		$this->devicegrouproot = &searchForName('name', 'device-group', $this->localhostlocaldomain['children']);
-		
-		if( is_null($this->devicegrouproot ) )
-			derr("Error: <device-group> not found\n");
-		
-		
-		
-		//
-		// Shared address objects extraction
-		//
-		$this->addressroot = &searchForName('name', 'address', $this->sharedroot['children'] );
-		if( is_null($this->addressroot) )
-		{
-			$this->addressroot = Array( 'name' => 'address' );
-			$this->sharedroot['children'][] = &$this->addressroot ;
-		}
-		if( !isset($this->addressroot['children']) )
-		{
-			$this->addressroot['children'] = Array();
-		}
-		$this->addressStore->load_addresses_from_xml($this->addressroot);
-		// end of address extraction
-		
-		
-		
-		//
-		// Extract address groups 
-		//
-		$this->addressGsroot = &searchForName('name', 'address-group', $this->sharedroot['children'] );
-		if( is_null($this->addressGsroot) )
-		{
-			// no object group section, lets create one
-			$this->addressGsroot = Array( 'name' => 'address-group', 'children' => Array() );
-			$this->sharedroot['children'][] = &$this->addressGsroot ;
-		}
-		if( !isset($this->addressGsroot['children']) )
-		{
-			$this->addressGsroot['children'] = Array();
-		}
-		$this->addressStore->load_addressgroups_from_xml($this->addressGsroot);
-		// End of address groups extraction
-		
-		
-		
-		//							//
-		// Extract service objects 				//
-		//							//
-		$this->servicesroot = &searchForName('name', 'service', $this->sharedroot['children']);
-		if( is_null($this->servicesroot) )
-		{
-			$this->servicesroot = Array( 'name' => 'service' );
-			$this->sharedroot['children'][] = &$this->servicesroot;
-			
-		}
-		if( !isset($this->servicesroot['children']) )
-		{
-			$this->servicesroot['children'] = Array();
-		}
-		$this->serviceStore->load_services_from_xml($this->servicesroot);
-		//print "found ".count($this->services)." service objects\n";
-		// End of <service> extraction
-		
-		
-		
-		//							//
-		// Extract service groups 				//
-		//							//
-		$this->serviceGsroot = &searchForName('name', 'service-group', $this->sharedroot['children']);
-		if( is_null($this->serviceGsroot) )
-		{
-			$this->serviceGsroot = Array( 'name' => 'service-group' );
-			$this->sharedroot['children'][] = &$this->serviceGsroot;
-		}
-		if( !isset($this->serviceGsroot['children']) )
-		{
-				$this->serviceGsroot['children'] = Array();
-		}
-		
-		$this->serviceStore->load_servicegroups_from_xml($this->serviceGsroot);
-		//print "found ".count($this->serviceGs)." service groups\n";
-		// End of <service-group> extraction
-		
-		
-		
-		$preRulebase = &searchForName('name', 'pre-rulebase', $this->sharedroot['children']);
-		if( is_null($preRulebase) )
-		{
-			$preRulebase = Array('name'=>'pre-rulebase', 'children'=>Array());
-			$this->sharedroot['children'][] = &$preRulebase;
-		}
-		
-		$postRulebase = &searchForName('name', 'post-rulebase', $this->sharedroot['children']);
-		if( is_null($postRulebase) )
-		{
-			$postRulebase =  Array( 'name' => 'post-rulebase', 'children' => Array());
-			$this->sharedroot['children'][] = &$postRulebase;
-		}
-
-        if( !isset($preRulebase['children']) ) $preRulebase['children'] = Array();
-        if( !isset($postRulebase['children']) ) $postRulebase['children'] = Array();
-
-
-        //							//
-        // Extract preNAT rules objects in this 		//
-        //							//
-        $nat = &searchForName('name', 'nat', $preRulebase['children']);
-        if( is_null($nat) )
-        {
-            $nat = Array('name'=>'nat' , 'children'=>Array());
-            $preRulebase['children'][] = &$nat;
-        }
-
-        $this->prenatrulesroot = &searchForName('name', 'rules', $nat['children']);
-        if( is_null($this->prenatrulesroot) )
-        {
-            $this->prenatrulesroot = Array('name'=>'rules');
-            $nat['children'][] = &$this->prenatrulesroot;
-        }
-        if( !isset($this->prenatrulesroot['children']) )
-        {
-            $this->prenatrulesroot['children'] = Array();
-        }
-
-        $c = count($this->prenatrulesroot['children']);
-
-        //print "found $c pre-nat rules\n";
-        $this->preNatRules->load_from_xml($this->prenatrulesroot);
-        //
-        // End of preNAT Rules extractions
-        //
-
-
-
-        //					                        		//
-        // Extract preDecrypt rules objects in this 		//
-        //			                        				//
-        $decrypt = &searchForName('name', 'decryption', $preRulebase['children']);
-        if( is_null($decrypt) )
-        {
-            $decrypt = Array('name'=>'decryption' , 'children'=>Array());
-            $preRulebase['children'][] = &$decrypt;
-        }
-
-        $decryptRulesRoot = &searchForName('name', 'rules', $decrypt['children']);
-        if( is_null($decryptRulesRoot) )
-        {
-            $decryptRulesRoot = Array('name'=>'rules');
-            $decrypt['children'][] = &$decryptRulesRoot;
-        }
-        if( !isset($decryptRulesRoot['children']) )
-        {
-            $decryptRulesRoot['children'] = Array();
-        }
-
-        $this->preDecryptionRules->load_from_xml($decryptRulesRoot);
-        //
-        // End of preDecrypt Rules extractions
-        //
-
-
-
-        //							//
-        // Extract pre security rules objects in this VSYS		//
-        //							//
-        $security = &searchForName('name', 'security', $preRulebase['children']);
-        if( is_null($security) )
-        {
-            $security = Array('name'=>'security' , 'children'=>Array());
-            $preRulebase['children'][] = &$security;
-        }
-
-
-        $this->presecrulesroot = &searchForName('name', 'rules', $security['children']);
-        if( is_null($this->presecrulesroot) )
-        {
-            $this->presecrulesroot = Array('name'=>'rules');
-            $security['children'][] = &$this->presecrulesroot;
-        }
-        if( !isset($this->presecrulesroot['children']) )
-        {
-            $this->presecrulesroot['children'] = Array();
-        }
-
-        //$c = count($this->presecrulesroot['children']);
-
-        //print "found $c pre-security rules\n";
-        $this->preSecurityRules->load_from_xml($this->presecrulesroot);
-        //extractSecRulesFromXML($this->preSecurityRules, $this->presecrulesroot['children'], $this);
-        // End of pre Security Rules extractions
-
-
-
-
-        //							//
-        // Extract postNAT rules objects in this VSYS		//
-        //							//
-        $nat = &searchForName('name', 'nat', $postRulebase['children']);
-        if( is_null($nat) )
-        {
-            $nat = Array('name'=>'nat' , 'children'=>Array());
-            $postRulebase['children'][] = &$nat;
-        }
-
-        $this->postnatrulesroot = &searchForName('name', 'rules', $nat['children']);
-        if( is_null($this->postnatrulesroot) )
-        {
-            $this->postnatrulesroot = Array('name'=>'rules');
-            $nat['children'][] = &$this->postnatrulesroot;
-        }
-        if( !isset($this->postnatrulesroot['children']) )
-        {
-            $this->postnatrulesroot['children'] = Array();
-        }
-
-        $c = count($this->postnatrulesroot['children']);
-
-        //print "found $c post-nat rules\n";
-
-        $this->postNatRules->load_from_xml($this->postnatrulesroot);
-        //print "found post nat rules = ".$this->postNatRules->count()."\n";
-        // End of post NAT Rules extractions
-
-
-
-
-        //					                        		//
-        // Extract postDecrypt rules objects in this 		//
-        //			                        				//
-        $decrypt = &searchForName('name', 'decryption', $postRulebase['children']);
-        if( is_null($decrypt) )
-        {
-            $decrypt = Array('name'=>'decryption' , 'children'=>Array());
-            $postRulebase['children'][] = &$decrypt;
-        }
-
-        $decryptRulesRoot = &searchForName('name', 'rules', $decrypt['children']);
-        if( is_null($decryptRulesRoot) )
-        {
-            $decryptRulesRoot = Array('name'=>'rules');
-            $decrypt['children'][] = &$decryptRulesRoot;
-        }
-        if( !isset($decryptRulesRoot['children']) )
-        {
-            $decryptRulesRoot['children'] = Array();
-        }
-
-        $this->postDecryptionRules->load_from_xml($decryptRulesRoot);
-        //
-        // End of postDecrypt Rules extractions
-        //
-
-
-
-        //							//
-        // Extract pre security rules objects in this VSYS		//
-        //							//
-        $security = &searchForName('name', 'security', $postRulebase['children']);
-        if( is_null($security) )
-        {
-            $security = Array('name'=>'security' , 'children'=>Array());
-            $postRulebase['children'][] = &$security;
-        }
-
-
-        $postSecRulesRoot = &searchForName('name', 'rules', $security['children']);
-        if( is_null($postSecRulesRoot) )
-        {
-            $postSecRulesRoot = Array('name'=>'rules');
-            $security['children'][] = &$postSecRulesRoot;
-        }
-        if( !isset($postSecRulesRoot['children']) )
-        {
-            $postSecRulesRoot['children'] = Array();
-        }
-        $this->postSecurityRules->load_from_xml($postSecRulesRoot);
-        // End of pre Security Rules extractions
-
-
-
-
-
-		
-		// Now listing and extracting all DeviceGroup configurations
-        // TODO replace with foreach()
-		$cur = &$this->devicegrouproot['children'];
-		$c = count($cur);
-		$k = array_keys($cur);
-		
-		for( $i=0; $i<$c; $i++ )
-		{
-			$lvname = $cur[$k[$i]]['attributes']['name'];
-			//print "Device Group '$lvname' found\n";
-			
-			$ldv = new DeviceGroup($this);
-			$ldv->load_from_xml($cur[$k[$i]],$this);
-			$this->deviceGroups[] = $ldv;
-		}
-				
-	}
 
     /**
      * @param string $name
@@ -719,10 +333,8 @@ class PanoramaConf
 	{
 		$filecontents = file_get_contents($filename);
 
-		if( PH::$UseDomXML === TRUE )
-			$this->load_from_xmlstring($filecontents);
-		else
-			$this->load_from_xml($filecontents);
+		$this->load_from_xmlstring($filecontents);
+
 	}
 	
 	
@@ -794,33 +406,16 @@ class PanoramaConf
     {
         $this->connector = $conn;
 
-
-        if( PH::$UseDomXML === TRUE )
-        {
-            $xmlDoc = $this->connector->getRunningConfig();
-            $this->load_from_domxml($xmlDoc);
-        }
-        else
-        {
-            $xmlarr = $this->connector->getRunningConfig();
-            $this->load_from_xmlarr($xmlarr);
-        }
+		$xmlDoc = $this->connector->getRunningConfig();
+		$this->load_from_domxml($xmlDoc);
     }
 
     public function API_load_from_candidate( PanAPIConnector $conn )
     {
         $this->connector = $conn;
 
-        if( PH::$UseDomXML === TRUE )
-        {
-            $xmlDoc = $this->connector->getCandidateConfig();
-            $this->load_from_domxml($xmlDoc);
-        }
-        else
-        {
-            $xmlarr = $this->connector->getCandidateConfig();
-            $this->load_from_xmlarr($xmlarr);
-        }
+		$xmlDoc = $this->connector->getCandidateConfig();
+		$this->load_from_domxml($xmlDoc);
     }
 
 	/**
@@ -833,10 +428,8 @@ class PanoramaConf
 
 		$url = "&type=import&category=configuration&category=configuration";
 
-		if( PH::$UseDomXML )
-			$answer = &$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
-		else
-			$answer = &$this->connector->sendRequest($url, false, array_to_xml($this->xmlroot), $config_name );
+		$answer = &$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
+
 
 		print "OK!\n";
 	}
