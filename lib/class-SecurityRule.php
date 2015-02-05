@@ -90,23 +90,8 @@ class SecurityRule extends Rule
 		
 		if( $fromTemplateXML )
 		{
-			if( PH::$UseDomXML )
-			{
-				$xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
-				$this->load_from_domxml($xmlElement);
-			}
-			else
-			{
-				if( is_null(self::$templatexmlroot) )
-				{
-					$xmlobj = new XmlArray();
-					self::$templatexmlroot = $xmlobj->load_string(self::$templatexml);
-					//print_r(self::$templatexmlroot);
-					//die();
-				}
-				$tmparr = cloneArray(self::$templatexmlroot);
-				$this->load_from_xml($tmparr);
-			}
+			$xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
+			$this->load_from_domxml($xmlElement);
 		}
 		
 	}
@@ -221,174 +206,10 @@ class SecurityRule extends Rule
 		else
 			$this->negatedDestination = false;
 		// End of <negate-destination>
-		
-		
-		
+
 	}
 
-	
-	public function load_from_xml(&$xml)
-	{
-		$this->xmlroot = &$xml;
-		
-		$this->name = $xml['attributes']['name'];
-		
-		if( is_null($this->name ) )
-			derr("Rule name not found\n");
-		
-		//print "found rule name '".$this->name."'\n";
-		
-		//  											//
-		//	Begin of <disabled> extraction				//
-		//												//
-		$this->extract_disabled_from_xml();
-		// End of <disabled> properties extraction		//
-		
-		//  											//
-		//	Begin of <description> extraction			//
-		//												//
-		$this->extract_description_from_xml();
-		// End of <description> extraction 				//
 
-			
-		
-		$this->load_source();
-		$this->load_destination();
-
-		$this->load_tags();
-		
-		$this->load_from();
-		$this->load_to();
-		
-		
-		//						//
-		// Begin <application> application extraction			//
-		//						//
-		$approot = &searchForName('name', 'application', $xml['children']);
-		if( ! $approot  )
-		{
-			$approot = Array('name'=>'application');
-			$xml['children'][] = &$approot;
-		}
-		if( ! isset($approot['children']) )
-			$approot['children'] = array();
-		
-		$this->apps->load_from_xml($approot);
-		// end of <application> application extraction
-
-
-
-		//						//
-		// Begin <service> extraction			//
-		//						//
-		$serviceroot = &searchForName('name', 'service', $xml['children']);
-		if( ! $serviceroot  )
-		{
-			$serviceroot = Array('name'=>'service');
-			$xml['children'][] = &$serviceroot;
-		}
-		if( ! isset($serviceroot['children']) )
-			$serviceroot['children'] = array();
-
-		$this->services->load_from_xml($serviceroot);
-		// end of <service> zone extraction
-
-
-		$this->extract_action_from_xml();
-		
-		
-		//
-		// Begin <log-start> extraction
-		//
-		$this->logstartroot = &searchForName('name', 'log-start', $xml['children']);
-		if( ! $this->logstartroot  )
-		{
-			$this->logstartroot = Array('name'=>'log-start');
-			$xml['children'][] = &$this->logstartroot;
-		}
-		if( ! isset($this->logstartroot['content']) )
-			$this->logstartroot['content'] = 'no';
-		$this->logstart = yesNoBool($this->logstartroot['content']);
-		// End of <log-start>
-
-		//
-		// Begin <log-setting> extraction
-		//
-		$this->logsettingroot = &searchForName('name', 'log-setting', $xml['children']);
-		if( ! $this->logsettingroot  )
-		{
-			$this->logsettingroot = Array('name'=>'ignme');
-			$xml['children'][] = &$this->logsettingroot;
-		}
-		else
-			$this->logSetting = $this->logsettingroot['content'];
-		
-		// End of <log-setting>
-		
-		
-		//
-		// Begin <log-end> extraction
-		//
-		$this->logendroot = &searchForName('name', 'log-end', $xml['children']);
-		if( ! $this->logendroot  )
-		{
-			$this->logendroot = Array('name'=>'log-end');
-			$xml['children'][] = &$this->logendroot;
-		}
-		if( ! isset($this->logendroot['content']) )
-			$this->logendroot['content'] = 'yes';
-		$this->logend = yesNoBool($this->logendroot['content']);
-		// End of <log-start>
-		
-		
-		//
-		// Begin <profile-setting> extraction
-		//
-		$this->secprofroot = &searchForName('name', 'profile-setting', $xml['children']);
-		if( $this->secprofroot  === null )
-		{
-			$this->secprofroot = Array('name'=>'ignme' , 'children' => Array());
-			$xml['children'][] = &$this->secprofroot;
-		}
-		else 
-			$this->extract_security_profile_from_xml();
-		// End of <profile-setting>
-				
-		
-		
-		//
-		// Begin <negate-source> extraction
-		//
-		$this->negatedSourceRoot = &searchForName('name', 'negate-source', $xml['children']);
-		if( ! $this->negatedSourceRoot )
-		{
-			$this->negatedSourceRoot = Array('name'=>'negate-source');
-			$xml['children'][] = &$this->negatedSourceRoot;
-		}
-		if( ! isset($this->negatedSourceRoot['content']) )
-			$this->negatedSourceRoot['content'] = 'no';
-		
-		$this->negatedSource = yesNoBool($this->negatedSourceRoot['content']);
-		// End of <negate-source>
-		//
-		
-		// Begin <negate-destination> extraction
-		//
-		$this->negatedDestinationRoot = &searchForName('name', 'negate-destination', $xml['children']);
-		if( ! $this->negatedDestinationRoot )
-		{
-			$this->negatedDestinationRoot = Array('name'=>'negate-destination');
-			$xml['children'][] = &$this->negatedDestinationRoot;
-		}
-		if( ! isset($this->negatedDestinationRoot['content']) )
-			$this->negatedDestinationRoot['content'] = 'no';
-
-		$this->negatedDestination = yesNoBool($this->negatedDestinationRoot['content']);
-		// End of <negate-destination>
-		
-		
-		
-	}
 	
 	/**
 	*
@@ -639,75 +460,41 @@ class SecurityRule extends Rule
 	
 	public function rewriteSecProfXML()
 	{
-		if( PH::$UseDomXML === TRUE )
-		{
-			if( $this->secprofroot !== null )
-                DH::clearDomNodeChilds($this->secprofroot);
-			if ( $this->secproftype == 'group' )
-			{
-                if( $this->secprofroot === null || $this->secprofroot === false )
-                    $this->secprofroot = DH::createElement( $this->xmlroot, 'profile-setting');
-                else
-                    $this->xmlroot->appendChild($this->secprofroot);
 
-				$tmp = $this->secprofroot->ownerDocument->createElement('group');
-				$tmp = $this->secprofroot->appendChild($tmp);
-				$tmp = $tmp->appendChild( $this->secprofroot->ownerDocument->createElement('member') );
-				$tmp->appendChild( $this->secprofroot->ownerDocument->createTextNode($this->secprofgroup) );
-			}
-			else if ( $this->secproftype == 'profiles' )
-			{
-                if( $this->secprofroot === null || $this->secprofroot === false)
-                    $this->secprofroot = DH::createElement( $this->xmlroot, 'profile-setting');
-                else
-                    $this->xmlroot->appendChild($this->secprofroot);
-
-				$tmp = $this->secprofroot->ownerDocument->createElement('profiles');
-				$tmp = $this->secprofroot->appendChild($tmp);
-				
-				foreach($this->secprofprofiles as $index=>$value)
-				{
-					$type = $tmp->appendChild( $this->secprofroot->ownerDocument->createElement($index) );
-					$ntmp = $type->appendChild( $this->secprofroot->ownerDocument->createElement('member') );
-					$ntmp->appendChild( $this->secprofroot->ownerDocument->createTextNode($value) );
-				}
-			}
-            elseif( $this->secprofroot !== null )
-                DH::removeChild($this->xmlroot, $this->secprofroot);
-	
-			return;
-		}
-
-		$this->secprofroot['children'] = Array();
-		
+		if( $this->secprofroot !== null )
+			DH::clearDomNodeChilds($this->secprofroot);
 		if ( $this->secproftype == 'group' )
 		{
-			//print "Rewriting for Sec Group\n";
-			$this->secprofroot['name'] = 'profile-setting';
-			
-			$this->secprofroot['children'] = Array();
-			$this->secprofroot['children'][] = Array('name' => 'group', 'children' => Array( 0=> Array('name'=>'member','content'=>$this->secprofgroup))  );
+			if( $this->secprofroot === null || $this->secprofroot === false )
+				$this->secprofroot = DH::createElement( $this->xmlroot, 'profile-setting');
+			else
+				$this->xmlroot->appendChild($this->secprofroot);
 
+			$tmp = $this->secprofroot->ownerDocument->createElement('group');
+			$tmp = $this->secprofroot->appendChild($tmp);
+			$tmp = $tmp->appendChild( $this->secprofroot->ownerDocument->createElement('member') );
+			$tmp->appendChild( $this->secprofroot->ownerDocument->createTextNode($this->secprofgroup) );
 		}
 		else if ( $this->secproftype == 'profiles' )
 		{
-			//print "Rewriting for Sec Group\n";
-			$this->secprofroot['name'] = 'profile-setting';
-			
-			$this->secprofroot['children'] = Array(0=> Array('name'=>'profiles', 'children' => Array()));
-			
-			$tmp = Array('name' => 'profiles', 'children' => Array( )  );
-			
+			if( $this->secprofroot === null || $this->secprofroot === false)
+				$this->secprofroot = DH::createElement( $this->xmlroot, 'profile-setting');
+			else
+				$this->xmlroot->appendChild($this->secprofroot);
+
+			$tmp = $this->secprofroot->ownerDocument->createElement('profiles');
+			$tmp = $this->secprofroot->appendChild($tmp);
+
 			foreach($this->secprofprofiles as $index=>$value)
 			{
-				$this->secprofroot['children'][0]['children'][] = Array('name' => $index, 'children' => Array( 0=> Array('name'=>'member','content'=>$value))  );
+				$type = $tmp->appendChild( $this->secprofroot->ownerDocument->createElement($index) );
+				$ntmp = $type->appendChild( $this->secprofroot->ownerDocument->createElement('member') );
+				$ntmp->appendChild( $this->secprofroot->ownerDocument->createTextNode($value) );
 			}
-	
-
 		}
-		else
-			$this->secprofroot['name'] = 'ignme';
-			
+		elseif( $this->secprofroot !== null )
+			DH::removeChild($this->xmlroot, $this->secprofroot);
+
 	}
 	
 	
@@ -738,10 +525,8 @@ class SecurityRule extends Rule
 		if( in_array($newAction, $allowed) )
 		{
 			$this->action = $newAction;
-			if( PH::$UseDomXML === TRUE )
-				DH::setDomNodeText($this->actionroot, $newAction);
-			else
-				$this->actionroot['content'] = $newAction;
+			DH::setDomNodeText($this->actionroot, $newAction);
+
 		}
 		
 		else derr($this->toString()." : error : '$newAction' is not supported action type\n");
@@ -766,10 +551,7 @@ class SecurityRule extends Rule
 	{
 		if( $this->logstart != $yes )
 		{
-			if( PH::$UseDomXML )
-				$this->logstartroot->nodeValue =  boolYesNo($yes);
-			else
-				$this->logstartroot['content'] = boolYesNo($yes);
+			$this->logstartroot->nodeValue =  boolYesNo($yes);
 
 			$this->logstart = $yes;
 
@@ -798,10 +580,7 @@ class SecurityRule extends Rule
 	{
 		if( $this->logend != $yes )
 		{
-			if( PH::$UseDomXML )
-				$this->logendroot->nodeValue =  boolYesNo($yes);
-			else
-				$this->logendroot['content'] = boolYesNo($yes);
+			$this->logendroot->nodeValue =  boolYesNo($yes);
 
 			$this->logend = $yes;
 
@@ -862,34 +641,21 @@ class SecurityRule extends Rule
 		if( $newLogSetting === null || strlen($newLogSetting) < 1 )
 		{
 			$this->logSetting = false;
-			if( PH::$UseDomXML )
-			{
-				if( $this->logsettingroot !== null )
-					$this->xmlroot->removeChild($this->logsettingroot);
-			}
-			else
-			{
-				$this->logsettingroot['name'] = 'ignme';
-			}
+
+			if( $this->logsettingroot !== null )
+				$this->xmlroot->removeChild($this->logsettingroot);
+
 			return;
 		}
 
 		$this->logSetting = $newLogSetting;
 
-		if( PH::$UseDomXML )
+		if( $this->logsettingroot === null )
 		{
-			if( $this->logsettingroot === null )
-			{
-				$this->logsettingroot = DH::createElement($this->xmlroot, 'log-setting', $newLogSetting);
-			}
-			else
-				$this->logsettingroot->nodeValue = $newLogSetting;
+			$this->logsettingroot = DH::createElement($this->xmlroot, 'log-setting', $newLogSetting);
 		}
 		else
-		{
-			$this->logsettingroot['content'] = $newLogSetting;
-			$this->logsettingroot['name'] = 'log-setting';
-		}
+			$this->logsettingroot->nodeValue = $newLogSetting;
 	}
 
 	public function API_setLogSetting($newLogSetting)
@@ -922,25 +688,19 @@ class SecurityRule extends Rule
 	{
 		if( $this->negatedSource != $yes )
 		{
-			if( PH::$UseDomXML )
+			$tmpRoot = DH::findFirstElement('negate-source', $this->xmlroot);
+			if( $tmpRoot === false )
 			{
-				$tmpRoot = DH::findFirstElement('negate-source', $this->xmlroot);
-				if( $tmpRoot === false )
-				{
-					if($yes)
-						DH::createElement($this->xmlroot, 'negate-source', 'yes');
-				}
-				else
-				{
-					if( !$yes )
-						$this->xmlroot->removeChild($tmpRoot);
-					else
-						$tmpRoot->nodeValue = 'yes';
-				}
-
+				if($yes)
+					DH::createElement($this->xmlroot, 'negate-source', 'yes');
 			}
 			else
-				$this->negatedSourceRoot['content'] = boolYesNo($yes);
+			{
+				if( !$yes )
+					$this->xmlroot->removeChild($tmpRoot);
+				else
+					$tmpRoot->nodeValue = 'yes';
+			}
 
 			$this->negatedSource = $yes;
 
@@ -981,25 +741,19 @@ class SecurityRule extends Rule
 	{
 		if( $this->negatedDestination != $yes )
 		{
-			if( PH::$UseDomXML )
+			$tmpRoot = DH::findFirstElement('negate-destination', $this->xmlroot);
+			if( $tmpRoot === false )
 			{
-				$tmpRoot = DH::findFirstElement('negate-destination', $this->xmlroot);
-				if( $tmpRoot === false )
-				{
-					if($yes)
-						DH::createElement($this->xmlroot, 'negate-destination', 'yes');
-				}
-				else
-				{
-					if( !$yes )
-						$this->xmlroot->removeChild($tmpRoot);
-					else
-						$tmpRoot->nodeValue = 'yes';
-				}
-
+				if($yes)
+					DH::createElement($this->xmlroot, 'negate-destination', 'yes');
 			}
 			else
-				$this->negatedDestinationRoot['content'] = boolYesNo($yes);
+			{
+				if( !$yes )
+					$this->xmlroot->removeChild($tmpRoot);
+				else
+					$tmpRoot->nodeValue = 'yes';
+			}
 
 			$this->negatedDestination = $yes;
 

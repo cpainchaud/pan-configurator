@@ -121,39 +121,7 @@ class RuleStore
 		
 		return $count;
 	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	public function load_from_xml(array &$xml)
-	{
-		global $PANC_DEBUG;
 
-		if( ! $this->isStore )
-		{
-			derr($this->toString()." : Error, this function '".__FUNCTION__."' should never called from non CentralStore object\n");
-		}
-		
-		$this->xmlroot = &$xml;
-		
-		if( !isset($xml['children']) )
-			$xml['children'] = Array();
-		
-		$count = 0;
-		
-		foreach( $xml['children'] as &$l )
-		{
-			$count++;
-			if( $PANC_DEBUG && $count%1000 == 0 )
-				print "Parsed $count rules so far\n";
-			$nr = new $this->type($this);
-			$nr->load_from_xml($l);
-			$this->o[] = $nr;
-		}
-		
-		$this->regen_Indexes();
-	}
 
 
 	/**
@@ -210,10 +178,7 @@ class RuleStore
 			$this->fastNameToIndex[$rule->name()] = $index;
 			if($this->isStore )
 			{
-				if( PH::$UseDomXML )
-					$this->xmlroot->appendChild($rule->xmlroot);
-				else
-					$this->xmlroot['children'][] = &$rule->xmlroot;
+				$this->xmlroot->appendChild($rule->xmlroot);
 			}
 			
 			return true;
@@ -455,28 +420,14 @@ class RuleStore
 		if( !$this->isRuleNameAvailable($newName) )
 			derr('this rule name is not available: '.$newName);
 
-		if( PH::$UseDomXML )
-		{
-			$xml = $rule->xmlroot->cloneNode(true);
+		$xml = $rule->xmlroot->cloneNode(true);
 
-			$nr = new $this->type($this);
+		$nr = new $this->type($this);
 
-			$nr->load_from_domxml($xml);
-			$this->addRule($nr);
+		$nr->load_from_domxml($xml);
+		$this->addRule($nr);
 
-			$nr->setName($newName);
-		}
-		else{
-			$xml = &cloneArray($rule->xmlroot);
-
-			$nr = new $this->type($this);
-
-			$nr->load_from_xml($xml);
-			$this->addRule($nr);
-
-			$nr->setName($newName);
-
-		}
+		$nr->setName($newName);
 
 
 		return $nr;
@@ -805,24 +756,11 @@ class RuleStore
 	*/
 	public function rewriteXML()
 	{
-		if( PH::$UseDomXML === TRUE )
-		{
-			DH::clearDomNodeChilds($this->xmlroot);
-			foreach( $this->o as $rule )
-			{
-				$this->xmlroot->appendChild($rule->xmlroot);
-			}
-			return;
-		}
-
-		$ar = Array();
-		
+		DH::clearDomNodeChilds($this->xmlroot);
 		foreach( $this->o as $rule )
 		{
-			$ar[] = $rule->xmlroot;
+			$this->xmlroot->appendChild($rule->xmlroot);
 		}
-		
-		$this->xmlroot['children'] = $ar;
 	}
 	
 	protected function regen_Indexes()
