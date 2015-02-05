@@ -140,38 +140,7 @@ class AddressStore
 			$this->all[$lower] = $ns;
 		}
 	}
-	
 
-	public function load_addresses_from_xml(&$xml)
-	{
-        if( !isset($this->version) )
-        {
-            if( !isset($this->owner->version) || $this->owner->version === null  )
-                derr('cannot find PANOS version from parent object');
-
-            $this->version = $this->owner->version;
-        }
-
-		$this->fasthashcomp = null;
-		
-		$this->addrroot = &$xml;
-
-		
-		foreach( $xml['children'] as &$cursor )
-        {
-			$ns = new Address('',$this);
-			$ns->load_from_xml($cursor);
-
-			$lower = strtolower($ns->name());
-
-			if( $this->centralStore )
-			{
-				$this->addr[$lower] = $ns;
-			}
-			$this->all[$lower] = $ns;
-		}
-	}
-	
 
 	/*private function remergeAll()
 	{
@@ -223,54 +192,7 @@ class AddressStore
 		}
 	}
 	
-	/**
-	* For developer use only.
-	*
-	*/
-	public function load_addressgroups_from_xml(&$xml)
-	{
-		$this->fasthashcomp = null;
 
-        if( !isset($this->version) )
-        {
-            if( !isset($this->owner->version) || $this->owner->version === null  )
-                derr('cannot find PANOS version from parent object');
-
-            $this->version = $this->owner->version;
-        }
-		
-		$this->addrgroot = &$xml;
-		
-		$cur = &$xml['children'];
-		
-		$c = count($cur);
-		$k = array_keys($cur);
-		
-		for( $i=0; $i<$c; $i++ )
-		{
-			$ns = new AddressGroup('',$this);
-			$ns->load_from_xml($cur[$k[$i]]);
-			
-
-			// is this group name referenced somewhere ? (groups can be in wrong order)
-			$f = $this->findTmpAddress($ns->name(), null,false);
-
-			if( !is_null($f) )
-			{
-				$f->replaceMeGlobally($ns);
-				$this->remove($f, false);	
-			}
-
-			$lower = strtolower($ns->name());
-
-			if( $this->centralStore )
-			{
-				$this->addrg[$lower] = $ns;
-			}
-			
-			$this->all[$lower] = $ns;
-		}
-	}
 
 	/**
 	* For developper use only
@@ -312,82 +234,7 @@ class AddressStore
 		return false;
 
 	}
-	
-	
-	public function load_local_objects_xml(&$xml)
-	{
-		$this->fasthashcomp = null;
-		
-		if( $this->centralStore )
-		{
-			derr("Error cannot call this method from a store");
-		}
-		
-		$this->xmlroot = &$xml;
 
-		// TODO use foreach loop
-		$cur = &$xml['children'];
-		$c = count($cur);
-		$k = array_keys($cur);
-		
-		for( $i=0; $i<$c; $i++) 
-		{
-			$lname = $cur[$k[$i]]['content'];
-			
-			if( $i == 0 )
-			{
-				if( $lname == 'any' )
-				{
-					break;
-				}
-
-			}
-			$f = $this->parentCentralStore->findOrCreate($lname);
-			
-			$f->refInRule($this);
-			$this->add($f,false);
-			//$this->all[] = $f;
-			//$this->fast[$f->name()] = $f;
-			//$this->fastMemToIndex[spl_object_hash($f)] = lastIndex($this->all);
-			
-		}
-		
-	}
-
-	public function load_local_objects_domxml($xml)
-	{
-		$this->fasthashcomp = null;
-		
-		if( $this->centralStore )
-		{
-			derr("Error cannot call this method from a store");
-		}
-
-		$this->xmlroot = $xml;
-		
-		$i=0;
-		foreach( $xml->childNodes as $node )
-		{
-			if( $node->nodeType != 1 ) continue;
-
-			$lname = $node->textContent;
-			
-			if( $i == 0 )
-			{
-				if( $lname == 'any' )
-				{
-					break;
-				}
-
-			}
-			$f = $this->parentCentralStore->findOrCreate($lname);
-			
-			$f->refInRule($this);
-			$this->add($f,false);
-			$i++;
-		}
-		
-	}
 	
 	
 	/**
@@ -835,38 +682,19 @@ class AddressStore
 
 	public function rewriteAddressStoreXML()
 	{
-		if( PH::$UseDomXML === TRUE )
-		{
-			DH::clearDomNodeChilds($this->addrroot);
-			foreach( $this->addr as $s )
-			{
-				$this->addrroot->appendChild($s->xmlroot);
-			}
-			return;
-		}
-		$this->addrroot['children'] = Array();
+		DH::clearDomNodeChilds($this->addrroot);
 		foreach( $this->addr as $s )
 		{
-			$this->addrroot['children'][] = &$s->xmlroot;
+			$this->addrroot->appendChild($s->xmlroot);
 		}
 	}
 
 	public function rewriteAddressGroupStoreXML()
 	{
-
-		if( PH::$UseDomXML === TRUE )
-		{
-			DH::clearDomNodeChilds($this->addrgroot);
-			foreach( $this->addrg as $s )
-			{
-				$this->addrgroot->appendChild($s->xmlroot);
-			}
-			return;
-		}
-		$this->addrgroot['children'] = Array();
+		DH::clearDomNodeChilds($this->addrgroot);
 		foreach( $this->addrg as $s )
 		{
-			$this->addrgroot['children'][] = &$s->xmlroot;
+			$this->addrgroot->appendChild($s->xmlroot);
 		}
 	}
 

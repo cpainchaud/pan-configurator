@@ -77,24 +77,16 @@ class Address
 
         if( $fromXmlTemplate )
         {
-            if( !PH::$UseDomXML )
-            {
-                $xmlobj = new XmlArray();
-                $xmlArray = $xmlobj->load_string(self::$templatexml);
-                $this->load_from_xml($xmlArray);
-            }
-            else
-            {
-                $doc = new DOMDocument();
-                $doc->loadXML(self::$templatexml);
 
-                $node = DH::findFirstElementOrDie('entry',$doc);
+			$doc = new DOMDocument();
+			$doc->loadXML(self::$templatexml);
 
-                $rootDoc = $this->owner->addrroot->ownerDocument;
-                $this->xmlroot = $rootDoc->importNode($node, true);
-                $this->load_from_domxml($this->xmlroot);
+			$node = DH::findFirstElementOrDie('entry',$doc);
 
-            }
+			$rootDoc = $this->owner->addrroot->ownerDocument;
+			$this->xmlroot = $rootDoc->importNode($node, true);
+			$this->load_from_domxml($this->xmlroot);
+
             $this->setName($name);
         }
 
@@ -115,45 +107,6 @@ class Address
 		$connector->sendDeleteRequest($xpath);
 	}
 
-	
-	/**
-	* @ignore
-	*
-	*/
-	public function load_from_xml(&$xml)
-	{
-		
-		$this->xmlroot = &$xml;
-		
-		$this->name = $xml['attributes']['name'];
-		if( is_null($this->name) || strlen($this->name) < 1 )
-			derr("address object name not found\n");
-		
-		//print "object named '".$this->name."' found\n";
-		$typeFound = false;
-		
-		foreach($xml['children'] as &$cur)
-		{
-			$lsearch = array_search($cur['name'], self::$AddressTypes);
-			if( $lsearch !== FALSE )
-			{
-				$typeFound = true;
-				$this->type = $lsearch;
-				$this->value = $cur['content'];
-			}
-			elseif( $cur['name'] == 'description' )
-			{
-				$this->description = $cur['content'];
-			}
-
-		}
-
-		if( !$typeFound )
-			derr('object type not found or not supported');
-		
-		
-		//print $this->type."\n";
-	}
 
 	/**
 	* @ignore
@@ -281,13 +234,10 @@ class Address
 
 		if( $rewriteXml)
 		{
-			if( PH::$UseDomXML )
-			{
-				$valueRoot = DH::findFirstElementOrDie(self::$AddressTypes[$this->type], $this->xmlroot);
-				$valueRoot->nodeValue = $this->value;
-			}
-			else
-				$this->rewriteXML();
+
+			$valueRoot = DH::findFirstElementOrDie(self::$AddressTypes[$this->type], $this->xmlroot);
+			$valueRoot->nodeValue = $this->value;
+
 		}
 
 		return true;
@@ -363,34 +313,15 @@ class Address
         if( $this->isTmpAddr() )
             return;
 
-        if( PH::$UseDomXML )
+		DH::clearDomNodeChilds($this->xmlroot);
+
+		$tmp = DH::createElement($this->xmlroot, self::$AddressTypes[$this->type], $this->value);
+
+		if( $this->description !== null && strlen($this->description) > 0 )
 		{
-			DH::clearDomNodeChilds($this->xmlroot);
-
-			$tmp = DH::createElement($this->xmlroot, self::$AddressTypes[$this->type], $this->value);
-
-			if( $this->description !== null && strlen($this->description) > 0 )
-			{
-				DH::createElement($this->xmlroot, 'description', $this->description );
-			}
+			DH::createElement($this->xmlroot, 'description', $this->description );
 		}
-		else
-		{
-			$a = Array();
-			$a['name'] =  self::$AddressTypes[$this->type];
-			$a['content'] = $this->value;
 
-			$b = Array();
-			$b['name'] = 'description';
-			$b['content'] = $this->description;
-
-			$c = Array();
-			$c['name'] = 'entry';
-			$c['attributes'] = Array( 'name' => $this->name);
-			$c['children'] = Array( 0 => &$a, 1 => &$b );
-
-			$this->xmlroot = $c;
-		}
 	}
 	
 	/**
@@ -402,10 +333,8 @@ class Address
 	{
 		$this->setRefName($newname);
 
-		if( PH::$UseDomXML === TRUE )
-			$this->xmlroot->getAttributeNode('name')->nodeValue = $newname;
-		else	
-			$this->xmlroot['attributes']['name'] = $newname;	
+		$this->xmlroot->getAttributeNode('name')->nodeValue = $newname;
+
 	}
 
 	public function API_setName($newname)

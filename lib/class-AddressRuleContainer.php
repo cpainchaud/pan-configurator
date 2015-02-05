@@ -185,28 +185,7 @@ class AddressRuleContainer extends ObjRuleContainer
     {
         return $this->o;
     }
-
-
-    /**
-     * should only be called from a Rule constructor
-     * @ignore
-     */
-    public function load_from_xml(&$xml)
-    {
-        $this->xmlroot = &$xml;
-
-        foreach( $xml['children'] as &$cur)
-        {
-            if( strtolower($cur['content']) == 'any' )
-            {
-                return;
-            }
-
-            $f = $this->parentCentralStore->findOrCreate( $cur['content'], $this);
-            $this->o[] = $f;
-        }
-
-    }
+    
 
     /**
      * should only be called from a Rule constructor

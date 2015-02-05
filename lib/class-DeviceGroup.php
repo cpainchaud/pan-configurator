@@ -24,6 +24,11 @@ class DeviceGroup
 	use PathableName;
 	use PanSubHelperTrait;
 
+	/**
+	 * String
+	 */
+	protected $name;
+
     /**
      * @var PanoramaConf
      */

@@ -64,88 +64,32 @@ class AddressGroup
 
 		if( $fromTemplateXml )
 		{
-            if( !PH::$UseDomXML )
-            {
-                $xmlobj = new XmlArray();
-                if( $this->owner->owner->version < 60 )
-                    $xmlArray = $xmlobj->load_string(self::$templatexml);
-                else
-                    $xmlArray = $xmlobj->load_string(self::$templatexml_v6);
-                $this->load_from_xml($xmlArray);
-            }
-            else
-            {
-                $doc = new DOMDocument();
-                if( $this->owner->owner->version < 60 )
-                    $doc->loadXML(self::$templatexml);
-                else
-                    $doc->loadXML(self::$templatexml_v6);
+			$doc = new DOMDocument();
+			if( $this->owner->owner->version < 60 )
+				$doc->loadXML(self::$templatexml);
+			else
+				$doc->loadXML(self::$templatexml_v6);
 
-                $node = DH::findFirstElement('entry',$doc);
+			$node = DH::findFirstElement('entry',$doc);
 
-                $rootDoc = $this->owner->addrgroot->ownerDocument;
+			$rootDoc = $this->owner->addrgroot->ownerDocument;
 
-                $this->xmlroot = $rootDoc->importNode($node, true);
-                $this->load_from_domxml($this->xmlroot);
+			$this->xmlroot = $rootDoc->importNode($node, true);
+			$this->load_from_domxml($this->xmlroot);
 
-            }
 			$this->setName($name);
 		}
 		
 		$this->name = $name;
 
-		$this->tags = new TagRuleContainer('tag', $this);
+		$this->tags = new TagRuleContainer('tags', $this);
 	}
 
 	public function isDynamic()
 	{
 		return $this->isDynamic;
 	}
-	
-	/**
-	* @ignore
-	*
-	*/
-	public function load_from_xml(&$xml)
-	{
-		
-		$this->xmlroot = &$xml;
-		
-		$this->name = $xml['attributes']['name'];
-		if( is_null($this->name) )
-			derr("address group name not found\n");
-		
-		
-		
-		if( !isset($this->xmlroot['children']) )
-			$this->xmlroot['children'] = Array();
-		
-		$a = &$this->xmlroot['children'];
 
-        if( $this->owner->owner->version >= 60 )
-        {
-            $this->membersRoot = &searchForName('name', 'static', $this->xmlroot['children']);
-
-            if( $this->membersRoot === null )
-            {
-                $this->membersRoot = &searchForName('name', 'static', $this->xmlroot['children']);
-                $this->isDynamic = true;
-                return;
-            }
-
-            if( $this->membersRoot === null )
-                derr('unsupported group that is not static or dynamic');
-
-            $a = &$this->membersRoot['children'];
-        }
-		
-		foreach( $a as &$r )
-		{
-			$f = $this->owner->findOrCreate($r['content'], $this, true);
-			$this->members[] = $f;
-		}
-		
-	}
 
 	public function xml_convert_to_v6()
 	{
@@ -251,10 +195,7 @@ class AddressGroup
 	{
 		$this->setRefName($newname);
 
-		if( PH::$UseDomXML === TRUE )
-			$this->xmlroot->setAttribute('name', $newname);
-		else
-			$this->xmlroot['attributes']['name'] = $newname;
+		$this->xmlroot->setAttribute('name', $newname);
 	}
 	
 	
@@ -415,20 +356,11 @@ class AddressGroup
         if( $this->isDynamic() )
             derr('unsupported');
 
-		if( PH::$UseDomXML === TRUE)
-		{
-			if( $this->owner->owner->version >= 60 )
-				DH::Hosts_to_xmlDom($this->membersRoot, $this->members, 'member', false);
-			else
-				DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
-		}
+		if( $this->owner->owner->version >= 60 )
+			DH::Hosts_to_xmlDom($this->membersRoot, $this->members, 'member', false);
 		else
-        {
-            if( $this->owner->owner->version >= 60 )
-                Hosts_to_xmlA($this->membersRoot['children'], $this->members, 'member', false);
-            else
-                Hosts_to_xmlA($this->xmlroot['children'], $this->members, 'member', false);
-        }
+			DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
+
 	}
 	
 	/**
