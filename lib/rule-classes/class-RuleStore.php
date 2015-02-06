@@ -24,7 +24,14 @@ class RuleStore
 	/**
 	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]
 	 */
-	protected $o = Array();
+	protected $rules = Array();
+
+
+	/**
+	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]
+	 */
+	protected $postRules = null;
+
     /**
      * @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf
      */
@@ -33,14 +40,24 @@ class RuleStore
 	/**
 	 * @var string[]|DOMElement
 	 */
-	public $xmlroot;
+	public $xmlroot = null;
+
+	/**
+	 * @var string[]|DOMElement
+	 */
+	public $postRulesRoot = null;
+
+
 	protected $type = '**needsomethinghere**';
+
 	protected $fastMemToIndex=null;
 	protected $fastNameToIndex=null;
 
-	protected $isStore = false;
+	protected $fastMemToIndex_forPost=null;
+	protected $fastNameToIndex_forPost=null;
 
-    protected $isPreRulebase = null;
+
+    protected $isPreOrPost = false;
 
 
     static private $storeNameByType = Array(
@@ -51,45 +68,20 @@ class RuleStore
 
     );
  
-	public function RuleStore($owner=null)
+	public function RuleStore($owner, $ruleType, $isPreOrPost = false)
 	{
 		$this->owner = $owner;
-	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	public function setStoreRole($isStore , $type, $preRulebase = null)
-	{
-		$this->setType($type, $preRulebase);
-		$this->isStore = $isStore;
-	}
-	
-	/**
-	* For developper use only
-     * @param string
-	* @param bool|null
-	*/
-	protected function setType($type, $preRulebase = null)
-	{
+		$this->isPreOrPost = $isPreOrPost;
+
+
 		$allowedTypes = array_keys(self::$storeNameByType);
-		if( ! in_array($type, $allowedTypes) )
-			derr("Error : type '$type' is not a valid one");
-		$this->type = $type;
+		if( ! in_array($ruleType, $allowedTypes) )
+			derr("Error : type '$ruleType' is not a valid one");
 
-        $this->isPreRulebase = $preRulebase;
+		$this->type = $ruleType;
 
-        if( $preRulebase === null )
-        {
-            $this->name = self::$storeNameByType[$this->type]['name'];
-        }
-        else if( $preRulebase )
-        {
-            $this->name = 'Pre-'.self::$storeNameByType[$this->type]['name'];
-        }
-        else
-            $this->name = 'Post-'.self::$storeNameByType[$this->type]['name'];
+
+		$this->name = self::$storeNameByType[$this->type]['name'];
 	}
 
 
@@ -108,7 +100,7 @@ class RuleStore
 		
 		$count = 0;
 		
-		foreach($this->o as $rule)
+		foreach($this->rules as $rule)
 		{
 			if( $rule->SNat_Type() == 'dynamic-ip-and-port' )
 			{
@@ -127,15 +119,11 @@ class RuleStore
 	/**
 	 * For developper use only
 	 * @param DOMElement $xml
+	 * @param DOMElement $xmlPost
 	 */
-	public function load_from_domxml($xml)
+	public function load_from_domxml($xml , $xmlPost=null)
 	{
 		global $PANC_DEBUG;
-
-		if( ! $this->isStore )
-		{
-			derr($this->toString()." : Error, this function '".__FUNCTION__."' should never called from non CentralStore object\n");
-		}
 		
 		$this->xmlroot = $xml;		
 		$count = 0;
@@ -148,9 +136,26 @@ class RuleStore
 				print "Parsed $count rules so far\n";
 			$nr = new $this->type($this);
 			$nr->load_from_domxml($node);
-			$this->o[] = $nr;
+			$this->rules[] = $nr;
 		}
-		
+
+		if( $this->isPreOrPost )
+		{
+			$this->postRulesRoot = $xmlPost;
+			$count = 0;
+
+			foreach ($xmlPost->childNodes as $node)
+			{
+				if ($node->nodeType != 1) continue;
+				$count++;
+				if ($PANC_DEBUG && $count % 1000 == 0)
+					print "Parsed $count rules so far\n";
+				$nr = new $this->type($this);
+				$nr->load_from_domxml($node);
+				$this->postRules[] = $nr;
+			}
+		}
+
 		$this->regen_Indexes();
 	}
 
@@ -172,14 +177,13 @@ class RuleStore
 		{
             $rule->owner = $this;
 			
-			$this->o[] = $rule;
-			$index = lastIndex($this->o);
+			$this->rules[] = $rule;
+			$index = lastIndex($this->rules);
 			$this->fastMemToIndex[$ser] = $index;
 			$this->fastNameToIndex[$rule->name()] = $index;
-			if($this->isStore )
-			{
-				$this->xmlroot->appendChild($rule->xmlroot);
-			}
+
+			$this->xmlroot->appendChild($rule->xmlroot);
+
 			
 			return true;
 			
@@ -465,7 +469,7 @@ class RuleStore
 		{
 			if( !isset($this->fastNameToIndex[$ruleToBeMoved]) )
 				derr('Cannot move a rule that is not part of this Store');
-			 $rtbv = $this->o[$this->fastNameToIndex[$ruleToBeMoved]];
+			 $rtbv = $this->rules[$this->fastNameToIndex[$ruleToBeMoved]];
 			 $rtbvs = spl_object_hash($rtbv);
 		}
 		else
@@ -482,7 +486,7 @@ class RuleStore
 			if( !isset($this->fastNameToIndex[$ruleRef]) )
 				derr('Cannot move after a rule that is not part of this Store');
 			
-			 $rtref = $this->o[$this->fastNameToIndex[$ruleRef]];
+			 $rtref = $this->rules[$this->fastNameToIndex[$ruleRef]];
 			 $rtrefs = spl_object_hash( $rtref );
 		}
 		else
@@ -498,7 +502,7 @@ class RuleStore
 		$newarr = Array();
 		
 		
-		foreach($this->o as $rule)
+		foreach($this->rules as $rule)
 		{
 			if( $rule === $rtbv )
 			{
@@ -516,7 +520,7 @@ class RuleStore
 			}
 		}
 		
-		$this->o = &$newarr;
+		$this->rules = &$newarr;
 		
 		$this->regen_Indexes();
 		
@@ -554,7 +558,7 @@ class RuleStore
 		{
 			if( !isset($this->fastNameToIndex[$ruleToBeMoved]) )
 				derr('Cannot move a rule that is not part of this Store');
-			 $rtbv = $this->o[$this->fastNameToIndex[$ruleToBeMoved]];
+			 $rtbv = $this->rules[$this->fastNameToIndex[$ruleToBeMoved]];
 			 $rtbvs = spl_object_hash($rtbv);
 		}
 		else
@@ -571,7 +575,7 @@ class RuleStore
 			if( !isset($this->fastNameToIndex[$ruleRef]) )
 				derr('Cannot move after a rule that is not part of this Store');
 			
-			 $rtref = $this->o[$this->fastNameToIndex[$ruleRef]];
+			 $rtref = $this->rules[$this->fastNameToIndex[$ruleRef]];
 			 $rtrefs = spl_object_hash( $rtref );
 		}
 		else
@@ -587,7 +591,7 @@ class RuleStore
 		$newarr = Array();
 		
 		
-		foreach($this->o as $rule)
+		foreach($this->rules as $rule)
 		{
 			if( $rule === $rtbv )
 			{
@@ -607,7 +611,7 @@ class RuleStore
 			
 		}
 		
-		$this->o = &$newarr;
+		$this->rules = &$newarr;
 		
 		$this->regen_Indexes();
 		
@@ -638,7 +642,7 @@ class RuleStore
 	*/
 	public function rules()
 	{
-		return $this->o;
+		return $this->rules;
 	}
 	
 	/**
@@ -647,7 +651,7 @@ class RuleStore
 	*/
 	public function count()
 	{
-		return count($this->o);
+		return count($this->rules);
 	}
 	
 	
@@ -657,7 +661,7 @@ class RuleStore
 	*/
 	public function display()
 	{
-		foreach($this->o as $r )
+		foreach($this->rules as $r )
 		{
 			$r->display();
 		}
@@ -674,7 +678,7 @@ class RuleStore
 			derr("String was expected for rule name");
 		
 		if( isset( $this->fastNameToIndex[$name]) )
-			return $this->o[$this->fastNameToIndex[$name]];
+			return $this->rules[$this->fastNameToIndex[$name]];
 		
 		return null;
 	}
@@ -718,7 +722,7 @@ class RuleStore
 		{
 			$found = true;
 			unset($this->fastNameToIndex[$rule->name()]);
-			unset($this->o[$this->fastMemToIndex[$ser]]);
+			unset($this->rules[$this->fastMemToIndex[$ser]]);
 			unset($this->fastMemToIndex[$ser]);
 			if( $rewritexml )
 				$this->rewriteXML();
@@ -757,7 +761,7 @@ class RuleStore
 	public function rewriteXML()
 	{
 		DH::clearDomNodeChilds($this->xmlroot);
-		foreach( $this->o as $rule )
+		foreach( $this->rules as $rule )
 		{
 			$this->xmlroot->appendChild($rule->xmlroot);
 		}
@@ -769,7 +773,7 @@ class RuleStore
 		$this->fastMemToIndex = Array();
 		$this->fastNameToIndex = Array();
 		
-		foreach($this->o as $i=>$rule)
+		foreach($this->rules as $i=>$rule)
 		{
 			$this->fastMemToIndex[spl_object_hash($rule)] = $i ;
 			$this->fastNameToIndex[$rule->name()] = $i ;
