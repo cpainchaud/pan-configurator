@@ -67,14 +67,15 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 set_error_handler('myErrorHandler');
 
 
-require_once dirname(__FILE__).'/'."class-PH.php";
-require_once dirname(__FILE__).'/'."class-CsvParser.php";
-require_once dirname(__FILE__).'/'."class-RQuery.php";
+require_once dirname(__FILE__).'/misc-classes/'."trait-ReferenceableObject.php";
+require_once dirname(__FILE__).'/misc-classes/'."trait-XmlConvertible.php";
+require_once dirname(__FILE__).'/misc-classes/'."class-DH.php";
+require_once dirname(__FILE__).'/misc-classes/'."class-PH.php";
+require_once dirname(__FILE__).'/misc-classes/'."class-RQuery.php";
+require_once dirname(__FILE__).'/misc-classes/'."class-CsvParser.php";
+
 require_once dirname(__FILE__).'/'."class-PanAPIConnector.php";
-require_once dirname(__FILE__).'/'."trait-ReferenceableObject.php";
-require_once dirname(__FILE__).'/'."trait-XmlConvertible.php";
 require_once dirname(__FILE__).'/'."trait-PanSubHelperTrait.php";
-require_once dirname(__FILE__).'/'."class-DH.php";
 require_once dirname(__FILE__).'/'."class-ObjStore.php";
 require_once dirname(__FILE__).'/'."class-ObjRuleContainer.php";
 require_once dirname(__FILE__).'/'."class-ZoneRuleContainer.php";
@@ -816,7 +817,7 @@ class cidr
     static public function cidr2netmask($cidr)
     {
 		$bin = '';
-		
+
         for( $i = 1; $i <= 32; $i++ )
         $bin .= $cidr >= $i ? '1' : '0';
 
