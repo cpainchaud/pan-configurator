@@ -82,7 +82,7 @@ class AddressGroup
 		
 		$this->name = $name;
 
-		$this->tags = new TagRuleContainer('tags', $this);
+		$this->tags = new TagRuleContainer('tag', $this);
 	}
 
 	public function isDynamic()
