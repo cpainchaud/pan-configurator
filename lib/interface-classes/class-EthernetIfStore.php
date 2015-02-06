@@ -43,7 +43,7 @@ class EthernetIfStore extends ObjStore
         $this->owner = $owner;
         $this->name = $name;
     }
-    
+
 
     function countSubInterfaces()
     {
