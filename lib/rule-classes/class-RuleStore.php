@@ -30,7 +30,7 @@ class RuleStore
 	/**
 	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]
 	 */
-	protected $postRules = null;
+	protected $postRules = Array();
 
     /**
      * @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf
@@ -162,9 +162,10 @@ class RuleStore
 
 	/**
 	 * @param Rule $rule
+	 * @param bool $inPost
 	 * @return bool
 	 */
-	public function addRule($rule)
+	public function addRule($rule, $inPost=false)
 	{
 		
 		if( !is_object($rule) )
@@ -176,7 +177,7 @@ class RuleStore
 		if( !isset($this->fastMemToIndex[$ser] ) )
 		{
             $rule->owner = $this;
-			
+
 			$this->rules[] = $rule;
 			$index = lastIndex($this->rules);
 			$this->fastMemToIndex[$ser] = $index;
@@ -642,7 +643,10 @@ class RuleStore
 	*/
 	public function rules()
 	{
-		return $this->rules;
+		if( !$this->isPreOrPost )
+			return $this->rules;
+
+		return array_merge($this->rules, $this->postRules);
 	}
 	
 	/**
@@ -651,7 +655,7 @@ class RuleStore
 	*/
 	public function count()
 	{
-		return count($this->rules);
+		return count($this->rules) + count($this->postRules);
 	}
 	
 	
@@ -662,6 +666,10 @@ class RuleStore
 	public function display()
 	{
 		foreach($this->rules as $r )
+		{
+			$r->display();
+		}
+		foreach($this->postRules as $r )
 		{
 			$r->display();
 		}
@@ -687,31 +695,35 @@ class RuleStore
 	* Creates a new SecurityRule in this store. It will be placed at the end of the list.
 	*
 	*/
-	public function newSecurityRule($name)
+	public function newSecurityRule($name, $inPost = false)
 	{
 		$rule = new SecurityRule($this,true);
-		$this->addRule($rule);
+
+		$this->addRule($rule, $inPost);
 		$rule->setName($name);		
 		
 		return $rule;
 			
 	}
 
-	public function newNatRule($name)
+	public function newNatRule($name, $inPost = false)
 	{
 		$rule = new NatRule($this,true);
-		$this->addRule($rule);
+
+		$this->addRule($rule, $inPost);
 		$rule->setName($name);		
 		
 		return $rule;
 			
 	}
-	
-	
+
+
 	/**
-	* Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-	*
-	*/
+	 * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
+	 * @param Rule $rule
+	 * @param bool $rewritexml
+	 * @return bool
+	 */
 	public function remove( $rule, $rewritexml=true )
 	{
 
@@ -727,14 +739,25 @@ class RuleStore
 			if( $rewritexml )
 				$this->rewriteXML();
 		}
+		if( isset($this->fastMemToIndex_forPost[$ser] ) )
+		{
+			$found = true;
+			unset($this->fastNameToIndex_forPost[$rule->name()]);
+			unset($this->postRules[$this->fastMemToIndex[$ser]]);
+			unset($this->fastMemToIndex_forPost[$ser]);
+			if( $rewritexml )
+				$this->rewriteXML();
+		}
 		
 		return $found;
 	}
 
 
 	/**
-	* Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-	*
+	 * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
+	 * @param Rule $rule
+	 * @param bool $rewritexml
+	 * @return bool
 	*/
 	public function API_remove( $rule, $rewritexml=true )
 	{
@@ -765,6 +788,14 @@ class RuleStore
 		{
 			$this->xmlroot->appendChild($rule->xmlroot);
 		}
+		if( $this->isPreOrPost )
+		{
+			DH::clearDomNodeChilds($this->postRulesRoot);
+			foreach( $this->postRules as $rule )
+			{
+				$this->postRulesRoot->appendChild($rule->xmlroot);
+			}
+		}
 	}
 	
 	protected function regen_Indexes()
@@ -777,6 +808,18 @@ class RuleStore
 		{
 			$this->fastMemToIndex[spl_object_hash($rule)] = $i ;
 			$this->fastNameToIndex[$rule->name()] = $i ;
+		}
+
+		if( !$this->isPreOrPost )
+			return;
+
+		$this->fastMemToIndex_forPost = Array();
+		$this->fastNameToIndex_forPost = Array();
+
+		foreach($this->postRules as $i=>$rule)
+		{
+			$this->fastMemToIndex_forPost[spl_object_hash($rule)] = $i ;
+			$this->fastNameToIndex_forPost[$rule->name()] = $i ;
 		}
 	}
 	
@@ -829,21 +872,6 @@ class RuleStore
 			return $str;
 	}
 
-    function isPreRulebase()
-    {
-        if( $this->isPreRulebase === null )
-            return false;
-
-        return $this->isPreRulebase;
-    }
-
-    function isPostRulebase()
-    {
-        if( $this->isPreRulebase === null )
-            return false;
-
-        return !$this->isPreRulebase;
-    }
  
 	
 }
