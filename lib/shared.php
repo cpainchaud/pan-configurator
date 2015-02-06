@@ -87,15 +87,10 @@ require_once dirname(__FILE__).'/'."class-ZoneStore.php";
 require_once dirname(__FILE__).'/'."class-AppStore.php";
 require_once dirname(__FILE__).'/'."class-AddressStore.php";
 require_once dirname(__FILE__).'/'."class-ServiceStore.php";
-require_once dirname(__FILE__).'/'."class-RuleStore.php";
-require_once dirname(__FILE__).'/'."class-Rule.php";
 require_once dirname(__FILE__).'/'."class-Tag.php";
 require_once dirname(__FILE__).'/'."class-Zone.php";
 require_once dirname(__FILE__).'/'."class-App.php";
 require_once dirname(__FILE__).'/'."class-ZoneStore.php";
-require_once dirname(__FILE__).'/'."class-SecurityRule.php";
-require_once dirname(__FILE__).'/'."class-NatRule.php";
-require_once dirname(__FILE__).'/'."class-DecryptionRule.php";
 require_once dirname(__FILE__).'/'."class-VirtualSystem.php";
 require_once dirname(__FILE__).'/'."class-PANConf.php";
 require_once dirname(__FILE__).'/'."class-Address.php";
@@ -109,6 +104,11 @@ require_once dirname(__FILE__).'/interface-classes/'."class-IPsecTunnel.php";
 require_once dirname(__FILE__).'/interface-classes/'."class-EthernetInterface.php";
 require_once dirname(__FILE__).'/interface-classes/'."class-EthernetIfStore.php";
 require_once dirname(__FILE__).'/interface-classes/'."class-NetworkPropertiesContainer.php";
+require_once dirname(__FILE__).'/rule-classes/class-RuleStore.php';
+require_once dirname(__FILE__).'/rule-classes/class-Rule.php';
+require_once dirname(__FILE__).'/rule-classes/class-SecurityRule.php';
+require_once dirname(__FILE__).'/rule-classes/class-NatRule.php';
+require_once dirname(__FILE__).'/rule-classes/class-DecryptionRule.php';
 
 
 function & array_diff_no_cast(&$ar1, &$ar2)
