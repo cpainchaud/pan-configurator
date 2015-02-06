@@ -42,9 +42,6 @@ class AppStore extends ObjStore
 		
 		$this->findParentCentralStore();
 	}
-	
-
-
 
 	public function find($name, $ref=null)
 	{
@@ -165,34 +162,7 @@ class AppStore extends ObjStore
 	* should only be called from a Rule constructor
 	* @ignore
 	*/
-	public function load_from_xml(&$xml)
-	{
-		//print "started to extract '".$this->toString()."' from xml\n";
-		$this->xmlroot = &$xml;
-		$cur = &$xml['children'];
-
-		$c = count($cur);
-		$k = array_keys($cur);
-
-		for( $i=0; $i<$c; $i++ )
-		{
-
-			if( $c == 1 && strtolower($cur[$k[$i]]['content']) == 'any' )
-			{
-				return;
-			}
-
-			$f = $this->parentCentralStore->findOrCreate( $cur[$k[$i]]['content'], $this);
-			$this->o[] = $f;
-		}
-
-	}
-
-	/**
-	* should only be called from a Rule constructor
-	* @ignore
-	*/
-	public function load_from_domxml($xml)
+	public function load_from_domxml(DOMElement $xml)
 	{
 		//print "started to extract '".$this->toString()."' from xml\n";
 		$this->xmlroot = $xml;

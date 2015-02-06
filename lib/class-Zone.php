@@ -68,21 +68,8 @@ class Zone
         return $this->isTmp;
     }
 
-    public function load_from_xml(&$xmlArray)
-    {
-        $this->xmlroot = &$xmlArray;
-        $this->isTmp = false;
 
-        if( !isset($xmlArray['attributes']['name']) )
-            derr('Zone name not found');
-
-        $this->name = $this->xmlroot['attributes']['name'];
-
-        if( strlen($this->name) < 1  )
-            derr("Zone name '".$this->name."' is not valid");
-    }
-
-    public function load_from_domxml(DOMNode $xml)
+    public function load_from_domxml(DOMElement $xml)
     {
         $this->xmlroot = $xml;
         $this->isTmp = false;

@@ -33,6 +33,8 @@ class EthernetIfStore extends ObjStore
      */
     public $xmlroot = null;
 
+    public static $childn = 'EthernetInterface';
+
     /**
      * @param PANConf $owner
      */
@@ -41,22 +43,7 @@ class EthernetIfStore extends ObjStore
         $this->owner = $owner;
         $this->name = $name;
     }
-
-    function load_from_domxml( DOMElement $xml)
-    {
-        $this->xmlroot = $xml;
-
-        foreach( $xml->childNodes as $node )
-        {
-            if( $node->nodeType != 1 )
-                continue;
-
-            $new = new EthernetInterface('', $this);
-            $new->load_from_domxml($node);
-
-            $this->o[] = $new;
-        }
-    }
+    
 
     function countSubInterfaces()
     {

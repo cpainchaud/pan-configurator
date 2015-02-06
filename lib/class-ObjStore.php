@@ -263,6 +263,27 @@ class ObjStore
         }
 	}
 
+
+	/**
+	 * should only be called from a Rule constructor
+	 * @ignore
+	 */
+	public function load_from_domxml(DOMElement $xml)
+	{
+		$this->xmlroot = $xml;
+
+		foreach( $this->xmlroot->childNodes as $node )
+		{
+			if( $node->nodeType != 1 ) continue;
+
+			$newObj = new self::$childn('**tmp**', $this);
+			$newObj->load_from_domxml($node);
+			//print $this->toString()." : new Tag '".$newTag->name()."' found\n";
+
+			$this->o[] = $newTag;
+		}
+	}
+
 	
 
 }
