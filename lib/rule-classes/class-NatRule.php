@@ -334,7 +334,7 @@ class NatRule extends Rule
 					$this->dnathost = $f;
 					//$f->refInRule($this);
 					
-					$this->subdnatTProot = DH::findFirstElementOrCreate('translated-port', $this->dnatroot);
+					$this->subdnatTProot = DH::findFirstElement('translated-port', $this->dnatroot);
 					if( $this->subdnatTProot !== FALSE  )
 					{
 						$this->subdnatport = $this->subdnatTProot->textContent;
