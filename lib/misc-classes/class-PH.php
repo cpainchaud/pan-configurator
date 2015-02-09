@@ -86,6 +86,7 @@ class PH
     public static function &processIOMethod($str, $checkFileExists)
     {
         $ret = Array('status' => 'fail' );
+        $ret['filename'] = null;
 
         $pos = strpos($str, 'api://');
         if( $pos !== false)
@@ -95,18 +96,31 @@ class PH
             $hostExplode = explode('@', $host);
             if( count($hostExplode) == 1 )
             {
+                $fileExplode = explode('/', $host);
+                if( count($fileExplode) == 2 )
+                {
+                    $ret['filename'] = $fileExplode[1];
+                    $host = $fileExplode[0];
+                }
                 $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
             }
             else
             {
+                $fileExplode = explode('/', $hostExplode[1]);
+                if( count($fileExplode) == 2 )
+                {
+                    $ret['filename'] = $fileExplode[1];
+                    $hostExplode[1] = $fileExplode[0];
+                }
+
                 $connector = PanAPIConnector::findOrCreateConnectorFromHost($hostExplode[1]);
                 $connector->setType('panos-via-panorama', $hostExplode[0]);
             }
 
+
             $ret['status'] = 'ok';
             $ret['type'] = 'api';
             $ret['connector'] = $connector;
-
         }
         else
         {

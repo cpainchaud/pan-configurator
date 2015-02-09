@@ -615,7 +615,7 @@ class PanAPIConnector
             {
                 var_dump($statusAttr);
 
-                derr('API reported a failure: ' . $statusAttr);
+                derr('API reported a failure: "'.$statusAttr."\"with the following addition infos: ". $firstElement->nodeValue);
             }
 
             if (!is_null($filecontent))
@@ -863,6 +863,18 @@ class PanAPIConnector
 
     }
 
+    /**
+     * @param $cmd
+     * @return DomDocument|string[]
+     */
+    public function sendCmdRequest($cmd, $checkResultTag = true)
+    {
+        $req = "type=op&cmd=$cmd";
+        $ret = $this->sendRequest($req, $checkResultTag);
+
+        return $ret;
+    }
+
     public function getJobResult($jobID)
     {
         $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
@@ -915,6 +927,29 @@ class PanAPIConnector
 
         else return $found['content'];
         
+    }
+
+    /**
+     *   send a config to the firewall and save under name $config_name
+     *
+     *
+     * @param DOMNode $configDomXml
+     * @param string $configName
+     * @return DOMNode
+     */
+    public function uploadConfiguration( $configDomXml, $configName = 'stage0.xml', $verbose = true )
+    {
+        if( $verbose )
+            print "Uploadig config to device {$this->apihost}/{$configName}....";
+
+        $url = "&type=import&category=configuration&category=configuration";
+
+        $answer = $this->sendRequest($url, false, DH::dom_to_xml($configDomXml), $configName );
+
+        if( $verbose )
+            print "OK!\n";
+
+        return $answer;
     }
 }
 

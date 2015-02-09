@@ -334,7 +334,7 @@ class PANConf
 
 	/**
 	* send current config to the firewall and save under name $config_name
-	*
+	* TODO : replace by PANAPI Connector
 	*/
 	public function API_uploadConfig( $config_name = 'panconfigurator-default.xml' )
 	{
