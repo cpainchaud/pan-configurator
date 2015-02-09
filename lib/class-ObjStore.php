@@ -276,11 +276,11 @@ class ObjStore
 		{
 			if( $node->nodeType != 1 ) continue;
 
-			$newObj = new self::$childn('**tmp**', $this);
+			$newObj = new $this->classn('**tmp**', $this);
 			$newObj->load_from_domxml($node);
 			//print $this->toString()." : new Tag '".$newTag->name()."' found\n";
 
-			$this->o[] = $newTag;
+			$this->o[] = $newObj;
 		}
 	}
 
