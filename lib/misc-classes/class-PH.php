@@ -27,6 +27,8 @@ class PH
      */
     public static $args = null;
 
+    public static $ignoreDestructors = false;
+
     /**
      * enables faster but very experimental DomXML support in Pan Configurator
      */

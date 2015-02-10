@@ -708,7 +708,7 @@ class RuleStore
 	* Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
 	*
 	*/
-	public function remove( $rule, $rewritexml=true )
+	public function remove( $rule, $rewritexml=true, $deleteForever = false )
 	{
 
 		$found = false;
@@ -722,6 +722,11 @@ class RuleStore
 			unset($this->fastMemToIndex[$ser]);
 			$this->xmlroot->removeChild($rule->xmlroot);
 			$rule->owner = null;
+
+			if( $deleteForever )
+			{
+				$rule->cleanForDestruction();
+			}
 		}
 		
 		return $found;

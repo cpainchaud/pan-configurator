@@ -67,6 +67,17 @@ function myErrorHandler($errno, $errstr, $errfile, $errline)
 
 set_error_handler('myErrorHandler');
 
+register_shutdown_function('my_shutdown');
+
+// do some stuff
+// ...
+
+
+function my_shutdown()
+{
+	PH::$ignoreDestructors = true;
+}
+
 
 require_once dirname(__FILE__).'/misc-classes/'."trait-ReferenceableObject.php";
 require_once dirname(__FILE__).'/misc-classes/'."trait-XmlConvertible.php";

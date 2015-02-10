@@ -281,11 +281,19 @@ class ObjRuleContainer
 
     public function __destruct()
     {
+        if( PH::$ignoreDestructors )
+            return;
+
+        if( $this->o === null )
+            return;
+
         // remove this object from the referencers list
         foreach($this->o as $o)
         {
             $o->unrefInRule($this);
         }
+
+        $this->o = null;
     }
 
 

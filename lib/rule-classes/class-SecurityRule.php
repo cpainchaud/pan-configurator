@@ -1002,7 +1002,35 @@ class SecurityRule extends Rule
 
 		return $ret;
 	}
-	
+
+	public function cleanForDestruction()
+	{
+		$this->from->__destruct();
+		$this->to->__destruct();
+		$this->source->__destruct();
+		$this->destination->__destruct();
+		$this->tags->__destruct();
+		$this->apps->__destruct();
+		$this->services->__destruct();
+
+
+		$this->from->owner = null;
+		$this->from->owner = null;
+		$this->to->owner = null;
+		$this->source->owner = null;
+		$this->destination->owner = null;
+		$this->tags->owner = null;
+		$this->services->owner = null;
+		$this->apps->owner = null;
+
+		$this->from = null;
+		$this->to = null;
+		$this->source = null;
+		$this->destination = null;
+		$this->tags = null;
+		$this->services = null;
+		$this->apps = null;
+	}
 	
 
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"><option><disable-server-response-inspection>no</disable-server-response-inspection></option><from><member>any</member></from><to><member>any</member></to>
