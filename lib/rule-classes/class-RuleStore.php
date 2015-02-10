@@ -720,8 +720,8 @@ class RuleStore
 			unset($this->fastNameToIndex[$rule->name()]);
 			unset($this->o[$this->fastMemToIndex[$ser]]);
 			unset($this->fastMemToIndex[$ser]);
-			if( $rewritexml )
-				$this->rewriteXML();
+			$this->xmlroot->removeChild($rule->xmlroot);
+			$rule->owner = null;
 		}
 		
 		return $found;
@@ -734,12 +734,11 @@ class RuleStore
 	*/
 	public function API_remove( $rule, $rewritexml=true )
 	{
-
+		$xpath = $rule->getXPath();
 		$ret = $this->remove($rule, $rewritexml);
 
 		if( $ret )
 		{
-			$xpath = $rule->getXPath();
 			$con = findConnectorOrDie($this);
 
 			$con->sendDeleteRequest($xpath);

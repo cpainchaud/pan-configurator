@@ -20,7 +20,7 @@
 class Service
 {
 
-	use ReferencableObject;
+	use ReferencableObject {unrefInRule as super_unrefInRule;}
 	use PathableName;
 	use XmlConvertible;
 	
@@ -271,6 +271,16 @@ class Service
 		$connector->sendDeleteRequest($xpath);
 	}
 
+	public function unrefInRule($object)
+	{
+		$this->super_unrefInRule($object);
+
+		if( $this->isTmpSrv() && $this->countReferences() == 0 && $this->owner !== null )
+		{
+			$this->owner->remove($this);
+		}
+
+	}
 	
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"><protocol><tcp><port>0</port></tcp></protocol></entry>'; 
 	static protected $templatexmlroot = null;

@@ -279,6 +279,15 @@ class ObjRuleContainer
         return $this->o;
     }
 
+    public function __destruct()
+    {
+        // remove this object from the referencers list
+        foreach($this->o as $o)
+        {
+            $o->unrefInRule($this);
+        }
+    }
+
 
 
     /*public function rewriteXML()

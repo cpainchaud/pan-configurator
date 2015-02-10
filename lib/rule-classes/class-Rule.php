@@ -617,10 +617,7 @@ class Rule
 
 		$this->setName($newname);	
 	}
-	
-	
-	
-	
+
 }
 
 

@@ -611,6 +611,10 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.postrule'] = Array(
     'eval' => '$object->owner->isPreRulebase()',
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(
+    'eval' => '$object->isDisabled()',
+    'arg' => false
+);
 
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(

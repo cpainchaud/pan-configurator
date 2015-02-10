@@ -3,6 +3,8 @@ CHANGELOG
 1.2.6
 * introduction of new 'utils' upload-config.php script that allows you send a config to a device or save a config from a device or bridge a config from a device to another.
 * IOMethods now support optional filename : out=api://192.168.50.10/stage2.xml
+* new filter for rule)edit utility: rule is.disabled
+
 
 1.2.4
 * introduction of address-edit.php and service-edit.php on same basis than rules-edit.php for objects manipulations

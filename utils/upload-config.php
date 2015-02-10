@@ -127,11 +127,12 @@ if( isset(PH::$args['debugapi'])  )
     $debugAPI = true;
 }
 
-
+print "***********************************************\n";
+print "************ UPLOAD CONFIG UTILITY ************\n\n";
 
 $doc = new DOMDocument();
 
-print "Opening/downloading original configuration...";
+print "Opening/downloading original configuration ";
 
 //
 // What kind of config input do we have.
@@ -146,6 +147,7 @@ if( $configInput['status'] == 'fail' )
 
 if( $configInput['type'] == 'file' )
 {
+    print "{$configInput['filename']} ... ";
     $doc->Load($configInput['filename']);
 }
 elseif ( $configInput['type'] == 'api'  )
@@ -153,6 +155,8 @@ elseif ( $configInput['type'] == 'api'  )
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
     $configInput['connector']->getCandidateConfig();
+
+    print "{$configOutput['connector']->apihost}/$saveName ... ";
 }
 else
     derr('not supported yet');
@@ -202,7 +206,7 @@ print "OK!\n";
 
 if( $loadConfigAfterUpload )
 {
-    print "Loading config in the firewall (will display warnings if any....\n";
+    print "Loading config in the firewall (will display warnings if any) ...\n";
     $xmlResponse = $configOutput['connector']->sendCmdRequest('<load><config><from>' . $saveName . '</from></config></load>');
 
     $xmlResponse = DH::firstChildElement($xmlResponse);
@@ -225,7 +229,9 @@ if( $loadConfigAfterUpload )
 }
 
 
-print "********************* DONE *********************";
+
+print "\n************ DONE: UPLOAD CONFIG UTILITY ************\n";
+print   "*****************************************************";
 print "\n\n";
 
 
