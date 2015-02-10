@@ -367,11 +367,15 @@ class PANConf
 
 
 		$gnservices = $this->serviceStore->countServices();
+		$gnservicesUnused = $this->serviceStore->countUnusedServices();
 		$gnserviceGs = $this->serviceStore->countServiceGroups();
+		$gnserviceGsUnused = $this->serviceStore->countUnusedServiceGroups();
 		$gnTmpServices = $this->serviceStore->countTmpServices();
 
 		$gnaddresss = $this->addressStore->countAddresses();
+		$gnaddresssUnused = $this->addressStore->countUnusedAddresses();
 		$gnaddressGs = $this->addressStore->countAddressGroups();
+		$gnaddressGsUnused = $this->addressStore->countUnusedAddressGroups();
 		$gnTmpAddresses = $this->addressStore->countTmpAddresses();
 
 		$numInterfaces = $this->network->ipsecTunnelStore->count() + $this->network->ethernetIfStore->count();
@@ -386,11 +390,15 @@ class PANConf
 			$numDecryptRules += $vsys->decryptionRules->count();
 
 			$gnservices += $vsys->serviceStore->countServices();
+			$gnservicesUnused += $vsys->serviceStore->countUnusedServices();
 			$gnserviceGs += $vsys->serviceStore->countServiceGroups();
+			$gnserviceGsUnused += $vsys->serviceStore->countUnusedServiceGroups();
 			$gnTmpServices += $vsys->serviceStore->countTmpServices();
 
 			$gnaddresss += $vsys->addressStore->countAddresses();
+			$gnaddresssUnused += $vsys->addressStore->countUnusedAddresses();
 			$gnaddressGs += $vsys->addressStore->countAddressGroups();
+			$gnaddressGsUnused += $vsys->addressStore->countUnusedAddressGroups();
 			$gnTmpAddresses += $vsys->addressStore->countTmpAddresses();
 
 		}
@@ -402,13 +410,13 @@ class PANConf
 
 		print "- ".$numDecryptRules." Deryption Rules\n";
 
-		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects\n";
+		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects. {$gnaddresssUnused} unused\n";
 
-		print "- ".$this->addressStore->countAddressGroups()." (".$gnaddressGs.") address groups\n";
+		print "- ".$this->addressStore->countAddressGroups()." (".$gnaddressGs.") address groups. {$gnaddressGsUnused} unused\n";
 
-		print "- ".$this->serviceStore->countServices()." (".$gnservices.") service objects\n";
+		print "- ".$this->serviceStore->countServices()." (".$gnservices.") service objects. {$gnservicesUnused} unused\n";
 
-		print "- ".$this->serviceStore->countServiceGroups()." (".$gnserviceGs.") service groups\n";
+		print "- ".$this->serviceStore->countServiceGroups()." (".$gnserviceGs.") service groups. {$gnserviceGsUnused} unused\n";
 
 		print "- ".$this->addressStore->countTmpAddresses()." (".$gnTmpAddresses.") temporary address objects\n";
 

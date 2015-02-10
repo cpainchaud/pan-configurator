@@ -30,11 +30,23 @@ class ServiceStore
 	protected $parentCentralStore = null;
 	
 	protected $appdef = false;
-	
+
+	/**
+	 * @var Service[]|ServiceGroup[]
+	 */
 	protected $all = Array();
-	
+
+	/**
+	 * @var Service[]
+	 */
 	protected $serv = Array();
+	/**
+	 * @var ServiceGroup[]
+	 */
 	protected $servg = Array();
+	/**
+	 * @var Service[]
+	 */
 	protected $tmpserv = Array();
 	
 	protected $fast = Array(); 
@@ -1024,6 +1036,43 @@ class ServiceStore
 
 		return true;
 
+	}
+
+
+	public function countUnused()
+	{
+		$count = 0;
+		foreach( $this->all as $o )
+		{
+			if( $o->countReferences() == 0 )
+				$count++;
+		}
+
+		return $count;
+	}
+
+	public function countUnusedServices()
+	{
+		$count = 0;
+		foreach( $this->serv as $o )
+		{
+			if( $o->countReferences() == 0 )
+				$count++;
+		}
+
+		return $count;
+	}
+
+	public function countUnusedServiceGroups()
+	{
+		$count = 0;
+		foreach( $this->servg as $o )
+		{
+			if( $o->countReferences() == 0 )
+				$count++;
+		}
+
+		return $count;
 	}
 
 	

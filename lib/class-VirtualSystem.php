@@ -232,9 +232,9 @@ class VirtualSystem
 		print "- ".$this->serviceStore->countServiceGroups()." service groups\n";
 		print "- ".$this->addressStore->countTmpAddresses()." temporary address objects\n";
 		print "- ".$this->serviceStore->countTmpServices()." temporary service objects\n";
-		print "- ".$this->tagStore->count()." tags\n";
-		print "- ".$this->zoneStore->count()." zones\n";
-		print "- ".$this->appStore->count()." apps\n";
+		print "- ".$this->tagStore->count()." tags. ".$this->tagStore->countUnused()." unused\n";
+		print "- ".$this->zoneStore->count()." zones.\n";
+		print "- ".$this->appStore->count()." apps.\n";
 	}
 
 

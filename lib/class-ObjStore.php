@@ -46,6 +46,18 @@ class ObjStore
 	{
 		return count($this->o);
 	}
+
+	public function countUnused()
+	{
+		$count = 0;
+		foreach( $this->o as $o )
+		{
+			if( $o->countReferences() == 0 )
+				$count++;
+		}
+
+		return $count;
+	}
 	
 	public function setName($newname)
 	{

@@ -44,6 +44,23 @@ class AddressStore
      */
 	protected $all = Array();
 
+	/**
+	 * @var Address[]
+	 */
+	protected $addr = Array();
+
+
+	/**
+	 * @var Address[]
+	 */
+	protected $tmpaddr = Array();
+
+
+	/**
+	 * @var AddressGroup[]
+	 */
+	protected $addrg = Array();
+
     /**
      * @var string[]|DOMElement
      */
@@ -895,6 +912,43 @@ class AddressStore
 
 		return true;
 		
+	}
+
+
+	public function countUnused()
+	{
+		$count = 0;
+		foreach( $this->all as $o )
+		{
+			if( $o->countReferences() == 0 )
+				$count++;
+		}
+
+		return $count;
+	}
+
+	public function countUnusedAddresses()
+	{
+		$count = 0;
+		foreach( $this->addr as $o )
+		{
+			if( $o->countReferences() == 0 )
+				$count++;
+		}
+
+		return $count;
+	}
+
+	public function countUnusedAddressGroups()
+	{
+		$count = 0;
+		foreach( $this->addrg as $o )
+		{
+			if( $o->countReferences() == 0 )
+				$count++;
+		}
+
+		return $count;
 	}
 
 

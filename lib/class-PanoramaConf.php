@@ -348,13 +348,17 @@ class PanoramaConf
 		$gpostSecRules = $this->postSecurityRules->count();
 		$gpostNatRules = $this->postNatRules->count();
         $gpostDecryptRules = $this->postDecryptionRules->count();
-		
+
 		$gnservices = $this->serviceStore->countServices();
+		$gnservicesUnused = $this->serviceStore->countUnusedServices();
 		$gnserviceGs = $this->serviceStore->countServiceGroups();
+		$gnserviceGsUnused = $this->serviceStore->countUnusedServiceGroups();
 		$gnTmpServices = $this->serviceStore->countTmpServices();
-		
+
 		$gnaddresss = $this->addressStore->countAddresses();
+		$gnaddresssUnused = $this->addressStore->countUnusedAddresses();
 		$gnaddressGs = $this->addressStore->countAddressGroups();
+		$gnaddressGsUnused = $this->addressStore->countUnusedAddressGroups();
 		$gnTmpAddresses = $this->addressStore->countTmpAddresses();
 
 		foreach( $this->deviceGroups as $cur)
@@ -367,13 +371,17 @@ class PanoramaConf
 			$gpostNatRules += $cur->postNatRules->count();
             $gpostDecryptRules += $cur->postDecryptionRules->count();
 
-			$gnservices += $cur->serviceStore->countServices();
-			$gnserviceGs += $cur->serviceStore->countServiceGroups();
-			$gnTmpServices += $cur->serviceStore->countTmpServices();
-			
-			$gnaddresss += $cur->addressStore->countAddresses();
-			$gnaddressGs += $cur->addressStore->countAddressGroups();
-			$gnTmpAddresses += $cur->addressStore->countTmpAddresses();
+			$gnservices += $vsys->serviceStore->countServices();
+			$gnservicesUnused += $vsys->serviceStore->countUnusedServices();
+			$gnserviceGs += $vsys->serviceStore->countServiceGroups();
+			$gnserviceGsUnused += $vsys->serviceStore->countUnusedServiceGroups();
+			$gnTmpServices += $vsys->serviceStore->countTmpServices();
+
+			$gnaddresss += $vsys->addressStore->countAddresses();
+			$gnaddresssUnused += $vsys->addressStore->countUnusedAddresses();
+			$gnaddressGs += $vsys->addressStore->countAddressGroups();
+			$gnaddressGsUnused += $vsys->addressStore->countUnusedAddressGroups();
+			$gnTmpAddresses += $vsys->addressStore->countTmpAddresses();
 		}
 		
 		print "Statistics for PanoramaConf '".$this->name."'\n";
@@ -385,17 +393,17 @@ class PanoramaConf
 
         print "- ".$this->preDecryptionRules->count()." (".$gpreDecryptRules.") pre-NatRules\n";
         print "- ".$this->postDecryptionRules->count()." (".$gpostDecryptRules.") post-NatRules\n";
-		
-		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects\n";
-		
-		print "- ".$this->addressStore->countAddressGroups()." (".$gnaddressGs.") address groups\n";
-		
-		print "- ".$this->serviceStore->countServices()." (".$gnservices.") service objects\n";
-		
-		print "- ".$this->serviceStore->countServiceGroups()." (".$gnserviceGs.") service groups\n";
-		
+
+		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects. {$gnaddresssUnused} unused\n";
+
+		print "- ".$this->addressStore->countAddressGroups()." (".$gnaddressGs.") address groups. {$gnaddressGsUnused} unused\n";
+
+		print "- ".$this->serviceStore->countServices()." (".$gnservices.") service objects. {$gnservicesUnused} unused\n";
+
+		print "- ".$this->serviceStore->countServiceGroups()." (".$gnserviceGs.") service groups. {$gnserviceGsUnused} unused\n";
+
 		print "- ".$this->addressStore->countTmpAddresses()." (".$gnTmpAddresses.") temporary address objects\n";
-		
+
 		print "- ".$this->serviceStore->countTmpServices()." (".$gnTmpServices.") temporary service objects\n";
 		
 		print "- ".$this->zoneStore()->count()." zones\n";
