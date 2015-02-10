@@ -52,7 +52,7 @@ trait ReferencableObject
 			$ref->hostChanged($this,$oldname);
 		}
 		
-		if( $this->owner )
+		if( $this->owner !== null )
 		{
 			$this->owner->hostChanged($this,$oldname);
 		}
