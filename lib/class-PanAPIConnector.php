@@ -329,6 +329,8 @@ class PanAPIConnector
             if ($res === false)
                 derr('missing <result> from API answer');
 
+            print "OK!\n";
+
         }
         else
         {
@@ -541,7 +543,6 @@ class PanAPIConnector
 			derr('Could not retrieve URL: '.$finalUrl.' because of the following error: '.$c->last_error);
 		}
 
-		$xmlobj = new XmlArray();
 
         if( $c->getHttpStatus() != 200 )
         {
@@ -550,6 +551,7 @@ class PanAPIConnector
 
         if( !PH::$UseDomXML )
         {
+            $xmlobj = new XmlArray();
             $xmlarr = $xmlobj->load_string($c->__tostring());
 
             if (!is_array($xmlarr))
