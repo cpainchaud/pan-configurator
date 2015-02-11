@@ -468,13 +468,13 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
 //                Dst/Src Based Actions            //
 //                                              //
 RQuery::$defaultFilters['rule']['src']['operators']['has'] = Array(
-    'eval' => '$object->source->inStore(!value!) === true',
+    'eval' => '$object->source->has(!value!) === true',
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['src']['operators']['has.only'] = Array(
-    'eval' => '$object->source->count() == 1 && $object->source->inStore(!value!) === true',
+    'eval' => '$object->source->count() == 1 && $object->source->has(!value!) === true',
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 );
@@ -484,13 +484,13 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.recursive'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['has'] = Array(
-    'eval' => '$object->destination->inStore(!value!) === true',
+    'eval' => '$object->destination->has(!value!) === true',
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['has.only'] = Array(
-    'eval' => '$object->destination->count() == 1 && $object->destination->inStore(!value!) === true',
+    'eval' => '$object->destination->count() == 1 && $object->destination->has(!value!) === true',
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
 );
