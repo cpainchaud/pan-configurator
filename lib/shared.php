@@ -602,10 +602,11 @@ function lastIndex(&$ar)
 }
 
 /**
-* Stops script with an error message and a backtrace
-* @param string $msg error message to display
+ * Stops script with an error message and a backtrace
+ * @param string $msg error message to display
  * @param DOMNode $object
-*/
+ * @throws Exception
+ */
 function derr($msg, $object=null)
 {
     if( $object !== null )
@@ -616,6 +617,12 @@ function derr($msg, $object=null)
             $msg .="\nXML line #".$object->getLineNo().", XPATH: ".$object->getNodePath()."\n".DH::dom_to_xml($object,0,true,3);
         }
     }
+
+	if( PH::$useExceptions )
+	{
+		$ex = new Exception($msg);
+		throw $ex;
+	}
 
     fwrite(STDERR,PH::boldText("\n* ** ERROR ** * ").$msg."\n\n");
 	

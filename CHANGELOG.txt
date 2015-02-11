@@ -2,6 +2,7 @@ CHANGELOG
 
 1.2.6
 * introduction of new 'utils' upload-config.php script that allows you send a config to a device or save a config from a device or bridge a config from a device to another.
+* introduction of Exception support for programs that don't want to quit when an error occurs. use PH::enableExceptionSupport() any time for that
 * IOMethods now support optional filename : out=api://192.168.50.10/stage2.xml
 * new filter for rule)edit utility: rule is.disabled
 

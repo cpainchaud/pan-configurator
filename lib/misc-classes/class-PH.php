@@ -29,6 +29,22 @@ class PH
 
     public static $ignoreDestructors = false;
 
+    public static $useExceptions = false;
+
+    /**
+     * will throw Exceptions instead of print errors (useful for web embeded or scrips that want
+     * to support errors handling without quiting.
+     */
+    public function enableExceptionSupport()
+    {
+        PH::$useExceptions = true;
+    }
+
+    public function disableExceptionSupport()
+    {
+        PH::$useExceptions = false;
+    }
+
     /**
      * enables faster but very experimental DomXML support in Pan Configurator
      */
