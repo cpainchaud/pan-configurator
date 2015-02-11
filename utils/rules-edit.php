@@ -813,7 +813,7 @@ foreach( $rulesToProcess as &$rulesRecord )
                         $findObjectEval = $supportedActions[$doAction['name']]['argObjectFinder'];
                         $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
                         if (eval($findObjectEval) === false)
-                            die("\neval code was : $findObjectEval\n");
+                            derr("\neval code was : $findObjectEval\n");
                         if ($objectFind === null)
                             display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
                         $toEval = str_replace('!value!', '$objectFind', $toEval);
@@ -821,7 +821,7 @@ foreach( $rulesToProcess as &$rulesRecord )
                         $toEval = str_replace('!value!', $arg, $toEval);
 
                     if (eval($toEval) === false)
-                        die("\neval code was : $toEval\n");
+                        derr("\neval code was : $toEval\n");
 
                     //print $toEval;
                     print "\n";
@@ -836,7 +836,7 @@ foreach( $rulesToProcess as &$rulesRecord )
                     derr('unsupported input type');
 
                 if (eval($toEval) === false)
-                    die("\neval code was : $toEval\n");
+                    derr("\neval code was : $toEval\n");
 
             }
         }

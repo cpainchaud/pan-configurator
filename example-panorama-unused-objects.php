@@ -66,7 +66,7 @@ foreach( $centralstores as $store )
 			}
 		}
 		else
-			die("this class of object is not supported!");
+			derr("this class of object is not supported!");
 	}
 
 	print "\n\n";

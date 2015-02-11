@@ -27,7 +27,7 @@ $panc->load_from_file($origfile);
 $vsys1 = $panc->findVirtualSystem('vsys1');
 if( is_null($vsys1) )
 {
-	die("vsys1 was not found ? Exit\n");
+	derr("vsys1 was not found ? Exit\n");
 }
 
 print "\n***********************************************\n\n";
@@ -42,12 +42,12 @@ $vsys1->securityRules->display();
 $mailServerRule = $vsys1->securityRules->find('Mail Server incoming mails');
 // exit if that rule was not found
 if( $mailServerRule === null )
-    die("ERROR : Cannot find rule 'Mail Server incoming mails'\n");
+    derr("ERROR : Cannot find rule 'Mail Server incoming mails'\n");
 
 // now look for an object named 'mail-server2'
 $objectMailServer2 = $vsys1->addressStore->find('mail-server2');
 if( $objectMailServer2 === null )
-    die("ERROR : Cannot find object named 'mail-server2'\n");
+    derr("ERROR : Cannot find object named 'mail-server2'\n");
 
 // add 'mail-server2' in rule 'Mail Server' source.
 $mailServerRule->source->add($objectMailServer2);

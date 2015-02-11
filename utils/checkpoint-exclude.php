@@ -112,12 +112,12 @@ if( isset(PH::$args['group']) )
 $configType = strtolower(PH::$args['type']);
 
 if( $configType != 'panos' && $configType != 'panorama' )
-	die("\n**ERROR** Unsupported config type '$configType'. Check your CLI arguments\n\n");
+	derr("\n**ERROR** Unsupported config type '$configType'. Check your CLI arguments\n\n");
 
 print "Config type is '$configType', intput filename is '$inputFile'\n";
 
 if( !file_exists($inputFile) )
-	die("\n**ERROR** Input file '".$inputFile."' doesn't exists!\n\n");
+	derr("\n**ERROR** Input file '".$inputFile."' doesn't exists!\n\n");
 
 
 
@@ -191,13 +191,13 @@ foreach( $groupsToProcess as $group )
     	{
     		$sub = $pan->findVirtualSystem($expl[0]);
     		if( $sub === null )
-    			die("  ***ERROR*** cannot find VSYS '$expl[0]'\n\n");
+    			derr("  ***ERROR*** cannot find VSYS '$expl[0]'\n\n");
     	}
     	else
     	{
     		$sub = $pan->findDeviceGroup($expl[0]);
     		if( $sub === null )
-    			die("  ***ERROR*** cannot find DeviceGroup '$expl[0]'\n\n");
+    			derr("  ***ERROR*** cannot find DeviceGroup '$expl[0]'\n\n");
     	}
     	$store = $sub->addressStore;
     }
@@ -208,14 +208,14 @@ foreach( $groupsToProcess as $group )
     //
     $groupToProcess = $store->find($expl[1], null, false);
     if( $groupToProcess === null )
-    	die("  ***ERROR*** cannot find group '$expl[1]' in location '$expl[0]'\n\n");
+    	derr("  ***ERROR*** cannot find group '$expl[1]' in location '$expl[0]'\n\n");
 
     //
     // checking this group has 2 members, one will be the $incGroup , the other will be the $exclGroup
     //
     $members = $groupToProcess->members();
     if( count($members) != 2 )
-    	die("  ***ERROR*** that group doesn't have 2 members\n\n");
+    	derr("  ***ERROR*** that group doesn't have 2 members\n\n");
     $membersKeys = array_keys($members);
     $incGroup = $members[$membersKeys[0]];
     $exclGroup = $members[$membersKeys[1]];
@@ -457,7 +457,7 @@ foreach( $groupsToProcess as $group )
     		}
     		else
     		{
-    			die("\nUnsupported\n");
+    			derr("\nUnsupported\n");
     		}
 
 

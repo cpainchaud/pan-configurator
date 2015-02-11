@@ -37,20 +37,20 @@ $internal = $p->zoneStore->find('internal');
 $external = $p->zoneStore->find('external');
 
 if( !$internal )
-	die("We didn't find zone 'internal', is there a problem? \n");
+	derr("We didn't find zone 'internal', is there a problem? \n");
 if( !$external )
-	die("We didn't find zone 'external', is there a problem? \n");
+	derr("We didn't find zone 'external', is there a problem? \n");
 
 
 // We are looking for a tag called "Outgoing" , to be used later, same for Incoming tag
 $outgoing = $p->tagStore()->find('Outgoing');
 if( !$outgoing )
-	die("We didn't find tag Outgoing, is there a problem? \n");
+	derr("We didn't find tag Outgoing, is there a problem? \n");
 
 // We are looking for a tag called "Incoming"
 $incoming = $p->tagStore()->find('Incoming');
 if( !$incoming )
-	die("We didn't find tag Incoming, is there a problem? \n");
+	derr("We didn't find tag Incoming, is there a problem? \n");
 
 
 /*****************************************

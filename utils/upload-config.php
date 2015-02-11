@@ -80,6 +80,7 @@ $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output f
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['loadafterupload'] = Array('niceName' => 'loadAfterUpload', 'shortHelp' => 'load configuration after upload happened');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
+$supportedArguments['preservemgmtconfig'] = Array('niceName' => 'preserveMgmtConfig', 'shortHelp' => 'this message');
 
 
 
@@ -165,11 +166,12 @@ else
 print " OK!!\n\n";
 
 
+
 print "Now saving/uploading that configuration to ";
 
 
 //
-// What kind of config input do we have.
+// What kind of config output do we have.
 //     File or API ?
 //
 $configOutput = PH::processIOMethod($configOutput, false);
@@ -186,6 +188,86 @@ if( $configOutput['type'] == 'file' )
 }
 elseif ( $configOutput['type'] == 'api'  )
 {
+    if( isset(PH::$args['preservemgmtconfig']) )
+    {
+        print "Option 'preserveMgmtConfig was used, we will first download the running config ...";
+        $runningConfig = $configOutput['connector']->getRunningConfig();
+        print "OK!\n";
+
+        $xpathQrunning = new DOMXPath($runningConfig);
+        $xpathQlocal = new DOMXPath($doc);
+
+        $xpathQueryList = Array('/config/mgt-config' , "/config/devices/entry[@name='localhost.localdomain']/deviceconfig",
+                                 '/config/shared/authentication-profile',  '/config/shared/authentication-sequence' ,
+                                '/config/shared/certificate', '/config/shared/log-settings', '/config/shared/local-user-database',
+            '/config/shared/admin-role');
+
+        foreach( $xpathQueryList as $xpathQuery )
+        {
+            $xpathResults = $xpathQrunning->query($xpathQuery);
+            if ($xpathResults->length > 1)
+            {
+                //var_dump($xpathResults);
+                derr('more than one one results found for xpath query: ' . $xpathQuery);
+            }
+            if($xpathResults->length == 0)
+                $runningNodeFound = false;
+            else
+                $runningNodeFound = true;
+
+            $xpathResultsLocal = $xpathQlocal->query($xpathQuery);
+            if ($xpathResultsLocal->length > 1)
+            {
+                //var_dump($xpathResultsLocal);
+                derr('none or more than one one results found for xpath query: ' . $xpathQuery);
+            }
+            if($xpathResultsLocal->length == 0)
+                $localNodeFound = false;
+            else
+                $localNodeFound = true;
+
+            if( $localNodeFound == false && $runningNodeFound == false )
+            {
+                continue;
+            }
+
+            if( $localNodeFound && $runningNodeFound )
+            {
+                $localParentNode = $xpathResultsLocal->item(0)->parentNode;
+                $localParentNode->removeChild($xpathResultsLocal->item(0));
+                $newNode = $doc->importNode($xpathResults->item(0), true);
+                $localParentNode->appendChild($newNode);
+                continue;
+            }
+
+            if( $localNodeFound == false && $runningNodeFound )
+            {
+                $newXpath = explode('/', $xpathQuery);
+                if( count($newXpath) < 2 )
+                    derr('unsupported, debug xpath query: '.$xpathQuery);
+
+                unset($newXpath[count($newXpath)-1]);
+                $newXpath = implode('/', $newXpath);
+
+                $xpathResultsLocal = $xpathQlocal->query($newXpath);
+                if ($xpathResultsLocal->length != 1)
+                {
+                    derr('unsupported, debug xpath query: ' . $newXpath);
+                }
+
+                $newNode = $doc->importNode($xpathResults->item(0), true);
+                $localParentNode = $xpathResultsLocal->item(0);
+                $localParentNode->appendChild($newNode);
+
+
+                continue;
+            }
+
+            //derr('unsupported');
+        }
+
+    }
+
     if($debugAPI)
         $configOutput['connector']->setShowApiCalls(true);
 

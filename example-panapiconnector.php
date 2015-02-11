@@ -25,7 +25,7 @@ $panc->API_load_from_candidate($con);
 $vsys1 = $panc->findVirtualSystem('vsys1');
 if( is_null($vsys1) )
 {
-	die("vsys1 was not found ? Exit\n");
+	derr("vsys1 was not found ? Exit\n");
 }
 
 print "\n***********************************************\n\n";
@@ -36,7 +36,7 @@ $vsys1->securityRules->display();
 // look for an object named 'User-Networks'
 $object = $vsys1->addressStore->find('User-Networks');
 if( is_null($object) )
-	die("Error: object not found\n");
+	derr("Error: object not found\n");
 
 // want to know xpath of an object ?
 print "displaying XPATH of object named ".$object->name()." : ".$object->getXPath()."\r\n";
@@ -46,7 +46,7 @@ $object->API_setName('another-name');
 
 $rule = $vsys1->securityRules->find('Mail Server');
 if( is_null($rule) )
-	die("Error: rule nor found\n");
+	derr("Error: rule nor found\n");
 
 // add an object to this rule Source through API
 $rule->source->API_add($object);
@@ -57,7 +57,7 @@ $rule->destination->API_setAny();
 // remove object from another rule Source
 $rule = $vsys1->securityRules->find('Exception SSH for Dev');
 if( is_null($rule) )
-	die("Error: rule nor found\n");
+	derr("Error: rule nor found\n");
 $rule->source->API_remove($object);
 
 // uplaod config directly to the device !!!
