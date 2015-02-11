@@ -525,9 +525,6 @@ RQuery::$defaultFilters['rule']['tag']['operators']['has'] = Array(
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
-//                                              //
-//                Tag Based filters         //
-//                                              //
 RQuery::$defaultFilters['rule']['tag']['operators']['has.nocase'] = Array(
     'eval' => '$object->tags->hasTag("!value!", false) === true',
     'arg' => true

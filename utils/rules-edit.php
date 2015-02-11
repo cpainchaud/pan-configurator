@@ -93,6 +93,11 @@ $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this m
 $supportedArguments['usedomxml'] = Array('niceName' => 'useDomXML', 'shortHelp' => 'enable alternative XML engine (faster but experimental');
 
 
+/***************************************
+ *
+ *         Supported actions
+ *
+ **************************************/
 $supportedActions = Array();
 // <editor-fold desc="Supported Actions Array" defaultstate="collapsed" >
 
@@ -128,6 +133,13 @@ $supportedActions['from-remove-force-any'] = Array(
     'args' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->from->parentCentralStore->find('!value!');"
 );
+$supportedActions['from-set-any'] = Array(
+    'name' => 'from-Set-Any',
+    'file' => "\$rule->from->setAny();",
+    'api' => "\$rule->from->API_setAny();",
+    'args' => false
+);
+
 $supportedActions['to-add'] = Array(
     'name' => 'to-Add',
     'file' => "\$rule->to->addZone(!value!);",
@@ -156,12 +168,6 @@ $supportedActions['to-remove-force-any'] = Array(
     'api' => "\$rule->to->API_removeZone(!value!, true, true);",
     'args' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->to->parentCentralStore->find('!value!');"
-);
-$supportedActions['to-set-any'] = Array(
-    'name' => 'to-Set-Any',
-    'file' => "\$rule->to->setAny();",
-    'api' => "\$rule->to->API_setAny();",
-    'args' => false
 );
 $supportedActions['to-set-any'] = Array(
     'name' => 'to-Set-Any',
