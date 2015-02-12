@@ -699,12 +699,21 @@ function mdeb($msg)
 	fwrite(STDERR,"\n\n");
 }
 
-function mwarning($msg)
+function mwarning($msg, $object = null)
 {
 	global $PANC_WARN;
 
 	if( isset($PANC_WARN) && $PANC_WARN == 0 )
 		return;
+
+	if( $object !== null )
+	{
+		$class = get_class($object);
+		if( $class == 'DOMNode' || $class == 'DOMElement' || is_subclass_of($object, 'DOMNode') )
+		{
+			$msg .="\nXML line #".$object->getLineNo().", XPATH: ".$object->getNodePath()."\n".DH::dom_to_xml($object,0,true,3);
+		}
+	}
 
 	fwrite(STDERR,"\n*WARNING*".$msg."\n");
 	

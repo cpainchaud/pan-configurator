@@ -232,18 +232,34 @@ class TagRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * should only be called from a Rule constructor
+     * @param DOMElement $xml
+     *      * should only be called from a Rule constructor
      * @ignore
      */
     public function load_from_domxml($xml)
     {
         $this->xmlroot = $xml;
+        $toBeCleaned = Array();
 
         foreach( $xml->childNodes as $node )
         {
             if( $node->nodeType != 1 ) continue;
-            $f = $this->parentCentralStore->findOrCreate( $node->textContent, $this);
-            $this->o[] = $f;
+
+            if( strlen($node->textContent) < 1 )
+            {
+                mwarning('invalid (empty) tag name found in rule "'.$this->owner->toString().'", IT WILL BE CLEANED', $node);
+                $toBeCleaned[] = $node;
+            }
+            else
+            {
+                $f = $this->parentCentralStore->findOrCreate($node->textContent, $this);
+                $this->o[] = $f;
+            }
+        }
+
+        foreach($toBeCleaned as $cleanMe)
+        {
+            $xml->removeChild($cleanMe);
         }
     }
 
