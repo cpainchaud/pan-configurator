@@ -851,6 +851,7 @@ foreach( $rulesToProcess as &$rulesRecord )
         }
     }
 }
+print "\n";
 // </editor-fold>
 
 
