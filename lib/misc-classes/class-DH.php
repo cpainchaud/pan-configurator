@@ -310,5 +310,42 @@ class DH
 		return $element;
 
 	}
+
+
+	/**
+	 * @param DOMNode $element
+	 * @return string
+	 */
+	static public function & elementToPanXPath($element)
+	{
+		$xpath = '';
+
+		if( $element->nodeType == 1 )
+		{
+			if( $element->hasAttribute('name') )
+			{
+				$xpath = '/'.$element->tagName."[@name='{$element->getAttribute('name')}']";
+			}
+			else
+				$xpath = '/'.$element->tagName;
+
+			$parent = $element->parentNode;
+
+			if( $parent === null )
+				derr('unsupported node that has no parent (null)');
+
+
+			if( $parent->nodeType == 9 || $parent->nodeType == 10 )
+				return $xpath;
+
+			$xpath = DH::elementToPanXPath($parent).$xpath;
+
+        }
+		else
+			derr('unsupported node type='.$element->nodeType);
+
+		return $xpath;
+	}
+
 }
 
