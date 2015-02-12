@@ -17,6 +17,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+print "***********************************************\n";
+print "************ UPLOAD CONFIG UTILITY ************\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
@@ -128,8 +130,6 @@ if( isset(PH::$args['debugapi'])  )
     $debugAPI = true;
 }
 
-print "***********************************************\n";
-print "************ UPLOAD CONFIG UTILITY ************\n\n";
 
 $doc = new DOMDocument();
 

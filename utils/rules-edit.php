@@ -18,6 +18,9 @@
 */
 
 
+print "***********************************************\n";
+print "************ RULE-EDIT UTILITY ****************\n\n";
+
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
 
@@ -857,6 +860,8 @@ if( $configOutput !== null )
     $pan->save_to_file($configOutput);
 }
 
+print "\n\n************ END OF RULE-EDIT UTILITY ************\n";
+print     "**************************************************\n";
 print "\n\n";
 
 
