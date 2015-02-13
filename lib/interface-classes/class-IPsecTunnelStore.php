@@ -40,6 +40,7 @@ class IPsecTunnelStore extends ObjStore
     {
         $this->name = $name;
         $this->owner = $owner;
+        $this->classn = &self::$childn;
     }
 
     /**

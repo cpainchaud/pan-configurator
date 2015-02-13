@@ -42,6 +42,7 @@ class EthernetIfStore extends ObjStore
     {
         $this->owner = $owner;
         $this->name = $name;
+        $this->classn = &self::$childn;
     }
 
 
