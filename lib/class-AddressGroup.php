@@ -437,6 +437,12 @@ class AddressGroup
 		return $this->sameValue( $otherObject);
 	}
 
+	/**
+	 * Return true if other object is also a group and has same object name
+	 *  ( value in not taken in account, only object name !! )
+	 * @param AddressGroup $otherObject
+	 * @return bool
+	 */
 	public function sameValue( AddressGroup $otherObject)
 	{
 		if( $this->isTmpAddr() && !$otherObject->isTmpAddr() )
@@ -448,31 +454,42 @@ class AddressGroup
 		if( $otherObject->count() != $this->count() )
 			return false;
 
-		$lO = Array();
-		$oO = Array();
+		$diff = $this->getValueDiff($otherObject);
 
-		foreach($this->members as $a)
-		{
-			$lO[] = $a->name();
-		}
-		sort($lO);
-
-		foreach($otherObject->members as $a)
-		{
-			$oO[] = $a->name();
-		}
-		sort($oO);
-
-		$diff = array_diff($oO, $lO);
-
-		if( count($diff) != 0 )
-			return false;
-
-		$diff = array_diff($lO, $oO);
-		if( count($diff) != 0 )
+		if( count($diff['plus']) + count($diff['minus']) != 0 )
 			return false;
 
 		return true;
+	}
+
+
+	public function & getValueDiff( AddressGroup $otherObject)
+	{
+		$result = Array('minus' => Array(), 'plus' => Array() );
+
+		$localObjects = $this->members;
+		$otherObjects = $otherObject->members;
+
+
+		usort($localObjects, '__CmpObjName');
+		usort($otherObjects, '__CmpObjName');
+
+		$diff = array_udiff($otherObjects, $localObjects, '__CmpObjName');
+
+		if( count($diff) != 0 )
+			foreach($diff as $d )
+			{
+				$result['minus'][] = $d;
+			}
+
+		$diff = array_udiff($localObjects, $otherObjects, '__CmpObjName');
+		if( count($diff) != 0 )
+			foreach($diff as $d )
+			{
+				$result['plus'][] = $d;
+			}
+
+		return $result;
 	}
 
 
@@ -487,42 +504,26 @@ class AddressGroup
 		else
 			$retString .= $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
 
-		$lO = Array();
-		$oO = Array();
+		$diff = $this->getValueDiff($otherObject);
 
-		foreach($this->members as $a)
+		if( count($diff['minus']) != 0 )
 		{
-			$lO[] = $a->name();
-		}
-		sort($lO);
-
-		foreach($otherObject->members as $a)
-		{
-			$oO[] = $a->name();
-		}
-		sort($oO);
-
-		$diff = array_diff($oO, $lO);
-
-		if( count($diff) != 0 )
-		{
-			foreach($diff as $d )
+			foreach($diff['minus'] as $d )
 			{
 				if( !$toString )
-					print $indent." - $d\n";
+					print $indent." - {$d->name()}\n";
 				else
-					$retString .= $indent." - $d\n";
+					$retString .= $indent." - {$d->name()}\n";
 			}
 		}
 
-		$diff = array_diff($lO, $oO);
-		if( count($diff) != 0 )
-			foreach($diff as $d )
+		if( count($diff['plus']) != 0 )
+			foreach($diff['plus'] as $d )
 			{
 				if( !$toString )
-					print $indent." + $d\n";
+					print $indent." + {$d->name()}\n";
 				else
-					$retString .= $indent." + $d\n";
+					$retString .= $indent." + {$d->name()}\n";
 			}
 
 		if( $toString )
