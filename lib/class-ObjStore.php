@@ -288,7 +288,7 @@ class ObjStore
 		{
 			if( $node->nodeType != 1 ) continue;
 
-			print $this->toString()."\n";
+			//print $this->toString()."\n";
 			$newObj = new $this->classn('**tmp**', $this);
 			$newObj->load_from_domxml($node);
 			//print $this->toString()." : new Tag '".$newTag->name()."' found\n";
