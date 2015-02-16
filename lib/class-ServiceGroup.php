@@ -368,10 +368,16 @@ class ServiceGroup
 	}
 
 
-	public function displayValueDiff( ServiceGroup $otherObject)
+	public function displayValueDiff( ServiceGroup $otherObject, $indent=0, $toString = false)
 	{
+		$retString = '';
 
-		print "Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+		$indent = str_pad(' ', $indent);
+
+		if( !$toString )
+			print $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+		else
+			$retString .= $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
 
 		$lO = Array();
 		$oO = Array();
@@ -394,7 +400,10 @@ class ServiceGroup
 		{
 			foreach($diff as $d )
 			{
-				print " - $d\n";
+				if( !$toString )
+					print $indent." - $d\n";
+				else
+					$retString .= $indent." - $d\n";
 			}
 		}
 
@@ -402,9 +411,14 @@ class ServiceGroup
 		if( count($diff) != 0 )
 			foreach($diff as $d )
 			{
-				print " + $d\n";
+				if( !$toString )
+					print $indent." + $d\n";
+				else
+					$retString .= $indent." + $d\n";
 			}
 
+		if( $toString )
+			return $retString;
 	}
 
 
