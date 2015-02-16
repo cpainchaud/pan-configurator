@@ -475,10 +475,17 @@ class AddressGroup
 		return true;
 	}
 
-	public function displayValueDiff( AddressGroup $otherObject)
-	{
 
-		print "Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+	public function displayValueDiff( AddressGroup $otherObject, $indent=0, $toString = false)
+	{
+		$retString = '';
+
+		$indent = str_pad(' ', $indent);
+
+		if( !$toString )
+			print $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+		else
+			$retString .= $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
 
 		$lO = Array();
 		$oO = Array();
@@ -501,7 +508,10 @@ class AddressGroup
 		{
 			foreach($diff as $d )
 			{
-				print " - $d\n";
+				if( !$toString )
+					print $indent." - $d\n";
+				else
+					$retString .= $indent." - $d\n";
 			}
 		}
 
@@ -509,9 +519,14 @@ class AddressGroup
 		if( count($diff) != 0 )
 			foreach($diff as $d )
 			{
-				print " + $d\n";
+				if( !$toString )
+					print $indent." + $d\n";
+				else
+					$retString .= $indent." + $d\n";
 			}
 
+		if( $toString )
+			return $retString;
 	}
 
 	/**
