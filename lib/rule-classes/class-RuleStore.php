@@ -62,9 +62,9 @@ class RuleStore
 
     static private $storeNameByType = Array(
 
-        'SecurityRule' => Array( 'name' => 'Security', 'varName' => 'SecurityRules', 'xpathRoot' => 'security' ),
-        'NatRule' => Array( 'name' => 'NAT', 'varName' => 'NatRules', 'xpathRoot' => 'nat' ),
-        'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'DecryptRules', 'xpathRoot' => 'decryption' )
+        'SecurityRule' => Array( 'name' => 'Security', 'varName' => 'securityRules', 'xpathRoot' => 'security' ),
+        'NatRule' => Array( 'name' => 'NAT', 'varName' => 'natRules', 'xpathRoot' => 'nat' ),
+        'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'decryptRules', 'xpathRoot' => 'decryption' )
 
     );
  
@@ -299,6 +299,13 @@ class RuleStore
 		{
 			return false;
 		}
+		if( $this->isPreOrPost )
+		{
+			if( isset($this->fastNameToIndex_forPost[$name]) )
+			{
+				return false;
+			}
+		}
 
 		if( !$nested )
 			return true;
@@ -307,25 +314,14 @@ class RuleStore
 
 		if( $ownerC == 'VirtualSystem' )
 		{
-			//return $this->owner->owner->
+			// do nothing
 		}
         else if( $ownerC == 'PanoramaConf' )
         {
-            if( !$this->getOppositeStore()->isRuleNameAvailable($name, false) )
-                return false;
+            //do nothing
         }
 		else if( $ownerC == 'DeviceGroup' )
 		{
-            $oppositeStore = $this->getOppositeStore();
-
-			if( !$oppositeStore->isRuleNameAvailable($name, false) )
-				return false;
-
-            $varName = $oppositeStore->getStoreVarName();
-
-			if( !$this->owner->owner->$varName->isRuleNameAvailable($name, false) )
-				return false;
-
             $varName = $this->getStoreVarName();
 
 			if( !$this->owner->owner->$varName->isRuleNameAvailable($name, false) )
@@ -337,30 +333,12 @@ class RuleStore
 		return true;
 	}
 
-    /**
-     * @return RuleStore
-     */
-    function getOppositeStore()
-    {
-        $varName = self::$storeNameByType[$this->type]['varName'];
-        if( $this->isPreRulebase() )
-            $varName = 'post'.$varName;
-        else
-            $varName = 'pre'.$varName;
-
-        return $this->owner->$varName;
-    }
-
 	/**
 	 * @return string
 	 */
     function &getStoreVarName()
     {
         $varName = self::$storeNameByType[$this->type]['varName'];
-        if( !$this->isPreRulebase() )
-            $varName = 'post'.$varName;
-        else
-            $varName = 'pre'.$varName;
 
         return $varName;
     }
@@ -409,9 +387,26 @@ class RuleStore
             derr("Rule cannot be null");
 		if( !$this->isRuleNameAvailable($rule->name()) )
 			derr("Rule '".$rule->name()."' previously named '".$oldName."' cannot be renamed because this name is already in use");
-		
-		$this->fastNameToIndex[$rule->name()] = $this->fastNameToIndex[$oldName];
-		unset($this->fastNameToIndex[$oldName]);
+
+		if( $this->isPreOrPost )
+		{
+			if( $rule->isPreRule() )
+			{
+				$this->fastNameToIndex[$rule->name()] = $this->fastNameToIndex[$oldName];
+				unset($this->fastNameToIndex[$oldName]);
+			}
+			elseif( $rule->isPostRule() )
+			{
+				$this->fastNameToIndex_forPost[$rule->name()] = $this->fastNameToIndex_forPost[$oldName];
+				unset($this->fastNameToIndex_forPost[$oldName]);
+			}
+
+		}
+		else
+		{
+			$this->fastNameToIndex[$rule->name()] = $this->fastNameToIndex[$oldName];
+			unset($this->fastNameToIndex[$oldName]);
+		}
 	}
 
 
@@ -420,7 +415,7 @@ class RuleStore
      * @param string $newName
      * @return SecurityRule|NatRule
      */
-	public function cloneRule($rule, $newName)
+	public function cloneRule($rule, $newName, $inPost=false)
 	{
 		if( !$this->isRuleNameAvailable($newName) )
 			derr('this rule name is not available: '.$newName);
@@ -428,12 +423,11 @@ class RuleStore
 		$xml = $rule->xmlroot->cloneNode(true);
 
 		$nr = new $this->type($this);
-
 		$nr->load_from_domxml($xml);
-		$this->addRule($nr);
-
+		$nr->owner = null;
 		$nr->setName($newName);
-
+		$nr->owner = $this;
+		$this->addRule($nr, $inPost);
 
 		return $nr;
 	}
@@ -449,7 +443,7 @@ class RuleStore
 
 		$con = findConnectorOrDie($this);
 
-		$xpath = $this->getXPath();
+		$xpath = $this->getXPath($rule);
 		$element = array_to_xml($nr->xmlroot, -1, false);
 
 		$con->sendSetRequest($xpath, $element);
@@ -687,6 +681,9 @@ class RuleStore
 		
 		if( isset( $this->fastNameToIndex[$name]) )
 			return $this->rules[$this->fastNameToIndex[$name]];
+
+		if( isset( $this->fastNameToIndex_forPost[$name]) )
+			return $this->postRules[$this->fastNameToIndex_forPost[$name]];
 		
 		return null;
 	}
@@ -739,14 +736,17 @@ class RuleStore
 			if( $rewritexml )
 				$this->rewriteXML();
 		}
-		if( isset($this->fastMemToIndex_forPost[$ser] ) )
+		if( $this->isPreOrPost )
 		{
-			$found = true;
-			unset($this->fastNameToIndex_forPost[$rule->name()]);
-			unset($this->postRules[$this->fastMemToIndex[$ser]]);
-			unset($this->fastMemToIndex_forPost[$ser]);
-			if( $rewritexml )
-				$this->rewriteXML();
+			if( isset($this->fastMemToIndex_forPost[$ser] ) )
+			{
+				$found = true;
+				unset($this->fastNameToIndex_forPost[$rule->name()]);
+				unset($this->postRules[$this->fastMemToIndex[$ser]]);
+				unset($this->fastMemToIndex_forPost[$ser]);
+				if( $rewritexml )
+					$this->rewriteXML();
+			}
 		}
 		
 		return $found;
@@ -828,10 +828,11 @@ class RuleStore
 		return $this->name;
 	}
 
-	public function &getXPath()
+	public function &getXPath(Rule $contextRule)
 	{
 
 			$class = get_class($this->owner);
+			$serial = spl_object_hash($contextRule);
 
 			$str = '';
 
@@ -841,23 +842,22 @@ class RuleStore
 			}
 			else if ($class == 'DeviceGroup' )
 			{
-				if( $this->isPreRulebase === true )
+				if( isset($this->fastMemToIndex[$serial]) )
 					$str = $this->owner->getXPath().'/pre-rulebase';
-				else if( $this->isPreRulebase === false )
+				else if( isset($this->fastMemToIndex_forPost[$serial]) )
 					$str = $this->owner->getXPath().'/post-rulebase';
 				else
 					derr('unsupported mode');
 			}
 			else if ($class == 'PANConf' )
 			{
-				$str = "/config/shared/rulebase";
                 derr('unsupported');
 			}
 			else if ($class == 'PanoramaConf' )
 			{
-                if( $this->isPreRulebase === true )
+                if( isset($this->fastMemToIndex[$serial]) )
 					$str = "/config/shared/pre-rulebase";
-                else if( $this->isPreRulebase === false )
+                else if( isset($this->fastMemToIndex_forPost[$serial]) )
 					$str = "/config/shared/post-rulebase";
 				else derr('unsupported mode');
 			}
@@ -872,7 +872,64 @@ class RuleStore
 			return $str;
 	}
 
- 
+
+	/**
+	 * @return DecryptionRule[]|NatRule[]|Rule[]|SecurityRule[]
+	 */
+	public function preRules()
+	{
+		if( !$this->isPreOrPost )
+			derr('This is not a panorama/devicegroup based RuleStore');
+
+		return $this->rules;
+	}
+
+
+	/**
+	 * @return DecryptionRule[]|NatRule[]|Rule[]|SecurityRule[]
+	 */
+	public function postRules()
+	{
+		if( !$this->isPreOrPost )
+			derr('This is not a panorama/devicegroup based RuleStore');
+
+		return $this->postRules;
+	}
+
+	public function ruleIsPreRule(Rule $rule)
+	{
+		if( !$this->isPreOrPost )
+			return false;
+
+		if( $rule === null )
+			derr('null value is not supported');
+
+		$serial = spl_object_hash($rule);
+
+		if( isset($this->fastNameToIndex[$serial]) )
+			return true;
+
+		return false;
+	}
+
+	public function ruleIsPostRule(Rule $rule)
+	{
+		if( !$this->isPreOrPost )
+			return false;
+
+		if( $rule === null )
+			derr('null value is not supported');
+
+		$serial = spl_object_hash($rule);
+
+		if( isset($this->fastNameToIndex[$serial]) )
+			return true;
+
+		return false;
+	}
+
+
+
 	
 }
 

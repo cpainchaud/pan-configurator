@@ -69,28 +69,17 @@ class PanoramaConf
     /**
      * @var RuleStore
      */
-	public $postSecurityRules;
-    /**
-     * @var RuleStore
-     */
-	public $preSecurityRules;
+	public $securityRules;
 
     /**
      * @var RuleStore
      */
-	public $postNatRules;
+	public $natRules;
+
     /**
      * @var RuleStore
      */
-	public $preNatRules;
-    /**
-     * @var RuleStore
-     */
-    public $preDecryptionRules=null;
-    /**
-     * @var RuleStore
-     */
-    public $postDecryptionRules=null;
+    public $decryptionRules=null;
 
     /**
      * @var AddressStore
@@ -135,25 +124,12 @@ class PanoramaConf
 		
 		$this->addressStore = new AddressStore($this,true);
 		$this->addressStore->name = 'addresses';
-		
-		
-		$this->preNatRules = new RuleStore($this);
-		$this->preNatRules->setStoreRole(true,"NatRule", true);
-		
-		$this->postNatRules = new RuleStore($this);
-		$this->postNatRules->setStoreRole(true,"NatRule", false);
-		
-		$this->preSecurityRules = new RuleStore($this);
-		$this->preSecurityRules->setStoreRole(true,"SecurityRule", true);
-		
-		$this->postSecurityRules = new RuleStore($this);
-		$this->postSecurityRules->setStoreRole(true,"SecurityRule", false);
 
-        $this->preDecryptionRules = new RuleStore($this);
-        $this->preDecryptionRules->setStoreRole(true,"DecryptionRule", true);
 
-        $this->postDecryptionRules= new RuleStore($this);
-        $this->postDecryptionRules->setStoreRole(true,"DecryptionRule", false);
+		$this->securityRules = new RuleStore($this, 'SecurityRule', true);
+		$this->natRules = new RuleStore($this, 'NatRule', true);
+		$this->decryptionRules = new RuleStore($this, 'DecryptionRule', true);
+
 		
 	}
 

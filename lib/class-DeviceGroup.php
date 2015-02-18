@@ -68,34 +68,27 @@ class DeviceGroup
 	* @var TagStore
 	*/
 	public $tagStore=null;
+	
 	/**
 	* @var ZoneStore
 	*/
 	public $zoneStore=null;
+
 	/**
 	* @var RuleStore
 	*/
-	public $preSecurityRules=null;
+	public $securityRules=null;
+
 	/**
 	* @var RuleStore
 	*/
-	public $postSecurityRules=null;
-	/**
-	* @var RuleStore
-	*/
-	public $preNatRules=null;
-	/**
-	* @var RuleStore
-	*/
-	public $postNatRules=null;
+	public $natRules=null;
+
     /**
      * @var RuleStore
      */
-    public $preDecryptionRules=null;
-    /**
-     * @var RuleStore
-     */
-    public $postDecryptionRules=null;
+    public $decryptionRules=null;
+
 
 
 	/**
@@ -124,24 +117,10 @@ class DeviceGroup
 		
 		$this->addressStore = new AddressStore($this,true);
 		$this->addressStore->name = 'addresss';
-		
-		$this->preNatRules = new RuleStore($this);
-		$this->preNatRules->setStoreRole(true,"NatRule", true);
-		
-		$this->postNatRules = new RuleStore($this);
-		$this->postNatRules->setStoreRole(true,"NatRule", false);
-		
-		$this->preSecurityRules = new RuleStore($this);
-		$this->preSecurityRules->setStoreRole(true,"SecurityRule", true);
-		
-		$this->postSecurityRules = new RuleStore($this);
-		$this->postSecurityRules->setStoreRole(true,"SecurityRule", false);
 
-        $this->preDecryptionRules = new RuleStore($this);
-        $this->preDecryptionRules->setStoreRole(true,"DecryptionRule", true);
-
-        $this->postDecryptionRules= new RuleStore($this);
-        $this->postDecryptionRules->setStoreRole(true,"DecryptionRule", false);
+		$this->securityRules = new RuleStore($this, 'SecurityRule', true);
+		$this->natRules = new RuleStore($this, 'NatRule', true);
+		$this->decryptionRules = new RuleStore($this, 'DecryptionRule', true);
 
 	}
 
