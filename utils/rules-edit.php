@@ -355,10 +355,12 @@ $supportedActions['display'] = Array(
 );
 $supportedActions['invertpreandpost'] = Array(
     'name' => 'invertPreAndPost',
-    'file' => "if( \$rule->owner->isPreRulebase() ) \$rule->owner->moveRuleToPostRulebase(\$rule);
-                else if( \$rule->owner->isPostRulebase() ) \$rule->owner->moveRuleToPreRulebase(\$rule);",
-    'api' => "if( \$rule->owner->isPreRulebase() ) \$rule->owner->API_moveRuleToPostRulebase(\$rule);
-                else if( \$rule->owner->isPostRulebase() ) \$rule->owner->API_moveRuleToPreRulebase(\$rule);",
+    'file' => "if( \$rule->isPreRule() ) \$rule->owner->moveRuleToPostRulebase(\$rule);
+                else if( \$rule->isPostRule() ) \$rule->owner->moveRuleToPreRulebase(\$rule);
+                else derr('unsupported');",
+    'api' => "if( \$rule->isPreRule() ) \$rule->owner->API_moveRuleToPostRulebase(\$rule);
+                else if( \$rule->isPostRule() ) \$rule->owner->API_moveRuleToPreRulebase(\$rule);
+                else derr('unsupported');",
     'args' => false
 );
 // </editor-fold>

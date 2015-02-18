@@ -155,9 +155,9 @@ elseif ( $configInput['type'] == 'api'  )
 {
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
-    $configInput['connector']->getCandidateConfig();
+    $doc = $configInput['connector']->getCandidateConfig();
 
-    print "{$configOutput['connector']->apihost}/$saveName ... ";
+    print "{$configInput['connector']->apihost} ... ";
 }
 else
     derr('not supported yet');

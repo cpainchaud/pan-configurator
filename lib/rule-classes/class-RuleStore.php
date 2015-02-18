@@ -73,13 +73,11 @@ class RuleStore
 		$this->owner = $owner;
 		$this->isPreOrPost = $isPreOrPost;
 
-
 		$allowedTypes = array_keys(self::$storeNameByType);
 		if( ! in_array($ruleType, $allowedTypes) )
 			derr("Error : type '$ruleType' is not a valid one");
 
 		$this->type = $ruleType;
-
 
 		$this->name = self::$storeNameByType[$this->type]['name'];
 	}
@@ -170,27 +168,47 @@ class RuleStore
 		
 		if( !is_object($rule) )
 			derr('this function only accepts Rule class objects');
-		
-		
+
+		if( $rule->owner !== null )
+			derr('Trying to add a rule that has a owner already !');
+
 		$ser = spl_object_hash($rule);
-		
-		if( !isset($this->fastMemToIndex[$ser] ) )
+
+		if( ! $inPost )
 		{
-            $rule->owner = $this;
+			if (!isset($this->fastMemToIndex[$ser]))
+			{
+				$rule->owner = $this;
 
-			$this->rules[] = $rule;
-			$index = lastIndex($this->rules);
-			$this->fastMemToIndex[$ser] = $index;
-			$this->fastNameToIndex[$rule->name()] = $index;
+				$this->rules[] = $rule;
+				$index = lastIndex($this->rules);
+				$this->fastMemToIndex[$ser] = $index;
+				$this->fastNameToIndex[$rule->name()] = $index;
 
-			$this->xmlroot->appendChild($rule->xmlroot);
+				$this->xmlroot->appendChild($rule->xmlroot);
 
-			
-			return true;
-			
+				return true;
+			} else
+				derr('You cannot add a Rule that is already here :)');
 		}
 		else
-			derr('You cannot add a Rule that is already here :)');
+		{
+			if (!isset($this->fastMemToIndex_forPost[$ser]))
+			{
+				$rule->owner = $this;
+
+				$this->postRules[] = $rule;
+				$index = lastIndex($this->postRules);
+				$this->fastMemToIndex_forPost[$ser] = $index;
+				$this->fastNameToIndex_forPost[$rule->name()] = $index;
+
+				$this->postRulesRoot->appendChild($rule->xmlroot);
+
+				return true;
+			}
+			else
+				derr('You cannot add a Rule that is already here :)');
+		}
 			
 		return false;
 
@@ -199,17 +217,18 @@ class RuleStore
 
 	/**
 	 * @param Rule $rule
+	 * @param bool $inPost
 	 * @return bool
 	 */
-	public function API_addRule( $rule )
+	public function API_addRule( $rule, $inPost=false )
 	{
-		if( ! $this->addRule($rule) )
+		if( ! $this->addRule($rule, $inPost) )
             return false;
 
 		$xpath = $this->getXPath($rule);
 		$con = findConnectorOrDie($this);
 
-		$con->sendSetRequest($xpath, array_to_xml($rule->xmlroot, -1, false) );
+		$con->sendSetRequest($xpath, DH::dom_to_xml($rule->xmlroot, -1, false) );
 
         return true;
 	}
@@ -218,16 +237,37 @@ class RuleStore
 	 * @param Rule $rule
 	 * @return bool
 	 */
+	function inStore($rule)
+	{
+		$serial = spl_object_hash($rule);
+
+		if( isset($this->fastMemToIndex[$serial]) )
+			return true;
+		if( isset($this->fastMemToIndex_forPost[$serial]) )
+			return true;
+
+		return false;
+	}
+
+	/**
+	 * @param Rule $rule
+	 * @return bool
+	 */
 	public function moveRuleToPostRulebase( $rule )
 	{
+		if( !$this->isPreOrPost )
+			derr('unsupported');
 
-		if( $this->isPreRulebase !== true )
-			derr('tried to move a rule that is not in a Pre-SecRules base');
+		if( ! $this->inStore($rule) )
+			derr('cannot move an object that is not part of this store: '.$rule->toString() );
 
-		if( !$this->remove($rule) )
+		$serial = spl_object_hash($rule);
+
+		if( ! isset( $this->fastMemToIndex[$serial] ) )
 			return false;
 
-        $this->getOppositeStore()->addRule($rule);
+		$this->remove($rule);
+		$this->addRule($rule, true);
 
 		return true;
 	}
@@ -238,15 +278,21 @@ class RuleStore
 	 */
 	public function API_moveRuleToPostRulebase( $rule )
 	{
-        if( $this->isPreRulebase !== true )
-            derr('tried to move a rule that is not in a Pre-SecRules base');
+		if( !$this->isPreOrPost )
+			derr('unsupported');
 
-        if( !$this->API_remove($rule) )
-            return false;
+		if( ! $this->inStore($rule) )
+			derr('cannot move an object that is not part of this store: '.$rule->toString() );
 
-        $this->getOppositeStore()->API_addRule($rule);
+		$serial = spl_object_hash($rule);
 
-        return true;
+		if( ! isset( $this->fastMemToIndex[$serial] ) )
+			return false;
+
+		$this->API_remove($rule);
+		$this->API_addRule($rule, true);
+
+		return true;
 	}
 
 
@@ -256,17 +302,22 @@ class RuleStore
 	 */
 	public function moveRuleToPreRulebase( $rule )
 	{
-        if( $this->isPreRulebase !== false )
-            derr('tried to move a rule that is not in a Pre-SecRules base');
+		if( !$this->isPreOrPost )
+			derr('unsupported');
 
-        if( !$this->remove($rule) )
-            return false;
+		if( ! $this->inStore($rule) )
+			derr('cannot move an object that is not part of this store: '.$rule->toString() );
 
-        $this->getOppositeStore()->addRule($rule);
+		$serial = spl_object_hash($rule);
 
-        return true;
+		if( ! isset( $this->fastMemToIndex_forPost[$serial] ) )
+			return false;
+
+		$this->remove($rule);
+		$this->addRule($rule, false);
+
+		return true;
 	}
-
 
 	/**
 	 * @param Rule $rule
@@ -274,15 +325,21 @@ class RuleStore
 	 */
 	public function API_moveRuleToPreRulebase( $rule )
 	{
-        if( $this->isPreRulebase !== false )
-            derr('tried to move a rule that is not in a Pre-SecRules base');
+		if( !$this->isPreOrPost )
+			derr('unsupported');
 
-        if( !$this->API_remove($rule) )
-            return false;
+		if( ! $this->inStore($rule) )
+			derr('cannot move an object that is not part of this store: '.$rule->toString() );
 
-        $this->getOppositeStore()->API_addRule($rule);
+		$serial = spl_object_hash($rule);
 
-        return true;
+		if( ! isset( $this->fastMemToIndex_forPost[$serial] ) )
+			return false;
+
+		$this->API_remove($rule);
+		$this->API_addRule($rule, false);
+
+		return true;
 	}
 
 
@@ -400,6 +457,8 @@ class RuleStore
 				$this->fastNameToIndex_forPost[$rule->name()] = $this->fastNameToIndex_forPost[$oldName];
 				unset($this->fastNameToIndex_forPost[$oldName]);
 			}
+			else
+				derr('unsupported');
 
 		}
 		else
@@ -460,6 +519,7 @@ class RuleStore
 	 */
 	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
+		// TODO fix after pre/post suppression
 		if( is_string($ruleToBeMoved) )
 		{
 			if( !isset($this->fastNameToIndex[$ruleToBeMoved]) )
@@ -549,6 +609,8 @@ class RuleStore
 	 */
 	public function moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
+		// TODO fix after pre/post suppression
+		
 		if( is_string($ruleToBeMoved) )
 		{
 			if( !isset($this->fastNameToIndex[$ruleToBeMoved]) )
@@ -690,7 +752,9 @@ class RuleStore
 	
 	/**
 	* Creates a new SecurityRule in this store. It will be placed at the end of the list.
-	*
+	* @param String $name name of the new Rule
+	 * @param bool $inPost  create it in post or pre (if applicable)
+	* @return SecurityRule
 	*/
 	public function newSecurityRule($name, $inPost = false)
 	{
@@ -700,9 +764,14 @@ class RuleStore
 		$rule->setName($name);		
 		
 		return $rule;
-			
 	}
 
+	/**
+	 * Creates a new NatRule in this store. It will be placed at the end of the list.
+	 * @param String $name name of the new Rule
+	 * @param bool $inPost  create it in post or pre (if applicable)
+	 * @return NatRule
+	 */
 	public function newNatRule($name, $inPost = false)
 	{
 		$rule = new NatRule($this,true);
@@ -711,29 +780,28 @@ class RuleStore
 		$rule->setName($name);		
 		
 		return $rule;
-			
 	}
 
 
 	/**
 	* Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
 	* @param Rule|SecurityRule $rule
-	 * @param bool $rewritexml
+	 * @param bool $rewriteXml
 	 * @param bool $deleteForever
 	 * @return bool
 	*/
-	public function remove( $rule, $rewritexml=true, $deleteForever = false )
+	public function remove( $rule, $rewriteXml=true, $deleteForever=false )
 	{
 
 		$found = false;
-		$ser = spl_object_hash($rule);
+		$serial = spl_object_hash($rule);
 		
-		if( isset($this->fastMemToIndex[$ser] ) )
+		if( isset($this->fastMemToIndex[$serial] ) )
 		{
 			$found = true;
 			unset($this->fastNameToIndex[$rule->name()]);
-			unset($this->rules[$this->fastMemToIndex[$ser]]);
-			unset($this->fastMemToIndex[$ser]);
+			unset($this->rules[$this->fastMemToIndex[$serial]]);
+			unset($this->fastMemToIndex[$serial]);
 			$this->xmlroot->removeChild($rule->xmlroot);
 			$rule->owner = null;
 
@@ -742,16 +810,21 @@ class RuleStore
 				$rule->cleanForDestruction();
 			}
 		}
-		if( $this->isPreOrPost )
+		elseif( $this->isPreOrPost )
 		{
-			if( isset($this->fastMemToIndex_forPost[$ser] ) )
+			if( isset($this->fastMemToIndex_forPost[$serial] ) )
 			{
 				$found = true;
 				unset($this->fastNameToIndex_forPost[$rule->name()]);
-				unset($this->postRules[$this->fastMemToIndex[$ser]]);
-				unset($this->fastMemToIndex_forPost[$ser]);
-				if( $rewritexml )
-					$this->rewriteXML();
+				unset($this->postRules[$this->fastMemToIndex_forPost[$serial]]);
+				unset($this->fastMemToIndex_forPost[$serial]);
+				$this->postRulesRoot->removeChild($rule->xmlroot);
+				$rule->owner = null;
+
+				if( $deleteForever )
+				{
+					$rule->cleanForDestruction();
+				}
 			}
 		}
 		
@@ -847,9 +920,9 @@ class RuleStore
 			}
 			else if ($class == 'DeviceGroup' )
 			{
-				if( isset($this->fastMemToIndex[$serial]) )
+				if( $contextRule->isPreRule() )
 					$str = $this->owner->getXPath().'/pre-rulebase';
-				else if( isset($this->fastMemToIndex_forPost[$serial]) )
+				else if( $contextRule->isPostRule() )
 					$str = $this->owner->getXPath().'/post-rulebase';
 				else
 					derr('unsupported mode');
@@ -860,9 +933,9 @@ class RuleStore
 			}
 			else if ($class == 'PanoramaConf' )
 			{
-                if( isset($this->fastMemToIndex[$serial]) )
+                if( $contextRule->isPreRule() )
 					$str = "/config/shared/pre-rulebase";
-                else if( isset($this->fastMemToIndex_forPost[$serial]) )
+                else if( $contextRule->isPostRule() )
 					$str = "/config/shared/post-rulebase";
 				else derr('unsupported mode');
 			}
@@ -911,7 +984,7 @@ class RuleStore
 
 		$serial = spl_object_hash($rule);
 
-		if( isset($this->fastNameToIndex[$serial]) )
+		if( isset($this->fastMemToIndex[$serial]) )
 			return true;
 
 		return false;
@@ -927,7 +1000,7 @@ class RuleStore
 
 		$serial = spl_object_hash($rule);
 
-		if( isset($this->fastNameToIndex[$serial]) )
+		if( isset($this->fastMemToIndex_forPost[$serial]) )
 			return true;
 
 		return false;

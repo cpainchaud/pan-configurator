@@ -601,11 +601,11 @@ RQuery::$defaultFilters['rule']['log']['operators']['at.end'] = Array(
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.prerule'] = Array(
-    'eval' => '$object->owner->isPreRulebase()',
+    'eval' => '$object->isPreRule()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.postrule'] = Array(
-    'eval' => '$object->owner->isPreRulebase()',
+    'eval' => '$object->isPostRule()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(

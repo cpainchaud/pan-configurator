@@ -568,7 +568,7 @@ class Rule
 
     public function &getXPath()
     {
-        $str = $this->owner->getXPath()."/entry[@name='".$this->name."']";
+        $str = $this->owner->getXPath($this)."/entry[@name='".$this->name."']";
 
         return $str;
     }
