@@ -196,7 +196,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_RuleStore">#</a>
-		<code><b>RuleStore</b>( <span>mixed <var>$owner</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><b>RuleStore</b>( <span>mixed <var>$owner</var></span>, <span>mixed <var>$ruleType</var></span>, <span>mixed <var>$isPreOrPost</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -206,79 +206,6 @@
 			
 
 
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="setStoreRole" id="_setStoreRole">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_setStoreRole">#</a>
-		<code><b>setStoreRole</b>( <span>mixed <var>$isStore</var></span>, <span>mixed <var>$type</var></span>, <span>mixed <var>$preRulebase</var> = <span class="php-keyword1">null</span></span> )</code>
-
-		<div class="description short">
-			
-<p>For developper use only</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>For developper use only</p>
-
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="setType" id="_setType">
-
-		<td class="attributes"><code>
-			 protected 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_setType">#</a>
-		<code><b>setType</b>( <span>string <var>$type</var></span>, <span>boolean|null <var>$preRulebase</var> = <span class="php-keyword1">null</span></span> )</code>
-
-		<div class="description short">
-			
-<p>For developper use only</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>For developper use only</p>
-
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$type</var></dt>
-					<dd><code>string</code></dd>
-					<dt><var>$preRulebase</var></dt>
-					<dd><code>boolean|null</code></dd>
-				</dl></div>
 
 
 
@@ -342,7 +269,7 @@ then it also count disabled rules</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_load_from_domxml">#</a>
-		<code><b>load_from_domxml</b>( <span><code><a href="class-DOMElement.html">DOMElement</a></code> <var>$xml</var></span> )</code>
+		<code><b>load_from_domxml</b>( <span><code><a href="class-DOMElement.html">DOMElement</a></code> <var>$xml</var></span>, <span><code><a href="class-DOMElement.html">DOMElement</a></code> <var>$xmlPost</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -360,6 +287,8 @@ then it also count disabled rules</p>
 				<div class="list"><dl>
 					<dt><var>$xml</var></dt>
 					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code></code><br>$xml</dd>
+					<dt><var>$xmlPost</var></dt>
+					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code></code><br>$xmlPost</dd>
 				</dl></div>
 
 
@@ -380,7 +309,7 @@ then it also count disabled rules</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addRule">#</a>
-		<code><b>addRule</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$rule</var></span> )</code>
+		<code><b>addRule</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$rule</var></span>, <span>boolean <var>$inPost</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -394,6 +323,8 @@ then it also count disabled rules</p>
 				<div class="list"><dl>
 					<dt><var>$rule</var></dt>
 					<dd><code><code><a href="class-Rule.html">Rule</a></code></code><br>$rule</dd>
+					<dt><var>$inPost</var></dt>
+					<dd><code>boolean</code><br>$inPost</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -418,7 +349,47 @@ then it also count disabled rules</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_API_addRule">#</a>
-		<code><b>API_addRule</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$rule</var></span> )</code>
+		<code><b>API_addRule</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$rule</var></span>, <span>boolean <var>$inPost</var> = <span class="php-keyword1">false</span> </span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$rule</var></dt>
+					<dd><code><code><a href="class-Rule.html">Rule</a></code></code><br>$rule</dd>
+					<dt><var>$inPost</var></dt>
+					<dd><code>boolean</code><br>$inPost</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="inStore" id="_inStore">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_inStore">#</a>
+		<code><b>inStore</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$rule</var></span> )</code>
 
 		<div class="description short">
 			
@@ -641,39 +612,6 @@ then it also count disabled rules</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getOppositeStore" id="_getOppositeStore">
-
-		<td class="attributes"><code>
-			 public 
-			<code><a href="class-RuleStore.html">RuleStore</a></code>
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getOppositeStore">#</a>
-		<code><b>getOppositeStore</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code><code><a href="class-RuleStore.html">RuleStore</a></code></code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="getStoreVarName" id="_getStoreVarName">
 
 		<td class="attributes"><code>
@@ -800,7 +738,7 @@ accurate indexing</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_cloneRule">#</a>
-		<code><b>cloneRule</b>( <span><code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code> <var>$rule</var></span>, <span>string <var>$newName</var></span> )</code>
+		<code><b>cloneRule</b>( <span><code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code> <var>$rule</var></span>, <span>string <var>$newName</var></span>, <span>mixed <var>$inPost</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -816,6 +754,8 @@ accurate indexing</p>
 					<dd><code><code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code></code><br>$rule</dd>
 					<dt><var>$newName</var></dt>
 					<dd><code>string</code><br>$newName</dd>
+					<dt><var>$inPost</var></dt>
+					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -1178,14 +1118,14 @@ accurate indexing</p>
 
 		<td class="attributes"><code>
 			 public 
-			
+			<code><a href="class-SecurityRule.html">SecurityRule</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_newSecurityRule">#</a>
-		<code><b>newSecurityRule</b>( <span>mixed <var>$name</var></span> )</code>
+		<code><b>newSecurityRule</b>( <span>String <var>$name</var></span>, <span>boolean <var>$inPost</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1201,7 +1141,18 @@ list.</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>String</code><br>$name name of the new Rule</dd>
+					<dt><var>$inPost</var></dt>
+					<dd><code>boolean</code><br>$inPost create it in post or pre (if applicable)</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-SecurityRule.html">SecurityRule</a></code></code><br />
+				</div>
 
 
 
@@ -1213,24 +1164,41 @@ list.</p>
 
 		<td class="attributes"><code>
 			 public 
-			
+			<code><a href="class-NatRule.html">NatRule</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_newNatRule">#</a>
-		<code><b>newNatRule</b>( <span>mixed <var>$name</var></span> )</code>
+		<code><b>newNatRule</b>( <span>String <var>$name</var></span>, <span>boolean <var>$inPost</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
+<p>Creates a new NatRule in this store. It will be placed at the end of the
+list.</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>Creates a new NatRule in this store. It will be placed at the end of the
+list.</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>String</code><br>$name name of the new Rule</dd>
+					<dt><var>$inPost</var></dt>
+					<dd><code>boolean</code><br>$inPost create it in post or pre (if applicable)</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-NatRule.html">NatRule</a></code></code><br />
+				</div>
 
 
 
@@ -1242,14 +1210,14 @@ list.</p>
 
 		<td class="attributes"><code>
 			 public 
-			
+			boolean
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove">#</a>
-		<code><b>remove</b>( <span>mixed <var>$rule</var></span>, <span>mixed <var>$rewritexml</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$deleteForever</var> = <span class="php-keyword1">false</span> </span> )</code>
+		<code><b>remove</b>( <span><code><a href="class-Rule.html">Rule</a></code>|<code><a href="class-SecurityRule.html">SecurityRule</a></code> <var>$rule</var></span>, <span>boolean <var>$rewriteXml</var> = <span class="php-keyword1">true</span></span>, <span>boolean <var>$deleteForever</var> = <span class="php-keyword1">false</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -1265,7 +1233,20 @@ Returns TRUE if found.</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$rule</var></dt>
+					<dd><code><code><a href="class-Rule.html">Rule</a></code>|<code><a href="class-SecurityRule.html">SecurityRule</a></code></code><br>$rule</dd>
+					<dt><var>$rewriteXml</var></dt>
+					<dd><code>boolean</code><br>$rewriteXml</dd>
+					<dt><var>$deleteForever</var></dt>
+					<dd><code>boolean</code><br>$deleteForever</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
 
 
@@ -1277,14 +1258,14 @@ Returns TRUE if found.</p>
 
 		<td class="attributes"><code>
 			 public 
-			
+			boolean
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_API_remove">#</a>
-		<code><b>API_remove</b>( <span>mixed <var>$rule</var></span>, <span>mixed <var>$rewritexml</var> = <span class="php-keyword1">true</span> </span> )</code>
+		<code><b>API_remove</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$rule</var></span>, <span>boolean <var>$rewritexml</var> = <span class="php-keyword1">true</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -1300,7 +1281,18 @@ Returns TRUE if found.</p>
 
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$rule</var></dt>
+					<dd><code><code><a href="class-Rule.html">Rule</a></code></code><br>$rule</dd>
+					<dt><var>$rewritexml</var></dt>
+					<dd><code>boolean</code><br>$rewritexml</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
 
 
@@ -1412,7 +1404,7 @@ time. You should not need to call it by yourself in normal situations</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getXPath">#</a>
-		<code><b>getXPath</b>( )</code>
+		<code><b>getXPath</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$contextRule</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1430,7 +1422,73 @@ time. You should not need to call it by yourself in normal situations</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isPreRulebase" id="_isPreRulebase">
+	<tr data-order="preRules" id="_preRules">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_preRules">#</a>
+		<code><b>preRules</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="postRules" id="_postRules">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_postRules">#</a>
+		<code><b>postRules</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ruleIsPreRule" id="_ruleIsPreRule">
 
 		<td class="attributes"><code>
 			 public 
@@ -1440,8 +1498,8 @@ time. You should not need to call it by yourself in normal situations</p>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_isPreRulebase">#</a>
-		<code><b>isPreRulebase</b>( )</code>
+		<a class="anchor" href="#_ruleIsPreRule">#</a>
+		<code><b>ruleIsPreRule</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$rule</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1459,7 +1517,7 @@ time. You should not need to call it by yourself in normal situations</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isPostRulebase" id="_isPostRulebase">
+	<tr data-order="ruleIsPostRule" id="_ruleIsPostRule">
 
 		<td class="attributes"><code>
 			 public 
@@ -1469,8 +1527,66 @@ time. You should not need to call it by yourself in normal situations</p>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_isPostRulebase">#</a>
-		<code><b>isPostRulebase</b>( )</code>
+		<a class="anchor" href="#_ruleIsPostRule">#</a>
+		<code><b>ruleIsPostRule</b>( <span><code><a href="class-Rule.html">Rule</a></code> <var>$rule</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="countPreRules" id="_countPreRules">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_countPreRules">#</a>
+		<code><b>countPreRules</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="countPostRules" id="_countPostRules">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_countPostRules">#</a>
+		<code><b>countPostRules</b>( )</code>
 
 		<div class="description short">
 			
@@ -1511,17 +1627,39 @@ time. You should not need to call it by yourself in normal situations</p>
 
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
-	<tr data-order="o" id="$o">
+	<tr data-order="rules" id="$rules">
 		<td class="attributes"><code>
 			protected  
 			<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>
 		</code></td>
 
 		<td class="name">
-<var>$o</var>		</td>
+<var>$rules</var>		</td>
 		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
 		<td class="description"><div>
-			<a href="#$o" class="anchor">#</a>
+			<a href="#$rules" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="postRules" id="$postRules">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>
+		</code></td>
+
+		<td class="name">
+<var>$postRules</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$postRules" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -1585,9 +1723,31 @@ time. You should not need to call it by yourself in normal situations</p>
 
 		<td class="name">
 <var>$xmlroot</var>		</td>
-		<td class="value"><code></code></td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
 			<a href="#$xmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="postRulesRoot" id="$postRulesRoot">
+		<td class="attributes"><code>
+			public  
+			string[]|<code><a href="class-DOMElement.html">DOMElement</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$postRulesRoot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$postRulesRoot" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -1665,17 +1825,17 @@ time. You should not need to call it by yourself in normal situations</p>
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="isStore" id="$isStore">
+	<tr data-order="fastMemToIndex_forPost" id="$fastMemToIndex_forPost">
 		<td class="attributes"><code>
 			protected  
-			boolean
+			mixed
 		</code></td>
 
 		<td class="name">
-<var>$isStore</var>		</td>
-		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+<var>$fastMemToIndex_forPost</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
-			<a href="#$isStore" class="anchor">#</a>
+			<a href="#$fastMemToIndex_forPost" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -1687,17 +1847,39 @@ time. You should not need to call it by yourself in normal situations</p>
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="isPreRulebase" id="$isPreRulebase">
+	<tr data-order="fastNameToIndex_forPost" id="$fastNameToIndex_forPost">
 		<td class="attributes"><code>
 			protected  
 			mixed
 		</code></td>
 
 		<td class="name">
-<var>$isPreRulebase</var>		</td>
+<var>$fastNameToIndex_forPost</var>		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
-			<a href="#$isPreRulebase" class="anchor">#</a>
+			<a href="#$fastNameToIndex_forPost" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="isPreOrPost" id="$isPreOrPost">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$isPreOrPost</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$isPreOrPost" class="anchor">#</a>
 
 			<div class="description short">
 				
