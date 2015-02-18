@@ -618,6 +618,17 @@ class Rule
 		$this->setName($newname);	
 	}
 
+
+	public function isPreRule()
+	{
+		return $this->owner->ruleIsPreRule($this);
+	}
+
+	public function isPostRule()
+	{
+		return $this->owner->ruleIsPostRule($this);
+	}
+
 }
 
 
