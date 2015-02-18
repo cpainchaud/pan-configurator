@@ -38,17 +38,6 @@ class DeviceGroup
 	 * @var DOMElement
 	 */
 	public $xmlroot;
-	
-	//public $addressroot;
-	//public $addressGsroot;
-	//public $servicesroot = null;
-	//public $serviceGsroot = null;
-
-	
-	//public $prenatrulesroot=null;
-	//public $presecrulesroot=null;
-	//public $postnatrulesroot=null;
-	//public $postsecrulesroot=null;
 
     /**
      * @var AddressStore
@@ -208,20 +197,22 @@ class DeviceGroup
 
 		$tmp = DH::findFirstElementOrCreate('security', $prerulebase);
 		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$this->preSecurityRules->load_from_domxml($tmp);
-
-		$tmp = DH::findFirstElementOrCreate('security', $postrulebase);
-		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$this->postSecurityRules->load_from_domxml($tmp);
-
+		$tmpPost = DH::findFirstElementOrCreate('security', $postrulebase);
+		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+		$this->securityRules->load_from_domxml($tmp, $tmpPost);
 
 		$tmp = DH::findFirstElementOrCreate('nat', $prerulebase);
 		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$this->preNatRules->load_from_domxml($tmp);
+		$tmpPost = DH::findFirstElementOrCreate('nat', $postrulebase);
+		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+		$this->natRules->load_from_domxml($tmp, $tmpPost);
 
-		$tmp = DH::findFirstElementOrCreate('nat', $postrulebase);
+
+		$tmp = DH::findFirstElementOrCreate('decryption', $prerulebase);
 		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$this->postNatRules->load_from_domxml($tmp);
+		$tmpPost = DH::findFirstElementOrCreate('nat', $postrulebase);
+		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+		$this->decryptionRules->load_from_domxml($tmp, $tmpPost);
 
 
 		// Devices extraction

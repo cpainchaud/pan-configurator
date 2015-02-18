@@ -653,7 +653,6 @@ else
 
 
 
-
 //
 // Location Filter Processing
 //
@@ -705,44 +704,38 @@ foreach( $rulesLocation as $location )
     }
     else
     {
-        if( ($location == 'shared' || $location == 'any') && !isset($ruleStoresToProcess['shared%pre'])  )
+        if( $location == 'shared' || $location == 'any'  )
         {
             if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
             {
-                $rulesToProcess[] = Array('store' => $pan->preSecurityRules, 'rules' => $pan->preSecurityRules->rules());
-                $rulesToProcess[] = Array('store' => $pan->postSecurityRules, 'rules' => $pan->postSecurityRules->rules());
+                $rulesToProcess[] = Array('store' => $pan->securityRules, 'rules' => $pan->securityRules->rules());
             }
             if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
             {
-                $rulesToProcess[] = Array('store' => $pan->preNatRules, 'rules' => $pan->preNatRules->rules());
-                $rulesToProcess[] = Array('store' => $pan->postNatRules, 'rules' => $pan->postNatRules->rules());
+                $rulesToProcess[] = Array('store' => $pan->natRules, 'rules' => $pan->natRules->rules());
             }
             if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
             {
-                $rulesToProcess[] = Array('store' => $pan->preDecryptionRules, 'rules' => $pan->preDecryptionRules->rules());
-                $rulesToProcess[] = Array('store' => $pan->postDecryptionRules, 'rules' => $pan->postDecryptionRules->rules());
+                $rulesToProcess[] = Array('store' => $pan->decryptionRules, 'rules' => $pan->decryptionRules->rules());
             }
             $locationFound = true;
         }
 
         foreach( $pan->getDeviceGroups() as $sub )
         {
-            if( ($location == 'any' || $location == 'all' || $location == $sub->name()) && !isset($ruleStoresToProcess[$sub->name().'%pre']) )
+            if( $location == 'any' || $location == 'all' || $location == $sub->name() )
             {
                 if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
                 {
-                    $rulesToProcess[] = Array('store' => $sub->preSecurityRules, 'rules' => $sub->preSecurityRules->rules());
-                    $rulesToProcess[] = Array('store' => $sub->postSecurityRules, 'rules' => $sub->postSecurityRules->rules());
+                    $rulesToProcess[] = Array('store' => $sub->securityRules, 'rules' => $sub->securityRules->rules());
                 }
                 if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
                 {
-                    $rulesToProcess[] = Array('store' => $sub->preNatRules, 'rules' => $sub->preNatRules->rules());
-                    $rulesToProcess[] = Array('store' => $sub->postNatRules, 'rules' => $sub->postNatRules->rules());
+                    $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->rules());
                 }
                 if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
                 {
-                    $rulesToProcess[] = Array('store' => $sub->preDecryptionRules, 'rules' => $sub->preDecryptionRules->rules());
-                    $rulesToProcess[] = Array('store' => $sub->postDecryptionRules, 'rules' => $sub->postDecryptionRules->rules());
+                    $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
                 }
                 $locationFound = true;
             }

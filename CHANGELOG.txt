@@ -1,12 +1,17 @@
 CHANGELOG
 
+
+1.5.0-beta1
+* moved preRules and postRules into one single store (see getPreRules and getPostRules)
+
+---------
+
 1.2.6
 * introduction of new 'utils' upload-config.php script that allows you send a config to a device or save a config from a device or bridge a config from a device to another.
 * introduction of Exception support for programs that don't want to quit when an error occurs. use PH::enableExceptionSupport() any time for that
 * IOMethods now support optional filename : out=api://192.168.50.10/stage2.xml
 * new filter for rule-edit utility: rule is.disabled
 * elementToPanXPath() helper to print xpath the way PANOS uses it
-
 
 1.2.4
 * introduction of address-edit.php and service-edit.php on same basis than rules-edit.php for objects manipulations

@@ -97,17 +97,14 @@ class VirtualSystem
 		$this->addressStore = new AddressStore($this,true);
 		$this->addressStore->name = 'addresses';
 		
-		$this->natRules = new RuleStore($this);
-		$this->natRules->name = 'NAT';
-		$this->natRules->setStoreRole(true,"NatRule");
-		
-		$this->securityRules = new RuleStore($this);
+		$this->securityRules = new RuleStore($this, 'SecurityRule');
 		$this->securityRules->name = 'Security';
-		$this->securityRules->setStoreRole(true,"SecurityRule");
 
-        $this->decryptionRules = new RuleStore($this);
+		$this->natRules = new RuleStore($this, 'NatRule');
+		$this->natRules->name = 'NAT';
+
+        $this->decryptionRules = new RuleStore($this, 'DecryptionRule');
         $this->decryptionRules->name = 'Decryption';
-        $this->decryptionRules->setStoreRole(true,"DecryptionRule");
 		
 	}
 

@@ -35,21 +35,11 @@ print "\n***********************************************\n\n";
 
 
 // Going after each pre-Security rules to add a profile
-foreach( $dg->preSecurityRules->rules() as $rule )
+foreach( $dg->securityRules->rules() as $rule )
 {
     print "Rule '".$rule->name()."' modified\n";
     $rule->setSecurityProfileGroup($targetProfile);
 }
-
-// Going after each post-Security rules to add a profile
-foreach( $dg->postSecurityRules->rules() as $rule )
-{
-	print "Rule '".$rule->name()."' modified\n";
-	$rule->setSecurityProfileGroup($targetProfile);
-}
-
-
-
 
 
 print "\n***********************************************\n";

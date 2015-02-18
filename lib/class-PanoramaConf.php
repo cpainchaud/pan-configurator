@@ -235,28 +235,22 @@ class PanoramaConf
 
 		$tmp = DH::findFirstElementOrCreate('security', $prerulebase);
 		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$this->preSecurityRules->load_from_domxml($tmp);
-
-		$tmp = DH::findFirstElementOrCreate('security', $postrulebase);
-		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$this->postSecurityRules->load_from_domxml($tmp);
+		$tmpPost = DH::findFirstElementOrCreate('security', $postrulebase);
+		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+		$this->securityRules->load_from_domxml($tmp, $tmpPost);
 
 		$tmp = DH::findFirstElementOrCreate('nat', $prerulebase);
 		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$this->preNatRules->load_from_domxml($tmp);
-
-		$tmp = DH::findFirstElementOrCreate('nat', $postrulebase);
-		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$this->postNatRules->load_from_domxml($tmp);
+		$tmpPost = DH::findFirstElementOrCreate('nat', $postrulebase);
+		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+		$this->natRules->load_from_domxml($tmp, $tmpPost);
 
 
         $tmp = DH::findFirstElementOrCreate('decryption', $prerulebase);
         $tmp = DH::findFirstElementOrCreate('rules', $tmp);
-        $this->preDecryptionRules->load_from_domxml($tmp);
-
-        $tmp = DH::findFirstElementOrCreate('nat', $postrulebase);
-        $tmp = DH::findFirstElementOrCreate('rules', $tmp);
-        $this->postDecryptionRules->load_from_domxml($tmp);
+        $tmpPost = DH::findFirstElementOrCreate('nat', $postrulebase);
+        $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+        $this->decryptionRules->load_from_domxml($tmp, $tmpPost);
 
 
 		// Now listing and extracting all DV configurations
@@ -317,13 +311,13 @@ class PanoramaConf
 	public function display_statistics()
 	{
 
-		$gpreSecRules = $this->preSecurityRules->count();
-		$gpreNatRules = $this->preNatRules->count();
-        $gpreDecryptRules = $this->preDecryptionRules->count();
+		$gpreSecRules = $this->securityRules->countPreRules();
+		$gpreNatRules = $this->natRules->countPreRules();
+        $gpreDecryptRules = $this->decryptionRules->countPreRules();
 
-		$gpostSecRules = $this->postSecurityRules->count();
-		$gpostNatRules = $this->postNatRules->count();
-        $gpostDecryptRules = $this->postDecryptionRules->count();
+		$gpostSecRules = $this->securityRules->countPostRules();
+		$gpostNatRules = $this->natRules->countPostRules();
+        $gpostDecryptRules = $this->decryptionRules->countPostRules();
 
 		$gnservices = $this->serviceStore->countServices();
 		$gnservicesUnused = $this->serviceStore->countUnusedServices();
@@ -339,36 +333,36 @@ class PanoramaConf
 
 		foreach( $this->deviceGroups as $cur)
 		{
-			$gpreSecRules += $cur->preSecurityRules->count();
-			$gpreNatRules += $cur->preNatRules->count();
-            $gpreDecryptRules += $cur->preDecryptionRules->count();
+			$gpreSecRules += $cur->securityRules->countPreRules();
+			$gpreNatRules += $cur->natRules->countPreRules();
+            $gpreDecryptRules += $cur->decryptionRules->countPreRules();
 
-			$gpostSecRules += $cur->postSecurityRules->count();
-			$gpostNatRules += $cur->postNatRules->count();
-            $gpostDecryptRules += $cur->postDecryptionRules->count();
+			$gpostSecRules += $cur->securityRules->countPostRules();
+			$gpostNatRules += $cur->natRules->countPostRules();
+            $gpostDecryptRules += $cur->decryptionRules->countPostRules();
 
-			$gnservices += $vsys->serviceStore->countServices();
-			$gnservicesUnused += $vsys->serviceStore->countUnusedServices();
-			$gnserviceGs += $vsys->serviceStore->countServiceGroups();
-			$gnserviceGsUnused += $vsys->serviceStore->countUnusedServiceGroups();
-			$gnTmpServices += $vsys->serviceStore->countTmpServices();
+			$gnservices += $cur->serviceStore->countServices();
+			$gnservicesUnused += $cur->serviceStore->countUnusedServices();
+			$gnserviceGs += $cur->serviceStore->countServiceGroups();
+			$gnserviceGsUnused += $cur->serviceStore->countUnusedServiceGroups();
+			$gnTmpServices += $cur->serviceStore->countTmpServices();
 
-			$gnaddresss += $vsys->addressStore->countAddresses();
-			$gnaddresssUnused += $vsys->addressStore->countUnusedAddresses();
-			$gnaddressGs += $vsys->addressStore->countAddressGroups();
-			$gnaddressGsUnused += $vsys->addressStore->countUnusedAddressGroups();
-			$gnTmpAddresses += $vsys->addressStore->countTmpAddresses();
+			$gnaddresss += $cur->addressStore->countAddresses();
+			$gnaddresssUnused += $cur->addressStore->countUnusedAddresses();
+			$gnaddressGs += $cur->addressStore->countAddressGroups();
+			$gnaddressGsUnused += $cur->addressStore->countUnusedAddressGroups();
+			$gnTmpAddresses += $cur->addressStore->countTmpAddresses();
 		}
 		
 		print "Statistics for PanoramaConf '".$this->name."'\n";
-		print "- ".$this->preSecurityRules->count()." (".$gpreSecRules.") pre-SecRules\n";
-		print "- ".$this->postSecurityRules->count()." (".$gpostSecRules.") post-SecRules\n";
+		print "- ".$this->securityRules->countPreRules()." (".$gpreSecRules.") pre-SecRules\n";
+		print "- ".$this->securityRules->countPostRules()." (".$gpostSecRules.") post-SecRules\n";
 
-		print "- ".$this->preNatRules->count()." (".$gpreNatRules.") pre-NatRules\n";
-		print "- ".$this->postNatRules->count()." (".$gpostNatRules.") post-NatRules\n";
+		print "- ".$this->natRules->countPreRules()." (".$gpreNatRules.") pre-NatRules\n";
+		print "- ".$this->natRules->countPostRules()." (".$gpostNatRules.") post-NatRules\n";
 
-        print "- ".$this->preDecryptionRules->count()." (".$gpreDecryptRules.") pre-NatRules\n";
-        print "- ".$this->postDecryptionRules->count()." (".$gpostDecryptRules.") post-NatRules\n";
+        print "- ".$this->decryptionRules->countPreRules()." (".$gpreDecryptRules.") pre-NatRules\n";
+        print "- ".$this->decryptionRules->countPostRules()." (".$gpostDecryptRules.") post-NatRules\n";
 
 		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects. {$gnaddresssUnused} unused\n";
 

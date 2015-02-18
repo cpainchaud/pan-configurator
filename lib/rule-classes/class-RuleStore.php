@@ -206,7 +206,7 @@ class RuleStore
 		if( ! $this->addRule($rule) )
             return false;
 
-		$xpath = $this->getXPath();
+		$xpath = $this->getXPath($rule);
 		$con = findConnectorOrDie($this);
 
 		$con->sendSetRequest($xpath, array_to_xml($rule->xmlroot, -1, false) );
@@ -931,6 +931,22 @@ class RuleStore
 			return true;
 
 		return false;
+	}
+
+	public function countPreRules()
+	{
+		if(!$this->isPreOrPost )
+			derr('unsupported');
+
+		return count($this->rules);
+	}
+
+	public function countPostRules()
+	{
+		if(!$this->isPreOrPost )
+			derr('unsupported');
+
+		return count($this->postRules);
 	}
 
 
