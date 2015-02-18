@@ -204,7 +204,7 @@ class RuleStore
 		$xpath = $this->getXPath();
 		$con = findConnectorOrDie($this);
 
-		$con->sendSetRequest($xpath, array_to_xml($rule->xmlroot, -1, false) );
+		$con->sendSetRequest($xpath, DH::dom_to_xml($rule->xmlroot, -1, false) );
 
         return true;
 	}

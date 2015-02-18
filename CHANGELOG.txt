@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.2.7
+* bugfix : when using RuleStore->API_addRule() was not using DomXML
+
 1.2.6
 * introduction of new 'utils' upload-config.php script that allows you send a config to a device or save a config from a device or bridge a config from a device to another.
 * introduction of Exception support for programs that don't want to quit when an error occurs. use PH::enableExceptionSupport() any time for that
