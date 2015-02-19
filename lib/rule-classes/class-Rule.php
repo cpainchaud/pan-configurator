@@ -592,16 +592,17 @@ class Rule
 				$oldname = $this->name;
 				$this->name = $name;
 				$this->owner->ruleWasRenamed($this,$oldname);
-                if( PH::$UseDomXML === TRUE )
-                    $this->xmlroot->setAttribute('name', $name);
-				else
-                    $this->xmlroot['attributes']['name'] = $name;
 			}
 			else
 				return false;
 		}
 		
 		$this->name = $name;
+
+		if( PH::$UseDomXML === TRUE )
+			$this->xmlroot->setAttribute('name', $name);
+		else
+			$this->xmlroot['attributes']['name'] = $name;
 
 
 		return true;

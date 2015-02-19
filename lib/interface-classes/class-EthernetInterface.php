@@ -115,6 +115,7 @@ class EthernetInterface
             derr('unsupported ethernet interface type : not found');
         }
 
+        // looking for sub interfaces and stuff like that   :)
         foreach( $this->typeRoot->childNodes as $node )
         {
             if( $node->nodeType != 1 )

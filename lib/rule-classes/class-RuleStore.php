@@ -137,8 +137,13 @@ class RuleStore
 			$this->rules[] = $nr;
 		}
 
+		// print $count." prerules found\n";
+
 		if( $this->isPreOrPost )
 		{
+			if( $xmlPost === null )
+				derr('no <post-rulebase> xml root provided !');
+
 			$this->postRulesRoot = $xmlPost;
 			$count = 0;
 
@@ -152,6 +157,8 @@ class RuleStore
 				$nr->load_from_domxml($node);
 				$this->postRules[] = $nr;
 			}
+
+			//print $count." postrules found\n";
 		}
 
 		$this->regen_Indexes();
@@ -485,7 +492,6 @@ class RuleStore
 		$nr->load_from_domxml($xml);
 		$nr->owner = null;
 		$nr->setName($newName);
-		$nr->owner = $this;
 		$this->addRule($nr, $inPost);
 
 		return $nr;
@@ -878,7 +884,6 @@ class RuleStore
 	
 	protected function regen_Indexes()
 	{
-
 		$this->fastMemToIndex = Array();
 		$this->fastNameToIndex = Array();
 		
