@@ -141,7 +141,6 @@ $supportedActions['replacebymembersanddelete'] = Array(
                                 \$objectRef->add(\$objectMember);
                             }
                             \$objectRef->remove(\$object);
-                            \$object->owner->remove(\$object);
                         }
                         else
                         {
@@ -149,6 +148,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
                         }
 
                     }
+                    \$object->owner->remove(\$object);
                 }",
     'api' => "\$objectRefs = \$object->getReferences();
                 \$clearForAction = true;
@@ -174,14 +174,13 @@ $supportedActions['replacebymembersanddelete'] = Array(
                                 \$objectRef->API_add(\$objectMember);
                             }
                             \$objectRef->API_remove(\$object);
-                            \$object->owner->API_remove(\$object);
                         }
                         else
                         {
                             derr('unsupported class');
                         }
-
                     }
+                    \$object->owner->API_remove(\$object);
                 }",
     'args' => false,
 );
