@@ -644,11 +644,11 @@ RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = Array(
     'arg' => false
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.group'] = Array(
-    'eval' => '$object->isGroup() == 0',
+    'eval' => '$object->isGroup() == true',
     'arg' => false
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
-    'eval' => '$object->isTmpAddr() == 0',
+    'eval' => '$object->isTmpAddr() == true',
     'arg' => false
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
@@ -680,11 +680,11 @@ RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
     'arg' => false
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.group'] = Array(
-    'eval' => '$object->isGroup() == 0',
+    'eval' => '$object->isGroup() == true',
     'arg' => false
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.tmp'] = Array(
-    'eval' => '$object->isTmpSrv() == 0',
+    'eval' => '$object->isTmpSrv() == true',
     'arg' => false
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(
