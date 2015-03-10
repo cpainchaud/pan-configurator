@@ -115,6 +115,77 @@ $supportedActions['deleteforce'] = Array(
     'args' => false,
 );
 
+$supportedActions['replacebymembersanddelete'] = Array(
+    'name' => 'replaceByMembersAndDelete',
+    'file' => "\$objectRefs = \$object->getReferences();
+                \$clearForAction = true;
+                foreach( \$objectRefs as \$objectRef )
+                {
+                    \$class = get_class(\$objectRef);
+                    if( \$class != 'ServiceRuleContainer' && \$class != 'ServiceGroup' )
+                    {
+                        \$clearForAction = false;
+                        print \"     *  skipped because its used in unsupported class \$class\\n\";
+                        break;
+                    }
+                }
+                if( \$clearForAction )
+                {
+                    foreach( \$objectRefs as \$objectRef )
+                    {
+                        \$class = get_class(\$objectRef);
+                        if( \$class == 'ServiceRuleContainer' || \$class == 'ServiceGroup')
+                        {
+                            foreach( \$object->members() as \$objectMember )
+                            {
+                                \$objectRef->add(\$objectMember);
+                            }
+                            \$objectRef->remove(\$object);
+                            \$object->owner->remove(\$object);
+                        }
+                        else
+                        {
+                            derr('unsupported class');
+                        }
+
+                    }
+                }",
+    'api' => "\$objectRefs = \$object->getReferences();
+                \$clearForAction = true;
+                foreach( \$objectRefs as \$objectRef )
+                {
+                    \$class = get_class(\$objectRef);
+                    if( \$class != 'ServiceRuleContainer' && \$class != 'ServiceGroup' )
+                    {
+                        \$clearForAction = false;
+                        print \"     *  skipped because its used in unsupported class \$class\\n\";
+                        break;
+                    }
+                }
+                if( \$clearForAction )
+                {
+                    foreach( \$objectRefs as \$objectRef )
+                    {
+                        \$class = get_class(\$objectRef);
+                        if( \$class == 'ServiceRuleContainer' || \$class == 'ServiceGroup')
+                        {
+                            foreach( \$object->members() as \$objectMember )
+                            {
+                                \$objectRef->API_add(\$objectMember);
+                            }
+                            \$objectRef->API_remove(\$object);
+                            \$object->owner->API_remove(\$object);
+                        }
+                        else
+                        {
+                            derr('unsupported class');
+                        }
+
+                    }
+                }",
+    'args' => false,
+);
+
 
 $supportedActions['displayreferences'] = Array(
     'name' => 'displayReferences',
