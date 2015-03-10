@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.2.8
+* bugfix : when using filter  'is.group' in service-edit.php and address-edit.php utils
+
 1.2.7
 * bugfix : when using RuleStore->API_addRule() was not using DomXML
 
