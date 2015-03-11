@@ -894,67 +894,72 @@ class cidr
 
     static public function netMatch( $sub, $ref)
     {
-    	// return 0 if not match, 1 if $sub is included in $ref, 2 if $sub is partially matched by $ref.
-    	$ex = explode('/', $sub);
-    	if( count($ex) > 1 && $ex[1] != '32')
-    	{
-    		//$netmask = cidr::cidr2netmask($ex[0]);
-    		$bmask = 0;
-    		for($i=1; $i<= (32-$ex[1]); $i++)
-    			$bmask += pow(2, $i-1);
+        // return 0 if not match, 1 if $sub is included in $ref, 2 if $sub is partially matched by $ref.
+        $ex = explode('/', $sub);
+        if( count($ex) > 1 && $ex[1] != '32')
+        {
+            //$netmask = cidr::cidr2netmask($ex[0]);
+            $bmask = 0;
+            for($i=1; $i<= (32-$ex[1]); $i++)
+                $bmask += pow(2, $i-1);
 
-    		$subNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
-    		$subBroadcast = ip2long($ex[0]) | $bmask;
-    	}
-    	else
-    	{
-    		$subNetwork = ip2long($sub);
-    		$subBroadcast = ip2long($sub);
-    	}
+            $subNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
+            $subBroadcast = ip2long($ex[0]) | $bmask;
+        }
+        elseif( count($ex) > 1 && $ex[1] == '32' )
+        {
+            $subNetwork = ip2long($ex[0]);
+            $subBroadcast = $subNetwork;
+        }
+        else
+        {
+            $subNetwork = ip2long($sub);
+            $subBroadcast = ip2long($sub);
+        }
 
-    	unset($ex);
-    	$ex = explode('/', $ref);
-    	if( count($ex) > 1 && $ex[1] != '32')
-    	{
-    		//$netmask = cidr::cidr2netmask($ex[0]);
-    		$bmask = 0;
-    		for($i=1; $i<= (32-$ex[1]); $i++)
-    			$bmask += pow(2, $i-1);
+        unset($ex);
+        $ex = explode('/', $ref);
+        if( count($ex) > 1 && $ex[1] != '32')
+        {
+            //$netmask = cidr::cidr2netmask($ex[0]);
+            $bmask = 0;
+            for($i=1; $i<= (32-$ex[1]); $i++)
+                $bmask += pow(2, $i-1);
 
-    		$refNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
-    		$refBroadcast = ip2long($ex[0]) | $bmask;
-    	}
-    	elseif( $ex[1] == '32' )
-	    {
-			$subNetwork = ip2long($ex[0]);
-	    	$subBroadcast = $subNetwork;
-	    }
-    	else
-    	{
-    		$refNetwork = ip2long($ref);
-    		$refBroadcast = $subNetwork;
-    	}
+            $refNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
+            $refBroadcast = ip2long($ex[0]) | $bmask;
+        }
+        elseif( count($ex) > 1 && $ex[1] == '32' )
+        {
+            $refNetwork = ip2long($ex[0]);
+            $refBroadcast = $refNetwork;
+        }
+        else
+        {
+            $refNetwork = ip2long($ref);
+            $refBroadcast = $refNetwork;
+        }
 
-    	//$refNetwork = ;
-    	//$refBroadcast = 
+        //$refNetwork = ;
+        //$refBroadcast =
 
 
-    	if( $subNetwork >= $refNetwork && $subBroadcast <= $refBroadcast )
-    	{
-    		print "sub $sub is included in $ref\n";
-    		return 1;
-    	}
-    	if( $subNetwork >= $refNetwork &&  $subNetwork <= $refBroadcast || 
-    		$subBroadcast >= $refNetwork && $subBroadcast <= $refBroadcast ||
-    		$subNetwork <= $refNetwork && $subBroadcast >= $refBroadcast )
-    	{
-    		print "sub $sub is partially included in $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
-    		print "sub $sub is partially included in $ref :  ".$refNetwork."/".$subBroadcast."/".$refBroadcast."\n";
-    		return 2;
-    	}
+        if( $subNetwork >= $refNetwork && $subBroadcast <= $refBroadcast )
+        {
+            print "sub $sub is included in $ref\n";
+            return 1;
+        }
+        if( $subNetwork >= $refNetwork &&  $subNetwork <= $refBroadcast ||
+            $subBroadcast >= $refNetwork && $subBroadcast <= $refBroadcast ||
+            $subNetwork <= $refNetwork && $subBroadcast >= $refBroadcast )
+        {
+            print "sub $sub is partially included in $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
+            print "sub $sub is partially included in $ref :  ".$refNetwork."/".$subBroadcast."/".$refBroadcast."\n";
+            return 2;
+        }
 
-    	print "sub $sub is not matching $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
-    	return 0;
+        print "sub $sub is not matching $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
+        return 0;
     }
 
 
