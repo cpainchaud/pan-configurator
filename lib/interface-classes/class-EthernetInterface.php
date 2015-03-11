@@ -68,7 +68,7 @@ class EthernetInterface
     private $tag;
 
 
-    static public $supportedTypes = Array( 'layer3', 'layer2', 'vwire', 'tap', 'ha' );
+    static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha' );
 
     /**
      * @param string $name
