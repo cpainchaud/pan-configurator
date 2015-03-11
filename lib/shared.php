@@ -932,7 +932,7 @@ class cidr
         elseif( count($ex) > 1 && $ex[1] == '32' )
         {
             $refNetwork = ip2long($ex[0]);
-            $refBroadcast = $subNetwork;
+            $refBroadcast = $refNetwork;
         }
     	else
     	{
