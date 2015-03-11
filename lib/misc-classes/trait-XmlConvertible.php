@@ -23,7 +23,7 @@ trait XmlConvertible
 	{
 		if( PH::$UseDomXML === TRUE )
 		{
-			return dom_to_xml($this->xmlroot, -1, false);
+			return DH::dom_to_xml($this->xmlroot, -1, false);
 		}
 
 		return array_to_xml($this->xmlroot, -1, false);
@@ -34,8 +34,8 @@ trait XmlConvertible
 		if( PH::$UseDomXML === TRUE )
 		{
 			if( $indenting )
-				return dom_to_xml($this->xmlroot, 0, true);
-			return dom_to_xml($this->xmlroot, -1, true);
+				return DH::dom_to_xml($this->xmlroot, 0, true);
+			return DH::dom_to_xml($this->xmlroot, -1, true);
 		}
 
 		if( $indenting )
