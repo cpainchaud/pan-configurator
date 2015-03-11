@@ -906,6 +906,11 @@ class cidr
     		$subNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
     		$subBroadcast = ip2long($ex[0]) | $bmask;
     	}
+        elseif( count($ex) > 1 && $ex[1] == '32' )
+        {
+            $subNetwork = ip2long($ex[0]);
+            $subBroadcast = $subNetwork;
+        }
     	else
     	{
     		$subNetwork = ip2long($sub);
@@ -924,15 +929,15 @@ class cidr
     		$refNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
     		$refBroadcast = ip2long($ex[0]) | $bmask;
     	}
-    	elseif( $ex[1] == '32' )
-	    {
-			$subNetwork = ip2long($ex[0]);
-	    	$subBroadcast = $subNetwork;
-	    }
+        elseif( count($ex) > 1 && $ex[1] == '32' )
+        {
+            $refNetwork = ip2long($ex[0]);
+            $refBroadcast = $subNetwork;
+        }
     	else
     	{
     		$refNetwork = ip2long($ref);
-    		$refBroadcast = $subNetwork;
+    		$refBroadcast = $refNetwork;
     	}
 
     	//$refNetwork = ;
