@@ -21,15 +21,15 @@ trait XmlConvertible
 
 	function &getXmlText_inline()
 	{
-		return dom_to_xml($this->xmlroot, -1, false);
+		return DH::dom_to_xml($this->xmlroot, -1, false);
 	}
 
 	function &getXmlText( $indenting = true)
 	{
 
 		if( $indenting )
-			return dom_to_xml($this->xmlroot, 0, true);
-		return dom_to_xml($this->xmlroot, -1, true);
+			return DH::dom_to_xml($this->xmlroot, 0, true);
+		return DH::dom_to_xml($this->xmlroot, -1, true);
 	}
 
 }
