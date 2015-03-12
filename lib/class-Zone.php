@@ -35,13 +35,38 @@ class Zone
      */
     public $xmlroot = null;
 
+
+    const TypeTmp = 0;
+    const TypeLayer3 = 1;
+
+    static private $ZoneTypes = Array(self::TypeTmp => 'tmp',
+        self::TypeLayer3 => 'layer3',
+         );
+
+
     /**
      * @param string $name
      * @param ZoneStore|null $owner
      */
- 	public function Zone($name, $owner)
+ 	public function Zone($name, $owner, $fromXmlTemplate = false)
  	{
  		$this->owner = $owner;
+
+
+        if( $fromXmlTemplate )
+        {
+            $doc = new DOMDocument();
+            $doc->loadXML(self::$templatexml);
+
+            $node = DH::findFirstElementOrDie('entry',$doc);
+
+            $rootDoc = $this->owner->xmlroot->ownerDocument;
+            $this->xmlroot = $rootDoc->importNode($node, true);
+            $this->load_from_domxml($this->xmlroot);
+
+            $this->setName($name);
+        }
+
 		$this->name = $name;
  	}
 
@@ -110,7 +135,9 @@ class Zone
 
         return $str;
     }
- 	
+
+
+    static protected $templatexml = '<entry name="**temporarynamechangeme**"><network><layer3></layer3></network></entry>';
 	
 }
 

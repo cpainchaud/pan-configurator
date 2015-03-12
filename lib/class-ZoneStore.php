@@ -25,7 +25,6 @@
  */
 class ZoneStore extends ObjStore
 {
-	public $xmlroot=null;
 	
 	public $parentCentralStore = null;
 	
@@ -83,13 +82,13 @@ class ZoneStore extends ObjStore
 	*
 	* @return bool  True if Zone was found and removed. False if not found.
 	*/
-	public function removeZone( Zone $Obj, $rewriteXML = true )
+	public function removeZone( Zone $zone, $rewriteXML = true )
 	{
-		$ret = $this->remove($Obj);
+		$ret = $this->remove($zone);
 
-		if( $ret && $rewriteXML )
+		if( $ret && $rewriteXML && !$zone->isTmp() && $this->xmlroot !== null )
 		{
-			$this->rewriteXML();
+			$this->xmlroot->removeChild($zone->xmlroot);
 		}
 
 		return $ret;			
@@ -168,6 +167,21 @@ class ZoneStore extends ObjStore
         $xpath = $this->owner->getXPath()."/zone/";
 
         return $xpath;
+
+    }
+
+
+    public function newZone($name , $type)
+    {
+        $found = $this->find($name,null, true);
+        if( $found )
+            derr("cannot create Zone named '".$name."' as this name is already in use");
+
+        $ns = new Zone($name,$this, true);
+
+        $this->addZone($ns);
+
+        return $ns;
 
     }
 
