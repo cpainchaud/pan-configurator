@@ -347,5 +347,79 @@ class DH
 		return $xpath;
 	}
 
+
+    /**
+     * @param string $xpathString
+     * @param DOMDocument|DOMNode $contextNode
+     * @return DOMNode
+     */
+    static public function findXPathSingleEntryOrDie( $xpathString, $contextNode )
+    {
+        if( $contextNode->nodeType ==  XML_DOCUMENT_NODE )
+        {
+            $xpath = new DOMXpath($contextNode);
+            $nodes = $xpath->query($xpathString);
+        }
+        else
+        {
+            $xpathString = '.'.$xpathString;
+            $xpath = new DOMXpath($contextNode->ownerDocument);
+            $nodes = $xpath->query($xpathString, $contextNode);
+        }
+
+        if( $nodes === FALSE )
+            derr("XPath query evaluation error for '{$xpathString}'");
+
+        if( $nodes->length == 0 )
+            derr("no matching node found for xpath '{$xpathString}'");
+
+        if( $nodes->length > 1 )
+            derr("more than 1 matching node found for xpath '{$xpathString}'");
+
+        return $nodes->item(0);
+
+    }
+
+
+    /**
+     * @param DOMElement $source
+     * @param DOMElement $target
+     * @return int
+     * @throws Exception
+     */
+    static public function moveChildElementsToNewParentNode( DOMElement $source, DOMElement $target)
+    {
+        $sourceOwner = $source->ownerDocument;
+        $targetOwner = $target->ownerDocument;
+
+        if( ! $sourceOwner->isSameNode($targetOwner) )
+            derr('source and target must be part of same XML Document');
+
+        if( $source->nodeType != XML_ELEMENT_NODE )
+            derr('source is not an Element type node');
+
+        if( $target->nodeType != XML_ELEMENT_NODE )
+            derr('target is not an Element type node');
+
+        $toMove = Array();
+
+        foreach( $source->childNodes as $child )
+        {
+            if( $child->nodeType != XML_ELEMENT_NODE )
+                continue;
+            $toMove[] = $child;
+        }
+
+        foreach( $toMove as $child )
+        {
+            $target->appendChild($child);
+        }
+
+        return count($toMove);
+
+    }
+
+
+
 }
 
