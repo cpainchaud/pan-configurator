@@ -1,5 +1,11 @@
 CHANGELOG
 
+1.2.10
+* bugfix : back porting fix for DOMXml and rewriteXML
+* bugfix : adding aggregate-group and virtual-wire type support
+* bugfix : fixed namespace issue in XmlConvertible
+* bugfix : fix cidr::netMatch function
+
 1.2.8
 * bugfix : when using filter  'is.group' in service-edit.php and address-edit.php utils
 
