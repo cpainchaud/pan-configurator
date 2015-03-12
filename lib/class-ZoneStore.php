@@ -62,14 +62,15 @@ class ZoneStore extends ObjStore
 	* @param bool
 	* @return bool
 	*/
-	public function addZone( Zone $Obj, $rewriteXML = true )
+	public function addZone( Zone $zone, $rewriteXML = true )
 	{
 		$fasthashcomp=null;
 
-		$ret = $this->add($Obj);
-		if( $ret && $rewriteXML )
+		$ret = $this->add($zone);
+
+		if( $ret && $rewriteXML && !$zone->isTmp() && $this->xmlroot !== null )
 		{
-			$this->rewriteXML();
+			$this->xmlroot->appendChild($zone->xmlroot);
 		}
 		return $ret;			
 	}
@@ -119,11 +120,11 @@ class ZoneStore extends ObjStore
 	{
 		if( $this->xmlroot !== null )
         {
-            $this->xmlroot['children'] = Array();
+            DH::clearDomNodeChilds($this->xmlroot);
             foreach( $this->o as $zone )
             {
                 if( ! $zone->isTmp() )
-                    $this->xmlroot['children'][] = &$zone->xmlroot;
+                    $this->xmlroot->appendChild($zone->xmlroot);
             }
         }
 

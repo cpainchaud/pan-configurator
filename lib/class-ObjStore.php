@@ -255,22 +255,10 @@ class ObjStore
 	{
         if( $this->xmlroot !== null )
         {
-            if( !PH::$UseDomXML )
+            DH::clearDomNodeChilds($this->xmlroot);
+            foreach($this->o as $o)
             {
-                $this->xmlroot['children'] = Array();
-
-                foreach ($this->o as $o)
-                {
-                    $this->xmlroot['children'][] = &$o->xmlroot;
-                }
-            }
-            else
-            {
-                DH::clearDomNodeChilds($this->xmlroot);
-                foreach($this->o as $o)
-                {
-                    $this->xmlroot->appendChild($o->xmlroot);
-                }
+                $this->xmlroot->appendChild($o->xmlroot);
             }
         }
 	}
