@@ -117,16 +117,15 @@ class ZoneStore extends ObjStore
 	
 	public function rewriteXML()
 	{
-		if( $this->xmlroot !== null )
+        if( $this->xmlroot !== null )
         {
-            $this->xmlroot['children'] = Array();
+            DH::clearDomNodeChilds($this->xmlroot);
             foreach( $this->o as $zone )
             {
                 if( ! $zone->isTmp() )
-                    $this->xmlroot['children'][] = &$zone->xmlroot;
+                    $this->xmlroot->appendChild($zone->xmlroot);
             }
         }
-
 	}
 
 	/**
