@@ -736,7 +736,7 @@ class ServiceStore
 	}
 	
 	
-	public function hostChanged($h,$oldname)
+	public function referencedObjectRenamed($h,$oldname)
 	{
 
 		if( ! $this->inStore($h) )

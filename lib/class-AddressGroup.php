@@ -205,7 +205,7 @@ class AddressGroup
 	* ** This is for internal use only **
 	*
 	*/
-	public function hostChanged($h)
+	public function referencedObjectRenamed($h)
 	{
 
 		if( in_array($h,$this->members, TRUE) )

@@ -49,12 +49,12 @@ trait ReferencableObject
 		
 		foreach( $this->refrules as $ref )
 		{
-			$ref->hostChanged($this,$oldname);
+			$ref->referencedObjectRenamed($this,$oldname);
 		}
 		
 		if( $this->owner !== null )
 		{
-			$this->owner->hostChanged($this,$oldname);
+			$this->owner->referencedObjectRenamed($this,$oldname);
 		}
 	}
 	

@@ -880,7 +880,7 @@ class AddressStore
 	}
 
 
-	public function hostChanged($h, &$oldName)
+	public function referencedObjectRenamed($h, &$oldName)
 	{
 		if( ! $this->inStore($h) )
 			return false;

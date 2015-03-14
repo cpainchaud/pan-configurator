@@ -478,7 +478,7 @@ class NatRule extends Rule
 	}
 
 	
-	public function hostChanged($h)
+	public function referencedObjectRenamed($h)
 	{
 
 		

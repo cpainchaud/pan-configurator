@@ -237,9 +237,9 @@ class ServiceGroup
 	*
 	*
 	*/
-	public function hostChanged($h)
+	public function referencedObjectRenamed($h)
 	{
-		//derr("****  SG hostChanged was called  ****\n");
+		//derr("****  SG referencedObjectRenamed was called  ****\n");
 		if( in_array($h, $this->members) )
 			$this->rewriteXML();
 	}
