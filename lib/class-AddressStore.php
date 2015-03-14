@@ -515,11 +515,9 @@ class AddressStore
 			else
 				derr('this class is not supported: '.$class);
 
-			// TODO DOM XML compliant
-			$con->sendDeleteRequest($xpath, array_to_xml($s->xmlroot, -1, false) );
+			$con->sendSetRequest($xpath, DH::dom_to_xml($s->xmlroot, -1, false) );
 
 		}
-
 
 		return $ret;
 	}

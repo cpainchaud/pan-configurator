@@ -278,8 +278,7 @@ class Address
 		$c = findConnectorOrDie($this);
 		$xpath = $this->getXPath();
 
-        // TODO fix for domXML
-		$c->sendSetRequest($xpath,  array_to_xml($this->xmlroot,-1,false) );
+		$c->sendSetRequest($xpath,  DH::dom_to_xml($this->xmlroot,-1,false) );
 
 		$this->setType($newType);
 
@@ -298,8 +297,7 @@ class Address
 		$c = findConnectorOrDie($this);
 		$xpath = $this->getXPath();
 
-        // TODO fix for domXML
-		$c->sendSetRequest($xpath,  array_to_xml($this->xmlroot,-1,false) );
+		$c->sendSetRequest($xpath,  DH::dom_to_xml($this->xmlroot,-1,false) );
 
 		$this->setValue($newValue);
 

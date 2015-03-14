@@ -334,14 +334,14 @@ class PANConf
 
 	/**
 	* send current config to the firewall and save under name $config_name
-	* TODO : replace by PANAPI Connector
+	*
 	*/
 	public function API_uploadConfig( $config_name = 'panconfigurator-default.xml' )
 	{
 
 		print "Uploadig config to device....";
 
-		$url = "&type=import&category=configuration&category=configuration";
+		$url = "&type=import&category=configuration";
 
 		$answer = &$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
 
