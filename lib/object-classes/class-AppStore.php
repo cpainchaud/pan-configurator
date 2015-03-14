@@ -381,7 +381,6 @@ class AppStore extends ObjStore
 
 	public function load_from_predefinedfile( $filename = null )
 	{
-
 		if( is_null($filename) )
 		{
 			$filename = dirname(__FILE__).'/../../sample-configs/predefined.xml';
@@ -405,8 +404,6 @@ class AppStore extends ObjStore
 		// fixing someone mess ;)
 		$app = $this->findOrCreate('ftp');
 		$app->tcp[] = Array( 0 => 'dynamic');
-
-
 	}
 	
 	
