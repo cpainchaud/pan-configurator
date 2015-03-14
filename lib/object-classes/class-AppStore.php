@@ -384,7 +384,7 @@ class AppStore extends ObjStore
 
 		if( is_null($filename) )
 		{
-			$filename = dirname(__FILE__).'/../sample-configs/predefined.xml';
+			$filename = dirname(__FILE__).'/../../sample-configs/predefined.xml';
 		}
 		$content = file_get_contents($filename);
 		$xmlobj = new XmlArray();
