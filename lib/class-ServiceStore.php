@@ -68,40 +68,6 @@ class ServiceStore
 		$this->regen_Indexes();
 		
 	}
-	
-	
-	
-	/**
-	*
-	*
-	*/
-	public function load_services_from_xml(&$xml)
-	{
-		$this->fasthashcomp = null;
-
-        if( !isset($this->version) )
-        {
-            if( !isset($this->owner->version) || $this->owner->version === null  )
-                derr('cannot find PANOS version from parent object');
-
-            $this->version = $this->owner->version;
-        }
-		
-		$this->servroot = &$xml;
-		
-		foreach( $xml['children'] as &$cur)
-		{
-			$ns = new Service('',$this);
-			$ns->load_from_xml($cur);
-			//print $this->toString()." : new service '".$ns->name."' created\n";
-			$this->serv[] = $ns;
-			$this->all[] = $ns;
-			$this->add_Obj_inIndex( $ns,lastIndex($this->all));
-			
-		}
-		
-		$this->regen_Indexes();
-	}
 
 
 	/**
@@ -170,46 +136,6 @@ class ServiceStore
 	public function serviceTmpObjects()
 	{
 		return $this->tmpserv;
-	}
-	
-	
-	public function load_servicegroups_from_xml(&$xml)
-	{
-		
-		$this->fasthashcomp = null;
-
-        if( !isset($this->version) )
-        {
-            if( !isset($this->owner->version) || $this->owner->version === null  )
-                derr('cannot find PANOS version from parent object');
-
-            $this->version = $this->owner->version;
-        }
-		
-		$this->servgroot = &$xml;
-		
-		$cur = &$xml['children'];
-		
-		$c = count($cur);
-		$k = array_keys($cur);
-		
-		for( $i=0; $i<$c; $i++ )
-		{
-			$ns = new ServiceGroup('',$this);
-			$ns->load_from_xml($cur[$k[$i]]);
-			
-			$f = $this->findTmpService($ns->name(), null,false);
-			if( $f )
-			{
-				$f->replaceMeGlobally($ns);
-				
-			}
-			$this->servg[] = $ns;
-			$this->all[] = $ns; 
-			$this->add_Obj_inIndex($ns,lastIndex($this->all));
-		}
-		
-		$this->regen_Indexes();
 	}
 
 

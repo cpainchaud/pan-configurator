@@ -44,50 +44,6 @@ class ServiceGroup
 		$this->owner = $owner;
 		$this->name = $name;
 	}
-	 
-	public function load_from_xml(&$xml)
-	{
-		$this->xmlroot = &$xml;
-		$this->name = $xml['attributes']['name'];
-		if( is_null($this->name) )
-			derr("service group name not found\n");
-
-        if( $this->owner->owner->version >= 60 )
-        {
-            if( !isset($this->xmlroot['children']) )
-                $this->xmlroot['children'] = Array();
-
-            $this->membersRoot = &searchForName('name', 'members', $this->xmlroot['children']);
-
-            if( $this->membersRoot === null )
-            {
-                $this->membersRoot = Array( 'name' => 'members' , 'children' => Array() );
-                $this->xmlroot['children'][] = &$this->membersRoot;
-            }
-            if( !isset($membersRoot['children']) )
-            {
-                $this->membersRoot['children'] = Array();
-            }
-
-            $a = &$this->membersRoot['children'];
-        }
-		else
-		    $a = &$this->xmlroot['children'];
-
-		
-		foreach( $a as &$r )
-		{
-			//print "found member '".$a[$k[$i]]['content']."' in ServiceGroup '".$this->name."'\n";
-			//print $this->owner->toString()."\n";
-            //print_r($r);
-			$f = $this->owner->findOrCreate($r['content'], $this);
-			if( !$f )
-				derr($this->toString().' '.__FUNCTION__."() Error: unknown object named '".$r['content']."\n");
-			
-			$this->members[] = $f;
-		}
-	
-	}
 
 
 	/**
