@@ -32,15 +32,15 @@ trait ReferencableObject
 		
 	}
 	
-	public function refInRule($ref)
+	public function addReference($ref)
 	{
-		refInRule($this,$ref);
+		addReference($this,$ref);
 		$this->refcomphash = null;
 	}
 	
-	public function unrefInRule($ref)
+	public function removeReference($ref)
 	{
-		unrefInRule($this,$ref);
+		removeReference($this,$ref);
 		$this->refcomphash = null;
 	}
 	

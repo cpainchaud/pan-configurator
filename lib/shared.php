@@ -402,7 +402,7 @@ function reLinkObjs(&$arr, &$ref)
 	
 	for( $i=0; $i<$c; $i++ )
 	{
-		$arr[$k[$i]]->refInRule($ref);	
+		$arr[$k[$i]]->addReference($ref);
 	}
 }
 
@@ -410,7 +410,7 @@ function reLinkObjs(&$arr, &$ref)
 *
 * @ignore
 */
-function refInRule($o, $ref)
+function addReference($o, $ref)
 {
 	if( is_null($ref) )
 		return;
@@ -436,7 +436,7 @@ function refInRule($o, $ref)
 *
 * @ignore
 */
-function unrefInRule($o, $ref)
+function removeReference($o, $ref)
 {
 	if( is_null($ref) )
 		return;

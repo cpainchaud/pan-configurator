@@ -71,7 +71,7 @@ class ObjStore
 			if( $o->name() === $name )
 			{
 				if( $ref !== null )
-					$o->refInRule($ref);
+					$o->addReference($ref);
 				return $o;
 			}
 		
@@ -119,7 +119,7 @@ class ObjStore
 		$f = new $this->classn($name,$this);
 		$this->o[] = $f;
 		$f->type = 'tmp';
-		$f->refInRule($ref);
+		$f->addReference($ref);
 		
 		return $f;
 	}
@@ -196,7 +196,7 @@ class ObjStore
 			$this->o[] = $Obj;
 			if( !$this->centralStore )
 			{
-				$Obj->refInRule($this);
+				$Obj->addReference($this);
 			}
 			else
 			{
@@ -215,7 +215,7 @@ class ObjStore
 		foreach( $this->o as $o)
 		{
 			if( !$this->centralStore )
-				$o->unrefInRule($this);
+				$o->removeReference($this);
 			else
 				$o->owner = null;
 		}

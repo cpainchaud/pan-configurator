@@ -378,7 +378,7 @@ class AddressStore
 		{
 			if( isset($this->all[$lower]) )
 			{
-				$this->all[$lower]->refInRule($ref);
+				$this->all[$lower]->addReference($ref);
 				if( $type == 'tmp' )
 				{
 					if ( $this->all[$lower]->isTmpAddr() )
@@ -793,7 +793,7 @@ class AddressStore
 		//$f->type = 'tmp';
 
 		$this->add($f);
-		$f->refInRule($ref);
+		$f->addReference($ref);
 		
 		return $f;
 	}

@@ -20,7 +20,7 @@
 
 class Address
 {
-	use ReferencableObject {unrefInRule as super_unrefInRule;}
+	use ReferencableObject {removeReference as super_removeReference;}
 	use PathableName;
 	use XmlConvertible;
 
@@ -471,19 +471,18 @@ class Address
 		return $res;
 	}
 
-	public function unrefInRule($object)
+	public function removeReference($object)
 	{
-		$this->super_unrefInRule($object);
+		$this->super_removeReference($object);
 
 		if( $this->isTmpAddr() && $this->countReferences() == 0 && $this->owner !== null )
 		{
-			//$this->owner->remove($this);
+			$this->owner->remove($this);
 		}
 
 	}
 
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><ip-netmask>tempvaluechangeme</ip-netmask></entry>';
-    static protected $templatexmlroot = null;
 	
 }
 

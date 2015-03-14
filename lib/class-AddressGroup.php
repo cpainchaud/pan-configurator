@@ -231,7 +231,7 @@ class AddressGroup
 		if( ! in_array($newObject, $this->members, true) )
 		{
 			$this->members[] = $newObject;
-			$newObject->refInRule($this);
+			$newObject->addReference($this);
 			if( $rewriteXml )
 			{
 				if( $this->owner->owner->version >= 60 )
@@ -329,7 +329,7 @@ class AddressGroup
 			if( !is_null($new)  )
 			{
 				$this->members[$pos] = $new;
-				$new->refInRule($this);
+				$new->addReference($this);
 			}
 			else
 				unset($this->members[$pos]);

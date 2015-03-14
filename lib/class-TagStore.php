@@ -148,7 +148,7 @@ class TagStore extends ObjStore
         $newTag = new Tag($name, $this, true);
 
         if( $ref !== null )
-            $newTag->refInRule($ref);
+            $newTag->addReference($ref);
 
         $this->addTag($newTag);
 

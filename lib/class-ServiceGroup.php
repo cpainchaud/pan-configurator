@@ -119,7 +119,7 @@ class ServiceGroup
 		if( ! in_array($newObject, $this->members, true) )
 		{
 			$this->members[] = $newObject;
-			$newObject->refInRule($this);
+			$newObject->addReference($this);
 			if( $rewriteXml )
 			{
 				if( $this->owner->owner->version >= 60 )

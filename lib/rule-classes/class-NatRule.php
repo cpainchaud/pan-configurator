@@ -127,7 +127,7 @@ class NatRule extends Rule
 					$f = $this->parentAddressStore->findOrCreate($this->subdnatTAroot['content'], $this);
 
 					$this->dnathost = $f;
-					//$f->refInRule($this);
+					//$f->addReference($this);
 					
 					$this->subdnatTProot = &searchForName('name', 'translated-port', $this->dnatroot['children']);
 					if( !is_null($this->subdnatTProot) && isset($this->subdnatTProot['content']) )
@@ -332,7 +332,7 @@ class NatRule extends Rule
 					$f = $this->parentAddressStore->findOrCreate($this->subdnatTAroot->textContent, $this);
 
 					$this->dnathost = $f;
-					//$f->refInRule($this);
+					//$f->addReference($this);
 					
 					$this->subdnatTProot = DH::findFirstElement('translated-port', $this->dnatroot);
 					if( $this->subdnatTProot !== FALSE  )
@@ -498,10 +498,10 @@ class NatRule extends Rule
 			
 		}
 		
-		$old->unrefInRule($this);
+		$old->removeReference($this);
 		
 		if($found)
-			$new->refInRule($this);
+			$new->addReference($this);
 		
 	}
 
@@ -752,7 +752,7 @@ class NatRule extends Rule
 			derr(" Host cannot be NULL");
 
 		if( !is_null($this->dnathost) )
-			$this->dnathost->unrefInRule($this);
+			$this->dnathost->removeReference($this);
 
 		if( PH::$UseDomXML === TRUE )
 		{
@@ -787,7 +787,7 @@ class NatRule extends Rule
 		}
 
 		$this->dnathost = $host;
-		$this->dnathost->refInRule($this);
+		$this->dnathost->addReference($this);
 		$this->dnatports = $ports;
 
 		
@@ -854,11 +854,11 @@ class NatRule extends Rule
 			if( $this->service === $newServiceObject )
 				return;
 			
-			$this->service->unrefInRule($this);
+			$this->service->removeReference($this);
 		}
 		
 		$this->service = $newServiceObject;
-		$this->service->refInRule($this);
+		$this->service->addReference($this);
 		
 		$this->rewriteService_XML();
 	}
@@ -872,9 +872,9 @@ class NatRule extends Rule
 		reLinkObjs($this->dst, $this);
 		reLinkObjs($this->snathosts, $this);
 		if( $this->dnathost )
-			$this->dnathost->refInRule($this);
+			$this->dnathost->addReference($this);
 		if( $this->service )
-			$this->service->refInRule($this);
+			$this->service->addReference($this);
 	}
 	
 

@@ -197,7 +197,7 @@ class ServiceStore
 			}
 			$f = $this->parentCentralStore->findOrCreate($lname);
 			
-			$f->refInRule($this);
+			$f->addReference($this);
 			$this->all[] = $f;
 			$this->add_Obj_inIndex($f, lastIndex($this->all));
 		}
@@ -237,7 +237,7 @@ class ServiceStore
 			}
 			$f = $this->parentCentralStore->findOrCreate($lname);
 			
-			$f->refInRule($this);
+			$f->addReference($this);
 			$this->all[] = $f;
 			$this->add_Obj_inIndex($f, lastIndex($this->all));
 			$i++;
@@ -340,7 +340,7 @@ class ServiceStore
 				{
 					if( $o->name() == $fn )
 					{
-						$o->refInRule($ref);
+						$o->addReference($ref);
 						return $o;
 					}
 				}
@@ -349,7 +349,7 @@ class ServiceStore
 			if( isset($this->fast[$fn] ) )
 			{
 				if( $ref !== null )
-					$this->fast[$fn]->refInRule($ref);
+					$this->fast[$fn]->addReference($ref);
 				return $this->fast[$fn];
 			}
 
@@ -728,7 +728,7 @@ class ServiceStore
 		$this->tmpserv[] = $f;
 		$this->all[] = $f;
 		$f->type = 'tmp';
-		$f->refInRule($ref);
+		$f->addReference($ref);
 		$this->fast[$f->name()] = $f;
 		$this->fastMemToIndex[spl_object_hash($f)] = lastIndex($this->all);
 		

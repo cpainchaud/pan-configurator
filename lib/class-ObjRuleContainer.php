@@ -204,13 +204,13 @@ class ObjRuleContainer
 
         // remove $old from the list and unreference it
         unset($this->o[$pos]);
-        $old->unrefInRule($this);
+        $old->removeReference($this);
 
         // is $new already in the list ? if not then we insert it
         if( $new !== null && array_search($new, $this->o, TRUE) === FALSE )
         {
             $this->o[] = $new;
-            $new->refInRule($this);
+            $new->addReference($this);
         }
 
         // let's update XML code
@@ -232,7 +232,7 @@ class ObjRuleContainer
 
             $this->o[] = $Obj;
 
-            $Obj->refInRule($this);
+            $Obj->addReference($this);
 
             return true;
         }
@@ -246,7 +246,7 @@ class ObjRuleContainer
 
         foreach( $this->o as $o)
         {
-            $o->unrefInRule($this);
+            $o->removeReference($this);
         }
 
         $this->o = Array();
@@ -262,7 +262,7 @@ class ObjRuleContainer
         {
             unset($this->o[$pos]);
 
-            $Obj->unrefInRule($this);
+            $Obj->removeReference($this);
 
             return true;
         }
@@ -290,7 +290,7 @@ class ObjRuleContainer
         // remove this object from the referencers list
         foreach($this->o as $o)
         {
-            $o->unrefInRule($this);
+            $o->removeReference($this);
         }
 
         $this->o = null;

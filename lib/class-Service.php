@@ -20,7 +20,7 @@
 class Service
 {
 
-	use ReferencableObject {unrefInRule as super_unrefInRule;}
+	use ReferencableObject {removeReference as super_removeReference;}
 	use PathableName;
 	use XmlConvertible;
 	
@@ -271,9 +271,9 @@ class Service
 		$connector->sendDeleteRequest($xpath);
 	}
 
-	public function unrefInRule($object)
+	public function removeReference($object)
 	{
-		$this->super_unrefInRule($object);
+		$this->super_removeReference($object);
 
 		if( $this->isTmpSrv() && $this->countReferences() == 0 && $this->owner !== null )
 		{
