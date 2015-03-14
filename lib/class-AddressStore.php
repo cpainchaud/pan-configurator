@@ -216,7 +216,7 @@ class AddressStore
 	* @param Address|Addressgroup $current
      * @param Address|AddressGroup|null $newObject
 	*/
-	public function replaceHostObject($current, $newObject)
+	public function replaceReferencedObject($current, $newObject)
 	{
 		if( $this->centralStore )
 		{

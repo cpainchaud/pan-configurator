@@ -197,8 +197,7 @@ class AddressGroup
 
 		$this->xmlroot->setAttribute('name', $newname);
 	}
-	
-	
+
 
 	/**
 	* @ignore
@@ -317,7 +316,7 @@ class AddressGroup
      * @param Address|AddressGroup|null $new
      * @return bool
      */
-	public function replaceHostObject($old, $new)
+	public function replaceReferencedObject($old, $new)
 	{
 		if( $old === null )
 			derr("\$old cannot be null");

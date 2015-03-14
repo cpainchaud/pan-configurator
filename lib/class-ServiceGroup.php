@@ -182,7 +182,7 @@ class ServiceGroup
 		return $str;
 	}
 	
-	public function replaceHostObject($old, $new)
+	public function replaceReferencedObject($old, $new)
 	{
 		if( is_null($old) )
 			derr("\$old cannot be null");

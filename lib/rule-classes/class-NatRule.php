@@ -486,7 +486,7 @@ class NatRule extends Rule
 			$this->rewriteService_XML();
 	}
 	
-	public function replaceHostObject($old, $new )
+	public function replaceReferencedObject($old, $new )
 	{
 		$found = false;
 		

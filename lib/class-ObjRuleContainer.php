@@ -193,7 +193,7 @@ class ObjRuleContainer
         }
     }
 
-    public function replaceHostObject($old, $new)
+    public function replaceReferencedObject($old, $new)
     {
 
         $pos = array_search($old, $this->o, TRUE);

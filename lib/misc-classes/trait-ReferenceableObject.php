@@ -62,7 +62,7 @@ trait ReferencableObject
 	{
 		foreach( $this->refrules as $o )
 		{
-			$o->replaceHostObject($this, $newobject);
+			$o->replaceReferencedObject($this, $newobject);
 		}
 	}
 	
