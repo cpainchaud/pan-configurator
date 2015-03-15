@@ -24,13 +24,7 @@
  */
 class SecurityRule extends Rule
 {
-
-	/**
-	 * @var DOMElement
-	 */
-	protected $actionroot;
-
-	protected $action ='deny';
+	protected $action = self::ActionAllow;
 
 	protected $logstart = false;
 	protected $logend = true;
@@ -71,9 +65,30 @@ class SecurityRule extends Rule
     const TypeIntrazone = 1;
     const TypeInterzone = 2;
 
-    static private $RuleTypes = Array(self::TypeUniversal => 'universal',
+    static private $RuleTypes = Array(
+        self::TypeUniversal => 'universal',
         self::TypeIntrazone => 'intrazone',
-        self::TypeInterzone => 'interzone' );
+        self::TypeInterzone => 'interzone'
+    );
+
+
+    const ActionAllow       = 0;
+    const ActionDeny        = 1;
+    const ActionDrop        = 2;
+    const ActionResetClient = 3;
+    const ActionResetServer = 4;
+    const ActionResetBoth   = 5;
+
+    static private $RuleActions = Array(
+        self::ActionAllow => 'allow',
+        self::ActionDeny => 'deny',
+        self::ActionDrop => 'drop',
+        self::ActionResetClient => 'reset-client',
+        self::ActionResetServer => 'reset-server',
+        self::ActionResetBoth => 'reset-both'
+    );
+
+
 
 
     protected $ruleType = self::TypeUniversal;
@@ -154,9 +169,6 @@ class SecurityRule extends Rule
 		$tmp = DH::findFirstElementOrCreate('service', $xml);
 		$this->services->load_from_domxml($tmp);
 		// end of <service> zone extraction
-		
-		
-		$this->extract_action_from_domxml();
 
 		//
 		// Begin <log-setting> extraction
@@ -219,6 +231,34 @@ class SecurityRule extends Rule
 		// End of <negate-destination>
 
 
+        $this->actionroot = DH::findFirstElementOrCreate('action', $xml, 'deny');
+
+        $this->action = $this->actionroot->textContent;
+
+
+        //
+        // Begin <action> extraction
+        //
+        $tmp = DH::findFirstElement('action', $xml);
+        if( $tmp !== false )
+        {
+            $actionFound = array_search($tmp->textContent, self::$RuleActions);
+            if( $actionFound === false )
+            {
+                mwarning("unsupported action '{$tmp->textContent}' found, allow assumed" , $tmp);
+            }
+            else
+            {
+                $this->action = $actionFound;
+            }
+        }
+        else
+        {
+            mwarning("'<action> not found, assuming 'allow'" ,$xml);
+        }
+        // End of <rule-type>
+
+
         //
         // Begin <rule-type> extraction
         //
@@ -276,19 +316,6 @@ class SecurityRule extends Rule
 		
 	}
 
-	/**
-	*
-	* @ignore
-	*/
-	protected function extract_action_from_domxml()
-	{
-		$xml = $this->xmlroot;
-		
-		$this->actionroot = DH::findFirstElementOrCreate('action', $xml, 'deny');
-		
-		$this->action = $this->actionroot->textContent;
-		
-	}
 	
 	/**
 	*
@@ -542,36 +569,56 @@ class SecurityRule extends Rule
 	
 	public function action()
 	{
-		return $this->action;
+		return self::$RuleActions[$this->action];
 	}
 
-	public function isAllow()
+	public function actionIsAllow()
 	{
-		if($this->action == 'allow')
-			return true;
-		return false;
+		return $this->action == self::ActionAllow;
 	}
 
-	public function isDeny()
+	public function actionIsDeny()
 	{
-		if($this->action == 'deny')
-			return true;
-		return false;
+        return $this->action == self::ActionDeny;
 	}
+
+    public function actionIsDrop()
+    {
+        return $this->action == self::ActionDrop;
+    }
+
+    public function actionIsResetClient()
+    {
+        return $this->action == self::ActionResetClient;
+    }
+
+    public function actionIsResetServer()
+    {
+        return $this->action == self::ActionResetServer;
+    }
+
+    public function actionIsResetBoth()
+    {
+        return $this->action == self::ActionResetBoth;
+    }
 	
 	public function setAction($newAction)
 	{
-		static $allowed = Array('allow', 'deny');
-		
 		$newAction = strtolower($newAction);
-		if( in_array($newAction, $allowed) )
-		{
-			$this->action = $newAction;
-			DH::setDomNodeText($this->actionroot, $newAction);
+        $actionFound = array_search($newAction, self::$RuleActions);
 
+		if( $actionFound !== FALSE )
+		{
+            $this->action = $actionFound;
+            if( $this->owner->version < 70 && $actionFound > self::ActionDeny )
+            {
+                derr("action '$newAction' is not supported before PANOS 7.0");
+            }
+			$domNode = DH::findFirstElementOrCreate('action', $this->xmlroot);
+			DH::setDomNodeText($domNode, $newAction);
 		}
-		
-		else derr($this->toString()." : error : '$newAction' is not supported action type\n");
+		else
+            derr("'$newAction' is not supported action type\n");
 	}
 	
 	
@@ -836,7 +883,7 @@ class SecurityRule extends Rule
 
 		
 		print $padding."*Rule named '{$this->name}' $dis\n";
-        print $padding."  Action: {$this->action}    Type:{$this->type()}\n";
+        print $padding."  Action: {$this->action()}    Type:{$this->type()}\n";
 		print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
 		print $padding."  Source: ".$this->source->toString_inline()."\n";
 		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
