@@ -50,10 +50,6 @@ class NatRule extends Rule
 	public $xmlroot;
 	
 	/** @ignore */
-	public $srcroot=Array();
-	/** @ignore */
-	public $dstroot=Array();
-	/** @ignore */
 	public $dnatroot=Array();
 	/** @ignore */
 	public $serviceroot = null;
