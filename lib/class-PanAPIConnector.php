@@ -735,71 +735,43 @@ class PanAPIConnector
     }
 	
 	
-	public function &getRunningConfig()
+	public function getRunningConfig()
 	{
 		$url = 'action=show&type=config&xpath=/config';
 
         $r = &$this->sendRequest($url, true);
 
-        if( !PH::$UseDomXML)
-        {
-            $cursor = &searchForName('name', 'config', $r);
+        $configRoot = DH::findFirstElement('result', $r);
+        if( $configRoot === false )
+            derr("<result> was not found", $r);
 
-            if (is_null($cursor))
-            {
-                derr("<config> was not found");
-            }
+        $configRoot = DH::findFirstElement('config', $configRoot);
+        if( $configRoot === false )
+            derr("<config> was not found", $r);
 
-            return $cursor;
-        }
-        else
-        {
-            $configRoot = DH::findFirstElement('result', $r);
-            if( $configRoot === false )
-                derr("<result> was not found", $r);
+        DH::makeElementAsRoot($configRoot, $r);
 
-            $configRoot = DH::findFirstElement('config', $configRoot);
-            if( $configRoot === false )
-                derr("<config> was not found", $r);
-
-            DH::makeElementAsRoot($configRoot, $r);
-
-            return $r;
-        }
+        return $r;
 	}
 
-    public function &getCandidateConfig()
+    public function getCandidateConfig()
     {
         //$url = 'action=get&type=config&xpath=/config';
         $url = 'type=op&cmd=<show><config><saved>candidate-config</saved></config></show>';
         
         $r = &$this->sendRequest($url, true);
 
-        if( !PH::$UseDomXML)
-        {
-            $cursor = &searchForName('name', 'config', $r);
+        $configRoot = DH::findFirstElement('result', $r);
+        if( $configRoot === false )
+            derr("<result> was not found", $r);
 
-            if (is_null($cursor))
-            {
-                derr("<config> was not found");
-            }
+        $configRoot = DH::findFirstElement('config', $configRoot);
+        if( $configRoot === false )
+            derr("<config> was not found", $r);
 
-            return $cursor;
-        }
-        else
-        {
-            $configRoot = DH::findFirstElement('result', $r);
-            if( $configRoot === false )
-                derr("<result> was not found", $r);
+        DH::makeElementAsRoot($configRoot, $r);
 
-            $configRoot = DH::findFirstElement('config', $configRoot);
-            if( $configRoot === false )
-                derr("<config> was not found", $r);
-
-            DH::makeElementAsRoot($configRoot, $r);
-
-            return $r;
-        }
+        return $r;
     }
 
 
