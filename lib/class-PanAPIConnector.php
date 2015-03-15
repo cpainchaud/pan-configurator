@@ -466,9 +466,9 @@ class PanAPIConnector
      * @param bool $checkResultTag
      * @param string|null $filecontent
      * @param string $filename
-     * @return string[]|DomDocument
+     * @return DomDocument
      */
-	public function & sendRequest(&$parameters, $checkResultTag=false, &$filecontent=null, $filename = '')
+	public function sendRequest(&$parameters, $checkResultTag=false, &$filecontent=null, $filename = '')
 	{
 
         $sendThroughPost = false;
@@ -549,97 +549,47 @@ class PanAPIConnector
             derr('HTTP API ret: '.$c->__tostring());
         }
 
-        if( !PH::$UseDomXML )
+        $xmlDoc = new DOMDocument();
+        if( ! $xmlDoc->loadXML($c->__tostring(), LIBXML_PARSEHUGE) )
+            derr('Invalid xml input :'.$c->__tostring() );
+
+        $firstElement = DH::firstChildElement($xmlDoc);
+        if( $firstElement === false )
+            derr('cannot find any child Element in xml');
+
+        $statusAttr = DH::findAttribute('status', $firstElement);
+
+        if( $statusAttr === false )
         {
-            $xmlobj = new XmlArray();
-            $xmlarr = $xmlobj->load_string($c->__tostring());
-
-            if (!is_array($xmlarr))
-            {
-                derr('API didnt return a XML string: ' . $c->__tostring());
-            }
-
-            if (!isset($xmlarr['attributes']['status']))
-            {
-                derr('XML response has no "status" field: ' . array_to_xml($xmlarr));
-            }
-
-            if ($xmlarr['attributes']['status'] != 'success')
-            {
-                derr('API reported a failure: ' . $c->__tostring());
-            }
-
-            if (!is_null($filecontent))
-            {
-                return $xmlarr['children'];
-            }
-            if (!$checkResultTag)
-            {
-                return $xmlarr['children'];
-            }
-
-
-            //print_r( $xmlarr['children'] );
-
-            $cursor = &searchForName('name', 'result', $xmlarr['children']);
-
-            if (is_null($cursor))
-            {
-                derr('XML API response has no <result> field:' . $c->__tostring());
-            }
-
-            if (is_null($cursor['children']))
-            {
-                derr('XML API <result> has no content');
-            }
-
-
-            return $cursor['children'];
+            derr('XML response has no "status" field: ' . DH::dom_to_xml($firstElement));
         }
-        else
+
+        if($statusAttr != 'success')
         {
-            $xmlDoc = new DOMDocument();
-            if( ! $xmlDoc->loadXML($c->__tostring(), LIBXML_PARSEHUGE) )
-                derr('Invalid xml input :'.$c->__tostring() );
+            var_dump($statusAttr);
 
-            $firstElement = DH::firstChildElement($xmlDoc);
-            if( $firstElement === false )
-                derr('cannot find any child Element in xml');
+            derr('API reported a failure: "'.$statusAttr."\"with the following addition infos: ". $firstElement->nodeValue);
+        }
 
-            $statusAttr = DH::findAttribute('status', $firstElement);
-
-            if( $statusAttr === false )
-            {
-                derr('XML response has no "status" field: ' . DH::dom_to_xml($firstElement));
-            }
-
-            if($statusAttr != 'success')
-            {
-                var_dump($statusAttr);
-
-                derr('API reported a failure: "'.$statusAttr."\"with the following addition infos: ". $firstElement->nodeValue);
-            }
-
-            if (!is_null($filecontent))
-            {
-                return $xmlDoc;
-            }
-            if (!$checkResultTag)
-            {
-                return $xmlDoc;
-            }
-
-            //$cursor = &searchForName('name', 'result', $xmlarr['children']);
-            $cursor = DH::findFirstElement('result', $firstElement);
-
-            if(  $cursor === false )
-            {
-                derr('XML API response has no <result> field', $xmlDoc);
-            }
-
-            DH::makeElementAsRoot($cursor, $xmlDoc);
+        if (!is_null($filecontent))
+        {
             return $xmlDoc;
         }
+        if (!$checkResultTag)
+        {
+            return $xmlDoc;
+        }
+
+        //$cursor = &searchForName('name', 'result', $xmlarr['children']);
+        $cursor = DH::findFirstElement('result', $firstElement);
+
+        if(  $cursor === false )
+        {
+            derr('XML API response has no <result> field', $xmlDoc);
+        }
+
+        DH::makeElementAsRoot($cursor, $xmlDoc);
+        return $xmlDoc;
 	}
 
 

@@ -79,9 +79,7 @@ class AppRuleContainer extends ObjRuleContainer
      */
     public function API_addApp( App $Obj, $rewritexml = true )
     {
-        $ret = addApp($Obj, $rewritexml);
-
-        if( !$ret )
+        if( ! $this->addApp($Obj, $rewritexml) )
             return false;
 
         $con = findConnectorOrDie($this);
@@ -105,8 +103,7 @@ class AppRuleContainer extends ObjRuleContainer
         $xpath = &$this->owner->getXPath();
         $con->sendDeleteRequest($xpath.'/application');
 
-        $element = &array_to_xml( $this->xmlroot, -1, false);
-        $con->sendSetRequest($xpath, $element);
+        $con->sendSetRequest($xpath, $this->getXmlText_inline());
     }
 
 

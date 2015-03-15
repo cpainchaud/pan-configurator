@@ -34,7 +34,7 @@ class AddressRuleContainer extends ObjRuleContainer
      */
     public $parentCentralStore = null;
 
-
+    // TODO implement 'multicast' support
 
     public function AddressRuleContainer($owner)
     {
@@ -43,7 +43,6 @@ class AddressRuleContainer extends ObjRuleContainer
 
         $this->findParentCentralStore();
     }
-
 
     /**
      * @param Address|AddressGroup $Obj
@@ -80,8 +79,7 @@ class AddressRuleContainer extends ObjRuleContainer
                 $con->sendRequest($url);
             }
 
-            $url = "type=config&action=set&xpath=$xpath&element=<member>".$Obj->name()."</member>";
-            $con->sendRequest($url);
+            $con->sendSetRequest($xpath, "<member>{$Obj->name()}</member>");
 
             return true;
         }
