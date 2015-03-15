@@ -231,11 +231,6 @@ class SecurityRule extends Rule
 		// End of <negate-destination>
 
 
-        $this->actionroot = DH::findFirstElementOrCreate('action', $xml, 'deny');
-
-        $this->action = $this->actionroot->textContent;
-
-
         //
         // Begin <action> extraction
         //
