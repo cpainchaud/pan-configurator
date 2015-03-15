@@ -355,17 +355,7 @@ class DH
      */
     static public function findXPathSingleEntryOrDie( $xpathString, $contextNode )
     {
-        if( $contextNode->nodeType ==  XML_DOCUMENT_NODE )
-        {
-            $xpath = new DOMXpath($contextNode);
-            $nodes = $xpath->query($xpathString);
-        }
-        else
-        {
-            $xpathString = '.'.$xpathString;
-            $xpath = new DOMXpath($contextNode->ownerDocument);
-            $nodes = $xpath->query($xpathString, $contextNode);
-        }
+        $nodes = DH::findXPath($xpathString, $contextNode);
 
         if( $nodes === FALSE )
             derr("XPath query evaluation error for '{$xpathString}'");
@@ -378,6 +368,29 @@ class DH
 
         return $nodes->item(0);
 
+    }
+
+
+    /**
+     * @param string $xpathString
+     * @param DOMDocument|DOMNode $contextNode
+     * @return DOMNodeList|bool
+     */
+    static public function findXPath( $xpathString, $contextNode )
+    {
+        if( $contextNode->nodeType ==  XML_DOCUMENT_NODE )
+        {
+            $xpath = new DOMXpath($contextNode);
+            $nodes = $xpath->query($xpathString);
+        }
+        else
+        {
+            $xpathString = '.'.$xpathString;
+            $xpath = new DOMXpath($contextNode->ownerDocument);
+            $nodes = $xpath->query($xpathString, $contextNode);
+        }
+
+        return $nodes;
     }
 
 
