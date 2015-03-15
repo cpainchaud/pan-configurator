@@ -671,9 +671,9 @@ class AddressStore
 		$s->owner = null;
 
 		
-		if( $rewriteXML )
+		if( $rewriteXML && !$s->isTmpAddr() )
 		{
-			if( $class == "Address" && !$s->isTmpAddr() )
+			if( $class == "Address" )
             {
                 if(!PH::$UseDomXML)
                     $this->rewriteAddressStoreXML();

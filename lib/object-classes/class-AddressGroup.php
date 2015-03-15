@@ -278,7 +278,7 @@ class AddressGroup
 		else
 		{
 			unset($this->members[$pos]);
-			$old->unRefInRule($this);
+			$old->removeReference($this);
 			if($rewriteXml)
 				$this->rewriteXML();
 		}
@@ -299,7 +299,7 @@ class AddressGroup
 
 		foreach( $this->members as $a)
 		{
-			$a->unRefInRule($this);
+			$a->removeReference($this);
 		}
 		$this->members = Array();
 
@@ -333,7 +333,7 @@ class AddressGroup
 			else
 				unset($this->members[$pos]);
 
-			$old->unRefInRule($this);
+			$old->removeReference($this);
 
 
 			if( $new !== null && $new->name() != $old->name() )

@@ -732,7 +732,7 @@ class NatRule extends Rule
 		if( is_null($this->dnathost) )
 			return;
 		
-		$this->dnathost->unRefInRule($this);
+		$this->dnathost->removeReference($this);
 		$this->dnathost = null;
 		$this->dnatports = null;
 

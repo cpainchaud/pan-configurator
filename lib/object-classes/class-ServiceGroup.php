@@ -166,7 +166,7 @@ class ServiceGroup
 		{
 			$found = true;
 			unset($this->members[$pos]);
-			$old->unRefInRule($this);
+			$old->removeReference($this);
 			if($rewritexml)
 				$this->rewriteXML();
 		}
