@@ -601,6 +601,11 @@ class SecurityRule extends Rule
     {
         return $this->action == self::ActionResetBoth;
     }
+
+    public function actionIsNegative()
+    {
+        return $this->action != self::ActionAllow;
+    }
 	
 	public function setAction($newAction)
 	{
