@@ -332,7 +332,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_removeZone">#</a>
-		<code><b>removeZone</b>( <span><code><a href="class-Zone.html">Zone</a></code> <var>$Obj</var></span>, <span>boolean <var>$rewriteXML</var> = <span class="php-keyword1">true</span> </span> )</code>
+		<code><b>removeZone</b>( <span><code><a href="class-Zone.html">Zone</a></code> <var>$zone</var></span>, <span>boolean <var>$rewriteXML</var> = <span class="php-keyword1">true</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -348,7 +348,7 @@
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$Obj</var></dt>
+					<dt><var>$zone</var></dt>
 					<dd><code><code><a href="class-Zone.html">Zone</a></code></code></dd>
 					<dt><var>$rewriteXML</var></dt>
 					<dd><code>boolean</code><br>$rewriteXML</dd>
@@ -502,6 +502,35 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="newZone" id="_newZone">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_newZone">#</a>
+		<code><b>newZone</b>( <span>mixed <var>$name</var></span>, <span>mixed <var>$type</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	</table>
 
 	<table class="summary inherited">
@@ -515,9 +544,9 @@
 			<a href="class-ObjStore.html#_findByName"><b>findByName()</b></a>, 
 			<a href="class-ObjStore.html#_findOrCreate"><b>findOrCreate()</b></a>, 
 			<a href="class-ObjStore.html#_getAll"><b>getAll()</b></a>, 
-			<a href="class-ObjStore.html#_hostChanged"><b>hostChanged()</b></a>, 
 			<a href="class-ObjStore.html#_inStore"><b>inStore()</b></a>, 
 			<a href="class-ObjStore.html#_isCentralStore"><b>isCentralStore()</b></a>, 
+			<a href="class-ObjStore.html#_referencedObjectRenamed"><b>referencedObjectRenamed()</b></a>, 
 			<a href="class-ObjStore.html#_remove"><b>remove()</b></a>, 
 			<a href="class-ObjStore.html#_removeAll"><b>removeAll()</b></a>, 
 			<a href="class-ObjStore.html#_setCentralStoreRole"><b>setCentralStoreRole()</b></a>, 
@@ -555,28 +584,6 @@
 
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
-	<tr data-order="xmlroot" id="$xmlroot">
-		<td class="attributes"><code>
-			public  
-			null|string[]|<code><a href="class-DOMElement.html">DOMElement</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$xmlroot</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$xmlroot" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
 	<tr data-order="parentCentralStore" id="$parentCentralStore">
 		<td class="attributes"><code>
 			public  
@@ -631,7 +638,8 @@
 			<a href="class-ObjStore.html#$classn"><var>$classn</var></a>, 
 			<a href="class-ObjStore.html#$name"><var>$name</var></a>, 
 			<a href="class-ObjStore.html#$o"><var>$o</var></a>, 
-			<a href="class-ObjStore.html#$owner"><var>$owner</var></a>
+			<a href="class-ObjStore.html#$owner"><var>$owner</var></a>, 
+			<a href="class-ObjStore.html#$xmlroot"><var>$xmlroot</var></a>
 		</code></td>
 	</tr>
 	</table>

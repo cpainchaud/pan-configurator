@@ -182,7 +182,7 @@
 		
 		
 
-		<b>Located at</b> class-ServiceGroup.php<br />
+		<b>Located at</b> object-classes/class-ServiceGroup.php<br />
 	</div>
 
 
@@ -201,35 +201,6 @@
 		<td class="name"><div>
 		<a class="anchor" href="#_ServiceGroup">#</a>
 		<code><b>ServiceGroup</b>( <span>mixed <var>$name</var></span>, <span>mixed <var>$owner</var> = <span class="php-keyword1">null</span></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="load_from_xml" id="_load_from_xml">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_load_from_xml">#</a>
-		<code><b>load_from_xml</b>( <span>mixed <var>&amp; $xml</var></span> )</code>
 
 		<div class="description short">
 			
@@ -451,7 +422,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="replaceHostObject" id="_replaceHostObject">
+	<tr data-order="replaceReferencedObject" id="_replaceReferencedObject">
 
 		<td class="attributes"><code>
 			 public 
@@ -461,8 +432,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_replaceHostObject">#</a>
-		<code><b>replaceHostObject</b>( <span>mixed <var>$old</var></span>, <span>mixed <var>$new</var></span> )</code>
+		<a class="anchor" href="#_replaceReferencedObject">#</a>
+		<code><b>replaceReferencedObject</b>( <span>mixed <var>$old</var></span>, <span>mixed <var>$new</var></span> )</code>
 
 		<div class="description short">
 			
@@ -509,7 +480,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="hostChanged" id="_hostChanged">
+	<tr data-order="referencedObjectRenamed" id="_referencedObjectRenamed">
 
 		<td class="attributes"><code>
 			 public 
@@ -519,8 +490,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_hostChanged">#</a>
-		<code><b>hostChanged</b>( <span>mixed <var>$h</var></span> )</code>
+		<a class="anchor" href="#_referencedObjectRenamed">#</a>
+		<code><b>referencedObjectRenamed</b>( <span>mixed <var>$h</var></span> )</code>
 
 		<div class="description short">
 			
@@ -933,6 +904,7 @@ their members inserted<br />
 	<caption>Methods used from <a href="class-ReferencableObject.html#methods">ReferencableObject</a></caption>
 	<tr>
 		<td><code>
+			<a href="class-ReferencableObject.html#_addReference"><b>addReference()</b></a>, 
 			<a href="class-ReferencableObject.html#_broadcastMyNameChange"><b>broadcastMyNameChange()</b></a>, 
 			<a href="class-ReferencableObject.html#_countReferences"><b>countReferences()</b></a>, 
 			<a href="class-ReferencableObject.html#_display_references"><b>display_references()</b></a>, 
@@ -941,10 +913,9 @@ their members inserted<br />
 			<a href="class-ReferencableObject.html#_generateRefHashComp"><b>generateRefHashComp()</b></a>, 
 			<a href="class-ReferencableObject.html#_getRefHashComp"><b>getRefHashComp()</b></a>, 
 			<a href="class-ReferencableObject.html#_getReferences"><b>getReferences()</b></a>, 
-			<a href="class-ReferencableObject.html#_refInRule"><b>refInRule()</b></a>, 
+			<a href="class-ReferencableObject.html#_removeReference"><b>removeReference()</b></a>, 
 			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
-			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>, 
-			<a href="class-ReferencableObject.html#_unrefInRule"><b>unrefInRule()</b></a>
+			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>
 		</code></td>
 	</tr>
 	</table>
