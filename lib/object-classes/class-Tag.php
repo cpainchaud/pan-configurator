@@ -45,31 +45,19 @@ class Tag
 
         if( $fromXmlTemplate )
         {
-            if( !PH::$UseDomXML )
-            {
-                if( $owner->owner->version < 60 )
-                    derr('tag stores were introduced in 6.0');
-
-                $xmlobj = new XmlArray();
-                $xmlArray = $xmlobj->load_string(self::$templatexml_v6);
-                $this->load_from_xml($xmlArray);
-            }
+            $doc = new DOMDocument();
+            if( $owner->owner->version < 60 )
+                derr('tag stores were introduced in v6.0');
             else
-            {
-                $doc = new DOMDocument();
-                if( $owner->owner->version < 60 )
-                    derr('tag stores were introduced in v6.0');
-                else
-                    $doc->loadXML(self::$templatexml_v6);
+                $doc->loadXML(self::$templatexml_v6);
 
-                $node = DH::findFirstElement('entry',$doc);
+            $node = DH::findFirstElement('entry',$doc);
 
-                $rootDoc = $owner->xmlroot->ownerDocument;
+            $rootDoc = $owner->xmlroot->ownerDocument;
 
-                $this->xmlroot = $rootDoc->importNode($node, true);
-                $this->load_from_domxml($this->xmlroot);
+            $this->xmlroot = $rootDoc->importNode($node, true);
+            $this->load_from_domxml($this->xmlroot);
 
-            }
             $this->setName($name);
         }
 
@@ -84,10 +72,7 @@ class Tag
         if( $this->xmlroot === null )
             return $ret;
 
-        if( PH::$UseDomXML === TRUE )
-            $this->xmlroot->getAttributeNode('name')->nodeValue = $newName;
-        else
-            $this->xmlroot['attributes']['name'] = $newName;
+        $this->xmlroot->getAttributeNode('name')->nodeValue = $newName;
 
         return $ret;
     }
@@ -97,19 +82,6 @@ class Tag
         return $this->isTmp;
     }
 
-    public function load_from_xml(&$xmlArray)
-    {
-        $this->xmlroot = &$xmlArray;
-        $this->isTmp = false;
-
-        if( !isset($xmlArray['attributes']['name']) )
-            derr('Tag name not found');
-
-        $this->name = $this->xmlroot['attributes']['name'];
-
-        if( strlen($this->name) < 1  )
-            derr("Tag name '".$this->name."' is not valid");
-    }
 
     public function load_from_domxml(DOMNode $xml)
     {

@@ -301,27 +301,15 @@ class PANConf
 	{
 		$filecontents = file_get_contents($filename);
 
-		if( PH::$UseDomXML === TRUE )
-			$this->load_from_xmlstring($filecontents);
-		else
-			$this->load_from_xml($filecontents);
+		$this->load_from_xmlstring($filecontents);
 	}
 
 	public function API_load_from_running( PanAPIConnector $conn )
 	{
 		$this->connector = $conn;
 
-
-        if( PH::$UseDomXML === TRUE )
-        {
-            $xmlDoc = $this->connector->getRunningConfig();
-            $this->load_from_domxml($xmlDoc);
-        }
-        else
-        {
-            $xmlarr = $this->connector->getRunningConfig();
-            $this->load_from_xmlarr($xmlarr);
-        }
+        $xmlDoc = $this->connector->getRunningConfig();
+        $this->load_from_domxml($xmlDoc);
 	}
 
 	public function API_load_from_candidate( PanAPIConnector $conn )

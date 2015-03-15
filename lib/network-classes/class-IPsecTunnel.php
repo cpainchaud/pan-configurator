@@ -49,11 +49,6 @@ class IPsecTunnel
         $this->name = $name;
     }
 
-    public function load_from_xml( &$xml )
-    {
-        derr('unsupported');
-    }
-
     /**
      * @param DOMElement $xml
      */

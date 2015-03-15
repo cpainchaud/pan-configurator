@@ -162,29 +162,6 @@ class AppRuleContainer extends ObjRuleContainer
      * should only be called from a Rule constructor
      * @ignore
      */
-    public function load_from_xml(&$xml)
-    {
-        //print "started to extract '".$this->toString()."' from xml\n";
-        $this->xmlroot = &$xml;
-
-        foreach( $xml['children'] as &$cur )
-        {
-
-            if( strtolower($cur['content']) == 'any' )
-            {
-                return;
-            }
-
-            $f = $this->parentCentralStore->findOrCreate( $cur['content'], $this);
-            $this->o[] = $f;
-        }
-
-    }
-
-    /**
-     * should only be called from a Rule constructor
-     * @ignore
-     */
     public function load_from_domxml($xml)
     {
         //print "started to extract '".$this->toString()."' from xml\n";

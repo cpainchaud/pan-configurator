@@ -76,58 +76,6 @@ class Service
 		$this->owner = $owner;
 		
 	}
-	
-	public function load_from_xml(&$xml)
-	{
-		$this->xmlroot = &$xml;
-		$this->name = $xml['attributes']['name'];
-		if( is_null($this->name) )
-		{
-			print_r($xml);
-			derr("service name not found\n");
-		}
-		
-		// seeking <description>
-		$this->descroot = &searchForName('name', 'description', $xml['children']);
-		if( $this->descroot )
-		{
-			$this->description = $this->descroot['content'];
-		}
-		else
-		{
-			$this->descroot = Array('name'=>'ignme','content'=>$this->description);
-			$this->xmlroot['children'][] = &$this->descroot;
-		}
-		
-		//
-		// seeking <protocol>
-		//
-		$this->protocolroot = &searchForName('name', 'protocol', $xml['children']);
-		if( ! $this->protocolroot )
-			derr("Error: <protocol> not found for service".$this->name."\n");
-		
-		$portroot = &searchForName('name', 'tcp', $this->protocolroot['children']);
-
-		if( ! $portroot )
-		{
-			$this->protocol = 'udp';
-			$portroot = &searchForName('name', 'udp', $this->protocolroot['children']);
-		}
-		if( ! $portroot )
-			derr("Error: <tcp> or <udp> not found for service".$this->name."\n");
-		
-		$this->dportroot = &searchForName('name', 'port', $portroot['children']);
-		if( ! $this->dportroot )
-			derr("Error: <port> not found for service".$this->name."\n");
-		
-		$this->dport = $this->dportroot['content'];
-		
-		$sportroot = &searchForName('name', 'sport', $portroot['children']);
-		if( $sportroot )
-		{
-			$this->sport = $sportroot['content'];
-		}
-	}
 
 
 

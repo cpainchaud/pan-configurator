@@ -215,23 +215,6 @@ class TagRuleContainer extends ObjRuleContainer
 
 
     /**
-     * should only be called from a Rule constructor
-     * @ignore
-     */
-    public function load_from_xml(&$xml)
-    {
-        $this->xmlroot = &$xml;
-
-        foreach( $xml['children'] as &$x )
-        {
-            //print "Trying to create tag '".$cur[$k[$i]]['content']."'\n";
-            $f = $this->parentCentralStore->findOrCreate( $x['content'], $this);
-            $this->o[] = $f;
-        }
-
-    }
-
-    /**
      * @param DOMElement $xml
      *      * should only be called from a Rule constructor
      * @ignore

@@ -48,26 +48,6 @@ class DecryptionRule extends Rule
 
     }
 
-    public function load_from_xml(&$xml)
-    {
-        $this->xmlroot = &$xml;
-
-        $this->name = $xml['attributes']['name'];
-
-        if( is_null($this->name ) )
-            derr("Rule name not found\n");
-
-        $this->extract_disabled_from_xml();
-        $this->extract_description_from_xml();
-
-        $this->load_from();
-        $this->load_to();
-        $this->load_source();
-        $this->load_destination();
-        $this->load_tags();
-
-    }
-
     public function load_from_domxml($xml)
     {
         $this->xmlroot = $xml;

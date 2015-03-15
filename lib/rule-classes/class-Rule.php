@@ -129,25 +129,8 @@ class Rule
      */
     protected function load_from()
     {
-        if( !PH::$UseDomXML)
-        {
-            $fromRoot = &searchForName('name', 'from', $this->xmlroot['children']);
-
-            if (!$fromRoot)
-            {
-                $fromRoot = Array('name' => 'from');
-                $this->xmlroot['children'][] = &$fromRoot;
-            }
-            if (!isset($fromRoot['children']))
-                $fromRoot['children'] = array();
-
-            $this->from->load_from_xml($fromRoot);
-        }
-        else
-        {
-            $tmp = DH::findFirstElementOrCreate('from', $this->xmlroot);
-            $this->from->load_from_domxml($tmp);
-        }
+        $tmp = DH::findFirstElementOrCreate('from', $this->xmlroot);
+        $this->from->load_from_domxml($tmp);
     }
 
 
@@ -156,26 +139,8 @@ class Rule
      */
     protected function load_to()
     {
-        if( !PH::$UseDomXML)
-        {
-            $toRoot = &searchForName('name', 'to', $this->xmlroot['children']);
-
-
-            if (!$toRoot)
-            {
-                $toRoot = Array('name' => 'to');
-                $this->xmlroot['children'][] = &$toRoot;
-            }
-            if (!isset($toRoot['children']))
-                $toRoot['children'] = array();
-
-            $this->to->load_from_xml($toRoot);
-        }
-        else
-        {
-            $tmp = DH::findFirstElementOrCreate('to', $this->xmlroot);
-            $this->to->load_from_domxml($tmp);
-        }
+        $tmp = DH::findFirstElementOrCreate('to', $this->xmlroot);
+        $this->to->load_from_domxml($tmp);
     }
 
 
@@ -184,26 +149,9 @@ class Rule
      */
     protected function load_tags()
     {
-        if( !PH::$UseDomXML)
-        {
-            $tagRoot = &searchForName('name', 'tag', $this->xmlroot['children']);
-
-            if (!$tagRoot)
-            {
-                $tagRoot = Array('name' => 'ignme');
-                $xml['children'][] = &$tagRoot;
-            }
-            if (!isset($tagRoot['children']))
-                $tagRoot['children'] = Array();
-
-            $this->tags->load_from_xml($tagRoot);
-        }
-        else
-        {
-            $tmp = DH::findFirstElement('tag', $this->xmlroot);
-			if( $tmp !== false )
-	            $this->tags->load_from_domxml($tmp);
-        }
+        $tmp = DH::findFirstElement('tag', $this->xmlroot);
+		if( $tmp !== false )
+            $this->tags->load_from_domxml($tmp);
     }
 
 
@@ -212,25 +160,8 @@ class Rule
      */
     protected function load_source()
     {
-        if( !PH::$UseDomXML)
-        {
-            $srcRoot = &searchForName('name', 'source', $this->xmlroot['children']);
-            if (is_null($srcRoot))
-            {
-                $srcRoot = Array('name' => 'source');
-                $this->xmlroot['children'][] = &$srcRoot;
-            }
-            if (!isset($srcRoot['children']))
-            {
-                $srcRoot['children'] = Array();
-            }
-            $this->source->load_from_xml($srcRoot);
-        }
-        else
-        {
-            $tmp = DH::findFirstElementOrCreate('source', $this->xmlroot);
-            $this->source->load_from_domxml($tmp);
-        }
+        $tmp = DH::findFirstElementOrCreate('source', $this->xmlroot);
+        $this->source->load_from_domxml($tmp);
     }
 
     /**
@@ -238,25 +169,8 @@ class Rule
      */
     protected function load_destination()
     {
-        if( !PH::$UseDomXML)
-        {
-            $dstRoot = &searchForName('name', 'destination', $this->xmlroot['children']);
-            if (is_null($dstRoot))
-            {
-                $dstRoot = Array('name' => 'destination');
-                $this->xmlroot['children'][] = &$dstRoot;
-            }
-            if (!isset($dstRoot['children']))
-            {
-                $dstRoot['children'] = Array();
-            }
-            $this->destination->load_from_xml($dstRoot);
-        }
-        else
-        {
-            $tmp = DH::findFirstElementOrCreate('destination', $this->xmlroot);
-            $this->destination->load_from_domxml($tmp);
-        }
+        $tmp = DH::findFirstElementOrCreate('destination', $this->xmlroot);
+        $this->destination->load_from_domxml($tmp);
     }
 
 
@@ -318,30 +232,6 @@ class Rule
 	{
 		$this->apps = new AppRuleContainer($this);
 		$this->apps->setName('apps');
-	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function extract_disabled_from_xml()
-	{
-		$xml = &$this->xmlroot;
-		
-		$this->disabledroot = &searchForName('name', 'disabled', $xml['children']);
-		if( ! $this->disabledroot )
-		{
-			$this->disabledroot = Array('name' => 'disabled' , 'content'=>'no');
-			$xml['children'][] = &$this->disabledroot;
-		}
-
-		//print "this rule has a <disabled>\n";
-		$lstate = strtolower($this->disabledroot['content']);
-		if( $lstate == 'yes' )
-		{
-			//print "rule '".$this->name."' is <disabled>\n";
-			$this->disabled = true;
-		}
 	}
 
 	/**

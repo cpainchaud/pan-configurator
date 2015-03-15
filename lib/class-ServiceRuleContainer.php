@@ -215,37 +215,6 @@ class ServiceRuleContainer extends ObjRuleContainer
         return $this->o;
     }
 
-
-    /**
-     * should only be called from a Rule constructor
-     * @ignore
-     */
-    public function load_from_xml(&$xml)
-    {
-        $this->xmlroot = &$xml;
-
-        foreach( $xml['children'] as &$cur)
-        {
-            $lower = strtolower($cur['content']);
-
-            if( $lower == 'any' )
-            {
-                $this->o = Array();
-                return;
-            }
-            else if($lower == 'application-default')
-            {
-                $this->o = Array();
-                $this->appDef = true;
-                return;
-            }
-
-            $f = $this->parentCentralStore->findOrCreate( $cur['content'], $this);
-            $this->o[] = $f;
-        }
-
-    }
-
     /**
      * should only be called from a Rule constructor
      * @ignore
