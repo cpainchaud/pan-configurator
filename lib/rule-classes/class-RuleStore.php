@@ -71,6 +71,8 @@ class RuleStore
 	public function RuleStore($owner, $ruleType, $isPreOrPost = false)
 	{
 		$this->owner = $owner;
+        $this->version = &$owner->version;
+
 		$this->isPreOrPost = $isPreOrPost;
 
 		$allowedTypes = array_keys(self::$storeNameByType);

@@ -2,6 +2,7 @@ CHANGELOG
 
 
 1.5.0-beta1
+* 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
 * moved preRules and postRules into one single store (see getPreRules and getPostRules)
 * service-edit and address-edit new action: replaceByMembersAndDelete
 * virtual-wire and aggregate-group ethernet interface support

@@ -67,6 +67,17 @@ class SecurityRule extends Rule
      */
     public $apps = null;
 
+    const TypeUniversal = 0;
+    const TypeIntrazone = 1;
+    const TypeInterzone = 2;
+
+    static private $RuleTypes = Array(self::TypeUniversal => 'universal',
+        self::TypeIntrazone => 'intrazone',
+        self::TypeInterzone => 'interzone' );
+
+
+    protected $ruleType = self::TypeUniversal;
+
 
 	/**
 	 * @param RuleStore $owner
@@ -207,7 +218,38 @@ class SecurityRule extends Rule
 			$this->negatedDestination = false;
 		// End of <negate-destination>
 
+
+        //
+        // Begin <rule-type> extraction
+        //
+        if( $this->owner->version >= 61 )
+        {
+            $tmp = DH::findFirstElement('rule-type', $xml);
+            if( $tmp !== false )
+            {
+                $typefound = array_search($tmp->textContent, self::$RuleTypes);
+                if( $typefound === false )
+                {
+                    mwarning("unsupported rule-type '{$tmp->textContent}', universal assumed" , $tmp);
+                }
+                else
+                {
+                    $this->ruleType = $typefound;
+                }
+            }
+        }
+        // End of <rule-type>
+
 	}
+
+
+    /**
+     * @return string type of this rule : 'universal', 'intrazone', 'interzone'
+     */
+    public function type()
+    {
+        return self::$RuleTypes[$this->ruleType];
+    }
 
 
 	
@@ -786,16 +828,15 @@ class SecurityRule extends Rule
 	*/
 	public function display( $padding = 0)
 	{
-
         $padding = str_pad('', $padding);
 
 		$dis = '';
 		if( $this->disabled )
 			$dis = '<disabled>';
-		
 
 		
-		print $padding."*Rule named '".$this->name."' action=".$this->action." $dis\n";
+		print $padding."*Rule named '{$this->name}' $dis\n";
+        print $padding."  Action: {$this->action}    Type:{$this->type()}\n";
 		print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
 		print $padding."  Source: ".$this->source->toString_inline()."\n";
 		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
