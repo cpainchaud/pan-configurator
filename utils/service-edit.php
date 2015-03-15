@@ -18,6 +18,10 @@
 */
 
 
+print "\n***********************************************\n";
+print   "*********** SERVICE-EDIT UTILITY **************\n\n";
+
+
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
 
@@ -79,7 +83,6 @@ $debugAPI = false;
 
 
 $supportedArguments = Array();
-$supportedArguments['type'] = Array('niceName' => 'type', 'shortHelp' => 'specify if config/api is panos or panorama. ie: type=panos  or type=panorama', 'argDesc' => 'panos|panorama');
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
@@ -291,12 +294,6 @@ if( isset(PH::$args['listfilters']) )
 }
 
 
-if( ! isset(PH::$args['type']) )
-    display_error_usage_exit('"type" is missing from arguments');
-$configType = PH::$args['type'];
-if( !is_string($configType) || strlen($configType) < 1 )
-    display_error_usage_exit('"type" argument is not a valid string');
-
 
 if( ! isset(PH::$args['in']) )
     display_error_usage_exit('"in" is missing from arguments');
@@ -338,12 +335,73 @@ if( isset(PH::$args['filter'])  )
 }
 
 
+
 //
-// Config is PANOS or Panorama ?
+// What kind of config input do we have.
+//     File or API ?
 //
-$configType = strtolower($configType);
-if( $configType != 'panos' && $configType != 'panorama' )
-    display_error_usage_exit('"type" has unsupported value: '.$configType);
+// <editor-fold desc="  ****  input method validation and PANOS vs Panorama auto-detect  ****" defaultstate="collapsed" >
+$configInput = PH::processIOMethod($configInput, true);
+$xmlDoc = null;
+
+if( $configInput['status'] == 'fail' )
+{
+    fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");exit(1);
+}
+
+if( $configInput['type'] == 'file' )
+{
+    if(isset(PH::$args['out']) )
+    {
+        $configOutput = PH::$args['out'];
+        if (!is_string($configOutput) || strlen($configOutput) < 1)
+            display_error_usage_exit('"out" argument is not a valid string');
+    }
+    else
+        display_error_usage_exit('"out" is missing from arguments');
+
+    if( !file_exists($configInput['filename']) )
+        derr("file '{$configInput['filename']}' not found");
+
+    $xmlDoc = new DOMDocument();
+    if( ! $xmlDoc->load($configInput['filename']) )
+        derr("error while reading xml config file");
+
+}
+elseif ( $configInput['type'] == 'api'  )
+{
+    if($debugAPI)
+        $configInput['connector']->setShowApiCalls(true);
+    $xmlDoc = $configInput['connector']->getCandidateConfig();
+}
+else
+    derr('not supported yet');
+
+//
+// Determine if PANOS or Panorama
+//
+$xpathResult = DH::findXPath('/config/devices/entry/vsys', $xmlDoc);
+if( $xpathResult === FALSE )
+    derr('XPath error happened');
+if( $xpathResult->length <1 )
+    $configType = 'panorama';
+else
+    $configType = 'panos';
+unset($xpathResult);
+
+
+if( $configType == 'panos' )
+    $pan = new PANConf();
+else
+    $pan = new PanoramaConf();
+
+print " - Detected platform type is '{$configType}'\n";
+
+if( $configInput['type'] == 'api' )
+    $pan->connector = $configInput['connector'];
+// </editor-fold>
+
+
 
 //
 // Location provided in CLI ?
@@ -358,12 +416,12 @@ else
 {
     if( $configType == 'panos' )
     {
-        print "No 'location' provided so using default ='vsys1'\n";
+        print " - No 'location' provided so using default ='vsys1'\n";
         $objectsLocation = 'vsys1';
     }
     else
     {
-        print "No 'location' provided so using default ='shared'\n";
+        print " - No 'location' provided so using default ='shared'\n";
         $objectsLocation = 'shared';
     }
 }
@@ -419,7 +477,7 @@ if( $objectsFilter !== null )
         exit(1);
     }
 
-    print "Parsing Rule filter and output it after sanitization: ";
+    print " - Parsing Rule filter and output it after sanitization: ";
     $objectFilterRQuery->display();
     print "\n";
 }
@@ -427,42 +485,11 @@ if( $objectsFilter !== null )
 
 
 //
-// What kind of config input do we have.
-//     File or API ?
+// load the config
 //
-if( $configType == 'panos' )
-    $pan = new PANConf();
-else
-    $pan = new PanoramaConf();
-$configInput = PH::processIOMethod($configInput, true);
-
-if( $configInput['status'] == 'fail' )
-{
-    fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");exit(1);
-}
-
-if( $configInput['type'] == 'file' )
-{
-    if(isset(PH::$args['out']) )
-    {
-        $configOutput = PH::$args['out'];
-        if (!is_string($configOutput) || strlen($configOutput) < 1)
-            display_error_usage_exit('"out" argument is not a valid string');
-    }
-    else
-        display_error_usage_exit('"out" is missing from arguments');
-
-    $pan->load_from_file($configInput['filename']);
-}
-elseif ( $configInput['type'] == 'api'  )
-{
-    if($debugAPI)
-        $configInput['connector']->setShowApiCalls(true);
-    $pan->API_load_from_candidate($configInput['connector']);
-}
-else
-    derr('not supported yet');
-
+$pan->load_from_domxml($xmlDoc);
+print "\n*** config loaded ***\n";
+// --------------------
 
 
 
@@ -649,6 +676,9 @@ if( $configOutput !== null )
     $pan->save_to_file($configOutput);
 }
 
+
+print "\n\n*********** END OF SERVICE-EDIT UTILITY **********\n";
+print     "**************************************************\n";
 print "\n\n";
 
 
