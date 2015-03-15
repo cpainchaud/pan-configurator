@@ -20,7 +20,7 @@
 class DecryptionRule extends Rule
 {
 
-    public function DecryptionRule($owner, $fromtemplatexml=false)
+    public function DecryptionRule($owner, $fromTemplateXML=false)
     {
         $this->owner = $owner;
 
@@ -33,17 +33,10 @@ class DecryptionRule extends Rule
         $this->init_source_with_store();
         $this->init_destination_with_store();
 
-        if( $fromtemplatexml )
+        if( $fromTemplateXML )
         {
-            if( is_null(self::$templatexmlroot) )
-            {
-                $xmlobj = new XmlArray();
-                self::$templatexmlroot = $xmlobj->load_string(self::$templatexml);
-                //print_r(self::$templatexmlroot);
-                //derr();
-            }
-            $tmparr = cloneArray(self::$templatexmlroot);
-            $this->load_from_xml($tmparr);
+            $xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
+            $this->load_from_domxml($xmlElement);
         }
 
     }

@@ -48,7 +48,7 @@ class NatRule extends Rule
 	 * @var DOMElement
 	 */
 	public $xmlroot;
-	
+
 	/** @ignore */
 	public $dnatroot=Array();
 	/** @ignore */
@@ -60,9 +60,9 @@ class NatRule extends Rule
 
 	/**
 	 * @param RuleStore $owner
-	 * @param bool $fromtemplatexml
+	 * @param bool $fromTemplateXML
 	 */
-	public function NatRule($owner, $fromtemplatexml=false)
+	public function NatRule($owner, $fromTemplateXML=false)
 	{
 		$this->owner = $owner;
 		
@@ -78,18 +78,11 @@ class NatRule extends Rule
 		$this->snathosts = new AddressRuleContainer($this);
 		$this->snathosts->name = 'snathosts';
 
-		if( $fromtemplatexml )
-		{
-			if( is_null(self::$templatexmlroot) )
-			{
-				$xmlobj = new XmlArray();
-				self::$templatexmlroot = $xmlobj->load_string(self::$templatexml);
-				//print_r(self::$templatexmlroot);
-				//derr();
-			}
-			$tmparr = cloneArray(self::$templatexmlroot);
-			$this->load_from_xml($tmparr);
-		}
+        if( $fromTemplateXML )
+        {
+            $xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
+            $this->load_from_domxml($xmlElement);
+        }
 		
 	}
 
