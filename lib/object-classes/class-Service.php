@@ -52,8 +52,18 @@ class Service
 	 * @var ServiceStore
 	 */
 	public $owner=null;
-	
-	
+
+    /**
+     * @property Array $dportMap
+     * @property Array $sportMap
+     */
+
+
+    /**
+     * @param $name
+     * @param ServiceStore $owner
+     * @param bool $fromtemplatexml
+     */
 	function Service($name, $owner=null, $fromtemplatexml=false)
 	{
 		
