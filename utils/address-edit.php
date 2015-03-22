@@ -674,6 +674,15 @@ print "\n **** PROCESSING OF OBJECTS DONE **** \n";
 if( isset(PH::$args['stats']) )
 {
     $pan->display_statistics();
+    print "\n";
+    foreach( $objectsToProcess as &$record )
+    {
+        if( get_class($record['store']->owner) != 'PanoramaConf' && get_class($record['store']->owner) != 'PANConf' )
+        {
+            $record['store']->owner->display_statistics();
+            print "\n";
+        }
+    }
 }
 
 

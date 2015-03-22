@@ -709,7 +709,7 @@ class PanAPIConnector
         //$url = 'action=get&type=config&xpath=/config';
         $url = 'type=op&cmd=<show><config><saved>candidate-config</saved></config></show>';
         
-        $r = &$this->sendRequest($url, true);
+        $r = $this->sendRequest($url, true);
 
         $configRoot = DH::findFirstElement('result', $r);
         if( $configRoot === false )
