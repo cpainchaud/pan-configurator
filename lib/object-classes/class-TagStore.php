@@ -81,14 +81,7 @@ class TagStore extends ObjStore
         {
             if( $this->xmlroot !== null )
             {
-                if( PH::$UseDomXML )
-                {
-                    $this->xmlroot->appendChild($Obj->xmlroot);
-                }
-                else
-                {
-                    $this->xmlroot['children'][] = &$Obj->xmlroot;
-                }
+                $this->xmlroot->appendChild($Obj->xmlroot);
             }
         }
         return $ret;
@@ -204,24 +197,11 @@ class TagStore extends ObjStore
         if( $this->xmlroot === null )
             return;
 
-        if( PH::$UseDomXML )
+        DH::clearDomNodeChilds($this->xmlroot);
+        foreach( $this->o as $o)
         {
-            DH::clearDomNodeChilds($this->xmlroot);
-            foreach( $this->o as $o)
-            {
-                if( !$o->isTmp() )
+            if( !$o->isTmp() )
                 $this->xmlroot->appendChild($o->xmlroot);
-            }
-        }
-        else
-        {
-            $this->xmlroot['children'] = Array();
-
-            foreach ($this->o as $o)
-            {
-                if (!$o->isTmp())
-                    $this->xmlroot['children'][] = &$o->xmlroot;
-            }
         }
 	}
 	

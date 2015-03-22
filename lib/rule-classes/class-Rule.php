@@ -299,19 +299,10 @@ class Rule
 	*/
 	protected function rewriteSDisabled_XML()
 	{
-		if( PH::$UseDomXML === TRUE )
-		{
-			if( $this->disabled )
-				DH::setDomNodeText($this->disabledroot, 'yes');
-			else
-				DH::setDomNodeText($this->disabledroot , 'no');
-			return;
-		}
-
 		if( $this->disabled )
-			$this->disabledroot['content'] = 'yes';
+			DH::setDomNodeText($this->disabledroot, 'yes');
 		else
-			$this->disabledroot['content'] = 'no';
+			DH::setDomNodeText($this->disabledroot , 'no');
 	}
 	
 	/**
@@ -409,48 +400,25 @@ class Rule
 
 		$this->description = $newDescription;
 
-        if( PH::$UseDomXML )
-        {
-            if( strlen($this->description) < 1 )
-            {
-				if( $this->descroot !== null )
-				{
-					$this->xmlroot->removeChild($this->descroot);
-					$this->descroot = null;
-				}
-            }
-            else
-            {
-                if( $this->descroot === null )
-				{
-					$this->descroot = DH::createElement($this->xmlroot, 'description', $this->description);
-					$this->descroot->appendChild($this->descroot);
-				}
-				else
-				{
-					DH::setDomNodeText($this->descroot, $this->description);
-				}
-            }
-            return true;
-        }
-
-
         if( strlen($this->description) < 1 )
-		{
-			if( $this->descroot !== null )
-			{
-				$this->descroot['name'] = 'ignme';
-			}
-		}
+        {
+            if( $this->descroot !== null )
+            {
+                $this->xmlroot->removeChild($this->descroot);
+                $this->descroot = null;
+            }
+        }
         else
         {
             if( $this->descroot === null )
             {
-                $this->descroot = Array( 'name' => 'description' , 'content' => '');
-                $xml['children'][] = &$this->descroot;
+                $this->descroot = DH::createElement($this->xmlroot, 'description', $this->description);
+                $this->descroot->appendChild($this->descroot);
             }
-            $this->descroot['name'] = 'description';
-			$this->descroot['content'] = $newDescription;
+            else
+            {
+                DH::setDomNodeText($this->descroot, $this->description);
+            }
         }
 
 		return true;
@@ -489,11 +457,7 @@ class Rule
 		
 		$this->name = $name;
 
-		if( PH::$UseDomXML === TRUE )
-			$this->xmlroot->setAttribute('name', $name);
-		else
-			$this->xmlroot['attributes']['name'] = $name;
-
+		$this->xmlroot->setAttribute('name', $name);
 
 		return true;
 		

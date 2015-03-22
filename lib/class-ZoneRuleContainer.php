@@ -208,11 +208,7 @@ class ZoneRuleContainer extends ObjRuleContainer
 
     public function rewriteXML()
     {
-        if( PH::$UseDomXML === TRUE )
-            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
-        else
-            Hosts_to_xmlA($this->xmlroot['children'], $this->o, 'member', true);
-
+        DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
     }
 
     public function &toString_inline()

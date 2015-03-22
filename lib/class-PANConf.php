@@ -284,16 +284,10 @@ class PANConf
 	public function save_to_file($filename)
 	{
 		print "Now saving PANConf to file '$filename'...";
-		if( PH::$UseDomXML === TRUE )
-		{
-			$xml = &DH::dom_to_xml($this->xmlroot);
-			file_put_contents ( $filename , $xml);	
-		}
-		else
-		{
-			$xml = &array_to_xml($this->xmlroot);
-			file_put_contents ( $filename , $xml);	
-		}
+
+		$xml = &DH::dom_to_xml($this->xmlroot);
+		file_put_contents ( $filename , $xml);
+
 		print "     done!\n\n";
 	}
 	

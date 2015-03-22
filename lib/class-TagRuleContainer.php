@@ -248,30 +248,16 @@ class TagRuleContainer extends ObjRuleContainer
 
     public function rewriteXML()
     {
-        if( PH::$UseDomXML === TRUE )
+        if( count($this->o) > 0 )
         {
-            if( count($this->o) > 0 )
-            {
-                if( $this->xmlroot === null )
-                    $this->xmlroot = DH::createElement($this->owner->xmlroot, 'tag');
-                DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
-            }
-            else
-            {
-                if( $this->xmlroot !== null )
-                    $this->owner->xmlroot->removeChild($this->xmlroot);
-            }
+            if( $this->xmlroot === null )
+                $this->xmlroot = DH::createElement($this->owner->xmlroot, 'tag');
+            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
         }
         else
         {
-            $this->xmlroot['name'] = 'tag';
-            Hosts_to_xmlA($this->xmlroot['children'], $this->o, 'member', false);
-            if( count($this->o) == 0 )
-            {
-                $this->xmlroot['name'] = 'ignme';
-                $this->xmlroot['content'] = '';
-            }
-            //die("tags count".count($this->o)."\n");
+            if( $this->xmlroot !== null )
+                $this->owner->xmlroot->removeChild($this->xmlroot);
         }
     }
 

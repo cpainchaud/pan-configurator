@@ -51,6 +51,7 @@ class PH
     static public function enableDomXMLSupport()
     {
         self::$UseDomXML = true;
+        mwarning('this function is deprecated');
     }
 
     /**

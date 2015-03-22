@@ -93,42 +93,25 @@ class AddressGroup
 
 	public function xml_convert_to_v6()
 	{
+        $newElement = $this->xmlroot->ownerDocument->createElement('static');
+        $nodes = Array();
 
-		if( PH::$UseDomXML )
-		{
-			$newElement = $this->xmlroot->ownerDocument->createElement('static');
-			$nodes = Array();
+        foreach($this->xmlroot->childNodes as $node)
+        {
+            if( $node->nodeType != 1 )
+                continue;
 
-			foreach($this->xmlroot->childNodes as $node)
-			{
-				if( $node->nodeType != 1 )
-					continue;
-
-				$nodes[] = $node;
-			}
+            $nodes[] = $node;
+        }
 
 
-			foreach($nodes as $node)
-			{
-				$newElement->appendChild($node);
-			}
+        foreach($nodes as $node)
+        {
+            $newElement->appendChild($node);
+        }
 
 
-			$this->xmlroot->appendChild($newElement);
-
-			return;
-		}
-
-
-		$ar = Array('name' => 'static'  );
-
-		$ar['children'] = &$this->xmlroot['children'];
-
-		$tmp = Array();
-
-		$this->xmlroot['children'] = &$tmp;
-		$this->xmlroot['children'][] = &$ar;
-
+        $this->xmlroot->appendChild($newElement);
 	}
 
 	/**

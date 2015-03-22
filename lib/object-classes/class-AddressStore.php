@@ -524,10 +524,11 @@ class AddressStore
 	
 	/**
 	* @param Address|AddressGroup $s
+     * @param bool $rewriteXml
 	* @return bool if object was added. wrong if it was already there or another object with same name.
 	*
 	*/
-	public function add($s, $rewritexml = true)
+	public function add($s, $rewriteXml = true)
 	{
 		//TODO remove strtolower from everywhere
 		$this->fasthashcomp = null;
@@ -542,7 +543,7 @@ class AddressStore
 				{
 					derr('could not find object named '.$s);
 				}
-				return $this->add($o,$rewritexml);
+				return $this->add($o,$rewriteXml);
 			}
 			derr('this is not supported');
 		}
@@ -566,14 +567,9 @@ class AddressStore
 			else
 			{
 				$this->addr[$lower] = $s;
-				if( $rewritexml )
+				if( $rewriteXml )
                 {
-                    if( !PH::$UseDomXML )
-                        $this->addrroot['children'][] = &$s->xmlroot;
-                    else
-					{
-						$this->addrroot->appendChild($s->xmlroot);
-					}
+					$this->addrroot->appendChild($s->xmlroot);
                 }
 			}
 				
@@ -585,12 +581,9 @@ class AddressStore
 			$this->addrg[$lower] = $s;
 			$this->all[$lower] = $s;
 
-			if( $rewritexml )
+			if( $rewriteXml )
             {
-                if( !PH::$UseDomXML )
-                    $this->addrgroot['children'][] = &$s->xmlroot;
-                else
-                    $this->addrgroot->appendChild($s->xmlroot);
+                $this->addrgroot->appendChild($s->xmlroot);
             }
 			
 		}
@@ -675,17 +668,11 @@ class AddressStore
 		{
 			if( $class == "Address" )
             {
-                if(!PH::$UseDomXML)
-                    $this->rewriteAddressStoreXML();
-                else
-                    $this->addrroot->removeChild($s->xmlroot);
+                $this->addrroot->removeChild($s->xmlroot);
             }
             else if( $class == "AddressGroup" )
             {
-                if( !PH::$UseDomXML )
-                    $this->rewriteAddressGroupStoreXML();
-                else
-                    $this->addrgroot->removeChild($s->xmlroot);
+                $this->addrgroot->removeChild($s->xmlroot);
             }
             else
                 derr('unsupported');

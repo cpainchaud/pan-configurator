@@ -80,10 +80,7 @@ class Zone
         if( $this->xmlroot === null )
             return $ret;
 
-        if( PH::$UseDomXML === TRUE )
-            $this->xmlroot->getAttributeNode('name')->nodeValue = $newName;
-        else
-            $this->xmlroot['attributes']['name'] = $newName;
+        $this->xmlroot->getAttributeNode('name')->nodeValue = $newName;
 
         return $ret;
     }

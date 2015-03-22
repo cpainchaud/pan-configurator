@@ -210,27 +210,17 @@ class ServiceGroup
 	
 	public function rewriteXML()
 	{
-		if( PH::$UseDomXML === TRUE )
-		{
-			if( $this->owner->owner->version >= 60 )
-			{
-				$membersRoot = DH::findFirstElement('members', $this->xmlroot);
-				if( $membersRoot === false )
-				{
-					derr('<members> not found');
-				}
-				DH::Hosts_to_xmlDom($membersRoot, $this->members, 'member', false);
-			}
-			else
-				DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
-		}
-		else
+        if( $this->owner->owner->version >= 60 )
         {
-            if( $this->owner->owner->version >= 60 )
-                Hosts_to_xmlA($this->membersRoot['children'], $this->members, 'member', false);
-            else
-                Hosts_to_xmlA($this->xmlroot['children'], $this->members, 'member', false);
+            $membersRoot = DH::findFirstElement('members', $this->xmlroot);
+            if( $membersRoot === false )
+            {
+                derr('<members> not found');
+            }
+            DH::Hosts_to_xmlDom($membersRoot, $this->members, 'member', false);
         }
+        else
+            DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
 	}
 	
 	/**
@@ -380,41 +370,27 @@ class ServiceGroup
 
 	public function xml_convert_to_v6()
 	{
+        $newElement = $this->xmlroot->ownerDocument->createElement('members');
+        $nodes = Array();
 
-		if( PH::$UseDomXML )
-		{
-			$newElement = $this->xmlroot->ownerDocument->createElement('members');
-			$nodes = Array();
+        foreach($this->xmlroot->childNodes as $node)
+        {
+            if( $node->nodeType != 1 )
+                continue;
 
-			foreach($this->xmlroot->childNodes as $node)
-			{
-				if( $node->nodeType != 1 )
-					continue;
-
-				$nodes[] = $node;
-			}
+            $nodes[] = $node;
+        }
 
 
-			foreach($nodes as $node)
-			{
-				$newElement->appendChild($node);
-			}
+        foreach($nodes as $node)
+        {
+            $newElement->appendChild($node);
+        }
 
 
-			$this->xmlroot->appendChild($newElement);
+        $this->xmlroot->appendChild($newElement);
 
-			return;
-		}
-
-		$ar = Array('name' => 'members'  );
-
-		$ar['children'] = &$this->xmlroot['children'];
-
-		$tmp = Array();
-
-		$this->xmlroot['children'] = &$tmp;
-		$this->xmlroot['children'][] = &$ar;
-
+        return;
 	}
 
 

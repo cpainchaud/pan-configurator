@@ -541,20 +541,10 @@ class ServiceStore
 		if( !$this->centralStore )
 			derr('can be called only from a central store');
 
-
-		if( PH::$UseDomXML === TRUE )
-		{
-			DH::clearDomNodeChilds($this->servroot);
-			foreach( $this->serv as $s )
-			{
-				$this->servroot->appendChild($s->xmlroot);
-			}
-			return;
-		}
-		$this->servroot['children'] = Array();
+		DH::clearDomNodeChilds($this->servroot);
 		foreach( $this->serv as $s )
 		{
-			$this->servroot['children'][] = &$s->xmlroot;
+			$this->servroot->appendChild($s->xmlroot);
 		}
 	}
 
@@ -563,19 +553,10 @@ class ServiceStore
 		if( !$this->centralStore )
 			derr('can be called only from a central store');
 
-		if( PH::$UseDomXML === TRUE )
-		{
-			DH::clearDomNodeChilds($this->servgroot);
-			foreach( $this->servg as $s )
-			{
-				$this->servgroot->appendChild($s->xmlroot);
-			}
-			return;
-		}
-		$this->servgroot['children'] = Array();
+		DH::clearDomNodeChilds($this->servgroot);
 		foreach( $this->servg as $s )
 		{
-			$this->servgroot['children'][] = &$s->xmlroot;
+			$this->servgroot->appendChild($s->xmlroot);
 		}
 	}
 	
@@ -667,35 +648,7 @@ class ServiceStore
 		$path = $this->getBaseXPath().'/service-group';
 		return $path;
 	}
-	
-	public function rewriteXML()
-	{
 
-		if( !$this->centralStore )
-		{
-			if( PH::$UseDomXML === TRUE )
-			{
-				if( $this->appdef )
-					DH::Hosts_to_xmlDom($this->xmlroot, $this->all, true, 'application-default');
-				else
-					DH::Hosts_to_xmlDom($this->xmlroot, $this->all);
-			}
-			else
-			{
-				if( $this->appdef )
-				{
-					Hosts_to_xmlA($this->xmlroot['children'], $this->all, true, 'application-default');
-					vardump($this->xmlroot);
-				}
-				else
-					Hosts_to_xmlA($this->xmlroot['children'], $this->all);
-			}
-			
-			return;
-		}
-		
-		derr($this->toString()." ".__FUNCTION__.": Error : cannot call this from a store\n");
-	}
 	
 	public function newService($name, $proto, $dport)
 	{

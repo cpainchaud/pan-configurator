@@ -150,14 +150,11 @@ class Service
 	
 
 	
-	public function setName($newname)
+	public function setName($newName)
 	{
-		$this->setRefName($newname);
+		$this->setRefName($newName);
 
-		if( PH::$UseDomXML === TRUE )
-			$this->xmlroot->getAttributeNode('name')->value = $newname;
-		else
-			$this->xmlroot['attributes']['name'] = $newname;	
+		$this->xmlroot->setAttribute('name', $newName);
 	}
 
 	public function &getXPath()

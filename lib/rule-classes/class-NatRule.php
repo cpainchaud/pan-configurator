@@ -549,23 +549,16 @@ class NatRule extends Rule
 	*/
 	public function rewriteService_XML()
 	{
-
-		if( PH::$UseDomXML === TRUE )
-			DH::clearDomNodeChilds($this->serviceroot);
+		DH::clearDomNodeChilds($this->serviceroot);
 
 		if( is_null($this->service) )
 		{
-			if( PH::$UseDomXML === TRUE )
 				DH::setDomNodeText($this->serviceroot, 'any');
-			else	
-				$this->serviceroot['content'] = 'any';
+
 			return;
 		}
-		
-		if( PH::$UseDomXML === TRUE )
-			DH::setDomNodeText($this->serviceroot, $this->service->name());
-		else
-			$this->serviceroot['content'] = $this->service->name();
+
+		DH::setDomNodeText($this->serviceroot, $this->service->name());
 	}
 	
 	

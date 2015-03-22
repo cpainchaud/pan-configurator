@@ -212,19 +212,13 @@ class AddressRuleContainer extends ObjRuleContainer
 
     public function rewriteXML()
     {
-        if( PH::$UseDomXML === TRUE )
-        {
-            if( $this->xmlroot === null )
-                return;
+        if( $this->xmlroot === null )
+            return;
 
-            if( $this->xmlroot !== null && $this->name == 'snathosts' && count($this->o) == 0 )
-                DH::clearDomNodeChilds($this->xmlroot);
-            else
-                DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
-        }
+        if( $this->xmlroot !== null && $this->name == 'snathosts' && count($this->o) == 0 )
+            DH::clearDomNodeChilds($this->xmlroot);
         else
-            Hosts_to_xmlA($this->xmlroot['children'], $this->o, 'member', true);
-
+            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
     }
 
     public function &toString_inline()

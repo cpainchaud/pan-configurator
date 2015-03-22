@@ -71,85 +71,44 @@ class PanAPIConnector
     {
         $result = Array();
 
+        $url = "type=op&cmd=<show><system><info></info></system></show>";
+        $res = $this->sendRequest($url, true);
+        $orig = $res;
+        $res = DH::findFirstElement('result', $res);
+        if ($res === false )
+            derr('cannot find <result>:'.DH::dom_to_xml($orig,0,true,2));
+        $res = DH::findFirstElement('system', $res);
+        if ($res === false )
+            derr('cannot find <system>');
 
 
-        if( !PH::$UseDomXML )
+        $version = DH::findFirstElement('sw-version', $res);
+        if ($version === false )
+            derr("cannot find <sw-version>:\n".DH::dom_to_xml($orig,0,true,4));
+
+        $version = $version->nodeValue;
+
+        $model = DH::findFirstElement('model', $res);
+        if ($model === false )
+            derr('cannot find <model>');
+
+        $model = $model->nodeValue;
+
+        if ($model == 'Panorama')
         {
-            $url = "type=op&cmd=<show><system><info></info></system></show>";
-            $res = $this->sendRequest($url);
-            $res = &searchForName('name', 'result', $res);
-            if ($res === null)
-                derr('error');
-            $res = &searchForName('name', 'system', $res['children']);
-            if ($res === null)
-                derr('error');
-
-            $version = &searchForName('name', 'sw-version', $res['children']);
-            if ($version === null)
-                derr('cannot find PANOS version');
-
-
-            $res = &searchForName('name', 'model', $res['children']);
-            if ($res === null)
-                derr('cannot find host type');
-
-            if ($res['content'] == 'Panorama')
-            {
-                $result['type'] = 'panorama';
-                //print "Panorama found!\n";
-            } else
-            {
-                $result['type'] = 'panos';
-                //print "PANOS found!\n";
-            }
-
-            $vex = explode('.', $version['content']);
-            if (count($vex) != 3)
-                derr("ERROR! Unsupported PANOS version :  " . $version['content'] . "\n\n");
-
-            $result['version'] = $vex[0] * 10 + $vex[1] * 1;
-        }
-        else
+            $result['type'] = 'panorama';
+            //print "Panorama found!\n";
+        } else
         {
-            $url = "type=op&cmd=<show><system><info></info></system></show>";
-            $res = $this->sendRequest($url, true);
-            $orig = $res;
-            $res = DH::findFirstElement('result', $res);
-            if ($res === false )
-                derr('cannot find <result>:'.DH::dom_to_xml($orig,0,true,2));
-            $res = DH::findFirstElement('system', $res);
-            if ($res === false )
-                derr('cannot find <system>');
-
-
-            $version = DH::findFirstElement('sw-version', $res);
-            if ($version === false )
-                derr("cannot find <sw-version>:\n".DH::dom_to_xml($orig,0,true,4));
-
-            $version = $version->nodeValue;
-
-            $model = DH::findFirstElement('model', $res);
-            if ($model === false )
-                derr('cannot find <model>');
-
-            $model = $model->nodeValue;
-
-            if ($model == 'Panorama')
-            {
-                $result['type'] = 'panorama';
-                //print "Panorama found!\n";
-            } else
-            {
-                $result['type'] = 'panos';
-                //print "PANOS found!\n";
-            }
-
-            $vex = explode('.', $version);
-            if (count($vex) != 3)
-                derr("ERROR! Unsupported PANOS version :  " . $version . "\n\n");
-
-            $result['version'] = $vex[0] * 10 + $vex[1] * 1;
+            $result['type'] = 'panos';
+            //print "PANOS found!\n";
         }
+
+        $vex = explode('.', $version);
+        if (count($vex) != 3)
+            derr("ERROR! Unsupported PANOS version :  " . $version . "\n\n");
+
+        $result['version'] = $vex[0] * 10 + $vex[1] * 1;
 
         return $result;
     }
@@ -256,42 +215,22 @@ class PanAPIConnector
                 print "* Now generating an API key from '$host'...";
                 $con = new PanAPIConnector($host, '');
 
-                if( PH::$UseDomXML )
-                {
-                    $url = "type=keygen&user=$user&password=$password";
-                    $res = $con->sendRequest($url);
+                $url = "type=keygen&user=$user&password=$password";
+                $res = $con->sendRequest($url);
 
-                    $res = DH::findFirstElement('response', $res);
-                    if ($res === false)
-                        derr('missing <response> from API answer');
+                $res = DH::findFirstElement('response', $res);
+                if ($res === false)
+                    derr('missing <response> from API answer');
 
-                    $res = DH::findFirstElement('result', $res);
-                    if ($res === false)
-                        derr('missing <result> from API answer');
+                $res = DH::findFirstElement('result', $res);
+                if ($res === false)
+                    derr('missing <result> from API answer');
 
-                    $res = DH::findFirstElement('key', $res);
-                    if ($res === false)
-                        derr('unsupported response from PANOS API');
+                $res = DH::findFirstElement('key', $res);
+                if ($res === false)
+                    derr('unsupported response from PANOS API');
 
-                    $apiKey = $res->textContent;
-                }
-                else
-                {
-                    $url = "type=keygen&user=$user&password=$password";
-                    $res = &$con->sendRequest($url);
-                    $res = &searchForName('name', 'result', $res);
-                    if ($res === null)
-                        derr('unsupported response from PANOS API');
-
-                    $res = &searchForName('name', 'key', $res['children']);
-                    if ($res === null)
-                        derr('unsupported response from PANOS API');
-
-                    if (strlen($res['content']) < 1)
-                        derr('unsupported response from PANOS API');
-
-                    $apiKey = $res['content'];
-                }
+                $apiKey = $res->textContent;
 
                 print "OK, key is $apiKey\n\n";
 
@@ -319,48 +258,16 @@ class PanAPIConnector
 
         print " Testing API connectivity: ";
 
-        if( PH::$UseDomXML )
-        {
-            $res = DH::findFirstElement('response', $res);
-            if ($res === false)
-                derr('missing <response> from API answer');
+        $res = DH::findFirstElement('response', $res);
+        if ($res === false)
+            derr('missing <response> from API answer');
 
-            $res = DH::findFirstElement('result', $res);
-            if ($res === false)
-                derr('missing <result> from API answer');
+        $res = DH::findFirstElement('result', $res);
+        if ($res === false)
+            derr('missing <result> from API answer');
 
-            print "OK!\n";
+        print "OK!\n";
 
-        }
-        else
-        {
-            $res = &searchForName('name', 'result', $res);
-            if( $res === null )
-                derr('error');
-            $res = &searchForName('name', 'system', $res['children']);
-            if( $res === null )
-                derr('error');
-
-            $version = &searchForName('name', 'sw-version', $res['children']);
-            if( $version === null )
-                derr('cannot find PANOS version');
-
-
-            $res = &searchForName('name', 'model', $res['children']);
-            if( $res === null )
-                derr('cannot find host type');
-
-            if( $res['content'] == 'Panorama' )
-            {
-                $panos = false;
-                print "Panorama found!\n";
-            }
-            else
-            {
-                $panos = true;
-                print "PANOS found!\n";
-            }
-        }
     }
 
 	

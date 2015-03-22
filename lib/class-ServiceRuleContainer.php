@@ -251,21 +251,10 @@ class ServiceRuleContainer extends ObjRuleContainer
 
     public function rewriteXML()
     {
-        if( PH::$UseDomXML === TRUE )
-        {
-            if( $this->appDef )
-                DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true, 'application-default');
-            else
-                DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
-        }
+        if( $this->appDef )
+            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true, 'application-default');
         else
-        {
-            if( $this->appDef )
-                Hosts_to_xmlA($this->xmlroot['children'], $this->o, 'member', true, 'application-default');
-            else
-                Hosts_to_xmlA($this->xmlroot['children'], $this->o, 'member', true);
-        }
-
+            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
     }
 
 
