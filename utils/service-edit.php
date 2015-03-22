@@ -584,14 +584,18 @@ foreach( $objectsLocation as $location )
 // It's time to process Rules !!!!
 //
 
-// <editor-fold desc=" *****  Rule Processing  *****" defaultstate="collapsed" >
+// <editor-fold desc=" *****  Object Processing  *****" defaultstate="collapsed" >
+
+$totalObjectsProcessed = 0;
+
 foreach( $objectsToProcess as &$objectsRecord )
 {
-    $ruleStore = $objectsRecord['store'];
+    $subObjectsProcessed = 0;
 
+    $store = $objectsRecord['store'];
     $objects = &$objectsRecord['objects'];
 
-    print "\n* processing store '".$ruleStore->toString()." that holds ".count($objects)." objects\n";
+    print "\n* processing store '".$store->toString()." that holds ".count($objects)." objects\n";
 
 
     foreach($objects as $object )
@@ -602,6 +606,9 @@ foreach( $objectsToProcess as &$objectsRecord )
             if( !$queryResult )
                 continue;
         }
+
+        $totalObjectsProcessed++;
+        $subObjectsProcessed++;
 
         //mwarning($object->name());
 
@@ -658,11 +665,13 @@ foreach( $objectsToProcess as &$objectsRecord )
             }
         }
     }
+
+    print "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed\n\n";
 }
 // </editor-fold>
 
 
-print "\n **** PROCESSING OF OBJECTS DONE **** \n";
+print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS DONE **** \n\n";
 
 if( isset(PH::$args['stats']) )
 {
