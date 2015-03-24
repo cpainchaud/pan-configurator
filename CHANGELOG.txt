@@ -5,8 +5,9 @@ CHANGELOG
 * 6.1 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
 * support for 7.0 new Security rules actions : drop, reset-client, reset-server, reset-both
 * moved preRules and postRules into one single store (see getPreRules and getPostRules)
-* rule-edit , service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
-* service-edit and address-edit new action: replaceByMembersAndDelete
+* util rule-edit , service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
+* util service-edit and address-edit new action: replaceByMembersAndDelete
+* util upload-config now supports inject xml parts direct in candidate config (see 'toXpath' option)
 * virtual-wire and aggregate-group ethernet interface support
 
 ---------
