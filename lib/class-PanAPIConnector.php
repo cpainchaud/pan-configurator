@@ -632,7 +632,7 @@ class PanAPIConnector
     }
 
 
-    public function &sendSetRequest($xpath, $element)
+    public function sendSetRequest($xpath, $element)
     {
         $params = Array();
 
@@ -644,7 +644,7 @@ class PanAPIConnector
         return $this->sendRequest($params);
     }
 
-    public function &sendEditRequest($xpath, $element)
+    public function sendEditRequest($xpath, $element)
     {
         $params = Array();
 
@@ -656,7 +656,7 @@ class PanAPIConnector
         return $this->sendRequest($params);
     }
 
-    public function &sendDeleteRequest($xpath)
+    public function sendDeleteRequest($xpath)
     {
         $params = Array();
 
@@ -667,7 +667,7 @@ class PanAPIConnector
         return $this->sendRequest($params);
     }
 
-    public function &sendRenameRequest($xpath, $newname)
+    public function sendRenameRequest($xpath, $newname)
     {
         $params = Array();
 
