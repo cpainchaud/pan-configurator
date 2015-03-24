@@ -150,7 +150,7 @@ class NatRule extends Rule
 			$this->snattype = $firstE->nodeName;
 			
 			// Do we support this type of NAT ?
-			if( $this->snattype != "static-ip" && $this->snattype != "dynamic-ip-and-port"  )
+			if( $this->snattype != "static-ip" && $this->snattype != "dynamic-ip-and-port"  && $this->snattype != "dynamic-ip" )
 				derr("SNAT type '".$this->snattype."' for rule '".$this->name."' is not supported, EXIT\n");
 			
 			//print "Determined NAT type ".$tcur['name']."\n";
@@ -223,7 +223,7 @@ class NatRule extends Rule
 					}
 					else
 					{
-						derr("Unknown dynamic SNAT type on rule '".$this->name);
+                        mwarning("Unknown dynamic SNAT type on rule '".$this->name." don't mess too much with this rule or face unpredictable results");
 					}
 				}
 				
