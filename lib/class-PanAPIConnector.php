@@ -613,9 +613,14 @@ class PanAPIConnector
 
     public function getCandidateConfig()
     {
+        return $this->getSavedConfig('candidate-config');
+    }
+
+    public function getSavedConfig($configurationName)
+    {
         //$url = 'action=get&type=config&xpath=/config';
-        $url = 'type=op&cmd=<show><config><saved>candidate-config</saved></config></show>';
-        
+        $url = "type=op&cmd=<show><config><saved>$configurationName</saved></config></show>";
+
         $r = $this->sendRequest($url, true);
 
         $configRoot = DH::findFirstElement('result', $r);

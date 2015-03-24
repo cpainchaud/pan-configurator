@@ -155,9 +155,16 @@ elseif ( $configInput['type'] == 'api'  )
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
 
-    $doc = $configInput['connector']->getCandidateConfig();
-
     print "{$configInput['connector']->apihost} ... ";
+
+    if( !isset($configInput['filename']) || $configInput['filename'] == '' || $configInput['filename'] == 'candidate-config' )
+        $doc = $configInput['connector']->getCandidateConfig();
+    elseif ( $configInput['filename'] == 'running-config' )
+        $doc = $configInput['connector']->getRunningConfig();
+    else
+        $doc = $configInput['connector']->getSavedConfig($configInput['filename']);
+
+
 }
 else
     derr('not supported yet');
