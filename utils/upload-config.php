@@ -80,6 +80,7 @@ $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+$supportedArguments['toxpath'] = Array('niceName' => 'toXpath', 'shortHelp' => 'inject xml directly in some parts of the candidate config');
 $supportedArguments['loadafterupload'] = Array('niceName' => 'loadAfterUpload', 'shortHelp' => 'load configuration after upload happened');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtconfig'] = Array('niceName' => 'preserveMgmtConfig', 'shortHelp' => 'this message');
@@ -117,18 +118,16 @@ if( !is_string($configOutput) || strlen($configOutput) < 1 )
     display_error_usage_exit('"out" argument is not a valid string');
 
 
+if( isset(PH::$args['debugapi'])  )
+    $debugAPI = true;
+else
+    $debugAPI = false;
+
 if( isset(PH::$args['loadafterupload']) )
 {
     $loadConfigAfterUpload = true;
 }
 
-
-
-
-if( isset(PH::$args['debugapi'])  )
-{
-    $debugAPI = true;
-}
 
 
 $doc = new DOMDocument();
@@ -155,6 +154,7 @@ elseif ( $configInput['type'] == 'api'  )
 {
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
+
     $doc = $configInput['connector']->getCandidateConfig();
 
     print "{$configInput['connector']->apihost} ... ";
@@ -183,102 +183,116 @@ if( $configOutput['status'] == 'fail' )
 
 if( $configOutput['type'] == 'file' )
 {
+    if( isset(PH::$args['toxpath']) )
+    {
+        derr("toXpath options was used, it's incompatible with a file output");
+    }
     print "{$configOutput['filename']} ... ";
     $doc->save($configOutput['filename']);
 }
 elseif ( $configOutput['type'] == 'api'  )
 {
-    if( isset(PH::$args['preservemgmtconfig']) )
-    {
-        print "Option 'preserveMgmtConfig was used, we will first download the running config ...";
-        $runningConfig = $configOutput['connector']->getRunningConfig();
-        print "OK!\n";
-
-        $xpathQrunning = new DOMXPath($runningConfig);
-        $xpathQlocal = new DOMXPath($doc);
-
-        $xpathQueryList = Array('/config/mgt-config' , "/config/devices/entry[@name='localhost.localdomain']/deviceconfig",
-                                 '/config/shared/authentication-profile',  '/config/shared/authentication-sequence' ,
-                                '/config/shared/certificate', '/config/shared/log-settings', '/config/shared/local-user-database',
-            '/config/shared/admin-role');
-
-        foreach( $xpathQueryList as $xpathQuery )
-        {
-            $xpathResults = $xpathQrunning->query($xpathQuery);
-            if ($xpathResults->length > 1)
-            {
-                //var_dump($xpathResults);
-                derr('more than one one results found for xpath query: ' . $xpathQuery);
-            }
-            if($xpathResults->length == 0)
-                $runningNodeFound = false;
-            else
-                $runningNodeFound = true;
-
-            $xpathResultsLocal = $xpathQlocal->query($xpathQuery);
-            if ($xpathResultsLocal->length > 1)
-            {
-                //var_dump($xpathResultsLocal);
-                derr('none or more than one one results found for xpath query: ' . $xpathQuery);
-            }
-            if($xpathResultsLocal->length == 0)
-                $localNodeFound = false;
-            else
-                $localNodeFound = true;
-
-            if( $localNodeFound == false && $runningNodeFound == false )
-            {
-                continue;
-            }
-
-            if( $localNodeFound && $runningNodeFound )
-            {
-                $localParentNode = $xpathResultsLocal->item(0)->parentNode;
-                $localParentNode->removeChild($xpathResultsLocal->item(0));
-                $newNode = $doc->importNode($xpathResults->item(0), true);
-                $localParentNode->appendChild($newNode);
-                continue;
-            }
-
-            if( $localNodeFound == false && $runningNodeFound )
-            {
-                $newXpath = explode('/', $xpathQuery);
-                if( count($newXpath) < 2 )
-                    derr('unsupported, debug xpath query: '.$xpathQuery);
-
-                unset($newXpath[count($newXpath)-1]);
-                $newXpath = implode('/', $newXpath);
-
-                $xpathResultsLocal = $xpathQlocal->query($newXpath);
-                if ($xpathResultsLocal->length != 1)
-                {
-                    derr('unsupported, debug xpath query: ' . $newXpath);
-                }
-
-                $newNode = $doc->importNode($xpathResults->item(0), true);
-                $localParentNode = $xpathResultsLocal->item(0);
-                $localParentNode->appendChild($newNode);
-
-
-                continue;
-            }
-
-            //derr('unsupported');
-        }
-
-    }
-
-    if($debugAPI)
+    if( $debugAPI )
         $configOutput['connector']->setShowApiCalls(true);
 
-    if( $configOutput['filename'] !== null )
-        $saveName = $configOutput['filename'];
+    if( isset(PH::$args['toxpath']) )
+    {
+        $configOutput['connector']->sendSetRequest(PH::$args['toxpath'], DH::dom_to_xml(DH::firstChildElement($doc),-1,false) );
+    }
     else
-        $saveName = 'stage0.xml';
+    {
+        if (isset(PH::$args['preservemgmtconfig']))
+        {
+            print "Option 'preserveMgmtConfig was used, we will first download the running config ...";
+            $runningConfig = $configOutput['connector']->getRunningConfig();
+            print "OK!\n";
 
-    print "{$configOutput['connector']->apihost}/$saveName ... ";
+            $xpathQrunning = new DOMXPath($runningConfig);
+            $xpathQlocal = new DOMXPath($doc);
 
-    $configOutput['connector']->uploadConfiguration(DH::firstChildElement($doc), $saveName, false);
+            $xpathQueryList = Array('/config/mgt-config', "/config/devices/entry[@name='localhost.localdomain']/deviceconfig",
+                '/config/shared/authentication-profile', '/config/shared/authentication-sequence',
+                '/config/shared/certificate', '/config/shared/log-settings', '/config/shared/local-user-database',
+                '/config/shared/admin-role');
+
+            foreach ($xpathQueryList as $xpathQuery)
+            {
+                $xpathResults = $xpathQrunning->query($xpathQuery);
+                if ($xpathResults->length > 1)
+                {
+                    //var_dump($xpathResults);
+                    derr('more than one one results found for xpath query: ' . $xpathQuery);
+                }
+                if ($xpathResults->length == 0)
+                    $runningNodeFound = false;
+                else
+                    $runningNodeFound = true;
+
+                $xpathResultsLocal = $xpathQlocal->query($xpathQuery);
+                if ($xpathResultsLocal->length > 1)
+                {
+                    //var_dump($xpathResultsLocal);
+                    derr('none or more than one one results found for xpath query: ' . $xpathQuery);
+                }
+                if ($xpathResultsLocal->length == 0)
+                    $localNodeFound = false;
+                else
+                    $localNodeFound = true;
+
+                if ($localNodeFound == false && $runningNodeFound == false)
+                {
+                    continue;
+                }
+
+                if ($localNodeFound && $runningNodeFound)
+                {
+                    $localParentNode = $xpathResultsLocal->item(0)->parentNode;
+                    $localParentNode->removeChild($xpathResultsLocal->item(0));
+                    $newNode = $doc->importNode($xpathResults->item(0), true);
+                    $localParentNode->appendChild($newNode);
+                    continue;
+                }
+
+                if ($localNodeFound == false && $runningNodeFound)
+                {
+                    $newXpath = explode('/', $xpathQuery);
+                    if (count($newXpath) < 2)
+                        derr('unsupported, debug xpath query: ' . $xpathQuery);
+
+                    unset($newXpath[count($newXpath) - 1]);
+                    $newXpath = implode('/', $newXpath);
+
+                    $xpathResultsLocal = $xpathQlocal->query($newXpath);
+                    if ($xpathResultsLocal->length != 1)
+                    {
+                        derr('unsupported, debug xpath query: ' . $newXpath);
+                    }
+
+                    $newNode = $doc->importNode($xpathResults->item(0), true);
+                    $localParentNode = $xpathResultsLocal->item(0);
+                    $localParentNode->appendChild($newNode);
+
+
+                    continue;
+                }
+
+                //derr('unsupported');
+            }
+
+        }
+
+        if ($debugAPI)
+            $configOutput['connector']->setShowApiCalls(true);
+
+        if ($configOutput['filename'] !== null)
+            $saveName = $configOutput['filename'];
+        else
+            $saveName = 'stage0.xml';
+
+        print "{$configOutput['connector']->apihost}/$saveName ... ";
+
+        $configOutput['connector']->uploadConfiguration(DH::firstChildElement($doc), $saveName, false);
+    }
 }
 else
     derr('not supported yet');

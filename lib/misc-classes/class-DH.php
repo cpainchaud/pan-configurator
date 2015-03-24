@@ -378,6 +378,7 @@ class DH
      */
     static public function findXPath( $xpathString, $contextNode )
     {
+
         if( $contextNode->nodeType ==  XML_DOCUMENT_NODE )
         {
             $xpath = new DOMXpath($contextNode);
