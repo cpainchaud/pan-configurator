@@ -361,7 +361,7 @@ class DH
             derr("XPath query evaluation error for '{$xpathString}'");
 
         if( $nodes->length == 0 )
-            derr("no matching node found for xpath '{$xpathString}'");
+            derr("no matching node found for xpath '{$xpathString}'", $contextNode);
 
         if( $nodes->length > 1 )
             derr("more than 1 matching node found for xpath '{$xpathString}'");

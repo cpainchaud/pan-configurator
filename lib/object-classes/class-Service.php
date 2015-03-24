@@ -199,16 +199,16 @@ class Service
 		if( $this->isTmpSrv() && !$otherObject->isTmpSrv() )
 			return false;
 
-		if( $otherObject->isTmpSrv() && !$this->isTmpSev() )
+		if( $otherObject->isTmpSrv() && !$this->isTmpSrv() )
 			return false;
 
-		if( $otherObject->protocol != $this->protocol )
+		if( $otherObject->protocol !== $this->protocol )
 			return false;
 
-		if( $otherObject->dport != $this->dport )
+		if( $otherObject->dport !== $this->dport )
 			return false;
 
-		if( $otherObject->sport != $this->sport )
+		if( $otherObject->sport !== $this->sport )
 			return false;
 
 		return true;
