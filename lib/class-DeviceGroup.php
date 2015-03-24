@@ -101,10 +101,10 @@ class DeviceGroup
 		$this->zoneStore = $owner->zoneStore;
 		$this->appStore = $owner->appStore;
 		
-		$this->serviceStore = new ServiceStore($this,true);
+		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
 		
-		$this->addressStore = new AddressStore($this,true);
+		$this->addressStore = new AddressStore($this);
 		$this->addressStore->name = 'addresss';
 
 		$this->securityRules = new RuleStore($this, 'SecurityRule', true);

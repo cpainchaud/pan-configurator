@@ -21,8 +21,6 @@ class ServiceStore
 	use PathableName;
 	
 	public $owner;
-	
-	protected $centralStore = false;
 
 	/**
 	 * @var null|ServiceStore
@@ -51,18 +49,15 @@ class ServiceStore
 	
 	protected $fast = Array(); 
 	protected $fastMemToIndex = null;
-	protected $fasthashcomp = null;
 	
 	public $servroot;
 	public $servgroot;
 	
 	
-	public function ServiceStore($owner, $centralrole=false)
+	public function ServiceStore($owner)
 	{
-		$this->fasthashcomp = null;
-		
 		$this->owner = $owner;
-		$this->centralStore = $centralrole;
+
 		$this->findParentCentralStore();
 		
 		$this->regen_Indexes();
@@ -76,8 +71,6 @@ class ServiceStore
 	*/
 	public function load_services_from_domxml($xml)
 	{
-		$this->fasthashcomp = null;
-		
 		$this->servroot = $xml;
 
 		foreach( $this->servroot->childNodes as $node )
@@ -141,9 +134,6 @@ class ServiceStore
 
 	public function load_servicegroups_from_domxml($xml)
 	{
-		
-		$this->fasthashcomp = null;
-		
 		$this->servgroot = $xml;
 		
 		foreach( $xml->childNodes as $node )
@@ -170,13 +160,6 @@ class ServiceStore
 	
 	public function load_local_objects_xml(&$xml)
 	{
-		$this->fasthashcomp = null;
-		
-		if( $this->centralStore )
-		{
-			derr("Error cannot call this method from a store");
-		}
-		
 		$this->xmlroot = &$xml;
 
 		foreach($xml['children'] as &$cur)
@@ -208,13 +191,7 @@ class ServiceStore
 
 	public function load_local_objects_domxml($xml)
 	{
-		$this->fasthashcomp = null;
-		
-		if( $this->centralStore )
-		{
-			derr("Error cannot call this method from a store");
-		}
-		
+
 		$this->xmlroot = $xml;
 		
 		$i=0;
@@ -246,17 +223,6 @@ class ServiceStore
 		$this->regen_Indexes();
 		
 	}
-	
-	
-	/**
-	*
-	*
-	*/
-	public function setCentralStoreRole($is)
-	{
-		$this->centralStore = $is;
-	}
-	
 	
 	/**
 	*
@@ -325,81 +291,63 @@ class ServiceStore
 	public function find( $fn , $ref=null, $nested=true, $type = '')
 	{
 		$f = null;
-		if( $this->centralStore)
-		{
-			/*if( $type == 'tmp' )
-				$a = &$this->tmpserv;
-			else
-				$a = &$this->all;
-			*/
-			
-			if( $type == 'tmp' )
-			{
-				$a = &$this->tmpserv;
-				foreach($a as $o)
-				{
-					if( $o->name() == $fn )
-					{
-						$o->addReference($ref);
-						return $o;
-					}
-				}
-			}
-			
-			if( isset($this->fast[$fn] ) )
-			{
-				if( $ref !== null )
-					$this->fast[$fn]->addReference($ref);
-				return $this->fast[$fn];
-			}
+
+        if( $type == 'tmp' )
+        {
+            $a = &$this->tmpserv;
+            foreach($a as $o)
+            {
+                if( $o->name() == $fn )
+                {
+                    $o->addReference($ref);
+                    return $o;
+                }
+            }
+        }
+
+        if( isset($this->fast[$fn] ) )
+        {
+            if( $ref !== null )
+                $this->fast[$fn]->addReference($ref);
+            return $this->fast[$fn];
+        }
 
 
-			if( $nested && isset($this->panoramaShared) )
-			{
-				$f = $this->panoramaShared->find( $fn , $ref, false, $type);
+        if( $nested && isset($this->panoramaShared) )
+        {
+            $f = $this->panoramaShared->find( $fn , $ref, false, $type);
 
-				if( !is_null($f) )
-					return $f;
-			}
-			else if( $nested && isset($this->panoramaDG) )
-			{
-				$f = $this->panoramaDG->find( $fn , $ref, false, $type);
-				if( !is_null($f) )
-					return $f;
-			}
+            if( !is_null($f) )
+                return $f;
+        }
+        else if( $nested && isset($this->panoramaDG) )
+        {
+            $f = $this->panoramaDG->find( $fn , $ref, false, $type);
+            if( !is_null($f) )
+                return $f;
+        }
 
-			
-			if( $nested && $this->parentCentralStore !== null )
-			{
 
-				$f = $this->parentCentralStore->find( $fn , $ref, $nested);
-			}
-			
-			
-			return $f;
-		}
+        if( $nested && $this->parentCentralStore !== null )
+        {
 
-		if( $nested )
-			$f = $this->parentCentralStore->find( $fn , $ref, $nested, $type);
-		
-		return $f;
+            $f = $this->parentCentralStore->find( $fn , $ref, $nested);
+        }
+
+
+        return $f;
+
 	}
 	
 	public function findOrCreate( $fn , $ref=null, $nested=true)
 	{
-		if( $this->centralStore)
-		{
-			$f = $this->find( $fn , $ref, $nested);
-			if( $f )
-				return $f;
-			
-			$f = $this->createTmp($fn,$ref);
-			
-			return $f;
-		}
-		
-		$f = $this->parentCentralStore->findOrCreate( $fn , $ref, $nested);
-		return $f;
+        $f = $this->find( $fn , $ref, $nested);
+        if( $f )
+            return $f;
+
+        $f = $this->createTmp($fn,$ref);
+
+        return $f;
 	}
 	
 	public function findTmpService($name)
@@ -457,18 +405,13 @@ class ServiceStore
 	 * @return bool
 	 */
 	public function remove($s , $rewritexml=true)
-	{	
-		$this->fasthashcomp = null;
+	{
 		$class = get_class($s);
 		
 		$ser = spl_object_hash($s);
 		
 		if( isset($this->fastMemToIndex[$ser]))
 		{
-			if( count($this->all) == 1 && !$this->centralStore )
-			{
-				derr("You cannot remove last service without risking to introduce Any implicitly");
-			}
 			if( $class == "Service" )
 			{
 				if( $s->type == 'tmp' )
@@ -538,9 +481,6 @@ class ServiceStore
 	
 	public function rewriteServiceStoreXML()
 	{
-		if( !$this->centralStore )
-			derr('can be called only from a central store');
-
 		DH::clearDomNodeChilds($this->servroot);
 		foreach( $this->serv as $s )
 		{
@@ -550,9 +490,6 @@ class ServiceStore
 
 	public function rewriteServiceGroupStoreXML()
 	{
-		if( !$this->centralStore )
-			derr('can be called only from a central store');
-
 		DH::clearDomNodeChilds($this->servgroot);
 		foreach( $this->servg as $s )
 		{
@@ -567,8 +504,7 @@ class ServiceStore
 
 		if( is_null($s) )
 			derr('attempt to add null object?');
-		
-		$this->fasthashcomp = null;
+
 		$class = get_class($s);
 		
 		$ser = spl_object_hash($s);
@@ -601,14 +537,10 @@ class ServiceStore
 				
 
 			$s->owner = $this;
-			
-			// TODO improve with atomic addition instead of rewriting everything
-			// TODO cleanup central store stuff
+
 			if( $rewritexml )
 			{
-				if( !$this->centralStore )
-					$this->rewriteXML();
-				else if( $class == "Service" )
+				if( $class == "Service" )
 					$this->rewriteServiceStoreXML();
 				else if( $class == "ServiceGroup" )
 					$this->rewriteServiceGroupStoreXML();
@@ -635,16 +567,12 @@ class ServiceStore
 
 	public function &getServiceStoreXPath()
 	{
-		if( !$this->centralStore )
-			derr('cannot be called from a non central store object');
 		$path = $this->getBaseXPath().'/service';
 		return $path;
 	}
 
 	public function &getServiceGroupStoreXPath()
 	{
-		if( !$this->centralStore )
-			derr('cannot be called from a non central store object');
 		$path = $this->getBaseXPath().'/service-group';
 		return $path;
 	}
@@ -652,12 +580,6 @@ class ServiceStore
 	
 	public function newService($name, $proto, $dport)
 	{
-		$this->fasthashcomp = null;
-		
-		if( ! $this->centralStore )
-		{
-			derr("cannot call this from a store");
-		}
 		
 		if( isset($this->fast[$name]) )
 			derr("A Service named '$name' already exists");
@@ -672,11 +594,6 @@ class ServiceStore
 	
 	function createTmp($name, $ref=null)
 	{
-		$this->fasthashcomp = null;
-		
-		if( !$this->centralStore )
-			derr("You cannot create an object from this Store: '".$this->toString()."'\n");
-		
 		$f = new Service($name,$this);
 		$this->tmpserv[] = $f;
 		$this->all[] = $f;
@@ -694,14 +611,6 @@ class ServiceStore
 
 		if( ! $this->inStore($h) )
 			return false;
-
-		$this->fasthashcomp = null;
-
-		if( ! $this->centralStore )
-		{
-			$this->rewriteXML();
-			return true;
-		}
 
 		unset($this->fast[$oldname]);
 		$this->fast[$h->name()] = $h;
@@ -777,146 +686,6 @@ class ServiceStore
 		
 		return true;
 	}
-	
-	public function equals_fasterHash( $other )
-	{
-		if( is_null($this->fasthashcomp) )
-		{
-			$this->generateFastHashComp();
-		}
-		if( is_null($other->fasthashcomp) )
-		{
-			$other->generateFastHashComp();
-		}
-		
-		if( $this->fasthashcomp == $other->fasthashcomp  )
-		{
-			if( $this->equals($other) )
-				return true;
-		}
-		
-		return false;
-	}
-	
-	public function replaceReferencedObject($old, $new)
-	{
-		if( is_null($old) )
-			derr("\$old cannot be null");
-		
-		
-		
-		$class = get_class($new);
-		
-		if( !is_null($new) && $class != 'Service' && $class != 'ServiceGroup' )
-			derr("New Object has wrong class type: $class");
-		
-		if( $this->centralStore )
-		{
-			derr("Calling this function in a Central Store should never happen");
-		}
-		else
-		{
-			if( !isset($this->fastMemToIndex[spl_object_hash($old)]) )
-				derr("Object you want to replace was not found");
-				
-			if( !is_null($new) )
-				$this->add($new,false);
-			$this->remove($old);
-		}
-	}
-	
-	
-	public function generateFastHashComp($force=false)
-	{
-		if( !is_null($this->fasthashcomp) && !$force )
-			return;
-		
-		$fasthashcomp = 'ServiceStore';
-		if( $this->appdef )
-			$fasthashcomp .= 'appdef';	
-		
-		$tmpa = $this->all;
-		
-		usort($tmpa, "__CmpObjName");
-		
-		foreach( $tmpa as $o )
-		{
-			$fasthashcomp .= '.*/'.$o->name();
-		}
-		
-		$this->fasthashcomp = md5($fasthashcomp,true);
-		unset($fasthashcomp);
-		
-	}
-	
-	public function getFastHashComp()
-	{
-		$this->generateFastHashComp();
-		return $this->fasthashcomp;
-	}
-
-	/**
-	* To determine if a store has all the Service from another store, it will expand Service instead of looking for them directly. Very useful when looking to compare similar rules.
-	* @return boolean true if Service objects from $other are all in this store
-	*/
-	public function includesStoreExpanded(ServiceStore $other, $anyIsAcceptable=true )
-	{
-		if( $this->centralStore )
-			derr("Should never be called from a Central Store");
-
-		if( !$anyIsAcceptable )
-		{
-			if( $this->count() == 0 || $other->count() == 0 )
-				return false;
-		}
-
-		if( $this->count() == 0 )
-			return true;
-
-		if( $other->count() == 0 )
-			return false;
-
-		$localA = Array();
-		$A = Array();
-
-		foreach( $this->all as $object )
-		{
-			if( $object->isGroup() )
-			{
-				$flat = $object->expand();
-				$localA = array_merge($localA, $flat);
-			}
-			else
-				$localA[] = $object;
-		}
-		$localA = array_unique_no_cast($localA);
-
-		$otherAll = $other->all();
-
-		foreach( $otherAll as $object )
-		{
-			if( $object->isGroup() )
-			{
-				$flat = $object->expand();
-				$A = array_merge($A, $flat);
-			}
-			else
-				$A[] = $object;
-		}
-		$A = array_unique_no_cast($A);
-
-		$diff = array_diff_no_cast($A, $localA);
-
-		if( count($diff) > 0 )
-		{
-			return false;
-		}
-		
-
-		return true;
-
-	}
-
 
 	public function countUnused()
 	{

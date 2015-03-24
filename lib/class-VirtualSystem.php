@@ -91,10 +91,10 @@ class VirtualSystem
         $this->zoneStore->setName('zoneStore');
         $this->zoneStore->setCentralStoreRole(true);
 		
-		$this->serviceStore = new ServiceStore($this,true);
+		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
 		
-		$this->addressStore = new AddressStore($this,true);
+		$this->addressStore = new AddressStore($this);
 		$this->addressStore->name = 'addresses';
 		
 		$this->securityRules = new RuleStore($this, 'SecurityRule');

@@ -111,13 +111,13 @@ class PANConf
 		$this->appStore->setCentralStoreRole(true);
 		$this->appStore->load_from_predefinedfile();
 
-		$this->serviceStore = new ServiceStore($this,true);
+		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
 		if( !is_null($withPanorama) )
 			$this->serviceStore->panoramaShared = $this->panorama->serviceStore;
 
 
-		$this->addressStore = new AddressStore($this,true);
+		$this->addressStore = new AddressStore($this);
 		$this->addressStore->name = 'addresses';
 		if( !is_null($withPanorama) )
 			$this->addressStore->panoramaShared = $this->panorama->addressStore;

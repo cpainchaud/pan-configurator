@@ -31,8 +31,6 @@ class AddressStore
      * @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null
      */
 	public $owner;
-	
-	protected $centralStore = false;
 
 	/**
 	 * @var null|AddressStore
@@ -79,20 +77,14 @@ class AddressStore
 	public $fasthashcomp = null;
 	
 	
-	public function AddressStore($owner, $centralRole=false)
+	public function AddressStore($owner)
 	{
-		
 		$this->owner = $owner;
-		$this->centralStore = $centralRole;
 		$this->findParentCentralStore();
 
-		if( $this->centralStore )
-		{
-			$this->addr = Array();
-			$this->addrg = Array();
-			$this->tmpaddr = Array();
-		}
-			
+		$this->addr = Array();
+		$this->addrg = Array();
+		$this->tmpaddr = Array();
 	}
 
 	private function &getBaseXPath()
@@ -114,16 +106,12 @@ class AddressStore
 
 	public function &getAddressStoreXPath()
 	{
-		if( !$this->centralStore )
-			derr('cannot be called from a non central store object');
 		$path = $this->getBaseXPath().'/address';
 		return $path;
 	}
 
 	public function &getAddressGroupStoreXPath()
 	{
-		if( !$this->centralStore )
-			derr('cannot be called from a non central store object');
 		$path = $this->getBaseXPath().'/address-group';
 		return $path;
 	}
@@ -148,13 +136,10 @@ class AddressStore
 			$ns->load_from_domxml($node);
 			//print $this->toString()." : new service '".$ns->name()."' created\n";
 
-			$lower = strtolower($ns->name());
+			$objectName = $ns->name();
 
-			if( $this->centralStore )
-			{
-				$this->addr[$lower] = $ns;
-			}
-			$this->all[$lower] = $ns;
+			$this->addr[$objectName] = $ns;
+			$this->all[$objectName] = $ns;
 		}
 	}
 
@@ -198,37 +183,13 @@ class AddressStore
 				
 			}
 
-			$lower = strtolower($ns->name());
+			$objectName = $ns->name();
 
-			if( $this->centralStore )
-			{
-				$this->addrg[$lower] = $ns;
-			}
-			
-			$this->all[$lower] = $ns;
+			$this->addrg[$objectName] = $ns;
+			$this->all[$objectName] = $ns;
 		}
 	}
-	
 
-
-	/**
-	* For developper use only
-	* @param Address|Addressgroup $current
-     * @param Address|AddressGroup|null $newObject
-	*/
-	public function replaceReferencedObject($current, $newObject)
-	{
-		if( $this->centralStore )
-		{
-			return;
-		}
-
-		if( $this->inStore($current) )
-		{
-			$this->add($newObject,false);
-			$this->remove($current);
-		}
-	}
 
 	/**
 	* returns true if $object is in this store. False if not
@@ -240,27 +201,16 @@ class AddressStore
 		if( is_null($object) )
 			derr('a NULL object? really ?');
 
-		$lower = strtolower($object->name());
+		$objectName = $object->name();
 
-		if( isset($this->all[$lower]) )
+		if( isset($this->all[$objectName]) )
 		{
-			if( $this->all[$lower] === $object )
+			if( $this->all[$objectName] === $object )
 				return true;
 		}
 
 		return false;
 
-	}
-
-	
-	
-	/**
-	*
-	*
-	*/
-	public function setCentralStoreRole($is)
-	{
-		$this->centralStore = $is;
 	}
 	
 	
@@ -272,9 +222,7 @@ class AddressStore
 	{
 		return count($this->all);
 	}
-	
-	
-	
+
 	
 	/**
 	*
@@ -282,52 +230,19 @@ class AddressStore
 	*/
 	public function countAddressGroups()
 	{
-		if( $this->centralStore)
-			return count($this->addrg);
-
-		$count = 0;
-
-		foreach( $this->all as $o)
-		{
-			if( $o->isGroup() )
-				$count++;
-		}
-
-		return $count;
+		return count($this->addrg);
 	}
 	
 	
 	public function countAddresses()
 	{
-		if( $this->centralStore)
-			return count($this->addr);
-
-		$count = 0;
-
-		foreach( $this->all as $o)
-		{
-			if( $o->isAddress() )
-				$count++;
-		}
-
-		return $count;
+		return count($this->addr);
 	}
 	
 	
 	public function countTmpAddresses()
 	{
-		if( $this->centralStore)
-			return count($this->tmpaddr);
-
-		$count = 0;
-
-		foreach( $this->all as $o)
-		{
-			if( $o->isTmpAddr() )
-				$count++;
-		}
-
-		return $count;
+		return count($this->tmpaddr);
 	}
 	
 	
@@ -372,68 +287,50 @@ class AddressStore
 	{
 		$f = null;
 
-		$lower = strtolower($objectName);
-		
-		if( $this->centralStore)
-		{
-			if( isset($this->all[$lower]) )
-			{
-				$this->all[$lower]->addReference($ref);
-				if( $type == 'tmp' )
-				{
-					if ( $this->all[$lower]->isTmpAddr() )
-						return $this->all[$lower];
-					return null;
-				}
+        if( isset($this->all[$objectName]) )
+        {
+            $this->all[$objectName]->addReference($ref);
+            if( $type == 'tmp' )
+            {
+                if ( $this->all[$objectName]->isTmpAddr() )
+                    return $this->all[$objectName];
+                return null;
+            }
 
-				return $this->all[$lower];
-			}
+            return $this->all[$objectName];
+        }
 
-			if( $nested && isset($this->panoramaShared) )
-			{
-				$f = $this->panoramaShared->find( $objectName , $ref, false, $type);
+        if( $nested && isset($this->panoramaShared) )
+        {
+            $f = $this->panoramaShared->find( $objectName , $ref, false, $type);
 
-				if( !is_null($f) )
-					return $f;
-			}
-			else if( $nested && isset($this->panoramaDG) )
-			{
-				$f = $this->panoramaDG->find( $objectName , $ref, false, $type);
-				if( !is_null($f) )
-					return $f;
-			}
+            if( !is_null($f) )
+                return $f;
+        }
+        else if( $nested && isset($this->panoramaDG) )
+        {
+            $f = $this->panoramaDG->find( $objectName , $ref, false, $type);
+            if( !is_null($f) )
+                return $f;
+        }
 
-			if( $nested && $this->parentCentralStore)
-			{
-				$f = $this->parentCentralStore->find( $objectName , $ref, $nested, $type);
-			}
+        if( $nested && $this->parentCentralStore)
+        {
+            $f = $this->parentCentralStore->find( $objectName , $ref, $nested, $type);
+        }
 
-			return $f;
-		}
-
-		if( $nested )
-			$f = $this->parentCentralStore->find( $objectName , $ref, $nested, $type);
-		
-		return $f;
+        return $f;
 	}
 	
 	public function findOrCreate( $fn , $ref=null, $nested=true)
 	{
-		if( $this->centralStore)
-		{
-			$f = $this->find( $fn , $ref, $nested);
+		$f = $this->find( $fn , $ref, $nested);
 
-			if( $f )
-				return $f;
-
-			
-			$f = $this->createTmp($fn,$ref);
-			
+		if( $f !== null )
 			return $f;
-		}
-		
-		$f = $this->parentCentralStore->findOrCreate( $fn , $ref, $nested);
 
+		$f = $this->createTmp($fn,$ref);
+			
 		return $f;
 	}
 
@@ -530,10 +427,6 @@ class AddressStore
 	*/
 	public function add($s, $rewriteXml = true)
 	{
-		//TODO remove strtolower from everywhere
-		$this->fasthashcomp = null;
-
-
 		if( !is_object($s) )
 		{
 			if( is_string($s) )
@@ -548,10 +441,10 @@ class AddressStore
 			derr('this is not supported');
 		}
 
-		$lower = strtolower($s->name());
+		$objectName = $s->name();
 
 		// there is already an object named like that
-		if( isset($this->all[$lower]) && $this->all[$lower] !== $s )
+		if( isset($this->all[$objectName]) && $this->all[$objectName] !== $s )
 		{
 			derr('You cannot add object with same name in a store');
 		}
@@ -562,24 +455,23 @@ class AddressStore
 		{
 			if( $s->type() == 'tmp' )
 			{
-				$this->tmpaddr[$lower] = $s;
+				$this->tmpaddr[$objectName] = $s;
 			}
 			else
 			{
-				$this->addr[$lower] = $s;
+				$this->addr[$objectName] = $s;
 				if( $rewriteXml )
                 {
 					$this->addrroot->appendChild($s->xmlroot);
                 }
 			}
 				
-			$this->all[$lower] = $s;
-			
+			$this->all[$objectName] = $s;
 		}
 		elseif ( $class == 'AddressGroup' )
 		{
-			$this->addrg[$lower] = $s;
-			$this->all[$lower] = $s;
+			$this->addrg[$objectName] = $s;
+			$this->all[$objectName] = $s;
 
 			if( $rewriteXml )
             {
@@ -631,32 +523,32 @@ class AddressStore
 		$this->fasthashcomp = null;
 		$class = get_class($s);
 
-		$lower = strtolower($s->name());
+		$objectName = $s->name();
 
 		
-		if( !isset($this->all[$lower]) )
+		if( !isset($this->all[$objectName]) )
 		{
 			mdeb('Tried to remove an object that is not part of this store');
 			return false;
 		}
 
-		unset( $this->all[$lower]);
+		unset( $this->all[$objectName]);
 
 
 		if(  $class == 'Address' )
 		{
 			if( $s->isTmpAddr() )
 			{
-				unset($this->tmpaddr[$lower]);
+				unset($this->tmpaddr[$objectName]);
 			}
 			else
 			{
-				unset($this->addr[$lower]);
+				unset($this->addr[$objectName]);
 			}
 		}
 		else if( $class == 'AddressGroup' )
 		{
-			unset($this->addrg[$lower]);
+			unset($this->addrg[$objectName]);
 		}
 		else
 			derr('invalid class found');
@@ -872,10 +764,10 @@ class AddressStore
 		if( ! $this->inStore($h) )
 			return false;
 
-		$lower = strtolower($oldName);
+        $newName = $h->name();
 
-		unset($this->all[strtolower($oldName)]);
-		$this->all[$lower] = $h;
+		unset($this->all[$oldName]);
+		$this->all[$newName] = $h;
 
 		$this->fasthashcomp = null;
 
@@ -883,13 +775,13 @@ class AddressStore
 
 		if( $class == 'Address' )
 		{
-			unset($this->addr[strtolower($oldName)]);
-			$this->addr[$lower] = $h;
+			unset($this->addr[$oldName]);
+			$this->addr[$newName] = $h;
 		}
 		elseif( $class == 'AddressGroup' )
 		{
-			unset($this->addrg[strtolower($oldName)]);
-			$this->addrg[$lower] = $h;
+			unset($this->addrg[$oldName]);
+			$this->addrg[$newName] = $h;
 		}
 		else
 			derr('unsupported class');

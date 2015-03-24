@@ -118,11 +118,10 @@ class PanoramaConf
 		$this->appStore->setCentralStoreRole(true);
 		$this->appStore->load_from_predefinedfile();
 		
-		$this->serviceStore = new ServiceStore($this,true);
-		$this->serviceStore->setCentralStoreRole(true);
+		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
 		
-		$this->addressStore = new AddressStore($this,true);
+		$this->addressStore = new AddressStore($this);
 		$this->addressStore->name = 'addresses';
 
 
