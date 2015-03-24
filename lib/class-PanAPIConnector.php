@@ -502,7 +502,7 @@ class PanAPIConnector
 
     public function & getReport($req)
     {
-        $ret = &$this->sendRequest($req);
+        $ret = $this->sendRequest($req);
 
         $cursor = &searchForName('name', 'result', $ret);
 
@@ -534,7 +534,7 @@ class PanAPIConnector
             {
                 sleep(1);
                 $query = '&type=report&action=get&job-id='.$jobid;
-                $ret = &$this->sendRequest($query);
+                $ret = $this->sendRequest($query);
 
                 $cursor = &searchForName('name', 'result', $ret);
                 
@@ -596,7 +596,7 @@ class PanAPIConnector
 	{
 		$url = 'action=show&type=config&xpath=/config';
 
-        $r = &$this->sendRequest($url, true);
+        $r = $this->sendRequest($url, true);
 
         $configRoot = DH::findFirstElement('result', $r);
         if( $configRoot === false )

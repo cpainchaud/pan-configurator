@@ -131,6 +131,11 @@ class RuleStore
 		foreach( $xml->childNodes as $node )
 		{
 			if( $node->nodeType != 1 ) continue;
+            if( $node->tagName != 'entry' )
+            {
+                mwarning("A rule entry with tag '{$node->tagName}' was found and ignored");
+                continue;
+            }
 			$count++;
 			if( $PANC_DEBUG && $count%1000 == 0 )
 				print "Parsed $count rules so far\n";
