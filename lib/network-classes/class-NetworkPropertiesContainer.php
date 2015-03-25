@@ -46,4 +46,56 @@ class NetworkPropertiesContainer
 
     }
 
+    /**
+     * @return EthernetInterface[]|IPsecTunnel
+     */
+    function getAllInterfaces()
+    {
+        $ifs = Array();
+
+        foreach( $this->ethernetIfStore->getInterfaces() as $if )
+            $ifs[] = $if;
+
+        foreach( $this->ipsecTunnelStore->getAll() as $if )
+            $ifs[] = $if;
+
+        return $ifs;
+    }
+
+    /**
+     * @param string $ip
+     * @return EthernetInterface[]|IPsecTunnel[]
+     */
+    function findInterfacesNetworkMatchingIP( $ip )
+    {
+        $ifs = Array();
+
+        foreach( $this->ethernetIfStore->getInterfaces() as $if )
+        {
+            if( $if->type() == 'layer3' )
+            {
+                $ipAddresses = $if->getLayer3IPv4Addresses();
+                foreach( $ipAddresses as $ipAddress )
+                {
+                    if( cidr::netMatch($ip, $ipAddress) > 0)
+                    {
+                        $ifs[] = $if;
+                        break;
+                    }
+                }
+            }
+        }
+
+
+        return $ifs;
+    }
+
+}
+
+
+trait InterfaceType
+{
+    public function isEthernetType() { return false; }
+    public function isIPsecTunnelType() { return false; }
+    public function isAggregateType()  { return false; }
 }

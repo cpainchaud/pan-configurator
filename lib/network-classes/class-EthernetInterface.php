@@ -20,6 +20,7 @@ class EthernetInterface
 {
     use PathableName;
     use ReferencableObject;
+    use InterfaceType;
 
     /**
      * @var null|DOMElement
@@ -66,6 +67,8 @@ class EthernetInterface
      * @var int
      */
     private $tag;
+
+    private $l3ipv4Addresses;
 
 
     static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group' );
@@ -115,6 +118,22 @@ class EthernetInterface
             derr('unsupported ethernet interface type : not found', $xml);
         }
 
+        if( $this->type == 'layer3' )
+        {
+            $this->l3ipv4Addresses = Array();
+            $ipNode = DH::findFirstElement('ip', $xml);
+            if( $ipNode !== false )
+            {
+                foreach( $ipNode->childNodes as $l3ipNode )
+                {
+                    if( $l3ipNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    $this->l3ipv4Addresses[] = $l3ipNode->getAttribute('name');
+                }
+            }
+        }
+
         // looking for sub interfaces and stuff like that   :)
         foreach( $this->typeRoot->childNodes as $node )
         {
@@ -132,7 +151,7 @@ class EthernetInterface
                     $newInterface = new EthernetInterface('tmp', null );
                     $newInterface->isSubInterface = true;
                     $newInterface->parentInterface = $this;
-                    $newInterface->type = $this->type;
+                    $newInterface->type = &$this->type;
                     $newInterface->load_sub_from_domxml($unitsNode);
 
                     $this->subInterfaces[] = $newInterface;
@@ -167,6 +186,25 @@ class EthernetInterface
             elseif( $nodeName == 'tag' )
             {
                 $this->tag = $node->textContent;
+            }
+        }
+
+        if( $this->type == 'layer3' )
+        {
+            if( $this->type == 'layer3' )
+            {
+                $this->l3ipv4Addresses = Array();
+                $ipNode = DH::findFirstElement('ip', $xml);
+                if( $ipNode !== false )
+                {
+                    foreach( $ipNode->childNodes as $l3ipNode )
+                    {
+                        if( $l3ipNode->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $this->l3ipv4Addresses[] = $l3ipNode->getAttribute('name');
+                    }
+                }
             }
         }
     }
@@ -211,9 +249,30 @@ class EthernetInterface
         return $ar[1];
     }
 
+    public function getLayer3IPv4Addresses()
+    {
+        if( $this->type != 'layer3' )
+            derr('cannot be requested from a non Layer3 Interface');
+
+        if( $this->l3ipv4Addresses === null )
+            return Array();
+
+        return $this->l3ipv4Addresses;
+    }
+
     public function countSubInterfaces()
     {
         return count($this->subInterfaces);
     }
+
+    /**
+     * @return EthernetInterface[]
+     */
+    public function subInterfaces()
+    {
+        return $this->subInterfaces;
+    }
+
+    function isEthernetType() { return true; }
 
 }

@@ -22,6 +22,7 @@ class IPsecTunnel
 {
     use ReferencableObject;
     use PathableName;
+    use InterfaceType;
 
     /**
      * @var null|string[]|DOMElement
@@ -206,5 +207,7 @@ class IPsecTunnel
 
         return true;
     }
+
+    public function isIPsecTunnelType() { return true; }
 
 }

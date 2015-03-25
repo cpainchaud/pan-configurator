@@ -111,11 +111,11 @@ require_once dirname(__FILE__).'/'."class-VirtualSystem.php";
 require_once dirname(__FILE__).'/'."class-PANConf.php";
 require_once dirname(__FILE__).'/'."class-PanoramaConf.php";
 require_once dirname(__FILE__).'/'."class-DeviceGroup.php";
+require_once dirname(__FILE__).'/network-classes/'."class-NetworkPropertiesContainer.php";
 require_once dirname(__FILE__).'/network-classes/'."class-IPsecTunnelStore.php";
 require_once dirname(__FILE__).'/network-classes/'."class-IPsecTunnel.php";
 require_once dirname(__FILE__).'/network-classes/'."class-EthernetInterface.php";
 require_once dirname(__FILE__).'/network-classes/'."class-EthernetIfStore.php";
-require_once dirname(__FILE__).'/network-classes/'."class-NetworkPropertiesContainer.php";
 require_once dirname(__FILE__).'/rule-classes/class-RuleStore.php';
 require_once dirname(__FILE__).'/rule-classes/class-Rule.php';
 require_once dirname(__FILE__).'/rule-classes/class-SecurityRule.php';
@@ -945,19 +945,19 @@ class cidr
 
     	if( $subNetwork >= $refNetwork && $subBroadcast <= $refBroadcast )
     	{
-    		print "sub $sub is included in $ref\n";
+    		//print "sub $sub is included in $ref\n";
     		return 1;
     	}
     	if( $subNetwork >= $refNetwork &&  $subNetwork <= $refBroadcast || 
     		$subBroadcast >= $refNetwork && $subBroadcast <= $refBroadcast ||
     		$subNetwork <= $refNetwork && $subBroadcast >= $refBroadcast )
     	{
-    		print "sub $sub is partially included in $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
-    		print "sub $sub is partially included in $ref :  ".$refNetwork."/".$subBroadcast."/".$refBroadcast."\n";
+    		//print "sub $sub is partially included in $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
+    		//print "sub $sub is partially included in $ref :  ".$refNetwork."/".$subBroadcast."/".$refBroadcast."\n";
     		return 2;
     	}
 
-    	print "sub $sub is not matching $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
+    	//print "sub $sub is not matching $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
     	return 0;
     }
 

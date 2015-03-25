@@ -28,10 +28,6 @@ class EthernetIfStore extends ObjStore
      */
     public $owner;
 
-    /**
-     * @var DOMNode|null
-     */
-    public $xmlroot = null;
 
     public static $childn = 'EthernetInterface';
 
@@ -57,6 +53,27 @@ class EthernetIfStore extends ObjStore
         }
 
         return $count;
+    }
+
+
+    /**
+     * @return EthernetInterface[]
+     */
+    function getInterfaces()
+    {
+        return $this->o;
+    }
+
+    public function load_from_domxml(DOMElement $xml)
+    {
+        parent::load_from_domxml($xml);
+        foreach( $this->o as $o )
+        {
+            foreach( $o->subInterfaces() as $sub )
+            {
+                $this->o[] = $sub;
+            }
+        }
     }
 
 
