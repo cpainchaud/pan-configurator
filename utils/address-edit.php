@@ -602,7 +602,7 @@ foreach( $objectsToProcess as &$objectsRecord )
     $store = $objectsRecord['store'];
     $objects = &$objectsRecord['objects'];
 
-    print "\n* processing store '".$store->toString()." that holds ".count($objects)." objects\n";
+    print "\n* processing store '".PH::boldText($store->toString())." that holds ".count($objects)." objects\n";
 
 
     foreach($objects as $object )
@@ -621,7 +621,7 @@ foreach( $objectsToProcess as &$objectsRecord )
 
         foreach( $doActions as &$doAction )
         {
-            print "\n   - object '" . $object->name() . "' passing through Action='" . $doAction['name'] . "'\n";
+            print "\n   - object '" . PH::boldText($object->name()) . "' passing through Action='" . PH::boldText($doAction['name']) . "'\n";
             if ($supportedActions[$doAction['name']]['args'] !== false)
             {
                 foreach($doAction['arguments'] as $arg)
