@@ -9,7 +9,9 @@ CHANGELOG
 * util service-edit : and address-edit new action: replaceByMembersAndDelete
 * util upload-config : now supports inject xml parts direct in candidate config (see 'toXpath' option)
 * util upload-config : now supports api://x.x.x.x/running-config candidate-config to choose between running and candidate or already saved file
+* enhanced support of interfaces : you can extract more infos from them like IP addresses attached to them (see doc for all options available)
 * virtual-wire and aggregate-group ethernet interface support
+
 
 ---------
 

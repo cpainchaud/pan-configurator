@@ -70,7 +70,6 @@ class EthernetInterface
 
     private $l3ipv4Addresses;
 
-
     static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group' );
 
     /**
