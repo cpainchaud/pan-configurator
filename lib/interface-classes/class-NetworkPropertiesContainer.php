@@ -42,7 +42,7 @@ class NetworkPropertiesContainer
 
         $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
         $tmp = DH::findFirstElementOrCreate('ethernet', $tmp);
-        $this->ethernetIfStore->load_from_domxml($tmp, true);
+        $this->ethernetIfStore->load_from_domxml($tmp);
 
     }
 

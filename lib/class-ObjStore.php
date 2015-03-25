@@ -35,6 +35,8 @@ class ObjStore
 	
 	protected $centralStore = false;
 
+    protected $skipEmptyXmlObjects = false;
+
 
     /**
      * @var null|string[]|DOMElement
@@ -280,7 +282,7 @@ class ObjStore
 	 * should only be called from a Rule constructor
 	 * @ignore
 	 */
-    public function load_from_domxml(DOMElement $xml, $skipEmptyElement = false)
+    public function load_from_domxml(DOMElement $xml)
     {
         $this->xmlroot = $xml;
 
@@ -288,7 +290,7 @@ class ObjStore
         {
             if( $node->nodeType != 1 ) continue;
 
-            if( $skipEmptyElement && !$node->hasChildNodes() )
+            if( $this->skipEmptyXmlObjects && !$node->hasChildNodes() )
             {
                 mwarning('XML element had no child, it was skipped', $node);
                 continue;
