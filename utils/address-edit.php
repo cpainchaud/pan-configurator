@@ -18,7 +18,7 @@
 */
 
 print "\n***********************************************\n";
-print   "*********** SERVICE-EDIT UTILITY **************\n\n";
+print   "*********** ADDRESS-EDIT UTILITY **************\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
