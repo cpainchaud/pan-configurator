@@ -714,7 +714,7 @@ function mwarning($msg, $object = null)
 		}
 	}
 
-	fwrite(STDERR,"\n*WARNING*".$msg."\n");
+	fwrite(STDERR,"\n*WARNING* ".$msg."\n");
 	
 	//debug_print_backtrace();
 	
