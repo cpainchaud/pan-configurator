@@ -112,7 +112,7 @@ class EthernetInterface
 
         if( $this->type == 'tmp' )
         {
-            derr('unsupported ethernet interface type : not found');
+            derr('unsupported ethernet interface type : not found', $xml);
         }
 
         // looking for sub interfaces and stuff like that   :)
