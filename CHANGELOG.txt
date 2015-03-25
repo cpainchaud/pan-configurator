@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.2.11
+* bugfix : fixed an issue where an interface may have no configuration at all in XML so it's just skipped
+
 1.2.10
 * bugfix : back porting fix for DOMXml and rewriteXML
 * bugfix : adding aggregate-group and virtual-wire type support

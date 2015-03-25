@@ -280,13 +280,19 @@ class ObjStore
 	 * should only be called from a Rule constructor
 	 * @ignore
 	 */
-	public function load_from_domxml(DOMElement $xml)
-	{
-		$this->xmlroot = $xml;
+    public function load_from_domxml(DOMElement $xml, $skipEmptyElement = false)
+    {
+        $this->xmlroot = $xml;
 
-		foreach( $this->xmlroot->childNodes as $node )
-		{
-			if( $node->nodeType != 1 ) continue;
+        foreach( $this->xmlroot->childNodes as $node )
+        {
+            if( $node->nodeType != 1 ) continue;
+
+            if( $skipEmptyElement && !$node->hasChildNodes() )
+            {
+                mwarning('XML element had no child, it was skipped', $node);
+                continue;
+            }
 
 			//print $this->toString()."\n";
 			$newObj = new $this->classn('**tmp**', $this);
