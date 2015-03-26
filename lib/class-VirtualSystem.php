@@ -247,6 +247,12 @@ class VirtualSystem
 	{
 		return $this->name;
 	}
+
+
+    public function setName($newName)
+    {
+        $this->xmlroot->setAttribute('name', $newName);
+    }
 	
 
 

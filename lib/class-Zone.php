@@ -36,6 +36,12 @@ class Zone
     public $xmlroot = null;
 
 
+    /**
+     * @var string[]
+     */
+    private $attachedInterfaces = Array();
+
+
     const TypeTmp = 0;
     const TypeLayer3 = 1;
 
@@ -103,6 +109,33 @@ class Zone
         if( strlen($this->name) < 1  )
             derr("Zone name '".$this->name."' is not valid", $xml);
 
+        $networkNode = DH::findFirstElementOrDie('network', $xml);
+
+        foreach( $networkNode->childNodes as $node )
+        {
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            if( $node->tagName == 'layer3')
+            {
+                $this->type = 'layer3';
+
+                foreach( $node->childNodes as $ifNode )
+                {
+                    if( $ifNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
+                    $this->attachedInterfaces[] = $ifNode->textContent;
+                }
+            }
+        }
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getAttachedInterfaces()
+    {
+        return $this->attachedInterfaces;
     }
 
     public function API_setName($newname)

@@ -104,6 +104,27 @@ class ZoneStore extends ObjStore
     }
 
 
+    /**
+     * @param string $ifName
+     * @return null|Zone
+     */
+    public function findZoneMatchingInterfaceName( $ifName )
+    {
+        foreach( $this->o as $zone )
+        {
+            if( $zone->isTmp() )
+                continue;
+
+            foreach( $zone->getAttachedInterfaces() as $ifs )
+            {
+                if( $ifs == $ifName )
+                    return $zone;
+            }
+        }
+
+        return null;
+    }
+
 	
 	/**
 	* return an array with all Zones in this store
