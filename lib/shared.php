@@ -116,6 +116,8 @@ require_once dirname(__FILE__).'/network-classes/'."class-IPsecTunnelStore.php";
 require_once dirname(__FILE__).'/network-classes/'."class-IPsecTunnel.php";
 require_once dirname(__FILE__).'/network-classes/'."class-EthernetInterface.php";
 require_once dirname(__FILE__).'/network-classes/'."class-EthernetIfStore.php";
+require_once dirname(__FILE__).'/network-classes/'."class-AggregateEthernetInterface.php";
+require_once dirname(__FILE__).'/network-classes/'."class-AggregateEthernetIfStore.php";
 require_once dirname(__FILE__).'/rule-classes/class-RuleStore.php';
 require_once dirname(__FILE__).'/rule-classes/class-Rule.php';
 require_once dirname(__FILE__).'/rule-classes/class-SecurityRule.php';

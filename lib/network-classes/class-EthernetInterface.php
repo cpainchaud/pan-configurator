@@ -51,24 +51,24 @@ class EthernetInterface
     /**
      * @var bool
      */
-    private $isSubInterface = false;
+    protected $isSubInterface = false;
 
     /**
      * @var EthernetInterface[]
      */
-    private $subInterfaces = Array();
+    protected $subInterfaces = Array();
 
     /**
      * @var null|EthernetInterface
      */
-    private $parentInterface = null;
+    protected $parentInterface = null;
 
     /**
      * @var int
      */
-    private $tag;
+    protected $tag;
 
-    private $l3ipv4Addresses;
+    protected $l3ipv4Addresses;
 
     static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group' );
 
@@ -120,7 +120,7 @@ class EthernetInterface
         if( $this->type == 'layer3' )
         {
             $this->l3ipv4Addresses = Array();
-            $ipNode = DH::findFirstElement('ip', $xml);
+            $ipNode = DH::findFirstElement('ip', $this->typeRoot);
             if( $ipNode !== false )
             {
                 foreach( $ipNode->childNodes as $l3ipNode )

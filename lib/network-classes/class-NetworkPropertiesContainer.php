@@ -15,6 +15,11 @@ class NetworkPropertiesContainer
     public $ethernetIfStore;
 
     /**
+     * @var AggregateEthernetIfStore
+     */
+    public $aggregateEthernetIfStore;
+
+    /**
      * @var IPsecTunnelStore
      */
     public $ipsecTunnelStore;
@@ -29,6 +34,7 @@ class NetworkPropertiesContainer
     {
         $this->owner = $owner;
         $this->ethernetIfStore = new EthernetIfStore('EthernetIfaces', $owner);
+        $this->aggregateEthernetIfStore = new EthernetIfStore('AggregateEthernetIfaces', $owner);
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
     }
 
@@ -44,6 +50,10 @@ class NetworkPropertiesContainer
         $tmp = DH::findFirstElementOrCreate('ethernet', $tmp);
         $this->ethernetIfStore->load_from_domxml($tmp);
 
+        $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
+        $tmp = DH::findFirstElementOrCreate('aggregate-ethernet', $tmp);
+        $this->aggregateEthernetIfStore->load_from_domxml($tmp);
+
     }
 
     /**
@@ -54,6 +64,9 @@ class NetworkPropertiesContainer
         $ifs = Array();
 
         foreach( $this->ethernetIfStore->getInterfaces() as $if )
+            $ifs[] = $if;
+
+        foreach( $this->aggregateEthernetIfStore->getInterfaces() as $if )
             $ifs[] = $if;
 
         foreach( $this->ipsecTunnelStore->getAll() as $if )
@@ -71,6 +84,22 @@ class NetworkPropertiesContainer
         $ifs = Array();
 
         foreach( $this->ethernetIfStore->getInterfaces() as $if )
+        {
+            if( $if->type() == 'layer3' )
+            {
+                $ipAddresses = $if->getLayer3IPv4Addresses();
+                foreach( $ipAddresses as $ipAddress )
+                {
+                    if( cidr::netMatch($ip, $ipAddress) > 0)
+                    {
+                        $ifs[] = $if;
+                        break;
+                    }
+                }
+            }
+        }
+
+        foreach( $this->aggregateEthernetIfStore->getInterfaces() as $if )
         {
             if( $if->type() == 'layer3' )
             {

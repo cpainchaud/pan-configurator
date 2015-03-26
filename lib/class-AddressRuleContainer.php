@@ -233,6 +233,50 @@ class AddressRuleContainer extends ObjRuleContainer
         return $out;
     }
 
+    /**
+     * @param string $ipMatch
+     * @return int 0 if no match, 1 if full match ( $ipMatch is fully covered by objects inside ), 2 if partial match ($ipMatch is covered by some parts of this containers objects)
+     */
+    public function matchIPv4( $ipMatch )
+    {
+        if( $this->isAny() )
+            return 1;
+
+        $bestMatch = 0;
+
+        foreach($this->o as $o)
+        {
+            $localScore = 0;
+
+            if( $o->isTmpAddr() )
+            {
+                if( filter_var($o->name(), FILTER_VALIDATE_IP) !== false )
+                {
+                    $localScore = cidr::netMatch($ipMatch, $o->name() );
+                }
+            }
+            elseif( $o->isGroup() )
+            {
+                $localScore = $o->matchIPv4($ipMatch);
+            }
+            elseif( $o->isAddress() )
+            {
+                if( $o->type() == 'ip-netmask' || $o->type() == 'ip-range' )
+                    $localScore = cidr::netMatch($ipMatch, $o->value() );
+            }
+            else derr('unsupported');
+
+            if( $localScore == 1 )
+                return 1;
+
+            if( $localScore != 0 )
+                $bestMatch = $localScore;
+        }
+
+
+        return $bestMatch;
+    }
+
 
 
     /**
