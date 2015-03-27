@@ -84,6 +84,8 @@ $supportedArguments['toxpath'] = Array('niceName' => 'toXpath', 'shortHelp' => '
 $supportedArguments['loadafterupload'] = Array('niceName' => 'loadAfterUpload', 'shortHelp' => 'load configuration after upload happened');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtconfig'] = Array('niceName' => 'preserveMgmtConfig', 'shortHelp' => 'this message');
+$supportedArguments['preservemgmtusers'] = Array('niceName' => 'preserveMgmtUsers', 'shortHelp' => 'this message');
+$supportedArguments['preservemgmtsystem'] = Array('niceName' => 'preserveMgmtSystem', 'shortHelp' => 'preserves what is in /config/devices/entry/deviceconfig/system');
 
 
 
@@ -208,19 +210,42 @@ elseif ( $configOutput['type'] == 'api'  )
     }
     else
     {
-        if (isset(PH::$args['preservemgmtconfig']))
+        if (  isset(PH::$args['preservemgmtconfig']) ||
+              isset(PH::$args['preservemgmtusers']) )
         {
-            print "Option 'preserveMgmtConfig was used, we will first download the running config ...";
+            print "Option 'preserveXXXXX was used, we will first download the running config ...";
             $runningConfig = $configOutput['connector']->getRunningConfig();
             print "OK!\n";
 
             $xpathQrunning = new DOMXPath($runningConfig);
             $xpathQlocal = new DOMXPath($doc);
 
-            $xpathQueryList = Array('/config/mgt-config', "/config/devices/entry[@name='localhost.localdomain']/deviceconfig",
-                '/config/shared/authentication-profile', '/config/shared/authentication-sequence',
-                '/config/shared/certificate', '/config/shared/log-settings', '/config/shared/local-user-database',
-                '/config/shared/admin-role');
+            $xpathQueryList = Array();
+
+            if (  isset(PH::$args['preservemgmtconfig']) ||
+                isset(PH::$args['preservemgmtusers']) )
+            {
+                $xpathQueryList[] = '/config/mgt-config/users';
+            }
+
+            if (  isset(PH::$args['preservemgmtconfig']) ||
+                isset(PH::$args['preservemgmtsystem']) )
+            {
+                $xpathQueryList[] = '/config/devices/entry/deviceconfig/system';
+            }
+
+
+            if (  isset(PH::$args['preservemgmtconfig']) )
+            {
+                $xpathQueryList[] = '/config/mgt-config';
+                $xpathQueryList[] = "/config/devices/entry[@name='localhost.localdomain']/deviceconfig";
+                $xpathQueryList[] = '/config/shared/authentication-profile';
+                $xpathQueryList[] = '/config/shared/authentication-sequence';
+                $xpathQueryList[] = '/config/shared/certificate';
+                $xpathQueryList[] = '/config/shared/log-settings';
+                $xpathQueryList[] = '/config/shared/local-user-database';
+                $xpathQueryList[] = '/config/shared/admin-role';
+            }
 
             foreach ($xpathQueryList as $xpathQuery)
             {
