@@ -47,6 +47,11 @@ class VirtualSystem
 	public $name;
 
     /**
+     * @var string
+     */
+    protected $_alternativeName = '';
+
+    /**
      * @var PANConf|null
      */
 	public $owner = null;
@@ -125,8 +130,13 @@ class VirtualSystem
 		
 		//print "VSYS '".$this->name."' found\n";
 
-		$this->rulebaseroot = DH::findFirstElementOrCreate('rulebase', $xml);
+        // this VSYS has a display-name ?
+        $displayNameNode = DH::findFirstElement('display-name', $xml);
+        if( $displayNameNode !== FALSE )
+            $this->_alternativeName = $displayNameNode->textContent;
 
+
+		$this->rulebaseroot = DH::findFirstElementOrCreate('rulebase', $xml);
 
         //
         // Extract Tag objects
@@ -253,6 +263,35 @@ class VirtualSystem
     {
         $this->xmlroot->setAttribute('name', $newName);
         $this->name = $newName;
+    }
+
+    /**
+     * @return string
+     */
+    public function alternativeName()
+    {
+        return $this->_alternativeName;
+    }
+
+    public function setAlternativeName( $newName )
+    {
+        if( $newName == $this->_alternativeName )
+            return false;
+
+        if( $newName === null || strlen($newName) == 0 )
+        {
+            $node = DH::findFirstElement('display-name', $this->xmlroot);
+            if( $node === false )
+                return false;
+
+            $this->xmlroot->removeChild($node);
+            return true;
+        }
+
+        $node = DH::findFirstElementOrCreate('display-name', $this->xmlroot);
+        DH::setDomNodeText($node, $newName);
+
+        return true;
     }
 	
 
