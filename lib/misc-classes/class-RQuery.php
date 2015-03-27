@@ -530,6 +530,10 @@ RQuery::$defaultFilters['rule']['tag']['operators']['has.nocase'] = Array(
     'arg' => true
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
+RQuery::$defaultFilters['rule']['tag.count']['operators']['>,<,=,!'] = Array(
+    'eval' => "\$object->tags->count() !operator! !value!",
+    'arg' => true
+);
 
 
 
@@ -663,6 +667,20 @@ RQuery::$defaultFilters['address']['members.count']['operators']['>,<,=,!'] = Ar
     'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
     'arg' => true
 );
+RQuery::$defaultFilters['address']['tag.count']['operators']['>,<,=,!'] = Array(
+    'eval' => "\$object->tags->count() !operator! !value!",
+    'arg' => true
+);
+RQuery::$defaultFilters['address']['tag']['operators']['has'] = Array(
+    'eval' => '$object->tags->hasTag(!value!) === true',
+    'arg' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+);
+RQuery::$defaultFilters['address']['tag']['operators']['has.nocase'] = Array(
+    'eval' => '$object->tags->hasTag("!value!", false) === true',
+    'arg' => true
+    //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+);
 // </editor-fold>
 
 
@@ -698,6 +716,16 @@ RQuery::$defaultFilters['service']['name']['operators']['eq.nocase'] = Array(
 RQuery::$defaultFilters['service']['members.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
     'arg' => true
+);
+RQuery::$defaultFilters['service']['tag']['operators']['has'] = Array(
+    'eval' => '$object->tags->hasTag(!value!) === true',
+    'arg' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+);
+RQuery::$defaultFilters['service']['tag']['operators']['has.nocase'] = Array(
+    'eval' => '$object->tags->hasTag("!value!", false) === true',
+    'arg' => true
+    //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 // </editor-fold>
 
