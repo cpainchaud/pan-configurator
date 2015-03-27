@@ -110,9 +110,9 @@ class PANConf
 		$this->tagStore->setName('tagStore');
 		$this->tagStore->setCentralStoreRole(true);
 		
-		$this->zoneStore = new ZoneStore($this);
-		$this->zoneStore->setName('zoneStore');
-		$this->zoneStore->setCentralStoreRole(true);
+		//$this->zoneStore = new ZoneStore($this);
+		//$this->zoneStore->setName('zoneStore');
+		//$this->zoneStore->setCentralStoreRole(true);
 		
 		$this->appStore = new AppStore($this);
 		$this->appStore->setName('appStore');
@@ -412,7 +412,7 @@ class PANConf
 
 		print "- ".$this->serviceStore->countTmpServices()." (".$gnTmpServices.") temporary service objects\n";
 
-		print "- ".$this->zoneStore->count()." zones\n";
+		//print "- ".$this->zoneStore->count()." zones\n";
 		print "- ".$this->tagStore->count()." tags\n";
 		print "- $numInterfaces interfaces (Ethernet:{$this->network->ethernetIfStore->count()})\n";
 		print "- $numSubInterfaces sub-interfaces (Ethernet:{$this->network->ethernetIfStore->countSubInterfaces()})\n";
