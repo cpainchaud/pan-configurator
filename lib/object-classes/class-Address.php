@@ -77,7 +77,6 @@ class Address
 
         if( $fromXmlTemplate )
         {
-
 			$doc = new DOMDocument();
 			$doc->loadXML(self::$templatexml);
 

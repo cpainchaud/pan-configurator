@@ -298,14 +298,15 @@ class DH
 	 */
 	static public function importXmlStringOrDie(DOMDocument $xmlDoc, $xmlString)
 	{
-		$fragment = $xmlDoc->createDocumentFragment();
-		if( !$fragment->appendXML($xmlString) )
-			derr('malformed xml: '.$xmlString);
+        $newDoc = new DOMDocument();
+        if( !$newDoc->loadXML($xmlString) )
+            derr('malformed xml: '.$xmlString);
 
-		$element = DH::firstChildElement($fragment);
-
+        $element = DH::firstChildElement($newDoc);
 		if( $element === null or $element === false )
 			derr('cannot find first element in :'.$xmlString);
+
+        $element = $xmlDoc->importNode($element, true);
 
 		return $element;
 

@@ -42,7 +42,15 @@ class PANConf
 	use centralAppStore;
 	use PanSubHelperTrait;
 
+    /**
+     * @var DOMElement
+     */
 	public $xmlroot;
+
+    /**
+     * @var DOMDocument
+     */
+    public $xmldoc;
 	
 	public $sharedroot;
 	public $devicesroot;
@@ -415,6 +423,32 @@ class PANConf
 	{
 		return true;
 	}
+
+    public function createVirtualSystem( $vsysID, $displayName = '')
+    {
+        if( !is_numeric($vsysID) )
+            derr("new vsys id must be an integer but '$vsysID' was provided");
+
+        $newVsysName = 'vsys'.$vsysID;
+
+        if( $this->findVirtualSystem($newVsysName) !== null )
+            derr("cannot create '$newVsysName' because it already exists");
+
+        $xmlNode = DH::importXmlStringOrDie($this->xmldoc, VirtualSystem::$templateXml);
+
+        $xmlNode->setAttribute('name', $newVsysName);
+        if( strlen($displayName) > 0 )
+            DH::createElement($xmlNode, 'display-name', $displayName);
+
+        $this->vsyssroot->appendChild($xmlNode);
+
+        $newVsys = new VirtualSystem($this);
+        $newVsys->load_from_domxml($xmlNode);
+
+        $this->virtualSystems[] = $newVsys;
+
+        return $newVsys;
+    }
 
 }
 

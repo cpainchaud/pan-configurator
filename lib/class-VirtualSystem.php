@@ -252,8 +252,10 @@ class VirtualSystem
     public function setName($newName)
     {
         $this->xmlroot->setAttribute('name', $newName);
+        $this->name = $newName;
     }
 	
 
+    static public $templateXml = '<entry name="temporarynamechangemeplease"><address/><address-group/><service/><service-group/><rulebase></rulebase></entry>';
 
 }
