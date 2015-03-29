@@ -38,8 +38,11 @@ class TagStore extends ObjStore
 		
 		$this->owner = $owner;
 		$this->o = Array();
-		
-		$this->findParentCentralStore();
+
+        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+            $this->parentCentralStore = $owner->parentDeviceGroup->tagStore;
+		else
+            $this->findParentCentralStore();
 		
 	}
 

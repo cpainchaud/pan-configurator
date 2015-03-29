@@ -128,8 +128,6 @@ class PanoramaConf
 		$this->securityRules = new RuleStore($this, 'SecurityRule', true);
 		$this->natRules = new RuleStore($this, 'NatRule', true);
 		$this->decryptionRules = new RuleStore($this, 'DecryptionRule', true);
-
-		
 	}
 
 
@@ -252,17 +250,139 @@ class PanoramaConf
         $this->decryptionRules->load_from_domxml($tmp, $tmpPost);
 
 
-		// Now listing and extracting all DV configurations
-		foreach( $this->devicegrouproot->childNodes as $node )
-		{
-			if( $node->nodeType != 1 ) continue;
-			$lvname = $node->nodeName;
-			//print "Device Group '$lvname' found\n";
-			
-			$ldv = new DeviceGroup($this);
-			$ldv->load_from_domxml($node);
-			$this->deviceGroups[] = $ldv;
-		}
+		// loading Device Groups now
+
+        if( $this->version < 70 )
+        {
+            foreach ($this->devicegrouproot->childNodes as $node)
+            {
+                if ($node->nodeType != 1) continue;
+                $lvname = $node->nodeName;
+                //print "Device Group '$lvname' found\n";
+
+                $ldv = new DeviceGroup($this);
+                $ldv->load_from_domxml($node);
+                $this->deviceGroups[] = $ldv;
+            }
+        }
+        else
+        {
+            $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/dginfo', $this->xmlroot);
+
+            $dgToParent = Array();
+            $parentToDG = Array();
+
+            foreach( $dgMetaDataNode->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $dgName = DH::findAttribute('name',$node);
+                if( $dgName === false )
+                    derr("DeviceGroup name attribute not found in dg-meta-data", $node);
+
+                $parentDG = DH::findFirstElement('parent-dg', $node);
+                if( $parentDG === false )
+                {
+                    $dgToParent[$dgName] = 'shared';
+                    $parentToDG['shared'][] = $dgName;
+                }
+                else
+                {
+                    $dgToParent[$dgName] = $parentDG->textContent;
+                    $parentToDG[$parentDG->textContent][] = $dgName;
+                }
+            }
+
+            $dgLoadOrder = Array('shared');
+
+
+            while( count($parentToDG) > 0 )
+            {
+                $dgLoadOrderCount = count($dgLoadOrder);
+
+                foreach( $dgLoadOrder as &$dgName )
+                {
+                    if( isset($parentToDG[$dgName]) )
+                    {
+                        foreach($parentToDG[$dgName] as &$newDGName )
+                        {
+                            $dgLoadOrder[] = $newDGName;
+                        }
+                        unset($parentToDG[$dgName]);
+                    }
+                }
+
+                if( count($dgLoadOrder) <= $dgLoadOrderCount )
+                    derr('dg-meta-data seems to be corrupted, parent.child template cannot be calculated ', $dgMetaDataNode);
+
+                $dgLoadOrderCount = count($dgLoadOrder);
+            }
+
+            /*print "DG loading order:\n";
+            foreach( $dgLoadOrder as &$dgName )
+                print " - {$dgName}\n";*/
+
+
+            $deviceGroupNodes = Array();
+
+            foreach ($this->devicegrouproot->childNodes as $node)
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $nodeNameAttr = DH::findAttribute('name', $node);
+                if( $nodeNameAttr === false )
+                    derr("DeviceGroup 'name' attribute was not found", $node);
+
+                if( !is_string($nodeNameAttr) || $nodeNameAttr == '' )
+                    derr("DeviceGroup 'name' attribute has invalid value", $node);
+
+                $deviceGroupNodes[$nodeNameAttr] = $node;
+            }
+
+            foreach( $dgLoadOrder as $dgIndex => &$dgName )
+            {
+                if( $dgName == 'shared' )
+                    continue;
+
+                if( !isset($deviceGroupNodes[$dgName]) )
+                {
+                    mwarning("DeviceGroup '$dgName' is listed in dg-meta-data but doesn't exist in XML");
+                    //unset($dgLoadOrder[$dgIndex]);
+                    continue;
+                }
+
+                $ldv = new DeviceGroup($this);
+                if( !isset($dgToParent[$dgName]) )
+                {
+                    mwarning("DeviceGroup '$dgName' has not parent associated, assuming SHARED");
+                }
+                elseif( $dgToParent[$dgName] == 'shared' )
+                {
+                    // do nothing
+                }
+                else
+                {
+                    $parentDG = $this->findDeviceGroup($dgToParent[$dgName]);
+                    if( $parentDG === null )
+                        mwarning("DeviceGroup '$dgName' has DG '{$dgToParent[$dgName]}' listed as parent but it cannot be found in XML");
+                    else
+                    {
+                        $parentDG->childDeviceGroups[$dgName] = $ldv;
+                        $ldv->parentDeviceGroup = $parentDG;
+                    }
+                }
+
+                $ldv->load_from_domxml($deviceGroupNodes[$dgName]);
+                $this->deviceGroups[] = $ldv;
+
+            }
+
+        }
+        //
+        // End of DeviceGroup loading
+        //
 
 	}
 

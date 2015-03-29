@@ -75,12 +75,19 @@ class AddressStore
 	public $xmlroot = null;
 	
 	public $fasthashcomp = null;
-	
-	
+
+
+    /**
+     * @param VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null $owner
+     */
 	public function AddressStore($owner)
 	{
 		$this->owner = $owner;
-		$this->findParentCentralStore();
+
+        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+            $this->parentCentralStore = $owner->parentDeviceGroup->addressStore;
+		else
+            $this->findParentCentralStore();
 
 		$this->addr = Array();
 		$this->addrg = Array();

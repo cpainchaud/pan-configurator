@@ -78,6 +78,16 @@ class DeviceGroup
      */
     public $decryptionRules=null;
 
+    /**
+     * @var null|DeviceGroup
+     */
+    public $parentDeviceGroup = null;
+
+    /**
+     * @var DeviceGroup[]
+     */
+    public $childDeviceGroups = Array();
+
 
 
 	/**
@@ -279,16 +289,12 @@ class DeviceGroup
 
 	public function display_statistics()
 	{
-		print "Statistics for DG '".$this->name."'\n";
-		print "- ".$this->addressStore->countAddresses()." address objects\n";
-		print "- ".$this->addressStore->countAddressGroups()." address groups\n";
-		print "- ".$this->serviceStore->countServices()." service objects\n";
-		print "- ".$this->serviceStore->countServiceGroups()." service groups\n";
-		print "- ".$this->addressStore->countTmpAddresses()." temporary address objects\n";
-		print "- ".$this->serviceStore->countTmpServices()." temporary service objects\n";
+		print "Statistics for DG '".PH::boldText($this->name)."'\n";
+        print "- {$this->securityRules->countPreRules()} / {$this->securityRules->countPostRules()} pre/post SecRules\n";
+        print "- {$this->natRules->countPreRules()} / {$this->natRules->countPostRules()} pre/post NatRules\n";
+		print "- {$this->addressStore->countAddresses()} / {$this->addressStore->countAddressGroups()} / {$this->addressStore->countTmpAddresses()} address/group/tmp/total objects\n";
+		print "- {$this->serviceStore->countServices()} / {$this->serviceStore->countServiceGroups()} / {$this->serviceStore->countTmpServices()} service/group/tmp/total objects\n";
 		print "- ".$this->tagStore->count()." tags. ".$this->tagStore->countUnused()." unused\n";
-		print "- ".$this->zoneStore->count()." zones.\n";
-		print "- ".$this->appStore->count()." apps.\n";
 	}
 	
 	

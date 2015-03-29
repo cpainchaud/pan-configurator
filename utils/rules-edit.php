@@ -93,6 +93,7 @@ $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' =>
 $supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "filters rules based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator value)');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['usedomxml'] = Array('niceName' => 'useDomXML', 'shortHelp' => 'enable alternative XML engine (faster but experimental');
+$supportedArguments['stats'] = Array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
 
 
 /***************************************
@@ -872,6 +873,21 @@ foreach( $rulesToProcess as &$rulesRecord )
 }
 print "\n";
 // </editor-fold>
+
+
+if( isset(PH::$args['stats']) )
+{
+    $pan->display_statistics();
+    print "\n";
+    foreach( $rulesToProcess as &$record )
+    {
+        if( get_class($record['store']->owner) != 'PanoramaConf' && get_class($record['store']->owner) != 'PANConf' )
+        {
+            $record['store']->owner->display_statistics();
+            print "\n";
+        }
+    }
+}
 
 
 // save our work !!!

@@ -385,6 +385,11 @@ class DH
             $xpath = new DOMXpath($contextNode);
             $nodes = $xpath->query($xpathString);
         }
+        elseif( $contextNode->parentNode->nodeType ==  XML_DOCUMENT_NODE )
+        {
+            $xpath = new DOMXpath($contextNode->parentNode);
+            $nodes = $xpath->query($xpathString);
+        }
         else
         {
             $xpathString = '.'.$xpathString;

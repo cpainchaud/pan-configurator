@@ -58,7 +58,10 @@ class ServiceStore
 	{
 		$this->owner = $owner;
 
-		$this->findParentCentralStore();
+        if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+            $this->parentCentralStore = $owner->parentDeviceGroup->serviceStore;
+		else
+            $this->findParentCentralStore();
 		
 		$this->regen_Indexes();
 		
