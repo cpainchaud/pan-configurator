@@ -191,7 +191,7 @@ class RQuery
     /**
      * @param string $text
      * @param string $errorMessage
-     * @return bool|int
+     * @return bool|int FALSE if an error occured (see $errorMessage content)
      */
     public function parseFromString($text, &$errorMessage)
     {

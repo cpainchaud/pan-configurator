@@ -708,10 +708,37 @@ class RuleStore
 	
 	/**
 	* Returns an Array with all Rules inside this store
+     * @param null|string $withFilter
 	* @return SecurityRule[]|NatRule[]
 	*/
-	public function rules()
+	public function rules( $withFilter=null )
 	{
+        $query = null;
+
+        if( $withFilter !== null  && $withFilter != '' )
+        {
+            $errMesg = '';
+            $query = new RQuery('rule');
+            if( $query->parseFromString($withFilter, $errMsg) === false )
+                derr("error while parsing query: {$errMesg}");
+
+            $res = Array();
+            foreach( $this->rules as $rule )
+            {
+                if( $query->matchSingleObject($rule) )
+                    $res[] = $rule;
+            }
+            if( $this->isPreOrPost )
+            {
+                foreach( $this->postRules as $rule )
+                {
+                    if( $query->matchSingleObject($rule) )
+                        $res[] = $rule;
+                }
+            }
+            return $res;
+        }
+
 		if( !$this->isPreOrPost )
 			return $this->rules;
 
