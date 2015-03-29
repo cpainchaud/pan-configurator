@@ -893,56 +893,22 @@ class cidr
     	return false;
     }
 
+    /**
+     * return 0 if not match, 1 if $sub is included in $ref, 2 if $sub is partially matched by $ref.
+     * @param string $sub ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @param string $ref
+     * @return int
+     */
     static public function netMatch( $sub, $ref)
     {
-    	// return 0 if not match, 1 if $sub is included in $ref, 2 if $sub is partially matched by $ref.
-    	$ex = explode('/', $sub);
-    	if( count($ex) > 1 && $ex[1] != '32')
-    	{
-    		//$netmask = cidr::cidr2netmask($ex[0]);
-    		$bmask = 0;
-    		for($i=1; $i<= (32-$ex[1]); $i++)
-    			$bmask += pow(2, $i-1);
+        $res = cidr::stringToStartEnd($sub);
+    	$subNetwork = $res['start'];
+    	$subBroadcast = $res['end'];
 
-    		$subNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
-    		$subBroadcast = ip2long($ex[0]) | $bmask;
-    	}
-        elseif( count($ex) > 1 && $ex[1] == '32' )
-        {
-            $subNetwork = ip2long($ex[0]);
-            $subBroadcast = $subNetwork;
-        }
-    	else
-    	{
-    		$subNetwork = ip2long($sub);
-    		$subBroadcast = ip2long($sub);
-    	}
 
-    	unset($ex);
-    	$ex = explode('/', $ref);
-    	if( count($ex) > 1 && $ex[1] != '32')
-    	{
-    		//$netmask = cidr::cidr2netmask($ex[0]);
-    		$bmask = 0;
-    		for($i=1; $i<= (32-$ex[1]); $i++)
-    			$bmask += pow(2, $i-1);
-
-    		$refNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
-    		$refBroadcast = ip2long($ex[0]) | $bmask;
-    	}
-        elseif( count($ex) > 1 && $ex[1] == '32' )
-        {
-            $refNetwork = ip2long($ex[0]);
-            $refBroadcast = $refNetwork;
-        }
-    	else
-    	{
-    		$refNetwork = ip2long($ref);
-    		$refBroadcast = $refNetwork;
-    	}
-
-    	//$refNetwork = ;
-    	//$refBroadcast = 
+        $res = cidr::stringToStartEnd($ref);
+        $refNetwork = $res['start'];
+        $refBroadcast = $res['end'];
 
 
     	if( $subNetwork >= $refNetwork && $subBroadcast <= $refBroadcast )
@@ -961,6 +927,64 @@ class cidr
 
     	//print "sub $sub is not matching $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
     	return 0;
+    }
+
+    static public function & stringToStartEnd($value)
+    {
+        $result = Array();
+
+        $ex = explode('-', $value);
+        if( count($ex) == 2 )
+        {
+            if( filter_var($ex[0], FILTER_VALIDATE_IP) === false )
+                derr("'{$ex[0]}' is not a valid IP");
+
+            if( filter_var($ex[1], FILTER_VALIDATE_IP) === false )
+                derr("'{$ex[1]}' is not a valid IP");
+
+            $result['start'] = ip2long($ex[0]);
+            $result['end'] = ip2long($ex[1]);
+            return $result;
+        }
+
+
+        $ex = explode('/', $value);
+        if( count($ex) > 1 && $ex[1] != '32')
+        {
+            //$netmask = cidr::cidr2netmask($ex[0]);
+            if( $ex[1] < 0 || $ex[1] > 32 )
+                derr("invalid netmask in value {$value}");
+
+            if( filter_var($ex[0], FILTER_VALIDATE_IP) === false )
+                derr("'{$ex[0]}' is not a valid IP");
+
+            $bmask = 0;
+            for($i=1; $i<= (32-$ex[1]); $i++)
+                $bmask += pow(2, $i-1);
+
+            $subNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
+            $subBroadcast = ip2long($ex[0]) | $bmask;
+        }
+        elseif( count($ex) > 1 && $ex[1] == '32' )
+        {
+            if( filter_var($ex[0], FILTER_VALIDATE_IP) === false )
+                derr("'{$ex[0]}' is not a valid IP");
+            $subNetwork = ip2long($ex[0]);
+            $subBroadcast = $subNetwork;
+        }
+        else
+        {
+            if( filter_var($value, FILTER_VALIDATE_IP) === false )
+                derr("'{$value}' is not a valid IP");
+
+            $subNetwork = ip2long($value);
+            $subBroadcast = ip2long($value);
+        }
+
+        $result['start'] = $subNetwork;
+        $result['end'] = $subBroadcast;
+
+        return $result;
     }
 
 
