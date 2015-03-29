@@ -711,7 +711,7 @@ class RuleStore
      * @param null|string $withFilter
 	* @return SecurityRule[]|NatRule[]
 	*/
-	public function rules( $withFilter=null )
+	public function & rules( $withFilter=null )
 	{
         $query = null;
 
@@ -740,9 +740,14 @@ class RuleStore
         }
 
 		if( !$this->isPreOrPost )
-			return $this->rules;
+        {
+            $res = $this->rules;
+            return $res;
+        }
 
-		return array_merge($this->rules, $this->postRules);
+        $res = array_merge($this->rules, $this->postRules);
+
+		return $res;
 	}
 	
 	/**
