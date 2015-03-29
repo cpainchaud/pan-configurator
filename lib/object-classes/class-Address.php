@@ -64,6 +64,10 @@ class Address
 
 	protected $type = self::TypeTmp;
 
+    /**
+     * @property $_ipStartEnd  cached ip start and end value for fast optimization
+     */
+
 	
 	/**
 	* you should not need this one for normal use
@@ -220,6 +224,9 @@ class Address
 
 	public function setValue( $newValue, $rewriteXml = true )
 	{
+        if( isset($this->_ipStartEnd) )
+            unset($this->_ipStartEnd);
+
 		if( !is_string($newValue) )
 			derr('value can be text only');
 
@@ -249,6 +256,8 @@ class Address
      */
 	public function setType( $newType, $rewritexml = true )
 	{
+        if( isset($this->_ipStartEnd) )
+            unset($this->_ipStartEnd);
 
 		$tmp = array_search( $newType, self::$AddressTypes );
 		if( $tmp=== FALSE )
@@ -415,6 +424,12 @@ class Address
 	*/
 	public function & resolveIP_Start_End()
 	{
+        if( isset($this->_ipStartEnd) )
+        {
+            $res = $this->_ipStartEnd;
+            return $res;
+        }
+
 		$res = Array();
 
 		if( $this->isTmpAddr() )
@@ -423,44 +438,10 @@ class Address
 		if( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
 			derr('cannot resolve an object of type '.$this->type());
 
-		if( $this->type == self::TypeIpRange )
+		if( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
 		{
-			$ex = explode('-', $this->value);
-
-			if( count($ex) != 2 )
-				derr('IP range has wrong syntax: '.$this->value);
-
-			$res['start'] = ip2log($ex[0]);
-			$res['end'] = ip2log($ex[1]);
-		}
-		elseif( $this->type == self::TypeIpNetmask )
-		{
-			if( strlen($this->value) < 1 )
-				derr("cannot resolve object with no value");
-
-			$ex = explode('/', $this->value);
-			if( count($ex) > 1 && $ex[1] != '32')
-	    	{
-	    		//$netmask = cidr::cidr2netmask($ex[0]);
-	    		$bmask = 0;
-	    		for($i=1; $i<= (32-$ex[1]); $i++)
-	    			$bmask += pow(2, $i-1);
-
-	    		$subNetwork = ip2long($ex[0]) & ((-1 << (32 - (int)$ex[1])) );
-	    		$subBroadcast = ip2long($ex[0]) | $bmask;
-	    	}
-	    	elseif( $ex[1] == '32' )
-	    	{
-				$subNetwork = ip2long($ex[0]);
-	    		$subBroadcast = $subNetwork;
-	    	}
-	    	else
-	    	{
-	    		$subNetwork = ip2long($this->value);
-	    		$subBroadcast = $subNetwork;
-	    	}
-	    	$res['start'] = $subNetwork;
-	    	$res['end'] = $subBroadcast;
+			$this->_ipStartEnd = cidr::stringToStartEnd($this->value);
+            $res = $this->_ipStartEnd;
 		}
 		else
 		{
@@ -469,6 +450,21 @@ class Address
 
 		return $res;
 	}
+
+    /**
+     * return 0 if not match, 1 if this object is fully included in $network, 2 if this object is partially matched by $ref.
+     * @param $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @return int
+     */
+    public function  includedInIP4Network($network)
+    {
+        if( is_array($network) )
+            $netStartEnd = &$network;
+        else
+            $netStartEnd = cidr::stringToStartEnd($network);
+
+        return cidr::netMatch($this->resolveIP_Start_End(), $netStartEnd);
+    }
 
 	public function removeReference($object)
 	{

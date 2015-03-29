@@ -563,6 +563,43 @@ class AddressGroup
 		$connector->sendDeleteRequest($xpath);
 	}
 
+
+    /**
+     * return 0 if not match, 1 if this object is fully included in $network, 2 if this object is partially matched by $ref.
+     * @param string $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @return int
+     */
+    public function  includedInIP4Network($network)
+    {
+        if( is_array($network) )
+            $netStartEnd = &$network;
+        else
+            $netStartEnd = cidr::stringToStartEnd($network);
+
+        if( count($this->o) == 0 )
+            return 1;
+
+        $result = 0;
+
+        foreach( $this->o as $o )
+        {
+            $localResult =  $o->includedInIP4Network($netStartEnd);
+            if( $localResult == 1 )
+            {
+                if( $result == 2 )
+                    continue;
+                if( $result == 0 )
+                    $result = 1;
+            }
+            elseif( $localResult == 2 )
+            {
+                return 2;
+            }
+        }
+
+        return $result;
+    }
+
 	
 
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"></entry>';

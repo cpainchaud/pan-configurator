@@ -895,20 +895,35 @@ class cidr
 
     /**
      * return 0 if not match, 1 if $sub is included in $ref, 2 if $sub is partially matched by $ref.
-     * @param string $sub ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
-     * @param string $ref
+     * @param string|int[] $sub ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @param string|int[] $ref
      * @return int
      */
     static public function netMatch( $sub, $ref)
     {
-        $res = cidr::stringToStartEnd($sub);
-    	$subNetwork = $res['start'];
-    	$subBroadcast = $res['end'];
+        if( is_array($sub) )
+        {
+            $subNetwork = $sub['start'];
+            $subBroadcast = $sub['end'];
+        }
+        else
+        {
+            $res = cidr::stringToStartEnd($sub);
+            $subNetwork = $res['start'];
+            $subBroadcast = $res['end'];
+        }
 
-
-        $res = cidr::stringToStartEnd($ref);
-        $refNetwork = $res['start'];
-        $refBroadcast = $res['end'];
+        if( is_array($ref) )
+        {
+            $refNetwork = $ref['start'];
+            $refBroadcast = $ref['end'];
+        }
+        else
+        {
+            $res = cidr::stringToStartEnd($ref);
+            $refNetwork = $res['start'];
+            $refBroadcast = $res['end'];
+        }
 
 
     	if( $subNetwork >= $refNetwork && $subBroadcast <= $refBroadcast )

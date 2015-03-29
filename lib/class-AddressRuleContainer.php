@@ -234,49 +234,41 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @param string $ipMatch
-     * @return int 0 if no match, 1 if full match ( $ipMatch is fully covered by objects inside ), 2 if partial match ($ipMatch is covered by some parts of this containers objects)
+     * return 0 if not match, 1 if this object is fully included in $network, 2 if this object is partially matched by $ref.
+     * Always return 0 (not match) if this is object = ANY
+     * @param string $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @return int
      */
-    public function matchIPv4( $ipMatch )
+    public function  includedInIP4Network($network)
     {
-        if( $this->isAny() )
-            return 1;
+        if( is_array($network) )
+            $netStartEnd = &$network;
+        else
+            $netStartEnd = cidr::stringToStartEnd($network);
 
-        $bestMatch = 0;
+        if( count($this->o) == 0 )
+            return 0;
 
-        foreach($this->o as $o)
+        $result = 0;
+
+        foreach( $this->o as $o )
         {
-            $localScore = 0;
-
-            if( $o->isTmpAddr() )
+            $localResult =  $o->includedInIP4Network($netStartEnd);
+            if( $localResult == 1 )
             {
-                if( filter_var($o->name(), FILTER_VALIDATE_IP) !== false )
-                {
-                    $localScore = cidr::netMatch($ipMatch, $o->name() );
-                }
+                if( $result == 2 )
+                    continue;
+                if( $result == 0 )
+                    $result = 1;
             }
-            elseif( $o->isGroup() )
+            elseif( $localResult == 2 )
             {
-                $localScore = $o->matchIPv4($ipMatch);
+                return 2;
             }
-            elseif( $o->isAddress() )
-            {
-                if( $o->type() == 'ip-netmask' || $o->type() == 'ip-range' )
-                    $localScore = cidr::netMatch($ipMatch, $o->value() );
-            }
-            else derr('unsupported');
-
-            if( $localScore == 1 )
-                return 1;
-
-            if( $localScore != 0 )
-                $bestMatch = $localScore;
         }
 
-
-        return $bestMatch;
+        return $result;
     }
-
 
 
     /**
