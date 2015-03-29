@@ -249,7 +249,7 @@ class AddressRuleContainer extends ObjRuleContainer
         if( count($this->o) == 0 )
             return 0;
 
-        $result = 0;
+        $result = -1;
 
         foreach( $this->o as $o )
         {
@@ -258,12 +258,21 @@ class AddressRuleContainer extends ObjRuleContainer
             {
                 if( $result == 2 )
                     continue;
-                if( $result == 0 )
+                if( $result == -1 )
                     $result = 1;
+                if( $result == 0 )
+                    return 2;
             }
             elseif( $localResult == 2 )
             {
                 return 2;
+            }
+            elseif( $localResult == 0 )
+            {
+                if( $result == -1 )
+                    $result = 0;
+                if( $result == 1 )
+                    return 2;
             }
         }
 

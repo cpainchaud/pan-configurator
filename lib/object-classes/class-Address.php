@@ -463,6 +463,9 @@ class Address
         else
             $netStartEnd = cidr::stringToStartEnd($network);
 
+        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
+            return 0;
+
         return cidr::netMatch($this->resolveIP_Start_End(), $netStartEnd);
     }
 

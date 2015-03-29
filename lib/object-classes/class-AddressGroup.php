@@ -576,24 +576,33 @@ class AddressGroup
         else
             $netStartEnd = cidr::stringToStartEnd($network);
 
-        if( count($this->o) == 0 )
+        if( count($this->members) == 0 )
             return 1;
 
-        $result = 0;
+        $result = -1;
 
-        foreach( $this->o as $o )
+        foreach( $this->members as $o )
         {
             $localResult =  $o->includedInIP4Network($netStartEnd);
             if( $localResult == 1 )
             {
                 if( $result == 2 )
                     continue;
-                if( $result == 0 )
+                if( $result == -1 )
                     $result = 1;
+                if( $result == 0 )
+                    return 2;
             }
             elseif( $localResult == 2 )
             {
                 return 2;
+            }
+            elseif( $localResult == 0 )
+            {
+                if( $result == -1 )
+                    $result = 0;
+                if( $result == 1 )
+                    return 2;
             }
         }
 

@@ -515,6 +515,31 @@ RQuery::$defaultFilters['rule']['dst']['operators']['is.negated'] = Array(
     'eval' => '$object->destinationIsNegated()',
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['src']['operators']['match.full'] = Array(
+    'eval' => "\$object->source->includedInIP4Network('!value!') == 1",
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['src']['operators']['match.partial'] = Array(
+    'eval' => "\$object->source->includedInIP4Network('!value!') == 2",
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['src']['operators']['match.full.or.partial'] = Array(
+    'eval' => "\$object->source->includedInIP4Network('!value!') > 0",
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['dst']['operators']['match.full'] = Array(
+    'eval' => "\$object->destination->includedInIP4Network('!value!') == 1",
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['dst']['operators']['match.partial'] = Array(
+    'eval' => "\$object->destination->includedInIP4Network('!value!') == 2",
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['dst']['operators']['match.full.or.partial'] = Array(
+    'eval' => "\$object->destination->includedInIP4Network('!value!') > 0",
+    'arg' => true
+);
+
 
 
 //                                              //
