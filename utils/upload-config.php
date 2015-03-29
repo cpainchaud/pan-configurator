@@ -27,14 +27,13 @@ require_once("lib/panconfigurator.php");
 function display_usage_and_exit($shortMessage = false)
 {
     global $argv;
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." type=panos|panorama in=inputfile.xml out=outputfile.xml location=all|shared|sub ".
+    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=file.xml|api://... out=file.xml|api://... [more arguments]".
         "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
-    print "php ".basename(__FILE__)." listactions   : list supported actions\n";
-    print "php ".basename(__FILE__)." listfilters   : list supported filter\n";
     print "php ".basename(__FILE__)." help          : more help messages\n";
     print PH::boldText("\nExamples:\n");
-    print " - php ".basename(__FILE__)." type=panorama in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'\n";
-    print " - php ".basename(__FILE__)." type=panos in=config.xml out=output.xml location=any actions=delete\n";
+    print " - php ".basename(__FILE__)." in=api://192.169.50.10/running-config out=local.xml'\n";
+    print " - php ".basename(__FILE__)." in=local.xml out=api://192.169.50.10 preserveMgmtsystem injectUserAdmin2\n";
+    print " - php ".basename(__FILE__)." in=local.xml out=api://192.169.50.10 toXpath=/config/shared/address\n";
 
     if( !$shortMessage )
     {
