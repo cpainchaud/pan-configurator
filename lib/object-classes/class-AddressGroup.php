@@ -590,7 +590,7 @@ class AddressGroup
                     continue;
                 if( $result == -1 )
                     $result = 1;
-                if( $result == 0 )
+                else if( $result == 0 )
                     return 2;
             }
             elseif( $localResult == 2 )
@@ -601,7 +601,7 @@ class AddressGroup
             {
                 if( $result == -1 )
                     $result = 0;
-                if( $result == 1 )
+                else if( $result == 1 )
                     return 2;
             }
         }
