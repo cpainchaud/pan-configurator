@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class RQuery | PAN-Configurator</title>
+	<title>Trait InterfaceType | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
 	<script type="text/javascript" src="elementlist.js?2645342067"></script>
@@ -60,7 +60,7 @@
 				<li><a href="class-PANConf.html">PANConf</a></li>
 				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
 				<li><a href="class-PH.html">PH</a></li>
-				<li class="active"><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
 				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
@@ -87,7 +87,7 @@
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
-				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
+				<li class="active"><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
@@ -154,7 +154,7 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class RQuery</h1>
+	<h1>Trait InterfaceType</h1>
 
 
 
@@ -164,7 +164,17 @@
 
 
 
+	<div>
+		<h4>Direct Known Users</h4>
+			<a href="class-EthernetInterface.html">EthernetInterface</a>, 
+			<a href="class-IPsecTunnel.html">IPsecTunnel</a>
+	</div>
 
+	<div>
+		<h4>Indirect Known Users</h4>
+			<a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a>, 
+			<a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>
+	</div>
 
 	<div class="info">
 		
@@ -172,14 +182,14 @@
 		
 		
 
-		<b>Located at</b> misc-classes/class-RQuery.php<br />
+		<b>Located at</b> network-classes/class-NetworkPropertiesContainer.php<br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="RQuery" id="_RQuery">
+	<tr data-order="isEthernetType" id="_isEthernetType">
 
 		<td class="attributes"><code>
 			 public 
@@ -189,8 +199,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_RQuery">#</a>
-		<code><b>RQuery</b>( <span>mixed <var>$objectType</var></span>, <span>mixed <var>$level</var> = <span class="php-num">0</span></span> )</code>
+		<a class="anchor" href="#_isEthernetType">#</a>
+		<code><b>isEthernetType</b>( )</code>
 
 		<div class="description short">
 			
@@ -208,85 +218,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="matchSingleObject" id="_matchSingleObject">
-
-		<td class="attributes"><code>
-			 public 
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_matchSingleObject">#</a>
-		<code><b>matchSingleObject</b>( <span><code><a href="class-SecurityRule.html">SecurityRule</a></code> <var>$object</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$object</var></dt>
-					<dd><code><code><a href="class-SecurityRule.html">SecurityRule</a></code></code><br>$object</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="parseFromString" id="_parseFromString">
-
-		<td class="attributes"><code>
-			 public 
-			boolean|integer
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_parseFromString">#</a>
-		<code><b>parseFromString</b>( <span>string <var>$text</var></span>, <span>string <var>&amp; $errorMessage</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$text</var></dt>
-					<dd><code>string</code><br>$text</dd>
-					<dt><var>$errorMessage</var></dt>
-					<dd><code>string</code><br>$errorMessage</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean|integer</code><br>FALSE if an error occured (see $errorMessage content)<br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="display" id="_display">
+	<tr data-order="isIPsecTunnelType" id="_isIPsecTunnelType">
 
 		<td class="attributes"><code>
 			 public 
@@ -296,8 +228,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_display">#</a>
-		<code><b>display</b>( <span>mixed <var>$indentLevel</var> = <span class="php-num">0</span></span> )</code>
+		<a class="anchor" href="#_isIPsecTunnelType">#</a>
+		<code><b>isIPsecTunnelType</b>( )</code>
 
 		<div class="description short">
 			
@@ -315,7 +247,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="toString" id="_toString">
+	<tr data-order="isAggregateType" id="_isAggregateType">
 
 		<td class="attributes"><code>
 			 public 
@@ -325,8 +257,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_toString">#</a>
-		<code><b>toString</b>( )</code>
+		<a class="anchor" href="#_isAggregateType">#</a>
+		<code><b>isAggregateType</b>( )</code>
 
 		<div class="description short">
 			
@@ -357,185 +289,6 @@
 
 
 
-	<table class="summary" id="properties">
-	<caption>Properties summary</caption>
-	<tr data-order="expression" id="$expression">
-		<td class="attributes"><code>
-			public  
-			null|string
-		</code></td>
-
-		<td class="name">
-<var>$expression</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$expression" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="subQueries" id="$subQueries">
-		<td class="attributes"><code>
-			public  
-			<code><a href="class-RQuery.html">RQuery</a>[]</code>
-		</code></td>
-
-		<td class="name">
-<var>$subQueries</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$subQueries" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="subQueriesOperators" id="$subQueriesOperators">
-		<td class="attributes"><code>
-			public  
-			string[]
-		</code></td>
-
-		<td class="name">
-<var>$subQueriesOperators</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$subQueriesOperators" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="defaultFilters" id="$defaultFilters">
-		<td class="attributes"><code>
-			public static 
-			array
-		</code></td>
-
-		<td class="name">
-<var>$defaultFilters</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$defaultFilters" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="mathOps" id="$mathOps">
-		<td class="attributes"><code>
-			public static 
-			array
-		</code></td>
-
-		<td class="name">
-<var>$mathOps</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>( <span class="php-quote">'&gt;'</span> =&gt; <span class="php-quote">'&gt;'</span>, <span class="php-quote">'&lt;'</span> =&gt; <span class="php-quote">'&lt;'</span>, <span class="php-quote">'='</span> =&gt; <span class="php-quote">'=='</span>, <span class="php-quote">'=='</span> =&gt; <span class="php-quote">'=='</span>, <span class="php-quote">'!='</span> =&gt; <span class="php-quote">'!='</span>, <span class="php-quote">'&lt;='</span> =&gt; <span class="php-quote">'&lt;='</span>, <span class="php-quote">'&gt;='</span> =&gt; <span class="php-quote">'&gt;='</span> )</code></td>
-		<td class="description"><div>
-			<a href="#$mathOps" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="objectType" id="$objectType">
-		<td class="attributes"><code>
-			public  
-			mixed
-		</code></td>
-
-		<td class="name">
-<var>$objectType</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$objectType" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="inverted" id="$inverted">
-		<td class="attributes"><code>
-			public  
-			boolean
-		</code></td>
-
-		<td class="name">
-<var>$inverted</var>		</td>
-		<td class="value"><code><span class="php-keyword1">false</span></code></td>
-		<td class="description"><div>
-			<a href="#$inverted" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="level" id="$level">
-		<td class="attributes"><code>
-			public  
-			integer
-		</code></td>
-
-		<td class="name">
-<var>$level</var>		</td>
-		<td class="value"><code><span class="php-num">0</span></code></td>
-		<td class="description"><div>
-			<a href="#$level" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	</table>
 
 
 

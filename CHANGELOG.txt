@@ -5,11 +5,14 @@ CHANGELOG
 * 6.1 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
 * support for 7.0 new Security rules actions : drop, reset-client, reset-server, reset-both
 * moved preRules and postRules into one single store (see getPreRules and getPostRules)
+
 * util rule-edit : service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
 * util rule-edit : new filters :  src/dst 'match.full match.partial match.full.or.partial'
 * util service-edit : and address-edit new action: replaceByMembersAndDelete
 * util upload-config : now supports inject xml parts direct in candidate config (see 'toXpath' option)
+* util upload-config : you can now preserve target firewall config (like its mgmt ip for example, look for 'help' to see options available).
 * util upload-config : now supports api://x.x.x.x/running-config candidate-config to choose between running and candidate or already saved file
+
 * enhanced support of interfaces : you can extract more infos from them like IP addresses attached to them (see doc for all options available)
 * virtual-wire and aggregate-group ethernet interface support
 

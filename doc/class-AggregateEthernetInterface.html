@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class RQuery | PAN-Configurator</title>
+	<title>Class AggregateEthernetInterface | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
 	<script type="text/javascript" src="elementlist.js?2645342067"></script>
@@ -39,7 +39,7 @@
 				<li><a href="class-AddressRuleContainer.html">AddressRuleContainer</a></li>
 				<li><a href="class-AddressStore.html">AddressStore</a></li>
 				<li><a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a></li>
-				<li><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></li>
+				<li class="active"><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></li>
 				<li><a href="class-App.html">App</a></li>
 				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
 				<li><a href="class-AppStore.html">AppStore</a></li>
@@ -60,7 +60,7 @@
 				<li><a href="class-PANConf.html">PANConf</a></li>
 				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
 				<li><a href="class-PH.html">PH</a></li>
-				<li class="active"><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
 				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
@@ -154,10 +154,30 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class RQuery</h1>
+	<h1>Class AggregateEthernetInterface</h1>
 
 
 
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-EthernetInterface.html"><span>EthernetInterface</span></a>
+			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>, 
+			
+				<a href="class-InterfaceType.html"><span>InterfaceType</span></a>
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>AggregateEthernetInterface</span></b>			
+			
+			
+		</dd>
+	</dl>
 
 
 
@@ -172,14 +192,14 @@
 		
 		
 
-		<b>Located at</b> misc-classes/class-RQuery.php<br />
+		<b>Located at</b> network-classes/class-AggregateEthernetInterface.php<br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="RQuery" id="_RQuery">
+	<tr data-order="isEthernetType" id="_isEthernetType">
 
 		<td class="attributes"><code>
 			 public 
@@ -189,8 +209,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_RQuery">#</a>
-		<code><b>RQuery</b>( <span>mixed <var>$objectType</var></span>, <span>mixed <var>$level</var> = <span class="php-num">0</span></span> )</code>
+		<a class="anchor" href="#_isEthernetType">#</a>
+		<code><b>isEthernetType</b>( )</code>
 
 		<div class="description short">
 			
@@ -204,22 +224,24 @@
 
 
 
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-EthernetInterface.html#_isEthernetType">EthernetInterface::isEthernetType()</a></code></div>
 
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="matchSingleObject" id="_matchSingleObject">
+	<tr data-order="isAggregateType" id="_isAggregateType">
 
 		<td class="attributes"><code>
 			 public 
-			boolean
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_matchSingleObject">#</a>
-		<code><b>matchSingleObject</b>( <span><code><a href="class-SecurityRule.html">SecurityRule</a></code> <var>$object</var></span> )</code>
+		<a class="anchor" href="#_isAggregateType">#</a>
+		<code><b>isAggregateType</b>( )</code>
 
 		<div class="description short">
 			
@@ -229,120 +251,70 @@
 			
 
 
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$object</var></dt>
-					<dd><code><code><a href="class-SecurityRule.html">SecurityRule</a></code></code><br>$object</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean</code><br />
-				</div>
 
 
 
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-EthernetInterface.html#_isAggregateType">EthernetInterface::isAggregateType()</a></code></div>
 
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="parseFromString" id="_parseFromString">
+	</table>
 
-		<td class="attributes"><code>
-			 public 
-			boolean|integer
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_parseFromString">#</a>
-		<code><b>parseFromString</b>( <span>string <var>$text</var></span>, <span>string <var>&amp; $errorMessage</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$text</var></dt>
-					<dd><code>string</code><br>$text</dd>
-					<dt><var>$errorMessage</var></dt>
-					<dd><code>string</code><br>$errorMessage</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean|integer</code><br>FALSE if an error occured (see $errorMessage content)<br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-EthernetInterface.html#methods">EthernetInterface</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-EthernetInterface.html#_EthernetInterface"><b>EthernetInterface()</b></a>, 
+			<a href="class-EthernetInterface.html#_countSubInterfaces"><b>countSubInterfaces()</b></a>, 
+			<a href="class-EthernetInterface.html#_getLayer3IPv4Addresses"><b>getLayer3IPv4Addresses()</b></a>, 
+			<a href="class-EthernetInterface.html#_isSubInterface"><b>isSubInterface()</b></a>, 
+			<a href="class-EthernetInterface.html#_load_from_domxml"><b>load_from_domxml()</b></a>, 
+			<a href="class-EthernetInterface.html#_load_sub_from_domxml"><b>load_sub_from_domxml()</b></a>, 
+			<a href="class-EthernetInterface.html#_subIfNumber"><b>subIfNumber()</b></a>, 
+			<a href="class-EthernetInterface.html#_subInterfaces"><b>subInterfaces()</b></a>, 
+			<a href="class-EthernetInterface.html#_tag"><b>tag()</b></a>, 
+			<a href="class-EthernetInterface.html#_type"><b>type()</b></a>
+		</code></td>
 	</tr>
-	<tr data-order="display" id="_display">
+	</table>
 
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_display">#</a>
-		<code><b>display</b>( <span>mixed <var>$indentLevel</var> = <span class="php-num">0</span></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
 	</tr>
-	<tr data-order="toString" id="_toString">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_toString">#</a>
-		<code><b>toString</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ReferencableObject.html#methods">ReferencableObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ReferencableObject.html#_addReference"><b>addReference()</b></a>, 
+			<a href="class-ReferencableObject.html#_broadcastMyNameChange"><b>broadcastMyNameChange()</b></a>, 
+			<a href="class-ReferencableObject.html#_countReferences"><b>countReferences()</b></a>, 
+			<a href="class-ReferencableObject.html#_display_references"><b>display_references()</b></a>, 
+			<a href="class-ReferencableObject.html#_findAssociatedRule_byType"><b>findAssociatedRule_byType()</b></a>, 
+			<a href="class-ReferencableObject.html#_findAssociatedSecurityRules"><b>findAssociatedSecurityRules()</b></a>, 
+			<a href="class-ReferencableObject.html#_generateRefHashComp"><b>generateRefHashComp()</b></a>, 
+			<a href="class-ReferencableObject.html#_getRefHashComp"><b>getRefHashComp()</b></a>, 
+			<a href="class-ReferencableObject.html#_getReferences"><b>getReferences()</b></a>, 
+			<a href="class-ReferencableObject.html#_name"><b>name()</b></a>, 
+			<a href="class-ReferencableObject.html#_removeReference"><b>removeReference()</b></a>, 
+			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
+			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-InterfaceType.html#methods">InterfaceType</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-InterfaceType.html#_isIPsecTunnelType"><b>isIPsecTunnelType()</b></a>
+		</code></td>
 	</tr>
 	</table>
 
@@ -356,188 +328,34 @@
 
 
 
-
-	<table class="summary" id="properties">
-	<caption>Properties summary</caption>
-	<tr data-order="expression" id="$expression">
-		<td class="attributes"><code>
-			public  
-			null|string
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-EthernetInterface.html#properties">EthernetInterface</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-EthernetInterface.html#$description"><var>$description</var></a>, 
+			<a href="class-EthernetInterface.html#$isSubInterface"><var>$isSubInterface</var></a>, 
+			<a href="class-EthernetInterface.html#$l3ipv4Addresses"><var>$l3ipv4Addresses</var></a>, 
+			<a href="class-EthernetInterface.html#$owner"><var>$owner</var></a>, 
+			<a href="class-EthernetInterface.html#$parentInterface"><var>$parentInterface</var></a>, 
+			<a href="class-EthernetInterface.html#$subInterfaces"><var>$subInterfaces</var></a>, 
+			<a href="class-EthernetInterface.html#$supportedTypes"><var>$supportedTypes</var></a>, 
+			<a href="class-EthernetInterface.html#$tag"><var>$tag</var></a>, 
+			<a href="class-EthernetInterface.html#$type"><var>$type</var></a>, 
+			<a href="class-EthernetInterface.html#$xmlroot"><var>$xmlroot</var></a>
 		</code></td>
-
-		<td class="name">
-<var>$expression</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$expression" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="subQueries" id="$subQueries">
-		<td class="attributes"><code>
-			public  
-			<code><a href="class-RQuery.html">RQuery</a>[]</code>
-		</code></td>
-
-		<td class="name">
-<var>$subQueries</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$subQueries" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="subQueriesOperators" id="$subQueriesOperators">
-		<td class="attributes"><code>
-			public  
-			string[]
-		</code></td>
-
-		<td class="name">
-<var>$subQueriesOperators</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$subQueriesOperators" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="defaultFilters" id="$defaultFilters">
-		<td class="attributes"><code>
-			public static 
-			array
-		</code></td>
-
-		<td class="name">
-<var>$defaultFilters</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$defaultFilters" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="mathOps" id="$mathOps">
-		<td class="attributes"><code>
-			public static 
-			array
-		</code></td>
-
-		<td class="name">
-<var>$mathOps</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>( <span class="php-quote">'&gt;'</span> =&gt; <span class="php-quote">'&gt;'</span>, <span class="php-quote">'&lt;'</span> =&gt; <span class="php-quote">'&lt;'</span>, <span class="php-quote">'='</span> =&gt; <span class="php-quote">'=='</span>, <span class="php-quote">'=='</span> =&gt; <span class="php-quote">'=='</span>, <span class="php-quote">'!='</span> =&gt; <span class="php-quote">'!='</span>, <span class="php-quote">'&lt;='</span> =&gt; <span class="php-quote">'&lt;='</span>, <span class="php-quote">'&gt;='</span> =&gt; <span class="php-quote">'&gt;='</span> )</code></td>
-		<td class="description"><div>
-			<a href="#$mathOps" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="objectType" id="$objectType">
-		<td class="attributes"><code>
-			public  
-			mixed
-		</code></td>
-
-		<td class="name">
-<var>$objectType</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$objectType" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="inverted" id="$inverted">
-		<td class="attributes"><code>
-			public  
-			boolean
-		</code></td>
-
-		<td class="name">
-<var>$inverted</var>		</td>
-		<td class="value"><code><span class="php-keyword1">false</span></code></td>
-		<td class="description"><div>
-			<a href="#$inverted" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="level" id="$level">
-		<td class="attributes"><code>
-			public  
-			integer
-		</code></td>
-
-		<td class="name">
-<var>$level</var>		</td>
-		<td class="value"><code><span class="php-num">0</span></code></td>
-		<td class="description"><div>
-			<a href="#$level" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
 	</tr>
 	</table>
 
-
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ReferencableObject.html#properties">ReferencableObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ReferencableObject.html#$name"><var>$name</var></a>, 
+			<a href="class-ReferencableObject.html#$refcomphash"><var>$refcomphash</var></a>, 
+			<a href="class-ReferencableObject.html#$refrules"><var>$refrules</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 

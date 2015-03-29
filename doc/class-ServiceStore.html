@@ -7,7 +7,7 @@
 	<title>Class ServiceStore | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3386874648"></script>
+	<script type="text/javascript" src="elementlist.js?2645342067"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -38,6 +38,8 @@
 				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
 				<li><a href="class-AddressRuleContainer.html">AddressRuleContainer</a></li>
 				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a></li>
+				<li><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></li>
 				<li><a href="class-App.html">App</a></li>
 				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
 				<li><a href="class-AppStore.html">AppStore</a></li>
@@ -85,6 +87,7 @@
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
+				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
@@ -196,7 +199,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_ServiceStore">#</a>
-		<code><b>ServiceStore</b>( <span>mixed <var>$owner</var></span>, <span>mixed <var>$centralrole</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>ServiceStore</b>( <span>mixed <var>$owner</var></span> )</code>
 
 		<div class="description short">
 			
@@ -445,35 +448,6 @@
 		<td class="name"><div>
 		<a class="anchor" href="#_load_local_objects_domxml">#</a>
 		<code><b>load_local_objects_domxml</b>( <span>mixed <var>$xml</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="setCentralStoreRole" id="_setCentralStoreRole">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_setCentralStoreRole">#</a>
-		<code><b>setCentralStoreRole</b>( <span>mixed <var>$is</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1190,163 +1164,6 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="equals_fasterHash" id="_equals_fasterHash">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_equals_fasterHash">#</a>
-		<code><b>equals_fasterHash</b>( <span>mixed <var>$other</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="replaceReferencedObject" id="_replaceReferencedObject">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_replaceReferencedObject">#</a>
-		<code><b>replaceReferencedObject</b>( <span>mixed <var>$old</var></span>, <span>mixed <var>$new</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="generateFastHashComp" id="_generateFastHashComp">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_generateFastHashComp">#</a>
-		<code><b>generateFastHashComp</b>( <span>mixed <var>$force</var> = <span class="php-keyword1">false</span></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="getFastHashComp" id="_getFastHashComp">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getFastHashComp">#</a>
-		<code><b>getFastHashComp</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="includesStoreExpanded" id="_includesStoreExpanded">
-
-		<td class="attributes"><code>
-			 public 
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_includesStoreExpanded">#</a>
-		<code><b>includesStoreExpanded</b>( <span><code><a href="class-ServiceStore.html">ServiceStore</a></code> <var>$other</var></span>, <span>mixed <var>$anyIsAcceptable</var> = <span class="php-keyword1">true</span> </span> )</code>
-
-		<div class="description short">
-			
-<p>To determine if a store has all the Service from another store, it will
-expand Service instead of looking for them directly. Very useful when looking to
-compare similar rules.</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>To determine if a store has all the Service from another store, it will
-expand Service instead of looking for them directly. Very useful when looking to
-compare similar rules.</p>
-
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean</code><br>true if Service objects from $other are all in this store<br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="countUnused" id="_countUnused">
 
 		<td class="attributes"><code>
@@ -1468,28 +1285,6 @@ compare similar rules.</p>
 		<td class="value"><code></code></td>
 		<td class="description"><div>
 			<a href="#$owner" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="centralStore" id="$centralStore">
-		<td class="attributes"><code>
-			protected  
-			boolean
-		</code></td>
-
-		<td class="name">
-<var>$centralStore</var>		</td>
-		<td class="value"><code><span class="php-keyword1">false</span></code></td>
-		<td class="description"><div>
-			<a href="#$centralStore" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -1666,28 +1461,6 @@ compare similar rules.</p>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
 			<a href="#$fastMemToIndex" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="fasthashcomp" id="$fasthashcomp">
-		<td class="attributes"><code>
-			protected  
-			mixed
-		</code></td>
-
-		<td class="name">
-<var>$fasthashcomp</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$fasthashcomp" class="anchor">#</a>
 
 			<div class="description short">
 				

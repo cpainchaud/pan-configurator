@@ -7,7 +7,7 @@
 	<title>Class EthernetInterface | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3386874648"></script>
+	<script type="text/javascript" src="elementlist.js?2645342067"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -38,6 +38,8 @@
 				<li><a href="class-AddressGroup.html">AddressGroup</a></li>
 				<li><a href="class-AddressRuleContainer.html">AddressRuleContainer</a></li>
 				<li><a href="class-AddressStore.html">AddressStore</a></li>
+				<li><a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a></li>
+				<li><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></li>
 				<li><a href="class-App.html">App</a></li>
 				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
 				<li><a href="class-AppStore.html">AppStore</a></li>
@@ -85,6 +87,7 @@
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
+				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
@@ -162,12 +165,19 @@
 			 uses 
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
-				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>
+				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>, 
+			
+				<a href="class-InterfaceType.html"><span>InterfaceType</span></a>
 			
 		</dd>
 	</dl>
 
 
+	<div>
+		<h4>Direct known subclasses</h4>
+			<a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a>, 
+			<a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>
+	</div>
 
 
 
@@ -423,6 +433,35 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="getLayer3IPv4Addresses" id="_getLayer3IPv4Addresses">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getLayer3IPv4Addresses">#</a>
+		<code><b>getLayer3IPv4Addresses</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="countSubInterfaces" id="_countSubInterfaces">
 
 		<td class="attributes"><code>
@@ -435,6 +474,68 @@
 		<td class="name"><div>
 		<a class="anchor" href="#_countSubInterfaces">#</a>
 		<code><b>countSubInterfaces</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="subInterfaces" id="_subInterfaces">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_subInterfaces">#</a>
+		<code><b>subInterfaces</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isEthernetType" id="_isEthernetType">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isEthernetType">#</a>
+		<code><b>isEthernetType</b>( )</code>
 
 		<div class="description short">
 			
@@ -480,6 +581,15 @@
 			<a href="class-ReferencableObject.html#_removeReference"><b>removeReference()</b></a>, 
 			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
 			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-InterfaceType.html#methods">InterfaceType</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-InterfaceType.html#_isAggregateType"><b>isAggregateType()</b></a>, 
+			<a href="class-InterfaceType.html#_isIPsecTunnelType"><b>isIPsecTunnelType()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -572,6 +682,116 @@
 		<td class="value"><code></code></td>
 		<td class="description"><div>
 			<a href="#$description" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="isSubInterface" id="$isSubInterface">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$isSubInterface</var>		</td>
+		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="description"><div>
+			<a href="#$isSubInterface" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="subInterfaces" id="$subInterfaces">
+		<td class="attributes"><code>
+			protected  
+			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>
+		</code></td>
+
+		<td class="name">
+<var>$subInterfaces</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$subInterfaces" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="parentInterface" id="$parentInterface">
+		<td class="attributes"><code>
+			protected  
+			null|<code><a href="class-EthernetInterface.html">EthernetInterface</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$parentInterface</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$parentInterface" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="tag" id="$tag">
+		<td class="attributes"><code>
+			protected  
+			integer
+		</code></td>
+
+		<td class="name">
+<var>$tag</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$tag" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="l3ipv4Addresses" id="$l3ipv4Addresses">
+		<td class="attributes"><code>
+			protected  
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$l3ipv4Addresses</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$l3ipv4Addresses" class="anchor">#</a>
 
 			<div class="description short">
 				
