@@ -7,7 +7,7 @@
 	<title>Class AddressGroup | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?2645342067"></script>
+	<script type="text/javascript" src="elementlist.js?1653033696"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -111,11 +111,13 @@
 				<li><a href="function-insertAfter.html">insertAfter</a></li>
 				<li><a href="function-lastIndex.html">lastIndex</a></li>
 				<li><a href="function-mdeb.html">mdeb</a></li>
+				<li><a href="function-mergeOverlappingIP4Mapping.html">mergeOverlappingIP4Mapping</a></li>
 				<li><a href="function-mwarning.html">mwarning</a></li>
 				<li><a href="function-my_shutdown.html">my_shutdown</a></li>
 				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
 				<li><a href="function-printn.html">printn</a></li>
 				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-sortArrayByStartValue.html">sortArrayByStartValue</a></li>
 				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
 			</ul>
 		</div>
@@ -1098,6 +1100,40 @@ $network is partially matched by this object.</p>
 				<h4>Returns</h4>
 				<div class="list">
 					<code>integer</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getIP4Mapping" id="_getIP4Mapping">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getIP4Mapping">#</a>
+		<code><b>getIP4Mapping</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>result['map'][] will contain all mapping in form of an array['start'] and
+['end]. result['unresolved'][] will provide a list unresolved objects<br />
 				</div>
 
 
