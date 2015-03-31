@@ -193,6 +193,7 @@ $supportedActions['showip4mapping'] = Array(
     'args' => false,
     'file' => function ( $object )
                     {
+                        /* @var Address|AddressGroup $object */
                         if( $object->isGroup() )
                         {
                             $resolvMap=$object->getIP4Mapping();
@@ -709,6 +710,7 @@ foreach( $objectsToProcess as &$objectsRecord )
 
                 if( !is_string($toEval) )
                 {
+                    /* @var closure $toEval*/
                     $toEval($object);
                 }
                 else
