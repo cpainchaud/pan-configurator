@@ -1006,5 +1006,66 @@ class cidr
 }
 
 
+function & sortArrayByStartValue( &$arrayToSort)
+{
+    //
+    // Sort incl objects IP mappings by Start IP
+    //
+    //print "\n   * Sorting incl obj by StartIP\n";
+    $returnMap = Array();
+    $tmp = Array();
+    foreach($arrayToSort as &$incl)
+    {
+        $tmp[] = $incl['start'];
+    }
+    unset($incl);
+    sort($tmp, SORT_NUMERIC);
+    foreach($tmp as &$value)
+    {
+        foreach($arrayToSort as &$incl)
+        {
+            if( $value == $incl['start'] )
+            {
+                //print "     -'".$incl['object']->name()." (".$incl['startip']."-".$incl['endip'].")'\n";
+                $returnMap[] = $incl;
+            }
+        }
+    }
+
+    return $returnMap;
+}
+
+function & mergeOverlappingIP4Mapping( &$ip4mapping )
+{
+    $newMapping = sortArrayByStartValue($ip4mapping);
+
+    $mapKeys = array_keys($newMapping);
+    $mapCount = count($newMapping);
+    for( $i=0; $i<$mapCount; $i++)
+    {
+        $current = &$newMapping[$mapKeys[$i]];
+        //print "     - handling ".long2ip($current['start'])."-".long2ip($current['end'])."\n";
+        for( $j=$i+1; $j<$mapCount; $j++)
+        {
+            $compare = &$newMapping[$mapKeys[$j]];
+            //print "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end'])."\n";
+
+            if( $compare['start'] > $current['end'] + 1 )
+                break;
+
+            $current['end'] = $compare['end'];
+
+            //print "             MERGED ->".long2ip($current['start'])."-".long2ip($current['end'])." \n";
+
+            unset($newMapping[$mapKeys[$j]]);
+
+            $i++;
+        }
+    }
+
+    return $newMapping;
+}
+
+
 
 

@@ -188,6 +188,39 @@ $supportedActions['replacebymembersanddelete'] = Array(
     'args' => false,
 );
 
+$supportedActions['showip4mapping'] = Array(
+    'name' => 'showIP4Mapping',
+    'args' => false,
+    'file' => function ( $object )
+                    {
+                        if( $object->isGroup() )
+                        {
+                            $resolvMap=$object->getIP4Mapping();
+                            foreach($resolvMap['map'] as &$resolvRecord)
+                            {
+                                print "     * ".str_pad(long2ip($resolvRecord['start']), 14)." - ".long2ip($resolvRecord['end'])."\n";
+                            }
+                            foreach($resolvMap['unresolved'] as &$resolvRecord)
+                            {
+                                print "     * UNRESOLVED: {$resolvRecord->name()}\n";
+                            }
+
+                        }
+                        elseif( ! $object->isTmpAddr() )
+                        {
+                            $type = $object->type();
+
+                            if( $type != 'ip-netmask' && $type != 'ip-range' )
+                            {
+                                $resolvMap = $object->resolveIP_StartEnd();
+                                print "     * ".str_pad(long2ip($resolvMap['start']), 14)." - ".long2ip($resolvMap['end'])."\n";
+                            }
+                            print "     * UNSUPPORTED \n";
+                        }
+                    }
+);
+$supportedActions['showip4mapping']['api'] = & $supportedActions['showip4mapping']['file'];
+
 
 $supportedActions['displayreferences'] = Array(
     'name' => 'displayReferences',
@@ -639,25 +672,33 @@ foreach( $objectsToProcess as &$objectsRecord )
                         $inputIsAPI = true;
                     }
 
-                    if (isset($supportedActions[$doAction['name']]['argObjectFinder']))
+                    if( !is_string($toEval) )
                     {
-                        $findObjectEval = $supportedActions[$doAction['name']]['argObjectFinder'];
-                        $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
-                        if (eval($findObjectEval) === false)
-                            derr("\neval code was : $findObjectEval\n");
-                        if ($objectFind === null)
-                            display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
-                        $toEval = str_replace('!value!', '$objectFind', $toEval);
-                    } else
-                        $toEval = str_replace('!value!', $arg, $toEval);
+                        derr('unsupported');
+                    }
+                    else
+                    {
+                        if (isset($supportedActions[$doAction['name']]['argObjectFinder']))
+                        {
+                            $findObjectEval = $supportedActions[$doAction['name']]['argObjectFinder'];
+                            $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
+                            if (eval($findObjectEval) === false)
+                                derr("\neval code was : $findObjectEval\n");
+                            if ($objectFind === null)
+                                display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
+                            $toEval = str_replace('!value!', '$objectFind', $toEval);
+                        } else
+                            $toEval = str_replace('!value!', $arg, $toEval);
 
-                    if (eval($toEval) === false)
-                        derr("\neval code was : $toEval\n");
+                        if (eval($toEval) === false)
+                            derr("\neval code was : $toEval\n");
+                    }
 
                     //print $toEval;
                     print "\n";
                 }
-            } else
+            }
+            else
             {
                 if ($configInput['type'] == 'file')
                     $toEval = $supportedActions[$doAction['name']]['file'];
@@ -666,8 +707,15 @@ foreach( $objectsToProcess as &$objectsRecord )
                 else
                     derr('unsupported input type');
 
-                if (eval($toEval) === false)
-                    derr("\neval code was : $toEval\n");
+                if( !is_string($toEval) )
+                {
+                    $toEval($object);
+                }
+                else
+                {
+                    if (eval($toEval) === false)
+                        derr("\neval code was : $toEval\n");
+                }
 
             }
         }
