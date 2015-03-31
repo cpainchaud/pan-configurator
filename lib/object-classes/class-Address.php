@@ -469,6 +469,25 @@ class Address
         return cidr::netMatch($this->resolveIP_Start_End(), $netStartEnd);
     }
 
+    /**
+     * return 0 if not match, 1 if $network is fully included in this object, 2 if $network is partially matched by this object.
+     * @param $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @return int
+     */
+    public function  includesIP4Network($network)
+    {
+        if( is_array($network) )
+            $netStartEnd = &$network;
+        else
+            $netStartEnd = cidr::stringToStartEnd($network);
+
+        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
+            return 0;
+
+        return cidr::netMatch($netStartEnd, $this->resolveIP_Start_End());
+    }
+
+
 	public function removeReference($object)
 	{
 		$this->super_removeReference($object);

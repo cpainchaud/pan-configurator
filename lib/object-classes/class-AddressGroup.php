@@ -609,6 +609,45 @@ class AddressGroup
         return $result;
     }
 
+
+    /**
+     * return 0 if not match, 1 if $network is fully included in this object, 2 if $network is partially matched by this object.
+     * @param $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @return int
+     */
+    public function  includesIP4Network($network)
+    {
+        if( is_array($network) )
+            $netStartEnd = &$network;
+        else
+            $netStartEnd = cidr::stringToStartEnd($network);
+
+        if( count($this->members) == 0 )
+            return 0;
+
+        $result = -1;
+
+        foreach( $this->members as $o )
+        {
+            $localResult =  $o->includesIP4Network($netStartEnd);
+            if( $localResult == 1 )
+            {
+                return 1;
+            }
+            elseif( $localResult == 2 )
+            {
+                $result = 2;
+            }
+            elseif( $localResult == 0 )
+            {
+                if( $result == -1 )
+                    $result = 0;
+            }
+        }
+
+        return $result;
+    }
+
 	
 
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"></entry>';

@@ -364,7 +364,7 @@ $supportedActions['invertpreandpost'] = Array(
     'args' => false
 );
 // </editor-fold>
-
+//TODO add action=copy and action==move
 
 
 PH::processCliArgs();
