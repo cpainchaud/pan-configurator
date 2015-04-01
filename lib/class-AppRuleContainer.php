@@ -198,6 +198,34 @@ class AppRuleContainer extends ObjRuleContainer
     }
 
 
+    public function merge($other)
+    {
+        $this->fasthashcomp = null;
+
+        if( count($this->o) == 0 )
+            return;
+
+        if( count($other->o) == 0 )
+        {
+            $this->setAny();
+            return;
+        }
+
+        foreach($other->o as $s)
+        {
+            $this->addApp($s);
+        }
+    }
+
+
+    public function setAny()
+    {
+        $this->removeAll();
+
+        $this->rewriteXML();
+    }
+
+
 
     /**
      *

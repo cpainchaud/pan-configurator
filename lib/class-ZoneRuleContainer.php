@@ -264,9 +264,6 @@ class ZoneRuleContainer extends ObjRuleContainer
     {
         $this->fasthashcomp = null;
 
-
-        // we should check if we are negated?
-
         if( count($this->o) == 0 )
             return;
 
