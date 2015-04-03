@@ -289,14 +289,16 @@ class PANConf
         return null;
     }
 	
-	public function save_to_file($filename)
+	public function save_to_file($filename, $printMessage=true)
 	{
-		print "Now saving PANConf to file '$filename'...";
+        if($printMessage)
+            print "Now saving PANConf to file '$filename'...";
 
 		$xml = &DH::dom_to_xml($this->xmlroot);
 		file_put_contents ( $filename , $xml);
 
-		print "     done!\n\n";
+        if($printMessage)
+            print "     done!\n\n";
 	}
 	
 	public function load_from_file($filename)

@@ -64,6 +64,7 @@ function display_error_usage_exit($msg)
     display_usage_and_exit(true);
 }
 
+
 print "\n";
 
 $debugAPI = false;
@@ -72,22 +73,43 @@ $debugAPI = false;
 
 $supportedArguments = Array();
 $supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
-$supportedArguments[] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
+$supportedArguments[] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes, API is not supported because it could be a heavy duty on management. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1');
-$supportedArguments[] = Array('niceName' => 'Method', 'shortHelp' => 'choose between MatchFromToSrcDestApp', 'argDesc' => '=method1');
+$supportedArguments[] = Array('niceName' => 'Method', 'shortHelp' => 'rules will be merged if they match given a specific method, available methods are: ', 'argDesc' => '=method1');
 $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments[] = Array('niceName' => 'panoramaPreRules', 'shortHelp' => 'when using panorama, select pre-rulebase for merging');
 $supportedArguments[] = Array('niceName' => 'panoramaPostRules', 'shortHelp' => 'when using panorama, select post-rulebase for merging');
 $supportedArguments[] = Array('niceName' => 'mergeDenyRules', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
 $supportedArguments[] = Array('niceName' => 'stopMergingIfDenySeen', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
 $supportedArguments[] = Array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '[yes|no|true|false]');
-
 $tmpArray = Array();
 foreach($supportedArguments as &$arg)
 {
     $tmpArray[strtolower($arg['niceName'])] = &$arg;
 }
 $supportedArguments = &$tmpArray;
+
+//
+//  methods array preparation
+//
+$supportedMethods_tmp = Array(  'matchFromToSrcDstApp'  => 1 ,
+    'matchFromToSrcDstSvc'  => 2 ,
+    'matchFromToSrcSvcApp'  => 3 ,
+    'matchFromToDstSvcApp'  => 4 ,
+    'matchFromSrcDstSvcApp' => 5 ,
+    'matchToSrcDstSvcApp'   => 6 ,
+    'matchToDstSvcApp'   => 7 ,
+    'matchFromSrcSvcApp' => 8 ,
+);
+$supportedMethods = Array();
+foreach( $supportedMethods_tmp as $methodName => $method )
+{
+    $supportedMethods[strtolower($methodName)] = $method;
+}
+foreach($supportedMethods_tmp as $methodName => $method )
+{
+    $supportedArguments['method']['shortHelp'] .= $methodName.',';
+}
 
 
 
@@ -114,11 +136,18 @@ $configInput = PH::$args['in'];
 if( !is_string($configInput) || strlen($configInput) < 1 )
     display_error_usage_exit('"in" argument is not a valid string');
 
+if( ! isset(PH::$args['out']) )
+    display_error_usage_exit('"out" is missing from arguments');
+$configOutput = PH::$args['out'];
+if( !is_string($configOutput) || strlen($configOutput) < 1 )
+    display_error_usage_exit('"out" argument is not a valid string');
+
 //
 // What kind of config input do we have.
 //     File or API ?
 //
 // <editor-fold desc="  ****  input method validation and PANOS vs Panorama auto-detect  ****" defaultstate="collapsed" >
+
 $configInput = PH::processIOMethod($configInput, true);
 $xmlDoc = null;
 
@@ -261,21 +290,7 @@ else
     $processedLocation = $sub;
 }
 
-$supportedMethods_tmp = Array(  'matchFromToSrcDstApp'  => 1 ,
-                                'matchFromToSrcDstSvc'  => 2 ,
-                                'matchFromToSrcSvcApp'  => 3 ,
-                                'matchFromToDstSvcApp'  => 4 ,
-                                'matchFromSrcDstSvcApp' => 5 ,
-                                'matchToSrcDstSvcApp'   => 6 ,
-                                'matchToDstSvcApp'   => 7 ,
-                                'matchFromSrcSvcApp' => 8 ,
-);
 
-$supportedMethods = Array();
-foreach( $supportedMethods_tmp as $methodName => $method )
-{
-    $supportedMethods[strtolower($methodName)] = $method;
-}
 
 
 if( !isset(PH::$args['method']) )
@@ -655,6 +670,13 @@ foreach( $rulesToProcess as $index => $rule )
 
 print "\n*** MERGING DONE : {$mergedRulesCount} rules merged over ".count($rulesToProcess)." in total (".(count($rulesToProcess)-$mergedRulesCount)." remaining) ***\n";
 
+// save our work !!!
+if( $configOutput !== null )
+{
+    print " - saving final config to $configOutput... ";
+    $pan->save_to_file($configOutput, false);
+    print "OK!\n";
+}
 
 
 

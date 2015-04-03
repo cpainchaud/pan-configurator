@@ -5,6 +5,7 @@ CHANGELOG
 * 6.1 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
 * support for 7.0 new Security rules actions : drop, reset-client, reset-server, reset-both
 * moved preRules and postRules into one single store (see getPreRules and getPostRules)
+* new utility : rule-merger.php to find similar rules and merge them
 
 * util rule-edit : service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
 * util rule-edit : new filters :  src/dst 'included-in.full included-in.partial included-in.full.or.partial' and 'includes.full includes-full.or.partial includes.partial'
