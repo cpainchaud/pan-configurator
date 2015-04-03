@@ -1,7 +1,7 @@
 <?php
 
 // load 'PAN Configurator' library
-require "lib/panconfigurator.php";
+require_once("../lib/shared.php");
 
 /***************************************************************
 

@@ -8,7 +8,7 @@
 *	This script will load a PANOS config and create 15000 random rules
 *
 *****************************************************************************/
-require_once("lib/shared.php");
+require_once("../lib/shared.php");
 
 
 $origfile = "sample-configs/pan-example1.xml";

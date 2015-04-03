@@ -9,7 +9,7 @@
 *****************************************************************************/
 
 // load PAN-Configurator library
-require_once("lib/shared.php");
+require_once("../lib/shared.php");
 
 // input and output files
 $origfile = "sample-configs/panorama-example.xml";
