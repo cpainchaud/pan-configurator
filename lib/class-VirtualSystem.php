@@ -77,6 +77,12 @@ class VirtualSystem
      */
     public $decryptionRules;
 
+
+    /**
+     * @var string[]
+     */
+    protected $_importedInterface = Array();
+
 	
 	
 	public function VirtualSystem(PANConf $owner)
@@ -148,6 +154,24 @@ class VirtualSystem
         }
         // End of Tag objects extraction
 
+        $this->importroot = DH::findFirstElement('import',$xml);
+        if( $this->importroot !== false )
+        {
+            $networkRoot = DH::findFirstElement('network', $this->importroot);
+            if( $networkRoot !== false )
+            {
+                $tmp = DH::findFirstElement('interface', $networkRoot);
+                if( $tmp !== false )
+                {
+                    foreach( $tmp->childNodes as $node )
+                    {
+                        if( $node->nodeType != XML_ELEMENT_NODE )
+                            continue;
+                        $this->_importedInterface[] = $node->textContent;
+                    }
+                }
+            }
+        }
 		
 		//
 		// Extract address objects 
@@ -293,6 +317,15 @@ class VirtualSystem
 
         return true;
     }
+
+    /**
+     * @return string[]
+     */
+    public function importedInterfaces()
+    {
+        return $this->_importedInterface;
+    }
+
 	
 
     static public $templateXml = '<entry name="temporarynamechangemeplease"><address/><address-group/><service/><service-group/><rulebase></rulebase></entry>';

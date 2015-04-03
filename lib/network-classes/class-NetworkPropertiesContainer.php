@@ -25,6 +25,11 @@ class NetworkPropertiesContainer
     public $ipsecTunnelStore;
 
     /**
+     * @var VirtualRouterStore
+     */
+    public $virtualRouterStore;
+
+    /**
      * @var DOMElement|null
      */
     public $xmlroot = null;
@@ -36,6 +41,7 @@ class NetworkPropertiesContainer
         $this->ethernetIfStore = new EthernetIfStore('EthernetIfaces', $owner);
         $this->aggregateEthernetIfStore = new EthernetIfStore('AggregateEthernetIfaces', $owner);
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
+        $this->virtualRouterStore = new VirtualRouterStore('', $owner);
     }
 
     function load_from_domxml(DOMElement $xml)
@@ -54,23 +60,70 @@ class NetworkPropertiesContainer
         $tmp = DH::findFirstElementOrCreate('aggregate-ethernet', $tmp);
         $this->aggregateEthernetIfStore->load_from_domxml($tmp);
 
+        $tmp = DH::findFirstElementOrCreate('virtual-router', $this->xmlroot);
+        $this->aggregateEthernetIfStore->load_from_domxml($tmp);
+
     }
 
     /**
-     * @return EthernetInterface[]|IPsecTunnel
+     * @return EthernetInterface[]|IPsecTunnel[]
      */
     function getAllInterfaces()
     {
         $ifs = Array();
 
         foreach( $this->ethernetIfStore->getInterfaces() as $if )
-            $ifs[] = $if;
+            $ifs[$if->name()] = $if;
 
         foreach( $this->aggregateEthernetIfStore->getInterfaces() as $if )
-            $ifs[] = $if;
+            $ifs[$if->name()] = $if;
 
         foreach( $this->ipsecTunnelStore->getAll() as $if )
-            $ifs[] = $if;
+            $ifs[$if->name()] = $if;
+
+        return $ifs;
+    }
+
+    /**
+     * @param string $interfaceName
+     * @return EthernetInterface|IPsecTunnel|null
+     */
+    function findInterface( $interfaceName )
+    {
+        foreach( $this->ethernetIfStore->getInterfaces() as $if )
+            if( $if->name() == $interfaceName )
+                return $if;
+
+        foreach( $this->aggregateEthernetIfStore->getInterfaces() as $if )
+            if( $if->name() == $interfaceName )
+                return $if;
+
+        foreach( $this->ipsecTunnelStore->getAll() as $if )
+            if( $if->name() == $interfaceName )
+                return $if;
+
+        return null;
+    }
+
+    /**
+     * @param VirtualSystem $vsys
+     * @return EthernetInterface|IPsecTunnel|null
+     */
+    function findInterfaceAttachedToVSYS( VirtualSystem $vsys )
+    {
+        $ifs = Array();
+
+        foreach( $this->ethernetIfStore->getInterfaces() as $if )
+            if( $if->importedByVSYS === $vsys )
+                $ifs[$if->name()] = $if;
+
+        foreach( $this->aggregateEthernetIfStore->getInterfaces() as $if )
+            if( $if->importedByVSYS === $vsys )
+                $ifs[$if->name()] = $if;
+
+        foreach( $this->ipsecTunnelStore->getAll() as $if )
+            if( $if->importedByVSYS === $vsys )
+                $ifs[$if->name()] = $if;
 
         return $ifs;
     }
@@ -127,4 +180,6 @@ trait InterfaceType
     public function isEthernetType() { return false; }
     public function isIPsecTunnelType() { return false; }
     public function isAggregateType()  { return false; }
+
+    public $importedByVSYS = null;
 }

@@ -182,7 +182,6 @@ class PANConf
 
 
 
-
         //
         // Extract Tag objects
         //
@@ -254,6 +253,14 @@ class PANConf
 
 			$lvsys->load_from_domxml($node);
 			$this->virtualSystems[] = $lvsys;
+
+            $importedInterfaces = $lvsys->importedInterfaces();
+            foreach( $importedInterfaces as &$ifName )
+            {
+                $resolvedIf = $this->network->findInterface($ifName);
+                if( $resolvedIf !== null )
+                    $resolvedIf->importedByVSYS = $lvsys;
+            }
 		}
 
 
