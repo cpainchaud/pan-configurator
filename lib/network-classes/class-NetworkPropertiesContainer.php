@@ -25,6 +25,11 @@ class NetworkPropertiesContainer
     public $ipsecTunnelStore;
 
     /**
+     * @var TmpInterfaceStore
+     */
+    public $tmpInterfaceStore;
+
+    /**
      * @var VirtualRouterStore
      */
     public $virtualRouterStore;
@@ -41,6 +46,7 @@ class NetworkPropertiesContainer
         $this->ethernetIfStore = new EthernetIfStore('EthernetIfaces', $owner);
         $this->aggregateEthernetIfStore = new EthernetIfStore('AggregateEthernetIfaces', $owner);
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
+        $this->tmpInterfaceStore = new TmpInterfaceStore('TmpIfaces', $owner);
         $this->virtualRouterStore = new VirtualRouterStore('', $owner);
     }
 
@@ -81,12 +87,16 @@ class NetworkPropertiesContainer
         foreach( $this->ipsecTunnelStore->getAll() as $if )
             $ifs[$if->name()] = $if;
 
+        foreach( $this->tmpInterfaceStore->getAll() as $if )
+            if( $if->name() == $if )
+                return $if;
+
         return $ifs;
     }
 
     /**
      * @param string $interfaceName
-     * @return EthernetInterface|IPsecTunnel|null
+     * @return EthernetInterface|IPsecTunnel|TmpInterface|null
      */
     function findInterface( $interfaceName )
     {
@@ -102,7 +112,25 @@ class NetworkPropertiesContainer
             if( $if->name() == $interfaceName )
                 return $if;
 
+        foreach( $this->tmpInterfaceStore->getAll() as $if )
+            if( $if->name() == $interfaceName )
+                return $if;
+
         return null;
+    }
+
+    /**
+     * @param string $interfaceName
+     * @return EthernetInterface|IPsecTunnel|TmpInterface
+     */
+    function findInterfaceOrCreateTmp( $interfaceName )
+    {
+        $resolved = $this->findInterface($interfaceName);
+
+        if( $resolved !== null )
+            return $resolved;
+
+        return $this->tmpInterfaceStore->createTmp( $interfaceName );
     }
 
     /**
@@ -122,6 +150,10 @@ class NetworkPropertiesContainer
                 $ifs[$if->name()] = $if;
 
         foreach( $this->ipsecTunnelStore->getAll() as $if )
+            if( $if->importedByVSYS === $vsys )
+                $ifs[$if->name()] = $if;
+
+        foreach( $this->tmpInterfaceStore->getAll() as $if )
             if( $if->importedByVSYS === $vsys )
                 $ifs[$if->name()] = $if;
 
@@ -180,6 +212,7 @@ trait InterfaceType
     public function isEthernetType() { return false; }
     public function isIPsecTunnelType() { return false; }
     public function isAggregateType()  { return false; }
+    public function isTmpType()  { return false; }
 
     public $importedByVSYS = null;
 }

@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2014 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
  * Author: Christophe Painchaud cpainchaud _AT_ paloaltonetworks.com
@@ -16,65 +17,25 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/**
- * Class EthernetIfStore
- * @property EthernetInterface[] $o
- */
-class EthernetIfStore extends ObjStore
+class TmpInterface
 {
+    use ReferencableObject;
+    use PathableName;
+    use InterfaceType;
 
-    /**
-     * @var PANConf
-     */
-    public $owner;
+    /** @property $owner TmpInterfaceStore */
 
-
-    public static $childn = 'EthernetInterface';
-
-    /**
-     * @param PANConf $owner
-     */
-    function EthernetIfStore($name, $owner)
+    public function TmpInterface($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;
-        $this->classn = &self::$childn;
-        $this->skipEmptyXmlObjects = true;
     }
 
-
-    function countSubInterfaces()
+    public function isTmpType()
     {
-        $count = 0;
-
-        foreach($this->o as $interface)
-        {
-            $count += $interface->countSubInterfaces();
-        }
-
-        return $count;
-    }
-
-
-    /**
-     * @return EthernetInterface[]
-     */
-    function getInterfaces()
-    {
-        return $this->o;
-    }
-
-    public function load_from_domxml(DOMElement $xml)
-    {
-        parent::load_from_domxml($xml);
-        foreach( $this->o as $o )
-        {
-            foreach( $o->subInterfaces() as $sub )
-            {
-                $this->o[] = $sub;
-            }
-        }
+        return true;
     }
 
 
 }
+

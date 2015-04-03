@@ -17,64 +17,32 @@
 */
 
 /**
- * Class EthernetIfStore
- * @property EthernetInterface[] $o
+ * @property TmpInterface[] $o
+ * @property PANConf $owner
  */
-class EthernetIfStore extends ObjStore
+class TmpInterfaceStore extends ObjStore
 {
-
-    /**
-     * @var PANConf
-     */
-    public $owner;
-
-
     public static $childn = 'EthernetInterface';
 
     /**
      * @param PANConf $owner
      */
-    function EthernetIfStore($name, $owner)
+    function TmpInterfaceStore($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;
         $this->classn = &self::$childn;
-        $this->skipEmptyXmlObjects = true;
     }
-
-
-    function countSubInterfaces()
-    {
-        $count = 0;
-
-        foreach($this->o as $interface)
-        {
-            $count += $interface->countSubInterfaces();
-        }
-
-        return $count;
-    }
-
 
     /**
-     * @return EthernetInterface[]
+     * @return TmpInterface[]
      */
     function getInterfaces()
     {
         return $this->o;
     }
 
-    public function load_from_domxml(DOMElement $xml)
-    {
-        parent::load_from_domxml($xml);
-        foreach( $this->o as $o )
-        {
-            foreach( $o->subInterfaces() as $sub )
-            {
-                $this->o[] = $sub;
-            }
-        }
-    }
+
 
 
 }

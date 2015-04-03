@@ -25,7 +25,12 @@ class VirtualRouter
      * @property $owner VRStore
      */
 
+    /**
+     * @var StaticRoute[]
+     */
     protected $_staticRoutes = Array();
+
+    protected $_attachedInterfaces = Array();
 
     /**
      * @param $name string
@@ -59,6 +64,24 @@ class VirtualRouter
                 $this->_staticRoutes[] = $newRoute;
             }
         }
+    }
+
+
+    /**
+     * @return StaticRoute[]
+     */
+    public function staticRoutes()
+    {
+        return $this->_staticRoutes;
+    }
+
+
+    /**
+     * @param $vsysContext VirtualSystem
+     */
+    public function getRouteResolutionIPMap($vsysContext)
+    {
+
     }
 
 
