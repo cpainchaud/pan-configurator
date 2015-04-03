@@ -592,6 +592,16 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.any'] = Array(
     'eval' => '$object->apps->isAny()',
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['app']['operators']['has'] = Array(
+    'eval' => '$object->apps->hasApp(!value!) === true',
+    'arg' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->apps->parentCentralStore->find('!value!');"
+);
+RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = Array(
+    'eval' => '$object->apps->hasApp("!value!", false) === true',
+    'arg' => true
+    //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+);
 
 
 //                                              //

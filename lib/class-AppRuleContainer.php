@@ -256,6 +256,16 @@ class AppRuleContainer extends ObjRuleContainer
 
     }
 
+    /**
+     * @param App|string can be Tag object or tag name (string). this is case sensitive
+     * @param bool
+     * @return bool
+     */
+    public function hasApp( $tag, $caseSensitive = true )
+    {
+        return $this->has($tag, $caseSensitive);
+    }
+
 
 }
 
