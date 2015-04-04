@@ -16,6 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
 class StaticRoute
 {
     use ReferencableObject;
@@ -26,11 +27,20 @@ class StaticRoute
      */
     protected $_destination;
 
-    protected $_nexthopType = 'tmp';
+    protected $_nexthopType = 'none';
 
     protected $_nexthopIP = null;
 
-    /** @property $owner VirtualRouter */
+    /**
+     * @var VirtualRouter
+     */
+    public $owner;
+
+    /**
+     * @var null|EthernetInterface|AggregateEthernetInterface|TmpInterface
+     */
+    protected $_interface = null;
+
 
     function StaticRoute($name, $owner)
     {
@@ -52,13 +62,21 @@ class StaticRoute
         $dstNode = DH::findFirstElementOrDie('destination', $xml);
         $_destination = $dstNode->textContent;
 
-        $fhNode = DH::findFirstElementOrDie('nexthop', $xml);
-
-        $fhTypeNode = DH::findFirstElement('ip-address', $fhNode);
-        if( $fhTypeNode !== false )
+        $ifNode = DH::findFirstElement('interface', $xml);
+        if( $ifNode !== false )
         {
-            $this->_nexthopType = 'ip-address';
-            $this->_nexthopIP = $fhTypeNode->textContent;
+            $this->_interface = $this->owner->owner->owner->network->findInterfaceOrCreateTmp($ifNode->textContent);
+        }
+
+        $fhNode = DH::findFirstElement('nexthop', $xml);
+        if( $fhNode !== false )
+        {
+            $fhTypeNode = DH::findFirstElement('ip-address', $fhNode);
+            if( $fhTypeNode !== false )
+            {
+                $this->_nexthopType = 'ip-address';
+                $this->_nexthopIP = $fhTypeNode->textContent;
+            }
         }
     }
 

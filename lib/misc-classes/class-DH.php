@@ -109,7 +109,7 @@ class DH
 		$ret = DH::findFirstElement($tagName, $node);
 
 		if( $ret === FALSE )
-			derr(' xml element <'.$tagName.'> was not found');
+			derr(' xml element <'.$tagName.'> was not found', $node);
 
 		return $ret;
 	}

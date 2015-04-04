@@ -3,6 +3,8 @@
 
 class NetworkPropertiesContainer
 {
+    use PathableName;
+
     /**
      * @var PANConf
      */

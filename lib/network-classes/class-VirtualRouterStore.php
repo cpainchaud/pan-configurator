@@ -27,7 +27,7 @@ class VirtualRouterStore extends ObjStore
     /**
      * @var null|PANConf
      */
-    public $owner=null;
+    public $owner;
 
     public static $childn = 'VirtualRouter';
 

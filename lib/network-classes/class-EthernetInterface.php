@@ -147,7 +147,7 @@ class EthernetInterface
                     if( $unitsNode->nodeType != 1 )
                         continue;
 
-                    $newInterface = new EthernetInterface('tmp', null );
+                    $newInterface = new EthernetInterface('tmp', $this->owner );
                     $newInterface->isSubInterface = true;
                     $newInterface->parentInterface = $this;
                     $newInterface->type = &$this->type;

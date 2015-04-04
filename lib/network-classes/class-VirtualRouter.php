@@ -22,8 +22,9 @@ class VirtualRouter
     use PathableName;
 
     /**
-     * @property $owner VRStore
+     * @var VirtualRouterStore
      */
+    public $owner;
 
     /**
      * @var StaticRoute[]
@@ -36,7 +37,7 @@ class VirtualRouter
      * @param $name string
      * @param $owner PANConf
      */
-    public function IPsecTunnel($name, $owner)
+    public function VirtualRouter($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;
