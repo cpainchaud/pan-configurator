@@ -67,7 +67,7 @@ class NetworkPropertiesContainer
         $this->aggregateEthernetIfStore->load_from_domxml($tmp);
 
         $tmp = DH::findFirstElementOrCreate('virtual-router', $this->xmlroot);
-        $this->aggregateEthernetIfStore->load_from_domxml($tmp);
+        $this->virtualRouterStore->load_from_domxml($tmp);
 
     }
 
