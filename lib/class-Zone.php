@@ -124,7 +124,7 @@ class Zone
                 {
                     if( $ifNode->nodeType != XML_ELEMENT_NODE )
                         continue;
-                    $this->attachedInterfaces[] = $ifNode->textContent;
+                    $this->attachedInterfaces[$ifNode->textContent] = $ifNode->textContent;
                 }
             }
         }

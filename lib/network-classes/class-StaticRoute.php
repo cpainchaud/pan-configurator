@@ -101,9 +101,18 @@ class StaticRoute
         return $this->_nexthopIP;
     }
 
-    public function nexthopIP4Mapping()
+    public function nexthopInterface()
     {
-        return cidr::cidr2netmask($this->_nexthopIP);
+        return $this->_interface;
+    }
+
+
+    /**
+     * @return string   'none','ip-address'
+     */
+    public function nexthopType()
+    {
+        return $this->_nexthopType;
     }
 
 }
