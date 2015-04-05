@@ -511,6 +511,10 @@ RQuery::$defaultFilters['rule']['src']['operators']['is.negated'] = Array(
     'eval' => '$object->sourceIsNegated()',
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['dst']['operators']['is.negated'] = Array(
+    'eval' => '$object->destinationIsNegated()',
+    'arg' => false
+);
 
 RQuery::$defaultFilters['rule']['src']['operators']['included-in.full'] = Array(
     'eval' => "\$object->source->includedInIP4Network('!value!') == 1",

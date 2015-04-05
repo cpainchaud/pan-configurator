@@ -808,12 +808,20 @@ class SecurityRule extends Rule
 		if( $this->disabled )
 			$dis = '<disabled>';
 
+        $sourceNegated = '';
+        if( $this->sourceIsNegated() )
+            $sourceNegated = '*negated*';
+
+        $destinationNegated = '';
+        if( $this->destinationIsNegated() )
+            $destinationNegated = '*negated*';
+
 		
 		print $padding."*Rule named '{$this->name}' $dis\n";
         print $padding."  Action: {$this->action()}    Type:{$this->type()}\n";
 		print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
-		print $padding."  Source: ".$this->source->toString_inline()."\n";
-		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
+		print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
+		print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$this->services->toString_inline()."    Apps:  ".$this->apps->toString_inline()."\n";
 		print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
 		print "\n";

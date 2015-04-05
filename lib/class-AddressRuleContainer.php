@@ -527,6 +527,95 @@ class AddressRuleContainer extends ObjRuleContainer
 
     }
 
+    /**
+     * @return array  result['map'][] will contain all mapping in form of an array['start'] and ['end]. result['unresolved'][] will provide a list unresolved objects
+     */
+    public function & getIP4Mapping()
+    {
+        $result = Array( 'unresolved' => Array() );
+        $map = Array();
+
+        foreach( $this->o as $member )
+        {
+            if( $member->isTmpAddr() )
+            {
+                $result['unresolved'][] = $member;
+                continue;
+            }
+            elseif( $member->isAddress() )
+            {
+                $type = $member->type();
+
+                if ($type != 'ip-netmask' && $type != 'ip-range')
+                {
+                    $result['unresolved'][] = $member;
+                    continue;
+                }
+                $map[] = $member->resolveIP_Start_End();
+            }
+            elseif( $member->isGroup() )
+            {
+                $subMap = $member->getIP4Mapping();
+                foreach( $subMap['map'] as &$subMapRecord )
+                {
+                    $map[] = &$subMapRecord;
+                }
+                unset($subMapRecord);
+                foreach( $subMap['unresolved'] as $subMapRecord )
+                {
+                    $result['unresolved'][] = $subMapRecord;
+                }
+
+            }
+            else
+                derr('unsupported type of objects '.$member->toString());
+        }
+
+        $map = mergeOverlappingIP4Mapping($map);
+
+        $result['map'] = &$map;
+
+        return $result;
+    }
+
+
+    /**
+     * @param $zoneIP4Mapping array
+     * @return array
+     */
+    public function &calculateZonesFromIP4Mapping( &$zoneIP4Mapping, $objectIsNegated )
+    {
+        $zones = Array();
+
+        $objectsMapping = &$this->getIP4Mapping();
+
+        if( $objectIsNegated )
+        {
+            $fakeMapping= Array();
+            $fakeMapping['map'][] = Array( 'start' => 0 , 'end' => 4294967295) ;
+            foreach( $objectsMapping['map'] as &$entry )
+                removeNetworkFromIP4Mapping($fakeMapping['map'], $entry);
+            $objectsMapping = &$fakeMapping;
+        }
+
+
+        foreach( $zoneIP4Mapping as &$zoneMapping )
+        {
+            $result = removeNetworkFromIP4Mapping($objectsMapping['map'], $zoneMapping);
+
+            if( $result != 0 )
+            {
+                $zones[$zoneMapping['zone']] = $zoneMapping['zone'];
+            }
+
+            if( count($objectsMapping) == 0 )
+                break;
+
+        }
+
+        return $zones;
+    }
+
 }
 
 

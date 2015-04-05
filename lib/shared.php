@@ -1071,6 +1071,56 @@ function & mergeOverlappingIP4Mapping( &$ip4mapping )
     return $newMapping;
 }
 
+function removeNetworkFromIP4Mapping(&$targetMapping, &$zoneMapping)
+{
+    $affectedRows = 0;
+
+    $arrayCopy = $targetMapping;
+    $targetMapping = Array();
+
+    foreach( $arrayCopy as &$entry )
+    {
+        if( $zoneMapping['start'] > $entry['end'] )
+        {
+            $targetMapping[] = &$entry;
+            continue;
+        }
+        elseif( $zoneMapping['end'] < $entry['start'] )
+        {
+            $targetMapping[] = &$entry;
+            continue;
+        }
+        else if( $zoneMapping['start'] <= $entry['start'] && $zoneMapping['end'] >= $entry['end'] )
+        {
+
+        }
+        elseif( $zoneMapping['start'] > $entry['start'] )
+        {
+            if( $zoneMapping['end'] >= $entry['end'] )
+            {
+                $entry['end'] = $zoneMapping['start'] - 1;
+                $targetMapping[] = &$entry;
+            }
+            else
+            {
+                $oldEnd = $entry['end'];
+                $entry['end'] = $zoneMapping['start'] - 1;
+                $targetMapping[] = &$entry;
+                $targetMapping[] = Array('start'=> $zoneMapping['end']+1, 'end' => $oldEnd);
+            }
+        }
+        else
+        {
+            $entry['start'] = $zoneMapping['end'] + 1;
+            $targetMapping[] = &$entry;
+        }
+        $affectedRows++;
+    }
+
+
+    return $affectedRows;
+}
+
 
 
 

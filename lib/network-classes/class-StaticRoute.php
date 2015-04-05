@@ -60,7 +60,7 @@ class StaticRoute
             derr("static-route name not found\n");
 
         $dstNode = DH::findFirstElementOrDie('destination', $xml);
-        $_destination = $dstNode->textContent;
+        $this->_destination = $dstNode->textContent;
 
         $ifNode = DH::findFirstElement('interface', $xml);
         if( $ifNode !== false )
@@ -93,7 +93,7 @@ class StaticRoute
      */
     public function destinationIP4Mapping()
     {
-        return cidr::cidr2netmask($this->_destination);
+        return cidr::stringToStartEnd($this->_destination);
     }
 
     public function nexthopIP()

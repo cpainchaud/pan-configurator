@@ -681,6 +681,7 @@ class AddressGroup
                 {
                     $map[] = &$subMapRecord;
                 }
+                unset($subMapRecord);
                 foreach( $subMap['unresolved'] as $subMapRecord )
                 {
                     $result['unresolved'][] = $subMapRecord;

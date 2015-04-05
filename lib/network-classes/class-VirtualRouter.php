@@ -133,6 +133,7 @@ class VirtualRouter
             if( $nextHopType == 'ip-address' )
             {
                 $nexthopIP = $route->nexthopIP();
+                $findZone = null;
                 foreach($this->_attachedInterfaces as $if )
                 {
                     if( ($if->isEthernetType()|| $if->isAggregateType()) && $if->type() == 'layer3' )
@@ -140,9 +141,10 @@ class VirtualRouter
                         if( $if->importedByVSYS !== $contextVSYS )
                             continue;
                         $ips = $if->getLayer3IPv4Addresses();
-                        foreach( $ips as &$ip )
+
+                        foreach( $ips as &$interfaceIP )
                         {
-                            if( cidr::netMatch($ip, $nexthopIP) > 0 )
+                            if( cidr::netMatch($nexthopIP, $interfaceIP) > 0 )
                             {
                                 $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
                                 if( $findZone === null )
@@ -154,14 +156,21 @@ class VirtualRouter
                                 break;
                             }
                         }
+                        if( $findZone !== null)
+                        {
+                            break;
+                        }
                     }
                     else
                     {
                         continue;
                     }
                 }
-                mwarning("route {$route->name()}/{$route->destination()} ignored because no matching interface was found for nexthop={$nexthopIP}");
-                continue;
+                if( $findZone === null )
+                {
+                    mwarning("route {$route->name()}/{$route->destination()} ignored because no matching interface was found for nexthop={$nexthopIP}");
+                    continue;
+                }
             }
             else
             {
@@ -169,19 +178,44 @@ class VirtualRouter
                 continue;
             }
 
-            $record = Array( 'network' => $route->destination(), 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name());
-            $ipv4sort[ $record['end']-$record['start'] ][] = &$record;
+            $record = Array( 'network' => $route->destination(), 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'static', 'priority' => 2);
+            $ipv4sort[ $record['end']-$record['start'] ][$record['start']][] = &$record;
             //$ipv4sort = &$record;
             unset($record);
         }
 
-        krsort($ipv4sort);
+        foreach( $this->_attachedInterfaces as $if )
+        {
+            if($if->importedByVSYS !== $contextVSYS )
+                continue;
+
+            if( ($if->isEthernetType() || $if->isAggregateType()) && $if->type() == 'layer3' )
+            {
+                $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
+                if( $findZone === null )
+                    continue;
+
+                foreach( $if->getLayer3IPv4Addresses() as &$interfaceIP )
+                {
+                    $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
+                    $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
+                    $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
+                    unset($record);
+                }
+            }
+        }
+
+        ksort($ipv4sort);
 
         foreach( $ipv4sort as &$record )
         {
+            ksort($record);
             foreach( $record as &$subRecord )
             {
-                $ipv4[] = &$subRecord;
+                foreach($subRecord as &$subSubRecord)
+                {
+                    $ipv4[] = &$subSubRecord;
+                }
             }
         }
 
@@ -189,6 +223,14 @@ class VirtualRouter
         $result = Array('ipv4' => &$ipv4 , 'ipv6' => &$ipv6);
 
         return $result;
+    }
+
+    /**
+     * @return EthernetInterface[]|TmpInterface[]
+     */
+    public function getAttachedInterfaces()
+    {
+        return $this->_attachedInterfaces;
     }
 
 
