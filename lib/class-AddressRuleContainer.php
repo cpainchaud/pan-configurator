@@ -452,13 +452,14 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
 
+    /**
+     * @return string
+     */
     public function &getXPath()
     {
-
         $str = $this->owner->getXPath().'/'.$this->name;
 
         return $str;
-
     }
 
     /**
@@ -617,8 +618,9 @@ class AddressRuleContainer extends ObjRuleContainer
 
 
     /**
-     * @param $zoneIP4Mapping array
-     * @return array
+     * @param $zoneIP4Mapping array  array of IP start-end to zone ie  Array( 0=>Array('start'=>0, 'end'=>50, 'zone'=>'internet') 1=>...  )
+     * @param $objectIsNegated bool  IP4Mapping of this object will be inverted before doing resolution
+     * @return string[] containing zones matched
      */
     public function &calculateZonesFromIP4Mapping( &$zoneIP4Mapping, $objectIsNegated )
     {
@@ -629,7 +631,7 @@ class AddressRuleContainer extends ObjRuleContainer
         if( $objectIsNegated )
         {
             $fakeMapping= Array();
-            $fakeMapping['map'][] = Array( 'start' => 0 , 'end' => 4294967295) ;
+            $fakeMapping['map'][] = Array( 'start' => 0 , 'end' => ip2long('255.255.255.255')) ;
             foreach( $objectsMapping['map'] as &$entry )
                 removeNetworkFromIP4Mapping($fakeMapping['map'], $entry);
             $objectsMapping = &$fakeMapping;

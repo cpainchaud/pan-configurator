@@ -62,11 +62,28 @@ class RQuery
     }
 
     /**
-     * @param SecurityRule $object
+     * @param $queryContext Object|string[]
      * @return bool
      */
-    public function matchSingleObject($object)
+    public function matchSingleObject($queryContext)
     {
+        if( is_array($queryContext) )
+        {
+            if( !isset($queryContext['object']) )
+                derr('no object provided');
+
+            $object = $queryContext['object'];
+            $nestedQueries = &$queryContext['nestedQueries'];
+        }
+        else
+        {
+            /** @var SecurityRule|Address|AddressGroup|service|ServiceGroup $nestedQueries */
+            $nestedQueries = Array();
+            /** @var SecurityRule|Address|AddressGroup|service|ServiceGroup $object */
+            $object = $queryContext;
+        }
+
+
         if( count($this->subQueries) == 0 )
         {
            // print $this->padded."about to eval\n";
@@ -96,20 +113,29 @@ class RQuery
                 }
                 else
                 {
-                    $eval = '$boolReturn = ('.str_replace('!value!', $this->argument, $this->refOperator['eval']).');';
-
-                    if( isset(self::$mathOps[$this->operator]))
+                    if( !is_string($this->refOperator['eval']) )
                     {
-                        $eval = str_replace('!operator!', self::$mathOps[$this->operator],$eval);
+                        $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $this->argument);
                     }
-
-                    if( eval($eval) === FALSE )
+                    else
                     {
-                        derr("\neval code was : $eval\n");
+                        $eval = '$boolReturn = (' . str_replace('!value!', $this->argument, $this->refOperator['eval']) . ');';
+
+                        if (isset(self::$mathOps[$this->operator]))
+                        {
+                            $eval = str_replace('!operator!', self::$mathOps[$this->operator], $eval);
+                        }
+
+                        if (eval($eval) === FALSE)
+                        {
+                            derr("\neval code was : $eval\n");
+                        }
                     }
-                    if( $this->inverted )
+                    if ($this->inverted)
                         return !$boolReturn;
+
                     return $boolReturn;
+
                 }
             }
             else
@@ -148,6 +174,7 @@ class RQuery
 
         $hasAnd = true;
 
+        // processing 'and' operators
         while( $hasAnd )
         {
             $hasAnd = false;
@@ -566,7 +593,56 @@ RQuery::$defaultFilters['rule']['dst']['operators']['includes.full.or.partial'] 
     'eval' => "\$object->destination->includesIP4Network('!value!') > 0",
     'arg' => true
 );
+RQuery::$defaultFilters['rule']['src']['operators']['has.any.from.query'] = Array(
+    'eval' => function( $object, &$nestedQueries, $argument)
+    {
+        /** @var $object Rule|SecurityRule */
+        if( $object->source->count() == 0 )
+            return false;
 
+        if( $argument === null || !isset($nestedQueries[$argument]) )
+            derr("cannot find nested query called '$argument'");
+
+        $errorMessage = '';
+        $rQuery = new RQuery('address');
+        if( $rQuery->parseFromString($nestedQueries[$argument], $errorMessage) === false )
+            derr('nested query execution error : '.$errorMessage);
+
+        foreach( $object->source->all() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['dst']['operators']['has.any.from.query'] = Array(
+    'eval' => function( $object, &$nestedQueries, $argument)
+                {
+                    /** @var $object Rule|SecurityRule */
+                    if( $object->destination->count() == 0 )
+                        return false;
+
+                    if( $argument === null || !isset($nestedQueries[$argument]) )
+                        derr("cannot find nested query called '$argument'");
+
+                    $errorMessage = '';
+                    $rQuery = new RQuery('address');
+                    if( $rQuery->parseFromString($nestedQueries[$argument], $errorMessage) === false )
+                        derr('nested query execution error : '.$errorMessage);
+
+                    foreach( $object->destination->all() as $member )
+                    {
+                        if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$nestedQueries)) )
+                            return true;
+                    }
+
+                    return false;
+                },
+    'arg' => true
+);
 
 
 //                                              //
@@ -679,6 +755,28 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(
     'arg' => false
 );
 
+RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        /** @var $value string */
+        $owner = $object->owner->owner;
+        if( strtolower($value) == 'shared' )
+        {
+            if( $owner->isPanorama() )
+                return true;
+            if( $owner->isPanOS() )
+                return true;
+            return false;
+        }
+        if( strtolower($value) == strtolower($owner->name()) )
+            return true;
+
+        return false;
+    },
+    'arg' => true
+);
+
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
     'eval' => "\$object->name() == '!value!'",
@@ -725,6 +823,10 @@ RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
     'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
     'arg' => true
 );
+RQuery::$defaultFilters['address']['name']['operators']['contains'] = Array(
+    'eval' => "strpos(\$object->name(), '!value!') !== false",
+    'arg' => true
+);
 RQuery::$defaultFilters['address']['members.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
     'arg' => true
@@ -742,6 +844,27 @@ RQuery::$defaultFilters['address']['tag']['operators']['has.nocase'] = Array(
     'eval' => '$object->tags->hasTag("!value!", false) === true',
     'arg' => true
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+);
+RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+                {
+                    /** @var $object Address|AddressGroup */
+                    /** @var $value string */
+                    $owner = $object->owner->owner;
+                    if( strtolower($value) == 'shared' )
+                    {
+                        if( $owner->isPanorama() )
+                            return true;
+                        if( $owner->isPanOS() )
+                            return true;
+                        return false;
+                    }
+                    if( strtolower($value) == strtolower($owner->name()) )
+                        return true;
+
+                    return false;
+                },
+    'arg' => true
 );
 // </editor-fold>
 
@@ -787,7 +910,27 @@ RQuery::$defaultFilters['service']['tag']['operators']['has'] = Array(
 RQuery::$defaultFilters['service']['tag']['operators']['has.nocase'] = Array(
     'eval' => '$object->tags->hasTag("!value!", false) === true',
     'arg' => true
-    //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+);
+RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Service|ServiceGroup */
+        /** @var $value string */
+        $owner = $object->owner->owner;
+        if( strtolower($value) == 'shared' )
+        {
+            if( $owner->isPanorama() )
+                return true;
+            if( $owner->isPanOS() )
+                return true;
+            return false;
+        }
+        if( strtolower($value) == strtolower($owner->name()) )
+            return true;
+
+        return false;
+    },
+    'arg' => true
 );
 // </editor-fold>
 

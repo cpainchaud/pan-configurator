@@ -369,10 +369,17 @@ $supportedActions['invertpreandpost'] = Array(
 
 PH::processCliArgs();
 
+$nestedQueries = Array();
+
 foreach ( PH::$args as $index => &$arg )
 {
     if( !isset($supportedArguments[$index]) )
     {
+        if( strpos($index,'subquery') == 0 )
+        {
+            $nestedQueries[$index] = &$arg;
+            continue;
+        }
         //var_dump($supportedArguments);
         display_error_usage_exit("unsupported argument provided: '$index'");
     }
@@ -812,7 +819,7 @@ foreach( $rulesToProcess as &$rulesRecord )
     {
         if( $objectFilterRQuery !== null )
         {
-            $queryResult = $objectFilterRQuery->matchSingleObject($rule);
+            $queryResult = $objectFilterRQuery->matchSingleObject(Array('object' =>$rule, 'nestedQueries'=>&$nestedQueries));
             if( !$queryResult )
                 continue;
         }
