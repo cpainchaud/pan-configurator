@@ -7,7 +7,7 @@
 	<title>Class AddressRuleContainer | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?4160347621"></script>
+	<script type="text/javascript" src="elementlist.js?3989079112"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -123,6 +123,7 @@
 				<li><a href="function-myErrorHandler.html">myErrorHandler</a></li>
 				<li><a href="function-printn.html">printn</a></li>
 				<li><a href="function-removeElement.html">removeElement</a></li>
+				<li><a href="function-removeNetworkFromIP4Mapping.html">removeNetworkFromIP4Mapping</a></li>
 				<li><a href="function-sortArrayByStartValue.html">sortArrayByStartValue</a></li>
 				<li><a href="function-yesNoBool.html">yesNoBool</a></li>
 			</ul>
@@ -952,6 +953,80 @@ looking to compare similar rules.</p>
 				<h4>Returns</h4>
 				<div class="list">
 					<code>boolean</code><br>true if Address objects from $other are all in this store<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getIP4Mapping" id="_getIP4Mapping">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getIP4Mapping">#</a>
+		<code><b>getIP4Mapping</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br>result['map'][] will contain all mapping in form of an array['start'] and
+['end]. result['unresolved'][] will provide a list unresolved objects<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="calculateZonesFromIP4Mapping" id="_calculateZonesFromIP4Mapping">
+
+		<td class="attributes"><code>
+			 public 
+			array
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_calculateZonesFromIP4Mapping">#</a>
+		<code><b>calculateZonesFromIP4Mapping</b>( <span>mixed <var>&amp; $zoneIP4Mapping</var></span>, <span>mixed <var>$objectIsNegated</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$zoneIP4Mapping</var></dt>
+					<dd><code>mixed</code><br>$zoneIP4Mapping array</dd>
+					<dt><var>$objectIsNegated</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>array</code><br />
 				</div>
 
 
