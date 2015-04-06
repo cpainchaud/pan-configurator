@@ -167,7 +167,7 @@ class NatRule extends Rule
 				
 				$fad = $this->parentAddressStore->findOrCreate( $transladx->textContent , $this );
 				
-				$this->snathosts->add($fad);
+				$this->snathosts->addObject($fad);
 				$this->snathosts->xmlroot = $transladx;
 			}
 			// Extract of dynamic-ip-and-port
@@ -188,7 +188,7 @@ class NatRule extends Rule
 						{
 							if( $node->nodeType != 1 ) continue;
 							$translad = $this->parentAddressStore->findOrCreate( $node->textContent , $this );
-							$this->snathosts->add($translad);
+							$this->snathosts->addObject($translad);
 						}
 						
 						$this->snathosts->xmlroot = $subtype;
@@ -215,7 +215,7 @@ class NatRule extends Rule
 							else if( $node->nodeName == 'ip' )
 							{
 								$translad = $this->parentAddressStore->findOrCreate( $node->textContent, $this );
-								$this->snathosts->add($translad);
+								$this->snathosts->addObject($translad);
 							}
 							else
 								derr("Cannot understand dynmaic NAT for rule '".$this->name."'\n");

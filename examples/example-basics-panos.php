@@ -50,7 +50,7 @@ if( $objectMailServer2 === null )
     derr("ERROR : Cannot find object named 'mail-server2'\n");
 
 // add 'mail-server2' in rule 'Mail Server' source.
-$mailServerRule->source->add($objectMailServer2);
+$mailServerRule->source->addObject($objectMailServer2);
 
 
 // now we rename object 'mail-server2' into mail 'mail-server3'
@@ -89,7 +89,7 @@ $vsys1->natRules->find('rule5 - dynamicIP interface spe')->setDNAT($vsys1->addre
 $vsys1->natRules->find('rule2 - static')->setNoSNAT();
 
 // add an IP to a dynamic IP pool
-$vsys1->natRules->find('rule3 - dynamic IP address')->snathosts->add($vsys1->addressStore->find('client-2-address'));
+$vsys1->natRules->find('rule3 - dynamic IP address')->snathosts->addObject($vsys1->addressStore->find('client-2-address'));
 
 
 

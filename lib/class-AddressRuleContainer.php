@@ -51,6 +51,7 @@ class AddressRuleContainer extends ObjRuleContainer
      */
     public function add( $Obj, $rewriteXml = true )
     {
+        mwarning("this function is obsolete, please use addObject() instead");
         $this->fasthashcomp = null;
 
         $ret = parent::add($Obj);
@@ -63,12 +64,37 @@ class AddressRuleContainer extends ObjRuleContainer
 
     /**
      * @param Address|AddressGroup $Obj
+     * @return bool
+     */
+    public function addObject( $Obj )
+    {
+        $this->fasthashcomp = null;
+
+        $ret = parent::add($Obj);
+
+        if( $ret && $this->xmlroot !== null )
+        {
+            if (count($this->o) > 1)
+            {
+                DH::createElement($this->xmlroot, 'member', $Obj->name());
+            }
+            else
+            {
+                $this->rewriteXML();
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @param Address|AddressGroup $Obj
      * @param bool $rewritexml
      * @return bool
      */
     public function API_add( $Obj, $rewritexml = true )
     {
-        if( $this->add($Obj, $rewritexml) )
+        if( $this->addObject($Obj) )
         {
             $xpath = &$this->getXPath();
             $con = findConnectorOrDie($this);
@@ -376,7 +402,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
         foreach($other->o as $s)
         {
-            $this->add($s);
+            $this->addObject($s);
         }
 
     }

@@ -41,8 +41,8 @@ $vsys1->securityRules->display();
 
 
 // add some objects existing rules
-$vsys1->securityRules->find('secrule1')->source->add($vsys1->addressStore->find('server-4-address'));
-$vsys1->securityRules->find('secrule2')->destination->add($vsys1->addressStore->find('my address group'));
+$vsys1->securityRules->find('secrule1')->source->addObject($vsys1->addressStore->find('server-4-address'));
+$vsys1->securityRules->find('secrule2')->destination->addObject($vsys1->addressStore->find('my address group'));
 
 //rename an address and address group object
 $vsys1->addressStore->find('server-4-address')->setName('server-4-address-afterchange');
@@ -80,7 +80,7 @@ $vsys1->natRules->find('rule5 - dynamicIP interface spe')->setDNAT($vsys1->addre
 $vsys1->natRules->find('rule2 - static')->setNoSNAT();
 
 // add an IP to a dynamic IP pool
-$vsys1->natRules->find('rule3 - dynamic IP address')->snathosts->add($vsys1->addressStore->find('client-2-address'));
+$vsys1->natRules->find('rule3 - dynamic IP address')->snathosts->addObject($vsys1->addressStore->find('client-2-address'));
 
 
 

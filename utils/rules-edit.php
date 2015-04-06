@@ -185,7 +185,7 @@ $supportedActions['to-set-any'] = Array(
 //                                                   //
 $supportedActions['src-add'] = Array(
     'name' => 'src-Add',
-    'file' => "\$rule->source->add(!value!);",
+    'file' => "\$rule->source->addObject(!value!);",
     'api' => "\$rule->source->API_add(!value!);",
     'args' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->source->parentCentralStore->find('!value!');"
@@ -206,7 +206,7 @@ $supportedActions['src-remove-force-any'] = Array(
 );
 $supportedActions['dst-add'] = Array(
     'name' => 'dst-Add',
-    'file' => "\$rule->destination->add(!value!);",
+    'file' => "\$rule->destination->addObject(!value!);",
     'api' => "\$rule->destination->API_add(!value!);",
     'args' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->destination->parentCentralStore->find('!value!');"
