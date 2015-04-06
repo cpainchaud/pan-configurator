@@ -89,10 +89,9 @@ class AddressRuleContainer extends ObjRuleContainer
 
     /**
      * @param Address|AddressGroup $Obj
-     * @param bool $rewritexml
      * @return bool
      */
-    public function API_add( $Obj, $rewritexml = true )
+    public function API_add( $Obj )
     {
         if( $this->addObject($Obj) )
         {
@@ -141,13 +140,12 @@ class AddressRuleContainer extends ObjRuleContainer
 
     /**
      * @param Address|AddressGroup $Obj
-     * @param bool $rewriteXml
      * @param bool $forceAny
      * @return bool
      */
     public function API_remove( $Obj, $forceAny = false )
     {
-        if( $this->remove($Obj, $rewriteXml, $forceAny) )
+        if( $this->remove($Obj, true, $forceAny) )
         {
             $xpath = &$this->getXPath();
             $con = findConnectorOrDie($this);
@@ -168,7 +166,7 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
 
-    public function API_sync( $Obj )
+    public function API_sync()
     {
 
             $xpath = &$this->getXPath();
