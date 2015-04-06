@@ -539,8 +539,15 @@ class AddressRuleContainer extends ObjRuleContainer
         {
             if( $member->isTmpAddr() )
             {
-                $result['unresolved'][] = $member;
-                continue;
+                if( filter_var($member->name(), FILTER_VALIDATE_IP) === false  )
+                {
+                    $result['unresolved'][] = $member;
+                    continue;
+                }
+                else
+                {
+                    $map[] = cidr::stringToStartEnd($member->name());
+                }
             }
             elseif( $member->isAddress() )
             {

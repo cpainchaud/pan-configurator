@@ -433,12 +433,18 @@ class Address
 		$res = Array();
 
 		if( $this->isTmpAddr() )
-			derr('cannot resolve a Temporary object !');
+        {
+            if( filter_var($this->name, FILTER_VALIDATE_IP) === false  )
+            {
+                derr('cannot resolve a Temporary object !');
+            }
+            $this->_ipStartEnd = cidr::stringToStartEnd($this->name);
+            $res = $this->_ipStartEnd;
 
-		if( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
+        }
+		elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
 			derr('cannot resolve an object of type '.$this->type());
-
-		if( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
+        elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
 		{
 			$this->_ipStartEnd = cidr::stringToStartEnd($this->value);
             $res = $this->_ipStartEnd;
