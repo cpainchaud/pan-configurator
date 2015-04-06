@@ -637,6 +637,11 @@ class PanAPIConnector
     }
 
 
+    /**
+     * @param $xpath string
+     * @param $element string
+     * @return DomDocument
+     */
     public function sendSetRequest($xpath, $element)
     {
         $params = Array();

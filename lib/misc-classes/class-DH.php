@@ -211,6 +211,28 @@ class DH
 
 	}
 
+
+    /**
+     * @param DOMNodeList $nodeList
+     * @param int $indenting
+     * @param bool $lineReturn
+     * @param int $limitSubLevels
+     * @return string
+     */
+    static function &domlist_to_xml(DOMNodeList $nodeList, $indenting = 0, $lineReturn = true, $limitSubLevels = -1)
+    {
+        $returnString = '';
+        foreach( $nodeList as $node )
+        {
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $returnString .= DH::dom_to_xml($node, $indenting, $lineReturn, $limitSubLevels);
+        }
+
+        return $returnString;
+    }
+
     /**
      * @param DOMNode $node
      * @param int $indenting

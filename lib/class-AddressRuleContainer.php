@@ -75,11 +75,10 @@ class AddressRuleContainer extends ObjRuleContainer
 
             if( count($this->o) == 1 )
             {
-                $url = "type=config&action=delete&xpath=" . $xpath;
-                $con->sendRequest($url);
+                $con->sendEditRequest($xpath, $this->getXmlText_inline() );
             }
-
-            $con->sendSetRequest($xpath, "<member>{$Obj->name()}</member>");
+            else
+                $con->sendSetRequest($xpath, "<member>{$Obj->name()}</member>");
 
             return true;
         }
@@ -120,7 +119,7 @@ class AddressRuleContainer extends ObjRuleContainer
      * @param bool $forceAny
      * @return bool
      */
-    public function API_remove( $Obj, $rewriteXml = true, $forceAny = false )
+    public function API_remove( $Obj, $forceAny = false )
     {
         if( $this->remove($Obj, $rewriteXml, $forceAny) )
         {
@@ -129,20 +128,27 @@ class AddressRuleContainer extends ObjRuleContainer
 
             if( count($this->o) == 0 )
             {
-                $url = "type=config&action=delete&xpath=" . $xpath;
-                $con->sendRequest($url);
-                $url = "type=config&action=set&xpath=$xpath&element=<member>any</member>";
-                $con->sendRequest($url);
+                $con->sendEditRequest($xpath, $this->getXmlText_inline());
                 return true;
             }
 
-            $url = "type=config&action=delete&xpath=" . $xpath."/member[text()='".$Obj->name()."']";
-            $con->sendRequest($url);
+            $xpath = $xpath."/member[text()='".$Obj->name()."']";
+            $con->sendDeleteRequest($xpath);
 
             return true;
         }
 
         return false;
+    }
+
+
+    public function API_sync( $Obj )
+    {
+
+            $xpath = &$this->getXPath();
+            $con = findConnectorOrDie($this);
+
+            $con->sendEditRequest($xpath, $this->getXmlText_inline());
     }
 
     public function setAny()

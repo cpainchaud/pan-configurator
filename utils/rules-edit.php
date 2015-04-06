@@ -200,7 +200,7 @@ $supportedActions['src-remove'] = Array(
 $supportedActions['src-remove-force-any'] = Array(
     'name' => 'src-Remove-Force-Any',
     'file' => "\$rule->source->remove(!value!, true, true);",
-    'api' => "\$rule->source->API_remove(!value!, true, true);",
+    'api' => "\$rule->source->API_remove(!value!, true);",
     'args' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->source->parentCentralStore->find('!value!');"
 );
@@ -221,7 +221,7 @@ $supportedActions['dst-remove'] = Array(
 $supportedActions['dst-remove-force-any'] = Array(
     'name' => 'dst-Remove-Force-Any',
     'file' => "\$rule->destination-remove(!value!, true, true);",
-    'api' => "\$rule->destination->API_remove(!value!, true, true);",
+    'api' => "\$rule->destination->API_remove(!value!, true);",
     'args' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->destination->parentCentralStore->find('!value!');"
 );
