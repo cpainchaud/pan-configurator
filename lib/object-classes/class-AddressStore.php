@@ -395,59 +395,32 @@ class AddressStore
 		
 	}
 
-	public function API_add($s, $rewritexml = true)
+    /**
+     * @param $s Address|AddressGroup
+     * @return bool
+     */
+	public function API_add($s)
 	{
-		$ret = $this->add( $s, $rewritexml);
+		$ret = $this->add($s);
 
 		if( $ret )
 		{
-			if( !is_object($s) )
-				$s = $this->find( $s );
-
-
-			$class = get_class($s);
 			$con = findConnectorOrDie($this);
-
-			if( $class == 'Address' )
-			{
-				$xpath = $this->getAddressStoreXPath();
-			}
-			else if( $class == 'AddressGroup' )
-			{
-				$xpath = $this->getAddressGroupStoreXPath();
-			}
-			else
-				derr('this class is not supported: '.$class);
-
-			$con->sendSetRequest($xpath, DH::dom_to_xml($s->xmlroot, -1, false) );
-
+			$xpath = $s->getXPath();
+			$con->sendSetRequest($xpath, DH::domlist_to_xml($s->xmlroot->childNodes, -1, false) );
 		}
 
 		return $ret;
 	}
-	
-	/**
-	* @param Address|AddressGroup $s
-     * @param bool $rewriteXml
-	* @return bool if object was added. wrong if it was already there or another object with same name.
-	*
-	*/
-	public function add($s, $rewriteXml = true)
-	{
-		if( !is_object($s) )
-		{
-			if( is_string($s) )
-			{
-				$o = $this->find($s);
-				if( is_null($o) )
-				{
-					derr('could not find object named '.$s);
-				}
-				return $this->add($o,$rewriteXml);
-			}
-			derr('this is not supported');
-		}
 
+    /**
+     * @param Address|AddressGroup $s
+     * @return bool if object was added. wrong if it was already there or another object with same name.
+     *
+     * @throws Exception
+     */
+	public function add($s)
+	{
 		$objectName = $s->name();
 
 		// there is already an object named like that
@@ -467,10 +440,7 @@ class AddressStore
 			else
 			{
 				$this->addr[$objectName] = $s;
-				if( $rewriteXml )
-                {
-					$this->addrroot->appendChild($s->xmlroot);
-                }
+				$this->addrroot->appendChild($s->xmlroot);
 			}
 				
 			$this->all[$objectName] = $s;
@@ -480,10 +450,7 @@ class AddressStore
 			$this->addrg[$objectName] = $s;
 			$this->all[$objectName] = $s;
 
-			if( $rewriteXml )
-            {
-                $this->addrgroot->appendChild($s->xmlroot);
-            }
+            $this->addrgroot->appendChild($s->xmlroot);
 			
 		}
 		else
@@ -599,42 +566,63 @@ class AddressStore
 		}
 	}
 
-	
-	public function newAddress($name , $type, $value, $description = '', $rewriteXML = true)
+
+    /**
+     * @param $name string
+     * @param $type string
+     * @param $value string
+     * @param string $description
+     * @return Address
+     * @throws Exception
+     */
+	public function newAddress($name , $type, $value, $description = '')
 	{
         $found = $this->find($name,null, true);
-        if( $found )
+        if( $found !== null )
             derr("cannot create Address named '".$name."' as this name is already in use");
 
 		$this->fasthashcomp = null;
 		
-		$ns = new Address($name,$this, true);
-		$ns->setType($type);
-		$ns->setValue($value);
-		$ns->setDescription($description);
+		$newObject = new Address($name,$this, true);
+		$newObject->setType($type);
+		$newObject->setValue($value);
+		$newObject->setDescription($description);
 
-		
-		$this->add($ns, $rewriteXML);
+		$this->add($newObject);
 
-		return $ns;
-			
+		return $newObject;
 	}
+
+    /**
+     * @param $name string
+     * @param $type string
+     * @param $value string
+     * @param string $description
+     * @return Address
+     * @throws Exception
+     */
+    public function API_newAddress($name , $type, $value, $description = '')
+    {
+        $newObject = $this->newAddress($name, $type, $value, $description);
+
+        $con = findConnectorOrDie($this);
+        $xpath = $newObject->getXPath();
+        $con->sendSetRequest($xpath, $newObject, true );
+
+        return $newObject;
+    }
 	
 	
 	/**
 	* Creates a new Address Group named '$name' . Will exit with error if a group with that 
 	* name already exists
-	* 
-	*
+	* @param $name string
+	* @return AddressGroup
 	**/
 	public function newAddressGroup($name)
 	{
-
-		
-		$this->fasthashcomp = null;
-		
 		$found = $this->find($name,null,true);
-		if( $found )
+		if( $found !== null )
 			derr("cannot create AddressGroup named '".$name."' as this name is already in use");
 		
 		$newGroup = new AddressGroup($name,$this,true);
@@ -644,6 +632,27 @@ class AddressStore
 		return $newGroup;
 
 	}
+
+    /**
+     * Creates a new Address Group named '$name' . Will exit with error if a group with that
+     * name already exists
+     * @param $name string
+     * @return AddressGroup
+     **/
+    public function API_newAddressGroup($name)
+    {
+        $found = $this->find($name,null,true);
+        if( $found !== null )
+            derr("cannot create AddressGroup named '".$name."' as this name is already in use");
+
+        $newObject = $this->newAddressGroup($name);
+
+        $con = findConnectorOrDie($this);
+        $xpath = $newObject->getXPath();
+        $con->sendSetRequest($xpath, $newObject, true );
+
+        return $newObject;
+    }
 	
 	/**
 	* Returns an Array with all AddressGroup in this store.

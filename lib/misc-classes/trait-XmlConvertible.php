@@ -32,5 +32,10 @@ trait XmlConvertible
 		return DH::dom_to_xml($this->xmlroot, -1, true);
 	}
 
+    function &getChildXmlText_inline()
+    {
+        return DH::domlist_to_xml($this->xmlroot->childNodes, -1, false);
+    }
+
 }
 

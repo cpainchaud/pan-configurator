@@ -638,13 +638,26 @@ class PanAPIConnector
 
 
     /**
-     * @param $xpath string
+     * @param $xpath string|XmlConvertible
      * @param $element string
+     * @param $useChildNodes bool if $element is an object then don't use its root but its childNodes to generate xml
      * @return DomDocument
      */
-    public function sendSetRequest($xpath, $element)
+    public function sendSetRequest($xpath, $element, $useChildNodes=false)
     {
         $params = Array();
+
+        if( is_string($element) )
+        {
+
+        }
+        elseif( is_object($element) )
+        {
+            if( $useChildNodes )
+                $element = &$element->getChildXmlText_inline();
+            else
+                $element = &$element->getXmlText_inline();
+        }
 
         $params['type']  = 'config';
         $params['action']  = 'set';
