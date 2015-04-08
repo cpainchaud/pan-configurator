@@ -19,7 +19,6 @@
 class VirtualSystem
 {
 	use PathableName;
-    use centralZoneStore;
 	use PanSubHelperTrait;
 
     /**
@@ -76,6 +75,11 @@ class VirtualSystem
      * @var RuleStore
      */
     public $decryptionRules;
+
+    /**
+     * @var ZoneStore
+     */
+    public $zoneStore=null;
 
 
     /**

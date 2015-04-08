@@ -35,7 +35,6 @@ class PanoramaConf
 {
 	use PathableName;
 	use centralTagStore;
-	use centralZoneStore;
 	use centralAppStore;
 	use PanSubHelperTrait;
 
@@ -89,6 +88,11 @@ class PanoramaConf
      * @var ServiceStore
      */
     public $serviceStore=null;
+
+    /**
+     * @var ZoneStore
+     */
+    public $zoneStore=null;
 
 
     /**

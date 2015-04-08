@@ -78,15 +78,14 @@ class ZoneStore extends ObjStore
 	/**
 	* remove a Zone a Zone to this store.
      * @param Zone
-	* @param bool $rewriteXML
 	*
 	* @return bool  True if Zone was found and removed. False if not found.
 	*/
-	public function removeZone( Zone $zone, $rewriteXML = true )
+	public function removeZone( Zone $zone )
 	{
 		$ret = $this->remove($zone);
 
-		if( $ret && $rewriteXML && !$zone->isTmp() && $this->xmlroot !== null )
+		if( $ret && !$zone->isTmp() && $this->xmlroot !== null )
 		{
 			$this->xmlroot->removeChild($zone->xmlroot);
 		}
@@ -209,18 +208,5 @@ class ZoneStore extends ObjStore
 
 }
 
-
-trait centralZoneStore
-{
-    /**
-     * @var ZoneStore
-     */
-	public $zoneStore=null;
-	
-	public function zoneStore()
-	{
-		return $this->zoneStore;
-	}
-}
 
 
