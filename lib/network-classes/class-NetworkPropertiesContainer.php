@@ -27,6 +27,11 @@ class NetworkPropertiesContainer
     public $ipsecTunnelStore;
 
     /**
+     * @var LoopbackIfStore
+     */
+    public $loopbackIfStore;
+
+    /**
      * @var TmpInterfaceStore
      */
     public $tmpInterfaceStore;
@@ -47,6 +52,7 @@ class NetworkPropertiesContainer
         $this->owner = $owner;
         $this->ethernetIfStore = new EthernetIfStore('EthernetIfaces', $owner);
         $this->aggregateEthernetIfStore = new EthernetIfStore('AggregateEthernetIfaces', $owner);
+        $this->loopbackIfStore = new LoopbackIfStore('LoopbackIfaces', $owner);
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
         $this->tmpInterfaceStore = new TmpInterfaceStore('TmpIfaces', $owner);
         $this->virtualRouterStore = new VirtualRouterStore('', $owner);
@@ -86,10 +92,13 @@ class NetworkPropertiesContainer
         foreach( $this->aggregateEthernetIfStore->getInterfaces() as $if )
             $ifs[$if->name()] = $if;
 
-        foreach( $this->ipsecTunnelStore->getAll() as $if )
+        foreach( $this->loopbackIfStore->getInterfaces() as $if )
             $ifs[$if->name()] = $if;
 
-        foreach( $this->tmpInterfaceStore->getAll() as $if )
+        foreach( $this->ipsecTunnelStore->getInterfaces() as $if )
+            $ifs[$if->name()] = $if;
+
+        foreach( $this->tmpInterfaceStore->getInterfaces() as $if )
             if( $if->name() == $if )
                 return $if;
 
@@ -110,11 +119,15 @@ class NetworkPropertiesContainer
             if( $if->name() == $interfaceName )
                 return $if;
 
-        foreach( $this->ipsecTunnelStore->getAll() as $if )
+        foreach( $this->loopbackIfStore->getInterfaces() as $if )
             if( $if->name() == $interfaceName )
                 return $if;
 
-        foreach( $this->tmpInterfaceStore->getAll() as $if )
+        foreach( $this->ipsecTunnelStore->getInterfaces() as $if )
+            if( $if->name() == $interfaceName )
+                return $if;
+
+        foreach( $this->tmpInterfaceStore->getInterfaces() as $if )
             if( $if->name() == $interfaceName )
                 return $if;
 
@@ -148,6 +161,10 @@ class NetworkPropertiesContainer
                 $ifs[$if->name()] = $if;
 
         foreach( $this->aggregateEthernetIfStore->getInterfaces() as $if )
+            if( $if->importedByVSYS === $vsys )
+                $ifs[$if->name()] = $if;
+
+        foreach( $this->loopbackIfStore->getInterfaces() as $if )
             if( $if->importedByVSYS === $vsys )
                 $ifs[$if->name()] = $if;
 
@@ -202,6 +219,22 @@ class NetworkPropertiesContainer
             }
         }
 
+        foreach( $this->loopbackIfStore->getInterfaces() as $if )
+        {
+            if( $if->type() == 'layer3' )
+            {
+                $ipAddresses = $if->getLayer3IPv4Addresses();
+                foreach( $ipAddresses as $ipAddress )
+                {
+                    if( cidr::netMatch($ip, $ipAddress) > 0)
+                    {
+                        $ifs[] = $if;
+                        break;
+                    }
+                }
+            }
+        }
+
 
         return $ifs;
     }
@@ -215,6 +248,7 @@ trait InterfaceType
     public function isIPsecTunnelType() { return false; }
     public function isAggregateType()  { return false; }
     public function isTmpType()  { return false; }
+    public function isLoopbackType()  { return false; }
 
     public $importedByVSYS = null;
 }

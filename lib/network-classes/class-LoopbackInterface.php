@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (c) 2014 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
  * Author: Christophe Painchaud cpainchaud _AT_ paloaltonetworks.com
@@ -17,13 +16,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/**
- * Class IPsecTunnelStore
- * @property $o IPsecTunnel[]
- * @property PANConf $owner
- */
-class IPsecTunnelStore extends ObjStore
+class LoopbackInterface
 {
+    use InterfaceType;
+
+
+    public function isLoopbackType()
+    {
+        return true;
+    }
+
+
+    /**
+     * @var null|string[]|DOMElement
+     */
+    public $xmlroot=null;
+
+    /**
+     * @var null|PANConf
+     */
+    public $owner=null;
+
     public static $childn = 'IPsecTunnel';
 
     public function IPsecTunnelStore($name, $owner)
@@ -41,13 +54,4 @@ class IPsecTunnelStore extends ObjStore
         return $this->o;
     }
 
-    /**
-     * @return IPsecTunnel[]
-     */
-    public function getInterfaces()
-    {
-        return $this->o;
-    }
-
-
-} 
+}

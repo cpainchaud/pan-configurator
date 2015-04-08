@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (c) 2014 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
  * Author: Christophe Painchaud cpainchaud _AT_ paloaltonetworks.com
@@ -17,37 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/**
- * Class IPsecTunnelStore
- * @property $o IPsecTunnel[]
- * @property PANConf $owner
- */
-class IPsecTunnelStore extends ObjStore
+class InterfaceContainer extends ObjRuleContainer
 {
-    public static $childn = 'IPsecTunnel';
-
-    public function IPsecTunnelStore($name, $owner)
-    {
-        $this->name = $name;
-        $this->owner = $owner;
-        $this->classn = &self::$childn;
-    }
-
     /**
-     * @return IPsecTunnel[]
+     * @var null|DOMElement
      */
-    public function tunnels()
-    {
-        return $this->o;
-    }
-
-    /**
-     * @return IPsecTunnel[]
-     */
-    public function getInterfaces()
-    {
-        return $this->o;
-    }
+    public $xmlroot=null;
 
 
-} 
+}

@@ -110,10 +110,6 @@ class PANConf
 		$this->tagStore->setName('tagStore');
 		$this->tagStore->setCentralStoreRole(true);
 		
-		//$this->zoneStore = new ZoneStore($this);
-		//$this->zoneStore->setName('zoneStore');
-		//$this->zoneStore->setCentralStoreRole(true);
-		
 		$this->appStore = new AppStore($this);
 		$this->appStore->setName('appStore');
 		$this->appStore->setCentralStoreRole(true);
