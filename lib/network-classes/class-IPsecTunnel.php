@@ -20,9 +20,10 @@
 
 class IPsecTunnel
 {
-    use ReferencableObject;
-    use PathableName;
     use InterfaceType;
+    use XmlConvertible;
+    use PathableName;
+    use ReferencableObject;
 
     /**
      * @var null|string[]|DOMElement

@@ -74,13 +74,19 @@ class NetworkPropertiesContainer
         $tmp = DH::findFirstElementOrCreate('aggregate-ethernet', $tmp);
         $this->aggregateEthernetIfStore->load_from_domxml($tmp);
 
+        $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
+        $tmp = DH::findFirstElementOrCreate('loopback', $tmp);
+        $tmp = DH::findFirstElementOrCreate('units', $tmp);
+        $this->loopbackIfStore->load_from_domxml($tmp);
+
+
         $tmp = DH::findFirstElementOrCreate('virtual-router', $this->xmlroot);
         $this->virtualRouterStore->load_from_domxml($tmp);
 
     }
 
     /**
-     * @return EthernetInterface[]|IPsecTunnel[]
+     * @return EthernetInterface[]|IPsecTunnel[]|LoopbackInterface[]|AggregateEthernetInterface[]|TmpInterface[]
      */
     function getAllInterfaces()
     {
@@ -150,9 +156,9 @@ class NetworkPropertiesContainer
 
     /**
      * @param VirtualSystem $vsys
-     * @return EthernetInterface|IPsecTunnel|null
+     * @return EthernetInterface[]|IPsecTunnel[]|LoopbackInterface[]|AggregateEthernetInterface[]|TmpInterface[]
      */
-    function findInterfaceAttachedToVSYS( VirtualSystem $vsys )
+    function findInterfacesAttachedToVSYS( VirtualSystem $vsys )
     {
         $ifs = Array();
 
@@ -181,7 +187,7 @@ class NetworkPropertiesContainer
 
     /**
      * @param string $ip
-     * @return EthernetInterface[]|IPsecTunnel[]
+     * @return EthernetInterface[]|IPsecTunnel[]|LoopbackInterface[]|AggregateEthernetInterface[]
      */
     function findInterfacesNetworkMatchingIP( $ip )
     {

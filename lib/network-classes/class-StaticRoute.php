@@ -19,8 +19,9 @@
 
 class StaticRoute
 {
-    use ReferencableObject;
+    use XmlConvertible;
     use PathableName;
+    use ReferencableObject;
 
     /**
      * @var string

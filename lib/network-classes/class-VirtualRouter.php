@@ -18,8 +18,9 @@
 
 class VirtualRouter
 {
-    use ReferencableObject;
+    use XmlConvertible;
     use PathableName;
+    use ReferencableObject;
 
     /**
      * @var VirtualRouterStore
@@ -93,7 +94,7 @@ class VirtualRouter
      */
     public function getIPtoZoneRouteMapping($contextVSYS, $orderByNarrowest=true )
     {
-        $interfaces  = $this->owner->owner->network->findInterfaceAttachedToVSYS($contextVSYS);
+        $interfaces  = $this->owner->owner->network->findInterfacesAttachedToVSYS($contextVSYS);
 
         $ipv4 = Array();
         $ipv6 = Array();

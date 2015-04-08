@@ -18,9 +18,10 @@
 
 class EthernetInterface
 {
+    use InterfaceType;
+    use XmlConvertible;
     use PathableName;
     use ReferencableObject;
-    use InterfaceType;
 
     /**
      * @var null|DOMElement

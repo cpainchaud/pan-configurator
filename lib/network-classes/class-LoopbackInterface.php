@@ -19,39 +19,20 @@
 class LoopbackInterface
 {
     use InterfaceType;
+    use XmlConvertible;
+    use PathableName;
+    use ReferencableObject;
+
+    function LoopbackInterface($name, $owner)
+    {
+        $this->name = $name;
+        $this->owner = $owner;
+    }
 
 
     public function isLoopbackType()
     {
         return true;
-    }
-
-
-    /**
-     * @var null|string[]|DOMElement
-     */
-    public $xmlroot=null;
-
-    /**
-     * @var null|PANConf
-     */
-    public $owner=null;
-
-    public static $childn = 'IPsecTunnel';
-
-    public function IPsecTunnelStore($name, $owner)
-    {
-        $this->name = $name;
-        $this->owner = $owner;
-        $this->classn = &self::$childn;
-    }
-
-    /**
-     * @return IPsecTunnel[]
-     */
-    public function tunnels()
-    {
-        return $this->o;
     }
 
 }
