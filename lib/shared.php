@@ -85,16 +85,17 @@ require_once dirname(__FILE__).'/misc-classes/'."class-DH.php";
 require_once dirname(__FILE__).'/misc-classes/'."class-PH.php";
 require_once dirname(__FILE__).'/misc-classes/'."class-RQuery.php";
 require_once dirname(__FILE__).'/misc-classes/'."class-CsvParser.php";
+require_once dirname(__FILE__).'/misc-classes/'."trait-PanSubHelperTrait.php";
+require_once dirname(__FILE__).'/misc-classes/'."class-PanAPIConnector.php";
 
-require_once dirname(__FILE__).'/'."class-PanAPIConnector.php";
-require_once dirname(__FILE__).'/'."trait-PanSubHelperTrait.php";
-require_once dirname(__FILE__).'/'."class-ObjStore.php";
-require_once dirname(__FILE__).'/'."class-ObjRuleContainer.php";
-require_once dirname(__FILE__).'/'."class-ZoneRuleContainer.php";
-require_once dirname(__FILE__).'/'."class-TagRuleContainer.php";
-require_once dirname(__FILE__).'/'."class-AppRuleContainer.php";
-require_once dirname(__FILE__).'/'."class-AddressRuleContainer.php";
-require_once dirname(__FILE__).'/'."class-ServiceRuleContainer.php";
+require_once dirname(__FILE__).'/container-classes/'."class-ObjRuleContainer.php";
+require_once dirname(__FILE__).'/container-classes/'."class-ZoneRuleContainer.php";
+require_once dirname(__FILE__).'/container-classes/'."class-TagRuleContainer.php";
+require_once dirname(__FILE__).'/container-classes/'."class-AppRuleContainer.php";
+require_once dirname(__FILE__).'/container-classes/'."class-AddressRuleContainer.php";
+require_once dirname(__FILE__).'/container-classes/'."class-ServiceRuleContainer.php";
+
+require_once dirname(__FILE__).'/object-classes/'."class-ObjStore.php";
 require_once dirname(__FILE__).'/object-classes/'."class-TagStore.php";
 require_once dirname(__FILE__).'/object-classes/'."class-AppStore.php";
 require_once dirname(__FILE__).'/object-classes/'."class-AddressStore.php";
@@ -105,12 +106,14 @@ require_once dirname(__FILE__).'/object-classes/'."class-Address.php";
 require_once dirname(__FILE__).'/object-classes/'."class-AddressGroup.php";
 require_once dirname(__FILE__).'/object-classes/'."class-Service.php";
 require_once dirname(__FILE__).'/object-classes/'."class-ServiceGroup.php";
-require_once dirname(__FILE__).'/'."class-Zone.php";
-require_once dirname(__FILE__).'/'."class-ZoneStore.php";
+
 require_once dirname(__FILE__).'/'."class-VirtualSystem.php";
 require_once dirname(__FILE__).'/'."class-PANConf.php";
 require_once dirname(__FILE__).'/'."class-PanoramaConf.php";
 require_once dirname(__FILE__).'/'."class-DeviceGroup.php";
+
+require_once dirname(__FILE__).'/network-classes/'."class-Zone.php";
+require_once dirname(__FILE__).'/network-classes/'."class-ZoneStore.php";
 require_once dirname(__FILE__).'/network-classes/'."class-InterfaceContainer.php";
 require_once dirname(__FILE__).'/network-classes/'."class-StaticRoute.php";
 require_once dirname(__FILE__).'/network-classes/'."class-VirtualRouter.php";
@@ -126,6 +129,7 @@ require_once dirname(__FILE__).'/network-classes/'."class-TmpInterface.php";
 require_once dirname(__FILE__).'/network-classes/'."class-TmpInterfaceStore.php";
 require_once dirname(__FILE__).'/network-classes/'."class-AggregateEthernetInterface.php";
 require_once dirname(__FILE__).'/network-classes/'."class-AggregateEthernetIfStore.php";
+
 require_once dirname(__FILE__).'/rule-classes/class-RuleStore.php';
 require_once dirname(__FILE__).'/rule-classes/class-Rule.php';
 require_once dirname(__FILE__).'/rule-classes/class-SecurityRule.php';

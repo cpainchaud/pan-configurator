@@ -22,4 +22,20 @@ class Template
     use ReferencableObject;
     use PathableName;
 
+    /** @var  PanoramaConf */
+    public $owner;
+
+
+    public function Template($name, $owner)
+    {
+        $this->name = $name;
+        $this->owner = $owner;
+    }
+
+    public function load_from_domxml(DOMElement $xml)
+    {
+
+    }
+
 }
+
