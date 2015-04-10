@@ -16,30 +16,12 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class Template
+class ManagedDevice
 {
-    use ReferencableObject;
     use PathableName;
+    use ReferencableObject;
 
     /** @var  PanoramaConf */
     public $owner;
 
-    /** @var  PANConf */
-    public $deviceConfiguration;
-
-
-    public function Template($name, $owner)
-    {
-        $this->name = $name;
-        $this->owner = $owner;
-        $this->deviceConfiguration = new PANConf();
-        $this->deviceConfiguration->owner = $this;
-    }
-
-    public function load_from_domxml(DOMElement $xml)
-    {
-
-    }
-
 }
-

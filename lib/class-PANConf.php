@@ -42,53 +42,41 @@ class PANConf
 	use centralAppStore;
 	use PanSubHelperTrait;
 
-    /**
-     * @var DOMElement
-     */
+    /** @var DOMElement */
 	public $xmlroot;
 
-    /**
-     * @var DOMDocument
-     */
+    /** @var DOMDocument */
     public $xmldoc;
 	
 	public $sharedroot;
 	public $devicesroot;
 	public $localhostlocaldomain;
 
-	/**
-	 * @var DOMElement|null
-	 */
+	/** @var DOMElement|null */
 	public $vsyssroot;
 
 	public $name = '';
 
-    /**
-     * @var AddressStore
-     */
+    /** @var AddressStore */
     public $addressStore=null;
-    /**
-     * @var ServiceStore
-     */
+
+    /** @var ServiceStore */
     public $serviceStore=null;
 
     public $version = null;
 
-    /**
-     * @var VirtualSystem[]
-     */
+    /** @var VirtualSystem[] */
 	public $virtualSystems = Array();
 
-    /**
-     * @var PanAPIConnector|null
-     */
+    /** @var PanAPIConnector|null */
 	public $connector = null;
 
 
-	/**
-	 * @var NetworkPropertiesContainer
-	 */
+	/** @var NetworkPropertiesContainer */
 	public $network;
+
+    /** @var Template|null */
+    public $owner = null;
 
 
 	public function name()

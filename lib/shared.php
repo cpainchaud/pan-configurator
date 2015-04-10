@@ -111,6 +111,8 @@ require_once dirname(__FILE__).'/'."class-VirtualSystem.php";
 require_once dirname(__FILE__).'/'."class-PANConf.php";
 require_once dirname(__FILE__).'/'."class-PanoramaConf.php";
 require_once dirname(__FILE__).'/'."class-DeviceGroup.php";
+require_once dirname(__FILE__).'/'."class-Template.php";
+require_once dirname(__FILE__).'/'."class-ManagedDevice.php";
 
 require_once dirname(__FILE__).'/network-classes/'."class-Zone.php";
 require_once dirname(__FILE__).'/network-classes/'."class-ZoneStore.php";
