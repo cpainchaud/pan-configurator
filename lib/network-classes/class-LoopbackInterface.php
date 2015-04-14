@@ -23,6 +23,8 @@ class LoopbackInterface
     use PathableName;
     use ReferencableObject;
 
+    protected $_ipv4Addresses = Array();
+
     function LoopbackInterface($name, $owner)
     {
         $this->name = $name;
@@ -33,6 +35,34 @@ class LoopbackInterface
     public function isLoopbackType()
     {
         return true;
+    }
+
+    public function load_from_domxml( DOMElement $xml )
+    {
+        $this->xmlroot = $xml;
+
+        $this->name = DH::findAttribute('name', $xml);
+        if( $this->name === FALSE )
+            derr("loopback name name not found\n");
+
+        $ipNode = DH::findFirstElement('ip', $xml);
+        if( $ipNode !== false )
+        {
+            foreach( $ipNode->childNodes as $l3ipNode )
+            {
+                if( $ipNode->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $this->_ipv4Addresses[] = $ipNode->getAttribute('name');
+            }
+        }
+
+
+    }
+
+    public function getIPv4Addresses()
+    {
+        return $this->_ipv4Addresses;
     }
 
 }

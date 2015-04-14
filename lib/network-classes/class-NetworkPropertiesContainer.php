@@ -229,7 +229,7 @@ class NetworkPropertiesContainer
         {
             if( $if->type() == 'layer3' )
             {
-                $ipAddresses = $if->getLayer3IPv4Addresses();
+                $ipAddresses = $if->getIPv4Addresses();
                 foreach( $ipAddresses as $ipAddress )
                 {
                     if( cidr::netMatch($ip, $ipAddress) > 0)

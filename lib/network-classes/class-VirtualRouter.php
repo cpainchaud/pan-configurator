@@ -32,7 +32,7 @@ class VirtualRouter
      */
     protected $_staticRoutes = Array();
 
-    /** @var EthernetInterface[]|TmpInterface[] */
+    /** @var EthernetInterface[]|TmpInterface[]|IPsecTunnel[]|LoopbackInterface[] */
     protected $_attachedInterfaces = Array();
 
     /**
@@ -137,11 +137,15 @@ class VirtualRouter
                 $findZone = null;
                 foreach($this->_attachedInterfaces as $if )
                 {
-                    if( ($if->isEthernetType()|| $if->isAggregateType()) && $if->type() == 'layer3' )
+                    if( ($if->isEthernetType()|| $if->isAggregateType()) && $if->type() == 'layer3' || $if->isLoopbackType() )
                     {
                         if( $if->importedByVSYS !== $contextVSYS )
                             continue;
-                        $ips = $if->getLayer3IPv4Addresses();
+
+                        if( $if->isLoopbackType() )
+                            $if->getIPv4Addresses();
+                        else
+                            $ips = $if->getLayer3IPv4Addresses();
 
                         foreach( $ips as &$interfaceIP )
                         {
@@ -197,6 +201,20 @@ class VirtualRouter
                     continue;
 
                 foreach( $if->getLayer3IPv4Addresses() as &$interfaceIP )
+                {
+                    $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
+                    $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
+                    $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
+                    unset($record);
+                }
+            }
+            elseif( $if->isLoopbackType() )
+            {
+                $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
+                if( $findZone === null )
+                    continue;
+
+                foreach( $if->getIPv4Addresses() as &$interfaceIP )
                 {
                     $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
                     $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
