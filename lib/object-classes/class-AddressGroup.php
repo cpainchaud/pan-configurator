@@ -319,7 +319,7 @@ class AddressGroup
 			$old->removeReference($this);
 
 
-			if( $new !== null && $new->name() != $old->name() )
+			if( $new === null || $new->name() != $old->name() )
 				$this->rewriteXML();
 			
 			return true;
