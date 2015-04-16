@@ -541,7 +541,9 @@ elseif ( $configInput['type'] == 'api'  )
 {
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
+    print " - Downloading config from API... ";
     $xmlDoc = $configInput['connector']->getCandidateConfig();
+    print "OK!\n";
 }
 else
     derr('not supported yet');
@@ -682,8 +684,9 @@ if( $rulesFilter !== null )
 //
 // load the config
 //
+print " - Loading configuration through PAN-Configurator library... ";
 $pan->load_from_domxml($xmlDoc);
-print "\n*** config loaded ***\n";
+print "OK!\n";
 // --------------------
 
 
