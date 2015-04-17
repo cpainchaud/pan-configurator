@@ -818,7 +818,6 @@ foreach( $rulesLocation as &$location )
         $location = 'any';
 }
 $rulesLocation = array_unique($rulesLocation);
-
 $rulesToProcess = Array();
 
 foreach( $rulesLocation as $location )
@@ -917,13 +916,14 @@ foreach( $rulesLocation as $location )
 //
 
 // <editor-fold desc="Rule Processing" defaultstate="collapsed" >
+$totalObjectsProcessed = 0;
 foreach( $rulesToProcess as &$rulesRecord )
 {
-    $ruleStore = $rulesRecord['store'];
-
+    $store = $rulesRecord['store'];
     $rules = &$rulesRecord['rules'];
+    $subObjectsProcessed = 0;
 
-    print "\n* processing ruleset '".$ruleStore->toString()." that holds ".count($rules)." rules\n";
+    print "\n* processing ruleset '".$store->toString()." that holds ".count($rules)." rules\n";
 
 
     foreach($rules as $rule )
@@ -935,6 +935,9 @@ foreach( $rulesToProcess as &$rulesRecord )
             if( !$queryResult )
                 continue;
         }
+
+        $totalObjectsProcessed++;
+        $subObjectsProcessed++;
 
         // object will pass through every action now
         foreach( $doActions as &$doAction )
@@ -990,6 +993,8 @@ foreach( $rulesToProcess as &$rulesRecord )
             }
         }
     }
+
+    print "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed\n\n";
 }
 print "\n";
 // </editor-fold>
@@ -1009,6 +1014,7 @@ if( isset(PH::$args['stats']) )
     }
 }
 
+print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS DONE **** \n\n";
 
 // save our work !!!
 if( $configOutput !== null )
