@@ -200,7 +200,7 @@ class VirtualRouter
                 if( $findZone === null )
                     continue;
 
-                $ipAddresses = $if->getLayer3IPv4Addresses()
+                $ipAddresses = $if->getLayer3IPv4Addresses();
 
                 foreach( $ipAddresses as $interfaceIP )
                 {
