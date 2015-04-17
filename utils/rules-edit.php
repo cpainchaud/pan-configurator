@@ -994,7 +994,7 @@ foreach( $rulesToProcess as &$rulesRecord )
         }
     }
 
-    print "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed\n\n";
+    print "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed filtered over {$store->count()} available\n\n";
 }
 print "\n";
 // </editor-fold>
