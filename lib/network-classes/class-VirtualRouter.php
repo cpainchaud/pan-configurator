@@ -143,7 +143,7 @@ class VirtualRouter
                             continue;
 
                         if( $if->isLoopbackType() )
-                            $if->getIPv4Addresses();
+                            $ips = $if->getIPv4Addresses();
                         else
                             $ips = $if->getLayer3IPv4Addresses();
 
