@@ -488,20 +488,33 @@ class RuleStore
      * @param string $newName
      * @return SecurityRule|NatRule
      */
-	public function cloneRule($rule, $newName, $inPost=false)
+	public function cloneRule($rule, $newName = null, $inPost=false)
 	{
-		if( !$this->isRuleNameAvailable($newName) )
-			derr('this rule name is not available: '.$newName);
+		if( $newName !== null )
+        {
+            if (!$this->isRuleNameAvailable($newName))
+                derr('this rule name is not available: ' . $newName);
+        }
 
-		$xml = $rule->xmlroot->cloneNode(true);
+        /** @var SecurityRule|NatRule|DecryptionRule $newRule */
+		$newRule = new $this->type($this);
+        $xml = $rule->xmlroot->cloneNode(true);
+		$newRule->load_from_domxml($xml);
 
-		$nr = new $this->type($this);
-		$nr->load_from_domxml($xml);
-		$nr->owner = null;
-		$nr->setName($newName);
-		$this->addRule($nr, $inPost);
+        //trick to avoid name change propagation and errors
+		$newRule->owner = null;
 
-		return $nr;
+        // if no name was provided then we need to look for one
+        if( $newName === null )
+            $newName = $this->findAvailableName($newRule->name(), '');
+
+        // rename the templated rule in XML
+		$newRule->setName($newName);
+
+        // finally add it to the store
+		$this->addRule($newRule, $inPost);
+
+		return $newRule;
 	}
 
 	/**

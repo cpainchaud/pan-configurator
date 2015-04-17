@@ -844,7 +844,6 @@ class AddressStore
 		return $count;
 	}
 
-
 	
 }
 
