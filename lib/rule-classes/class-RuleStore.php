@@ -1080,8 +1080,6 @@ class RuleStore
 	}
 
 
-
-	
 }
 
 

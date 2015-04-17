@@ -642,6 +642,11 @@ class PanoramaConf
 		return true;
 	}
 
+    public function findSubSystemByName($location)
+    {
+        return $this->findDeviceGroup($location);
+    }
+
 }
 
 

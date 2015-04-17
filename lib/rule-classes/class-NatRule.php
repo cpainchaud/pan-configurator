@@ -590,6 +590,16 @@ class NatRule extends Rule
 	{
 		return $this->snattype;
 	}
+
+    public function isNatRule()
+    {
+        return true;
+    }
+
+    public function storeVariableName()
+    {
+        return "natRules";
+    }
 }
 
 

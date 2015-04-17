@@ -1054,6 +1054,16 @@ class SecurityRule extends Rule
 		$this->services = null;
 		$this->apps = null;
 	}
+
+    public function isSecurityRule()
+    {
+        return true;
+    }
+
+    public function storeVariableName()
+    {
+        return "securityRules";
+    }
 	
 
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"><option><disable-server-response-inspection>no</disable-server-response-inspection></option><from><member>any</member></from><to><member>any</member></to>

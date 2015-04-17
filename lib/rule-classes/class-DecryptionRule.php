@@ -75,4 +75,15 @@ class DecryptionRule extends Rule
         print "\n";
     }
 
+
+    public function isDecryptionRule()
+    {
+        return true;
+    }
+
+    public function storeVariableName()
+    {
+        return "decryptionRules";
+    }
+
 } 

@@ -443,5 +443,10 @@ class PANConf
         return $newVsys;
     }
 
+    public function findSubSystemByName($location)
+    {
+        return $this->findVirtualSystem($location);
+    }
+
 }
 

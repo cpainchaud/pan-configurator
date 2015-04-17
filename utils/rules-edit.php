@@ -363,8 +363,112 @@ $supportedActions['invertpreandpost'] = Array(
                 else derr('unsupported');",
     'args' => false
 );
+
+
+$supportedActions['copy'] = Array(
+    'name' => 'copy',
+    'file' => function($object, &$context)
+                {
+                    /** @var SecurityRule $object */
+
+                    $args = &$context['sanitizedArguments'];
+                    $location = $args['location'];
+                    if( $args['preORpost'] == "post" )
+                        $preORpost = true;
+                    else
+                        $preORpost = false;
+
+                    /** @var PANConf|PanoramaConf $pan */
+                    $pan = $context['PAN-Object'];
+
+                    /** @var RuleStore $ruleStore */
+                    $ruleStore = null;
+                    $variableName = $object->storeVariableName();
+
+                    if( strtolower($location) == 'shared' )
+                    {
+                        if( $pan->isPanOS() )
+                            derr("Rules cannot be copied to SHARED location on a firewall, only in Panorama");
+
+
+                        $ruleStore = $pan->$variableName;
+                    }
+                    else
+                    {
+                        $sub = $pan->findSubSystemByName($location);
+                    }
+                    $ruleStore->cloneRule($object, null, $preORpost);
+                },
+    'args' => true,
+    'argsCount' => 2,
+    'argsName' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+                            'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre'=>true, 'post'=>true) ) )
+);
+$supportedActions['copy']['api'] = &$supportedActions['copy']['file'];
 // </editor-fold>
 //TODO add action=copy and action==move
+
+/** @ignore */
+function &prepareArgumentsForAction(&$args, &$action)
+{
+    $returnedArguments = Array();
+
+    $ex = explode(',', $args);
+
+    if( count($ex) > count($action['argsName']) )
+        display_error_usage_exit("error while processing argument '{$action['name']}' : too many arguments provided");
+
+    $count = -1;
+    foreach( $action['argsName'] as $argName => &$properties )
+    {
+        $count++;
+
+        $argValue = null;
+        if( isset($ex[$count]) )
+            $argValue = $ex[$count];
+
+
+        if( $properties['default'] == '*nodefault*' && ($argValue === null || strlen($argValue)) == 0 )
+            derr("action '{$action['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");
+
+        if( $argValue !== null )
+            $argValue = trim($argValue);
+        else
+            $argValue = $properties['default'];
+
+        if( $properties['type'] == 'string' )
+        {
+            if( isset( $properties['choices']) )
+            {
+                $argValue = strtolower($argValue);
+                if( !isset($properties['choices'][$argValue]) )
+                    derr("unsupported value '{$argValue}' for action '{$action['name']}' arg#{$count} '{$argName}'");
+            }
+        }
+        if( $properties['type'] == 'boolean' )
+        {
+            if( $argValue == '1' || strtolower($argValue) == 'true' || strtolower($argValue) == 'yes' )
+                $argValue = true;
+            elseif( $argValue == '0' || strtolower($argValue) == 'false' || strtolower($argValue) == 'no' )
+                $argValue = false;
+            else
+                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} '{$argName}'");
+        }
+        if( $properties['type'] == 'integer' )
+        {
+            if( !is_integer($argValue) )
+                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} '{$argName}'");
+        }
+        else
+        {
+            derr("unsupported argument type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} '{$argName}'");
+        }
+
+        $returnedArguments[$argName] = $argValue;
+
+    }
+    return $returnedArguments;
+}
 
 
 PH::processCliArgs();
@@ -646,7 +750,11 @@ foreach( $explodedActions as &$exAction )
     {
         if( $supportedActions[$newAction['name']]['args'] === false )
             display_error_usage_exit('action "'.$newAction['name'].'" does not accept arguments');
-        $newAction['arguments'] = explode(',', $explodedAction[1]);
+
+        if( !isset($supportedActions[$newAction['name']]['argsCount']) )
+            $newAction['arguments'] = explode(',', $explodedAction[1]);
+        else
+            $newAction['arguments'] = $explodedAction[1];
     }
     else if( $supportedActions[$newAction['name']]['args'] !== false )
         display_error_usage_exit('action "'.$newAction['name'].'" requires arguments');
@@ -820,6 +928,7 @@ foreach( $rulesToProcess as &$rulesRecord )
 
     foreach($rules as $rule )
     {
+        // If a filter query was input and it doesn't match this object then we simply skip it
         if( $objectFilterRQuery !== null )
         {
             $queryResult = $objectFilterRQuery->matchSingleObject(Array('object' =>$rule, 'nestedQueries'=>&$nestedQueries));
@@ -827,6 +936,7 @@ foreach( $rulesToProcess as &$rulesRecord )
                 continue;
         }
 
+        // object will pass through every action now
         foreach( $doActions as &$doAction )
         {
             print "   - rule '" . $rule->name() . "' passing through Action='" . $doAction['name'] . "'\n";

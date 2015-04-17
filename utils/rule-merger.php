@@ -82,6 +82,7 @@ $supportedArguments[] = Array('niceName' => 'panoramaPostRules', 'shortHelp' => 
 $supportedArguments[] = Array('niceName' => 'mergeDenyRules', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
 $supportedArguments[] = Array('niceName' => 'stopMergingIfDenySeen', 'shortHelp' => 'deny rules wont be merged', 'argDesc' => '[yes|no|true|false]');
 $supportedArguments[] = Array('niceName' => 'mergeAdjacentOnly', 'shortHelp' => 'merge only rules that are adjacent to each other', 'argDesc' => '[yes|no|true|false]');
+$supportedArguments[] = Array('niceName' => 'filter', 'shortHelp' => 'filter rules that can be converted');
 $tmpArray = Array();
 foreach($supportedArguments as &$arg)
 {
@@ -206,6 +207,18 @@ print " - Detected platform type is '{$configType}'\n";
 
 if( $configInput['type'] == 'api' )
     $pan->connector = $configInput['connector'];
+
+$errorMessage = '';
+$filterQuery = null;
+if( isset(PH::$args['filter']) )
+{
+    $filterQuery = new RQuery('rule');
+    if( ! $filterQuery->parseFromString(PH::$args['filter'], $errorMessage) )
+        derr($errorMessage);
+    print " - rule filter after sanitizing : ";
+    $filterQuery->display();
+}
+
 
 
 //
@@ -577,6 +590,9 @@ foreach( $rulesToProcess as $index => $rule )
     if( $rule->actionIsNegative() )
         continue;
 
+    if( $filterQuery !== null && ! $filterQuery->matchSingleObject($rule) )
+        continue;
+
     print "\n";
 
     /** @var SecurityRule[] $matchingHashTable */
@@ -584,7 +600,7 @@ foreach( $rulesToProcess as $index => $rule )
 
     $rulePosition = $rulesArrayIndex[$rule->indexPosition];
 
-
+    // clean already merged rules
     foreach( $matchingHashTable as $ruleToCompare )
     {
         if( isset($ruleToCompare->alreadyMerged) )
@@ -624,6 +640,11 @@ foreach( $rulesToProcess as $index => $rule )
         {
             unset($matchingHashTable[$ruleToCompare->serial]);
             print "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because DENY rule #{$nextDenyRulePosition} '{$nextDenyRule->name()}' is placed before\n";
+        }
+        elseif( $filterQuery !== null && ! $filterQuery->matchSingleObject($ruleToCompare) )
+        {
+            unset($matchingHashTable[$ruleToCompare->serial]);
+            print "    - ignoring rule #{$ruleToComparePosition} '{$ruleToCompare->name()}' because it's not matchin the filter query\n";
         }
     }
 

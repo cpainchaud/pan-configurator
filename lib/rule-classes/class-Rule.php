@@ -484,6 +484,27 @@ class Rule
 		return $this->owner->ruleIsPostRule($this);
 	}
 
+
+    public function isSecurityRule()
+    {
+        return false;
+    }
+
+    public function isNatRule()
+    {
+        return false;
+    }
+
+    public function isDecryptionRule()
+    {
+        return false;
+    }
+
+    public function isPbfRule()
+    {
+        return false;
+    }
+
 }
 
 
