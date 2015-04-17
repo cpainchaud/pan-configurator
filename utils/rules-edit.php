@@ -1014,7 +1014,10 @@ if( isset(PH::$args['stats']) )
     }
 }
 
-print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS DONE **** \n\n";
+$totalObjectsOfSelectedStore = 0;
+foreach( $rulesToProcess as &$record )
+    $totalObjectsOfSelectedStore += $record['store']->count();
+print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS PROCESSED over {$totalObjectsOfSelectedStore} available **** \n\n";
 
 // save our work !!!
 if( $configOutput !== null )
