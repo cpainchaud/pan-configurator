@@ -200,7 +200,9 @@ class VirtualRouter
                 if( $findZone === null )
                     continue;
 
-                foreach( $if->getLayer3IPv4Addresses() as $interfaceIP )
+                $ipAddresses = $if->getLayer3IPv4Addresses()
+
+                foreach( $ipAddresses as $interfaceIP )
                 {
                     $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
                     $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
@@ -214,7 +216,9 @@ class VirtualRouter
                 if( $findZone === null )
                     continue;
 
-                foreach( $if->getIPv4Addresses() as $interfaceIP )
+                $ipAddresses = $if->getIPv4Addresses();
+
+                foreach( $ipAddresses as $interfaceIP )
                 {
                     $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
                     $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
