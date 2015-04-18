@@ -22,11 +22,6 @@
  */
 class ZoneRuleContainer extends ObjRuleContainer
 {
-    /**
-     * @var null|string[]|DOMElement
-     */
-    public $xmlroot=null;
-
     public static $childn = 'Zone';
 
     /**

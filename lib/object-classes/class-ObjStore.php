@@ -37,12 +37,6 @@ class ObjStore
 
     protected $skipEmptyXmlObjects = false;
 
-
-    /**
-     * @var null|string[]|DOMElement
-     */
-    public $xmlroot = null;
-	
 	
 	public function count()
 	{

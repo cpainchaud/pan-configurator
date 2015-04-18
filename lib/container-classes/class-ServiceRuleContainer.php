@@ -24,14 +24,7 @@
  */
 class ServiceRuleContainer extends ObjRuleContainer
 {
-    /**
-     * @var null|string[]|DOMElement
-     */
-    public $xmlroot=null;
-
-    /**
-     * @var null|ServiceStore
-     */
+    /** @var null|ServiceStore */
     public $parentCentralStore = null;
 
     private $appDef = false;

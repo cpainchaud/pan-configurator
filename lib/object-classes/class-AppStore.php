@@ -20,11 +20,6 @@
 class AppStore extends ObjStore
 {
     /**
-     * @var null|string[]|DOMElement
-     */
-	public $xmlroot=null;
-
-    /**
      * @var array|App[]
      */
 	public $apps=Array();

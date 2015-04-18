@@ -23,50 +23,29 @@ class EthernetInterface
     use PathableName;
     use ReferencableObject;
 
-    /**
-     * @var null|DOMElement
-     */
-    public $xmlroot = null;
-
-    /**
-     * @var null|DOMElement
-     */
+    /** @var null|DOMElement */
     private $typeRoot = null;
 
-    /**
-     * @var EthernetIfStore
-     */
+    /** @var EthernetIfStore */
     public $owner;
 
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $type = 'tmp';
 
-    /**
-     * @var string
-     */
+    /** @var string */
     public $description;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     protected $isSubInterface = false;
 
-    /**
-     * @var EthernetInterface[]
-     */
+    /** @var EthernetInterface[] */
     protected $subInterfaces = Array();
 
-    /**
-     * @var null|EthernetInterface
-     */
+    /** @var null|EthernetInterface */
     protected $parentInterface = null;
 
-    /**
-     * @var int
-     */
+    /** @var int */
     protected $tag;
 
     protected $l3ipv4Addresses;

@@ -24,14 +24,7 @@
  */
 class TagRuleContainer extends ObjRuleContainer
 {
-    /**
-     * @var null|string[]|DOMElement
-     */
-    public $xmlroot=null;
-
-    /**
-     * @var null|TagStore
-     */
+    /** @var null|TagStore */
     public $parentCentralStore = null;
 
     public static $childn = 'Tag';

@@ -21,6 +21,7 @@ class Rule
 {
 	
 	use PathableName;
+    use XmlConvertible;
 	use centralServiceStoreUser;
 	use centralAddressStoreUser;
 	
@@ -59,11 +60,6 @@ class Rule
 	 * @var null|RuleStore
 	 */
 	public $owner = null;
-
-    /**
-     * @var null|string[]|DOMElement
-     */
-	public $xmlroot = null;
 
     /**
      * @var null|string[]|DOMNode

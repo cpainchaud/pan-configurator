@@ -30,15 +30,9 @@ class Zone
 	
 	private $isTmp = true;
 
-    /**
-     * @var null|string[]|DOMNode
-     */
-    public $xmlroot = null;
 
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     private $attachedInterfaces = Array();
 
 

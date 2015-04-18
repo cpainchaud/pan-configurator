@@ -20,6 +20,7 @@
 class RuleStore
 {
 	use PathableName;
+    use XmlConvertible;
 
 	/**
 	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]
@@ -37,14 +38,9 @@ class RuleStore
      */
 	public $owner = null;
 	public $name = 'temporaryname';
-	/**
-	 * @var string[]|DOMElement
-	 */
-	public $xmlroot = null;
 
-	/**
-	 * @var string[]|DOMElement
-	 */
+
+	/** @var string[]|DOMElement */
 	public $postRulesRoot = null;
 
 
@@ -389,7 +385,12 @@ class RuleStore
 		}
         else if( $ownerC == 'PanoramaConf' )
         {
-            //do nothing
+            foreach($this->owner->deviceGroups as $dg )
+            {
+                $varName = $this->getStoreVarName();
+                if( !$dg->$varName->isRuleNameAvailable($name, false) )
+                    return false;
+            }
         }
 		else if( $ownerC == 'DeviceGroup' )
 		{
@@ -397,6 +398,23 @@ class RuleStore
 
 			if( !$this->owner->owner->$varName->isRuleNameAvailable($name, false) )
 				return false;
+
+            $dgToInspect = $this->owner->childDeviceGroups;
+
+            while( count($dgToInspect) != 0 )
+            {
+                $nextDgToInspect = Array();
+
+                foreach ($this->owner->childDeviceGroups as $dg)
+                {
+                    if (!$dg->$varName->isRuleNameAvailable($name, false))
+                        return false;
+
+                    $nextDgToInspect = array_merge($nextDgToInspect, $dg->childDeviceGroups);
+                }
+
+                $dgToInspect = $nextDgToInspect;
+            }
 		}
 		else
 			derr('unsupported');

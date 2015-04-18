@@ -23,11 +23,6 @@
  */
 class TagStore extends ObjStore
 {
-
-    /**
-     * @var null|DOMElement|string[]
-     */
-	public $xmlroot=null;
 	protected $parentCentralStore = null;
 	
 	public static $childn = 'Tag';

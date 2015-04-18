@@ -27,10 +27,6 @@ class ServiceGroup
      */
 	public $members = Array();
 
-	/**
-	 * @var null|DOMElement
-	 */
-	public $xmlroot = null;
 
 	/**
 	 * @var null|ServiceStore

@@ -24,14 +24,7 @@
  */
 class AddressRuleContainer extends ObjRuleContainer
 {
-    /**
-     * @var null|string[]|DOMElement
-     */
-    public $xmlroot=null;
-
-    /**
-     * @var null|AddressStore
-     */
+    /** @var null|AddressStore */
     public $parentCentralStore = null;
 
     // TODO implement 'multicast' support

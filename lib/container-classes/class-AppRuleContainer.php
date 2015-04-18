@@ -24,16 +24,9 @@
  */
 class AppRuleContainer extends ObjRuleContainer
 {
-    /**
-     * @var null|string[]|DOMElement
-     */
-    public $xmlroot=null;
-
     public static $childn = 'App';
 
-    /**
-     * @var null|AppStore
-     */
+    /** @var null|AppStore */
     public $parentCentralStore = null;
 
 

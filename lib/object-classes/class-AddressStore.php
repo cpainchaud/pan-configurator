@@ -69,10 +69,6 @@ class AddressStore
      */
 	public $addrgroot;
 
-    /**
-     * @var null|string[]|DOMElement
-     */
-	public $xmlroot = null;
 	
 	public $fasthashcomp = null;
 

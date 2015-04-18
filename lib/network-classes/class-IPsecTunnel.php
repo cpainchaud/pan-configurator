@@ -25,11 +25,6 @@ class IPsecTunnel
     use PathableName;
     use ReferencableObject;
 
-    /**
-     * @var null|string[]|DOMElement
-     */
-    public $xmlroot = null;
-
 
     /**
      * @var null|string[]|DOMElement

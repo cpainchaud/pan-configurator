@@ -29,13 +29,9 @@ class SecurityRule extends Rule
 	protected $logstart = false;
 	protected $logend = true;
 
-	/**
-	 * @var null|DOMElement
-	 */
+	/** @var null|DOMElement */
 	protected $logstartroot;
-	/**
-	 * @var null|DOMElement
-	 */
+	/** @var null|DOMElement */
 	protected $logendroot;
 	
 	protected $negatedSource = false;
@@ -43,22 +39,17 @@ class SecurityRule extends Rule
 
 	protected $logSetting = false;
 
-	/**
-	 * @var null|DOMElement
-	 */
+	/** @var null|DOMElement */
 	protected $logsettingroot = null;
 	
 	protected $secproftype = 'none';
-    /**
-     * @var null|string[]|DOMElement
-     */
+
+    /** @var null|string[]|DOMElement */
 	protected $secprofroot = null;
 	protected $secprofgroup = null;
 	protected $secprofprofiles = Array();
 
-    /**
-     * @var AppRuleContainer
-     */
+    /** @var AppRuleContainer */
     public $apps = null;
 
     const TypeUniversal = 0;

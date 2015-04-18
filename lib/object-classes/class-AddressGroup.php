@@ -25,11 +25,6 @@ class AddressGroup
 
     private $isDynamic = false;
 
-	/**
-	 * @var DOMElement
-	 */
-	public $xmlroot;
-
     /**
      * @var AddressStore|null
      */

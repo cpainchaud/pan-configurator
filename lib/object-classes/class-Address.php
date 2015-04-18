@@ -34,15 +34,7 @@ class Address
      */
     protected $description;
 
-
-    /**
-     * @var null|string[]|DOMElement
-     */
-	public $xmlroot = null;
-
-    /**
-     * @var AddressStore|null
-     */
+    /** @var AddressStore|null */
 	public $owner;
 
 	/**

@@ -32,10 +32,6 @@ class Service
 	/**
 	 * @var null|DOMElement
 	 */
-	public $xmlroot = null;
-	/**
-	 * @var null|DOMElement
-	 */
 	public $protocolroot = null;
 	/**
 	 * @var null|DOMElement

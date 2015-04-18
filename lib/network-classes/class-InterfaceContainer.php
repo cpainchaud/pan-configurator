@@ -18,10 +18,7 @@
 
 class InterfaceContainer extends ObjRuleContainer
 {
-    /**
-     * @var null|DOMElement
-     */
-    public $xmlroot=null;
+
 
 
 }

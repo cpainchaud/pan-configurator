@@ -390,14 +390,19 @@ $supportedActions['copy'] = Array(
                         if( $pan->isPanOS() )
                             derr("Rules cannot be copied to SHARED location on a firewall, only in Panorama");
 
-
                         $ruleStore = $pan->$variableName;
                     }
                     else
                     {
                         $sub = $pan->findSubSystemByName($location);
+                        if( $sub === null )
+                            derr("cannot find vsys or device group named '{$location}'");
+                        $ruleStore = $sub->$variableName;
                     }
-                    $ruleStore->cloneRule($object, null, $preORpost);
+                    if( $context['api'] === true )
+                        $ruleStore->API_cloneRule($object, null, $preORpost);
+                    else
+                        $ruleStore->cloneRule($object, null, $preORpost);
                 },
     'args' => true,
     'argsCount' => 2,
@@ -431,7 +436,7 @@ function &prepareArgumentsForAction(&$args, &$action)
         if( $properties['default'] == '*nodefault*' && ($argValue === null || strlen($argValue)) == 0 )
             derr("action '{$action['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");
 
-        if( $argValue !== null )
+        if( $argValue !== null && strlen($argValue) > 0)
             $argValue = trim($argValue);
         else
             $argValue = $properties['default'];
@@ -445,27 +450,25 @@ function &prepareArgumentsForAction(&$args, &$action)
                     derr("unsupported value '{$argValue}' for action '{$action['name']}' arg#{$count} '{$argName}'");
             }
         }
-        if( $properties['type'] == 'boolean' )
+        elseif( $properties['type'] == 'boolean' )
         {
             if( $argValue == '1' || strtolower($argValue) == 'true' || strtolower($argValue) == 'yes' )
                 $argValue = true;
             elseif( $argValue == '0' || strtolower($argValue) == 'false' || strtolower($argValue) == 'no' )
                 $argValue = false;
             else
-                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} '{$argName}'");
+                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
         }
-        if( $properties['type'] == 'integer' )
+        elseif( $properties['type'] == 'integer' )
         {
             if( !is_integer($argValue) )
-                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} '{$argName}'");
+                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
         }
         else
         {
-            derr("unsupported argument type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} '{$argName}'");
+            derr("unsupported argument type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
         }
-
         $returnedArguments[$argName] = $argValue;
-
     }
     return $returnedArguments;
 }
@@ -746,15 +749,17 @@ foreach( $explodedActions as &$exAction )
         display_error_usage_exit('unsupported Action: "'.$newAction['name'].'"');
     }
 
+    $newAction['referencedAction'] = &$supportedActions[$newAction['name']];
+
     if( count($explodedAction) > 1 )
     {
         if( $supportedActions[$newAction['name']]['args'] === false )
             display_error_usage_exit('action "'.$newAction['name'].'" does not accept arguments');
 
-        if( !isset($supportedActions[$newAction['name']]['argsCount']) )
+        if( !isset($newAction['referencedAction']['argsCount']) || $newAction['referencedAction']['argsCount'] <= 1 )
             $newAction['arguments'] = explode(',', $explodedAction[1]);
         else
-            $newAction['arguments'] = $explodedAction[1];
+            $newAction['arguments'] = Array($explodedAction[1]);
     }
     else if( $supportedActions[$newAction['name']]['args'] !== false )
         display_error_usage_exit('action "'.$newAction['name'].'" requires arguments');
@@ -763,6 +768,7 @@ foreach( $explodedActions as &$exAction )
 }
 //
 // ---------
+
 
 
 //
@@ -803,9 +809,8 @@ print "OK!\n";
 //
 
 // <editor-fold desc="Location Filter Processing" defaultstate="collapsed" >
-/**
- * @var RuleStore[] $ruleStoresToProcess
- */
+
+/**@var RuleStore[] $ruleStoresToProcess */
 $rulesLocation = explode(',', $rulesLocation);
 
 foreach( $rulesLocation as &$location )
@@ -942,43 +947,67 @@ foreach( $rulesToProcess as &$rulesRecord )
         // object will pass through every action now
         foreach( $doActions as &$doAction )
         {
-            print "   - rule '" . $rule->name() . "' passing through Action='" . $doAction['name'] . "'\n";
+            $currentReferencedAction = &$doAction['referencedAction'];
+
+            $context = Array();
+            $context['PAN-Object'] = $pan;
+
             if ($supportedActions[$doAction['name']]['args'] !== false)
             {
                 foreach($doAction['arguments'] as $arg)
                 {
-                    $objectFind = null;
+                    print "   - rule '" . $rule->name() . "' passing through Action='{$doAction['name']} Arg='{$arg}'\n";
 
+                    if( isset($currentReferencedAction['argsCount']) )
+                    {
+                        $context['sanitizedArguments'] = prepareArgumentsForAction($arg, $currentReferencedAction);
+                    }
+                    else
+                        $context['sanitizedArguments'] = Array();
+
+
+                    $objectFind = null;
 
                     if ($configInput['type'] == 'file')
                     {
                         $toEval = $supportedActions[$doAction['name']]['file'];
                         $inputIsAPI = false;
-                    } else
+                        $context['api'] = false;
+                    }
+                    else
                     {
                         $toEval = $supportedActions[$doAction['name']]['api'];
                         $inputIsAPI = true;
+                        $context['api'] = true;
                     }
 
-                    if (isset($supportedActions[$doAction['name']]['argObjectFinder']))
+                    if( is_string($toEval) )
                     {
-                        $findObjectEval = $supportedActions[$doAction['name']]['argObjectFinder'];
-                        $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
-                        if (eval($findObjectEval) === false)
-                            derr("\neval code was : $findObjectEval\n");
-                        if ($objectFind === null)
-                            display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
-                        $toEval = str_replace('!value!', '$objectFind', $toEval);
-                    } else
-                        $toEval = str_replace('!value!', $arg, $toEval);
+                        if (isset($supportedActions[$doAction['name']]['argObjectFinder']))
+                        {
+                            $findObjectEval = $supportedActions[$doAction['name']]['argObjectFinder'];
+                            $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
+                            if (eval($findObjectEval) === false)
+                                derr("\neval code was : $findObjectEval\n");
+                            if ($objectFind === null)
+                                display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
+                            $toEval = str_replace('!value!', '$objectFind', $toEval);
+                        } else
+                            $toEval = str_replace('!value!', $arg, $toEval);
 
-                    if (eval($toEval) === false)
-                        derr("\neval code was : $toEval\n");
+                        if (eval($toEval) === false)
+                            derr("\neval code was : $toEval\n");
+                    }
+                    else
+                    {
+                        $toEval($rule, $context);
+                    }
 
                     //print $toEval;
                     print "\n";
                 }
-            } else
+            }
+            else
             {
                 if ($configInput['type'] == 'file')
                     $toEval = $supportedActions[$doAction['name']]['file'];
@@ -1014,10 +1043,10 @@ if( isset(PH::$args['stats']) )
     }
 }
 
-$totalObjectsOfSelectedStore = 0;
+$totalObjectsOfSelectedStores = 0;
 foreach( $rulesToProcess as &$record )
-    $totalObjectsOfSelectedStore += $record['store']->count();
-print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS PROCESSED over {$totalObjectsOfSelectedStore} available **** \n\n";
+    $totalObjectsOfSelectedStores += $record['store']->count();
+print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS PROCESSED over {$totalObjectsOfSelectedStores} available **** \n\n";
 
 // save our work !!!
 if( $configOutput !== null )

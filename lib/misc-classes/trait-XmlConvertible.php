@@ -18,6 +18,8 @@
 */
 trait XmlConvertible
 {
+    /** @var null|DOMElement  */
+    public $xmlroot = null;
 
 	function &getXmlText_inline()
 	{

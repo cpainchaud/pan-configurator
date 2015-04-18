@@ -25,29 +25,18 @@ class NatRule extends Rule
 	
 	protected $snattype = 'none';
 
-    /**
-     * @var AddressRuleContainer|null
-     */
+    /** @var AddressRuleContainer|null */
 	public $snathosts = null;
 	public $snatinterface = null;
 	
 	public $snatbidir = 'no';
 
-    /**
-     * @var null|Address|AddressGroup
-     */
+    /** @var null|Address|AddressGroup */
 	public $dnathost = null;
 	public $dnatports = null;
 
-	/**
-	 * @var null|DOMElement
-	 */
+	/** @var null|DOMElement */
 	public $snatroot = null;
-
-	/**
-	 * @var DOMElement
-	 */
-	public $xmlroot;
 
 	/** @ignore */
 	public $dnatroot=Array();
