@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (c) 2014 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
  * Author: Christophe Painchaud cpainchaud _AT_ paloaltonetworks.com
@@ -16,75 +15,53 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
 class VirtualSystem
 {
 	use PathableName;
 	use PanSubHelperTrait;
 
-    /**
-     * @var AddressStore
-     */
+    /** @var AddressStore */
     public $addressStore=null;
-    /**
-     * @var ServiceStore
-     */
+    /** @var ServiceStore */
     public $serviceStore=null;
 
 
-    /**
-     * @var TagStore|null
-     */
+    /** @var TagStore|null */
 	public $tagStore=null;
-    /**
-     * @var AppStore|null
-     */
+
+    /** @var AppStore|null */
     public $appStore=null;
 
-    /**
-     * @var string
-     */
+    /** @var string */
 	public $name;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $_alternativeName = '';
 
-    /**
-     * @var PANConf|null
-     */
+    /** @var PANConf|null */
 	public $owner = null;
 
-	/**
-	 * @var DOMElement
-	 */
+	/** @var DOMElement */
 	public $xmlroot;
 
 
 	protected $rulebaseroot;
 	
-	/**
-	* @var RuleStore
-	*/
+	/** @var RuleStore */
 	public $securityRules;
-	/**
-	* @var RuleStore
-	*/
+
+	/** @var RuleStore */
 	public $natRules;
-    /**
-     * @var RuleStore
-     */
+
+    /** @var RuleStore */
     public $decryptionRules;
 
-    /**
-     * @var ZoneStore
-     */
+    /** @var ZoneStore */
     public $zoneStore=null;
 
 
-    /**
-     * @var string[]
-     */
+    /** @var string[] */
     protected $_importedInterface = Array();
 
 	

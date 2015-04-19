@@ -107,12 +107,12 @@ require_once dirname(__FILE__).'/object-classes/'."class-AddressGroup.php";
 require_once dirname(__FILE__).'/object-classes/'."class-Service.php";
 require_once dirname(__FILE__).'/object-classes/'."class-ServiceGroup.php";
 
-require_once dirname(__FILE__).'/'."class-VirtualSystem.php";
-require_once dirname(__FILE__).'/'."class-PANConf.php";
-require_once dirname(__FILE__).'/'."class-PanoramaConf.php";
-require_once dirname(__FILE__).'/'."class-DeviceGroup.php";
-require_once dirname(__FILE__).'/'."class-Template.php";
-require_once dirname(__FILE__).'/'."class-ManagedDevice.php";
+require_once dirname(__FILE__).'/device-and-system-classes/'."class-VirtualSystem.php";
+require_once dirname(__FILE__).'/device-and-system-classes/'."class-PANConf.php";
+require_once dirname(__FILE__).'/device-and-system-classes/'."class-PanoramaConf.php";
+require_once dirname(__FILE__).'/device-and-system-classes/'."class-DeviceGroup.php";
+require_once dirname(__FILE__).'/device-and-system-classes/'."class-Template.php";
+require_once dirname(__FILE__).'/device-and-system-classes/'."class-ManagedDevice.php";
 
 require_once dirname(__FILE__).'/network-classes/'."class-Zone.php";
 require_once dirname(__FILE__).'/network-classes/'."class-ZoneStore.php";

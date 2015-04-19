@@ -135,6 +135,7 @@ class RuleStore
 			$count++;
 			if( $PANC_DEBUG && $count%1000 == 0 )
 				print "Parsed $count rules so far\n";
+            /** @var SecurityRule|NatRule|DecryptionRule|Rule $nr */
 			$nr = new $this->type($this);
 			$nr->load_from_domxml($node);
 			$this->rules[] = $nr;
@@ -859,14 +860,14 @@ class RuleStore
 	}
 
 
-	/**
-	* Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-	* @param Rule|SecurityRule $rule
-	 * @param bool $rewriteXml
-	 * @param bool $deleteForever
-	 * @return bool
-	*/
-	public function remove( $rule, $rewriteXml=true, $deleteForever=false )
+    /**
+     * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
+     * @param Rule|SecurityRule $rule
+     * @param bool $deleteForever
+     * @return bool
+     * @internal param bool $rewriteXml
+     */
+	public function remove($rule, $deleteForever = false)
 	{
 
 		$found = false;
@@ -908,16 +909,16 @@ class RuleStore
 	}
 
 
-	/**
-	 * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-	 * @param Rule $rule
-	 * @param bool $rewritexml
-	 * @return bool
-	*/
-	public function API_remove( $rule, $rewritexml=true )
+    /**
+     * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
+     * @param Rule $rule
+     * @return bool
+     * @internal param bool $rewritexml
+     */
+	public function API_remove($rule)
 	{
 		$xpath = $rule->getXPath();
-		$ret = $this->remove($rule, $rewritexml);
+		$ret = $this->remove($rule);
 
 		if( $ret )
 		{

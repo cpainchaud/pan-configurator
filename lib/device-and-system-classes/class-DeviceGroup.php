@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (c) 2014 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
  * Author: Christophe Painchaud cpainchaud _AT_ paloaltonetworks.com
