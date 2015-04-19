@@ -42,6 +42,12 @@ class Template
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
             derr("zone name not found\n", $xml);
+
+        $tmp = DH::findFirstElementOrDie('config', $xml);
+
+        $this->deviceConfiguration->load_from_domxml($tmp);
+
+
     }
 
 

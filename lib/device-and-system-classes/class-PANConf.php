@@ -125,29 +125,45 @@ class PANConf
 		$this->load_from_domxml($xmlDoc);
 	}
 
-	public function load_from_domxml(DOMDocument $xml)
+    /**
+     * @param $xml DOMElement|DOMDocument
+     * @throws Exception
+     */
+	public function load_from_domxml($xml)
 	{
-
-		$this->xmldoc = $xml;
-
-
-        $this->configroot = DH::findFirstElementOrDie('config', $this->xmldoc);
-        $this->xmlroot = $this->configroot;
-
-
-        $versionAttr = DH::findAttribute('version', $this->configroot);
-        if( $versionAttr !== false )
+        if( $xml->nodeType == XML_DOCUMENT_NODE )
         {
-            $this->version = PH::versionFromString($versionAttr);
+		    $this->xmldoc = $xml;
+            $this->configroot = DH::findFirstElementOrDie('config', $this->xmldoc);
+            $this->xmlroot = $this->configroot;
         }
         else
         {
-            if( isset($this->connector) && $this->connector !== null )
-                $version = $this->connector->getSoftwareVersion();
-            else
-                derr('cannot find PANOS version used for make this config');
+            $this->xmlroot = $xml;
+            $this->configroot = $xml;
+        }
 
-            $this->version = $version['version'];
+
+        if( $this->owner !== null )
+        {
+            $this->version = $this->owner->owner->version;
+        }
+        else
+        {
+            $versionAttr = DH::findAttribute('version', $this->configroot);
+            if( $versionAttr !== false )
+            {
+                $this->version = PH::versionFromString($versionAttr);
+            }
+            else
+            {
+                if( isset($this->connector) && $this->connector !== null )
+                    $version = $this->connector->getSoftwareVersion();
+                else
+                    derr('cannot find PANOS version used for make this config');
+
+                $this->version = $version['version'];
+            }
         }
 
 
