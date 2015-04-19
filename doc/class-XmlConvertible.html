@@ -7,7 +7,7 @@
 	<title>Trait XmlConvertible | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3989079112"></script>
+	<script type="text/javascript" src="elementlist.js?3225097435"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,8 +50,12 @@
 				<li><a href="class-DH.html">DH</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
 				<li><a href="class-NatRule.html">NatRule</a></li>
 				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
 				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
@@ -92,7 +96,6 @@
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
-				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
@@ -177,28 +180,42 @@
 		<h4>Direct Known Users</h4>
 			<a href="class-Address.html">Address</a>, 
 			<a href="class-AddressGroup.html">AddressGroup</a>, 
+			<a href="class-ServiceGroup.html">ServiceGroup</a>, 
+			<a href="class-StaticRoute.html">StaticRoute</a>, 
+			<a href="class-Tag.html">Tag</a>, 
+			<a href="class-VirtualRouter.html">VirtualRouter</a>, 
+			<a href="class-Zone.html">Zone</a>, 
+			<a href="class-EthernetInterface.html">EthernetInterface</a>, 
+			<a href="class-IPsecTunnel.html">IPsecTunnel</a>, 
+			<a href="class-LoopbackInterface.html">LoopbackInterface</a>, 
 			<a href="class-ObjRuleContainer.html">ObjRuleContainer</a>, 
 			<a href="class-ObjStore.html">ObjStore</a>, 
-			<a href="class-Service.html">Service</a>, 
-			<a href="class-ServiceGroup.html">ServiceGroup</a>, 
-			<a href="class-Tag.html">Tag</a>, 
-			<a href="class-Zone.html">Zone</a>
+			<a href="class-Rule.html">Rule</a>, 
+			<a href="class-RuleStore.html">RuleStore</a>, 
+			<a href="class-Service.html">Service</a>
 	</div>
 
 	<div>
 		<h4>Indirect Known Users</h4>
 			<a href="class-AddressRuleContainer.html">AddressRuleContainer</a>, 
-			<a href="class-AppRuleContainer.html">AppRuleContainer</a>, 
-			<a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a>, 
-			<a href="class-ZoneStore.html">ZoneStore</a>, 
-			<a href="class-AppStore.html">AppStore</a>, 
-			<a href="class-EthernetIfStore.html">EthernetIfStore</a>, 
-			<a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a>, 
+			<a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a>, 
+			<a href="class-NatRule.html">NatRule</a>, 
+			<a href="class-SecurityRule.html">SecurityRule</a>, 
 			<a href="class-ServiceRuleContainer.html">ServiceRuleContainer</a>, 
 			<a href="class-TagRuleContainer.html">TagRuleContainer</a>, 
 			<a href="class-TagStore.html">TagStore</a>, 
 			<a href="class-TmpInterfaceStore.html">TmpInterfaceStore</a>, 
-			<a href="class-VirtualRouterStore.html">VirtualRouterStore</a>
+			<a href="class-VirtualRouterStore.html">VirtualRouterStore</a>, 
+			<a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a>, 
+			<a href="class-ZoneStore.html">ZoneStore</a>, 
+			<a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>, 
+			<a href="class-AppRuleContainer.html">AppRuleContainer</a>, 
+			<a href="class-AppStore.html">AppStore</a>, 
+			<a href="class-DecryptionRule.html">DecryptionRule</a>, 
+			<a href="class-EthernetIfStore.html">EthernetIfStore</a>, 
+			<a href="class-InterfaceContainer.html">InterfaceContainer</a>, 
+			<a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a>, 
+			<a href="class-LoopbackIfStore.html">LoopbackIfStore</a>
 	</div>
 
 	<div class="info">
@@ -314,6 +331,31 @@
 
 
 
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="xmlroot" id="$xmlroot">
+		<td class="attributes"><code>
+			public  
+			null|<code><a href="class-DOMElement.html">DOMElement</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$xmlroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$xmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 

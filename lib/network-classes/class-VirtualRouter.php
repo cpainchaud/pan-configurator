@@ -32,8 +32,8 @@ class VirtualRouter
      */
     protected $_staticRoutes = Array();
 
-    /** @var EthernetInterface[]|TmpInterface[]|IPsecTunnel[]|LoopbackInterface[] */
-    protected $_attachedInterfaces = Array();
+    /** @var InterfaceContainer */
+    public $attachedInterfaces;
 
     /**
      * @param $name string
@@ -43,6 +43,8 @@ class VirtualRouter
     {
         $this->owner = $owner;
         $this->name = $name;
+
+        $this->attachedInterfaces = new InterfaceContainer($this, $owner->owner->network);
     }
 
     /**
@@ -56,13 +58,9 @@ class VirtualRouter
         if( $this->name === FALSE )
             derr("virtual-router name not found\n");
 
-        $nodeList = DH::findXPath('/interface/member',$xml);
+        $node = DH::findFirstElementOrCreate('interface', $xml);
 
-        for($i=0; $i<$nodeList->length;$i++)
-        {
-            $findInterface = $this->owner->owner->network->findInterfaceOrCreateTmp($nodeList->item($i)->textContent);
-            $this->_attachedInterfaces[$findInterface->name()] = $findInterface;
-        }
+        $this->attachedInterfaces->load_from_domxml($node);
 
         $node = DH::findXPath('/routing-table/ip/static-route/entry',$xml);
 
@@ -108,7 +106,7 @@ class VirtualRouter
             $nexthopIf = $route->nexthopInterface();
             if( $nexthopIf !== null )
             {
-                if( !isset($this->_attachedInterfaces[$nexthopIf->name()]) )
+                if( $this->attachedInterfaces->hasInterfaceNamed($nexthopIf->name()) )
                 {
                     mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface does not belong to this virtual router'");
                     continue;
@@ -135,7 +133,7 @@ class VirtualRouter
             {
                 $nexthopIP = $route->nexthopIP();
                 $findZone = null;
-                foreach($this->_attachedInterfaces as $if )
+                foreach($this->attachedInterfaces->interfaces() as $if )
                 {
                     if( ($if->isEthernetType()|| $if->isAggregateType()) && $if->type() == 'layer3' || $if->isLoopbackType() )
                     {
@@ -189,7 +187,7 @@ class VirtualRouter
             unset($record);
         }
 
-        foreach( $this->_attachedInterfaces as $if )
+        foreach( $this->attachedInterfaces->interfaces() as $if )
         {
             if($if->importedByVSYS !== $contextVSYS )
                 continue;
@@ -247,16 +245,6 @@ class VirtualRouter
 
         return $result;
     }
-
-    /**
-     * @return EthernetInterface[]|TmpInterface[]
-     */
-    public function getAttachedInterfaces()
-    {
-        return $this->_attachedInterfaces;
-    }
-
-
 
 
 }

@@ -38,7 +38,19 @@ class Template
 
     public function load_from_domxml(DOMElement $xml)
     {
+        $this->xmlroot = $xml;
 
+        $this->name = DH::findAttribute('name', $xml);
+        if( $this->name === FALSE )
+            derr("zone name not found\n", $xml);
+
+
+    }
+
+
+    public function isTemplate()
+    {
+        return true;
     }
 
 }

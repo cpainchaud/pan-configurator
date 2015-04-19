@@ -7,7 +7,7 @@
 	<title>Class VirtualSystem | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3989079112"></script>
+	<script type="text/javascript" src="elementlist.js?3225097435"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,8 +50,12 @@
 				<li><a href="class-DH.html">DH</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
 				<li><a href="class-NatRule.html">NatRule</a></li>
 				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
 				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
@@ -92,7 +96,6 @@
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
-				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
@@ -174,8 +177,6 @@
 			 uses 
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
-				<a href="class-centralZoneStore.html"><span>centralZoneStore</span></a>, 
-			
 				<a href="class-PanSubHelperTrait.html"><span>PanSubHelperTrait</span></a>
 			
 		</dd>
@@ -194,7 +195,7 @@
 		
 		
 
-		<b>Located at</b> class-VirtualSystem.php<br />
+		<b>Located at</b> device-and-system-classes/class-VirtualSystem.php<br />
 	</div>
 
 
@@ -474,39 +475,6 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="importedInterfaces" id="_importedInterfaces">
-
-		<td class="attributes"><code>
-			 public 
-			string[]
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_importedInterfaces">#</a>
-		<code><b>importedInterfaces</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>string[]</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	</table>
 
 
@@ -519,20 +487,13 @@
 	</tr>
 	</table>
 	<table class="summary used">
-	<caption>Methods used from <a href="class-centralZoneStore.html#methods">centralZoneStore</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-centralZoneStore.html#_zoneStore"><b>zoneStore()</b></a>
-		</code></td>
-	</tr>
-	</table>
-	<table class="summary used">
 	<caption>Methods used from <a href="class-PanSubHelperTrait.html#methods">PanSubHelperTrait</a></caption>
 	<tr>
 		<td><code>
 			<a href="class-PanSubHelperTrait.html#_isDeviceGroup"><b>isDeviceGroup()</b></a>, 
 			<a href="class-PanSubHelperTrait.html#_isPanOS"><b>isPanOS()</b></a>, 
-			<a href="class-PanSubHelperTrait.html#_isPanorama"><b>isPanorama()</b></a>
+			<a href="class-PanSubHelperTrait.html#_isPanorama"><b>isPanorama()</b></a>, 
+			<a href="class-PanSubHelperTrait.html#_isTemplate"><b>isTemplate()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -812,17 +773,39 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="_importedInterface" id="$_importedInterface">
+	<tr data-order="zoneStore" id="$zoneStore">
 		<td class="attributes"><code>
-			protected  
-			string[]
+			public  
+			<code><a href="class-ZoneStore.html">ZoneStore</a></code>
 		</code></td>
 
 		<td class="name">
-<var>$_importedInterface</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+<var>$zoneStore</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
-			<a href="#$_importedInterface" class="anchor">#</a>
+			<a href="#$zoneStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="importedInterfaces" id="$importedInterfaces">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-InterfaceContainer.html">InterfaceContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$importedInterfaces</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$importedInterfaces" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -859,14 +842,6 @@
 	</table>
 
 
-	<table class="summary used">
-	<caption>Properties used from <a href="class-centralZoneStore.html#properties">centralZoneStore</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-centralZoneStore.html#$zoneStore"><var>$zoneStore</var></a>
-		</code></td>
-	</tr>
-	</table>
 
 
 

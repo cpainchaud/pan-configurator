@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class RQuery | PAN-Configurator</title>
+	<title>Class InterfaceContainer | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
 	<script type="text/javascript" src="elementlist.js?3225097435"></script>
@@ -50,7 +50,7 @@
 				<li><a href="class-DH.html">DH</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
-				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
+				<li class="active"><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -64,7 +64,7 @@
 				<li><a href="class-PANConf.html">PANConf</a></li>
 				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
 				<li><a href="class-PH.html">PH</a></li>
-				<li class="active"><a href="class-RQuery.html">RQuery</a></li>
+				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
 				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
@@ -166,10 +166,33 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class RQuery</h1>
+	<h1>Class InterfaceContainer</h1>
 
 
+	<div class="description">
+	
+<p>Class InterfaceContainer</p>
 
+	</div>
+
+	<dl class="tree">
+		<dd style="padding-left:0px">
+			<a href="class-ObjRuleContainer.html"><span>ObjRuleContainer</span></a>
+			
+			
+			 uses 
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>InterfaceContainer</span></b>			
+			
+			
+		</dd>
+	</dl>
 
 
 
@@ -184,14 +207,14 @@
 		
 		
 
-		<b>Located at</b> misc-classes/class-RQuery.php<br />
+		<b>Located at</b> network-classes/class-InterfaceContainer.php<br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="RQuery" id="_RQuery">
+	<tr data-order="InterfaceContainer" id="_InterfaceContainer">
 
 		<td class="attributes"><code>
 			 public 
@@ -201,8 +224,44 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_RQuery">#</a>
-		<code><b>RQuery</b>( <span>mixed <var>$objectType</var></span>, <span>mixed <var>$level</var> = <span class="php-num">0</span></span> )</code>
+		<a class="anchor" href="#_InterfaceContainer">#</a>
+		<code><b>InterfaceContainer</b>( <span><code><a href="class-VirtualSystem.html">VirtualSystem</a></code>|<code><a href="class-Zone.html">Zone</a></code>|<code><a href="class-VirtualRouter.html">VirtualRouter</a></code> <var>$owner</var></span>, <span><code><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></code> <var>$centralStore</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$owner</var></dt>
+					<dd><code><code><a href="class-VirtualSystem.html">VirtualSystem</a></code>|<code><a href="class-Zone.html">Zone</a></code>|<code><a href="class-VirtualRouter.html">VirtualRouter</a></code></code><br>$owner</dd>
+					<dt><var>$centralStore</var></dt>
+					<dd><code><code><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></code></code><br>$centralStore</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_domxml" id="_load_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_domxml">#</a>
+		<code><b>load_from_domxml</b>( <span><code><a href="class-DOMElement.html">DOMElement</a></code> <var>$xml</var></span> )</code>
 
 		<div class="description short">
 			
@@ -220,7 +279,40 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="matchSingleObject" id="_matchSingleObject">
+	<tr data-order="interfaces" id="_interfaces">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>|<code><a href="class-LoopbackInterface.html">LoopbackInterface</a>[]</code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_interfaces">#</a>
+		<code><b>interfaces</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>|<code><a href="class-LoopbackInterface.html">LoopbackInterface</a>[]</code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="hasInterfaceNamed" id="_hasInterfaceNamed">
 
 		<td class="attributes"><code>
 			 public 
@@ -230,8 +322,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_matchSingleObject">#</a>
-		<code><b>matchSingleObject</b>( <span>mixed <var>$queryContext</var></span> )</code>
+		<a class="anchor" href="#_hasInterfaceNamed">#</a>
+		<code><b>hasInterfaceNamed</b>( <span>string <var>$ifName</var></span>, <span>boolean <var>$caseSensitive</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -243,8 +335,10 @@
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$queryContext</var></dt>
-					<dd><code>mixed</code><br>$queryContext Object|string[]</dd>
+					<dt><var>$ifName</var></dt>
+					<dd><code>string</code><br>$ifName</dd>
+					<dt><var>$caseSensitive</var></dt>
+					<dd><code>boolean</code><br>$caseSensitive</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -258,107 +352,49 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="parseFromString" id="_parseFromString">
+	</table>
 
-		<td class="attributes"><code>
-			 public 
-			boolean|integer
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_parseFromString">#</a>
-		<code><b>parseFromString</b>( <span>string <var>$text</var></span>, <span>string <var>&amp; $errorMessage</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$text</var></dt>
-					<dd><code>string</code><br>$text</dd>
-					<dt><var>$errorMessage</var></dt>
-					<dd><code>string</code><br>$errorMessage</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean|integer</code><br>FALSE if an error occured (see $errorMessage content)<br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="display" id="_display">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_display">#</a>
-		<code><b>display</b>( <span>mixed <var>$indentLevel</var> = <span class="php-num">0</span></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="toString" id="_toString">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_toString">#</a>
-		<code><b>toString</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-ObjRuleContainer.html#methods">ObjRuleContainer</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjRuleContainer.html#___destruct"><b>__destruct()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_count"><b>count()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_display"><b>display()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_equals"><b>equals()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_equals_fasterHash"><b>equals_fasterHash()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_generateFastHashComp"><b>generateFastHashComp()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_getAll"><b>getAll()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_getFastHashComp"><b>getFastHashComp()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_has"><b>has()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_referencedObjectRenamed"><b>referencedObjectRenamed()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_remove"><b>remove()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_removeAll"><b>removeAll()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_replaceReferencedObject"><b>replaceReferencedObject()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_setName"><b>setName()</b></a>, 
+			<a href="class-ObjRuleContainer.html#_toString_inline"><b>toString_inline()</b></a>
+		</code></td>
 	</tr>
 	</table>
 
-
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
@@ -371,171 +407,17 @@
 
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
-	<tr data-order="expression" id="$expression">
+	<tr data-order="parentCentralStore" id="$parentCentralStore">
 		<td class="attributes"><code>
 			public  
-			null|string
+			<code><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></code>
 		</code></td>
 
 		<td class="name">
-<var>$expression</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+<var>$parentCentralStore</var>		</td>
+		<td class="value"><code></code></td>
 		<td class="description"><div>
-			<a href="#$expression" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="subQueries" id="$subQueries">
-		<td class="attributes"><code>
-			public  
-			<code><a href="class-RQuery.html">RQuery</a>[]</code>
-		</code></td>
-
-		<td class="name">
-<var>$subQueries</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$subQueries" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="subQueriesOperators" id="$subQueriesOperators">
-		<td class="attributes"><code>
-			public  
-			string[]
-		</code></td>
-
-		<td class="name">
-<var>$subQueriesOperators</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$subQueriesOperators" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="defaultFilters" id="$defaultFilters">
-		<td class="attributes"><code>
-			public static 
-			array
-		</code></td>
-
-		<td class="name">
-<var>$defaultFilters</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
-		<td class="description"><div>
-			<a href="#$defaultFilters" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="mathOps" id="$mathOps">
-		<td class="attributes"><code>
-			public static 
-			array
-		</code></td>
-
-		<td class="name">
-<var>$mathOps</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>( <span class="php-quote">'&gt;'</span> =&gt; <span class="php-quote">'&gt;'</span>, <span class="php-quote">'&lt;'</span> =&gt; <span class="php-quote">'&lt;'</span>, <span class="php-quote">'='</span> =&gt; <span class="php-quote">'=='</span>, <span class="php-quote">'=='</span> =&gt; <span class="php-quote">'=='</span>, <span class="php-quote">'!='</span> =&gt; <span class="php-quote">'!='</span>, <span class="php-quote">'&lt;='</span> =&gt; <span class="php-quote">'&lt;='</span>, <span class="php-quote">'&gt;='</span> =&gt; <span class="php-quote">'&gt;='</span> )</code></td>
-		<td class="description"><div>
-			<a href="#$mathOps" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="objectType" id="$objectType">
-		<td class="attributes"><code>
-			public  
-			mixed
-		</code></td>
-
-		<td class="name">
-<var>$objectType</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$objectType" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="inverted" id="$inverted">
-		<td class="attributes"><code>
-			public  
-			boolean
-		</code></td>
-
-		<td class="name">
-<var>$inverted</var>		</td>
-		<td class="value"><code><span class="php-keyword1">false</span></code></td>
-		<td class="description"><div>
-			<a href="#$inverted" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="level" id="$level">
-		<td class="attributes"><code>
-			public  
-			integer
-		</code></td>
-
-		<td class="name">
-<var>$level</var>		</td>
-		<td class="value"><code><span class="php-num">0</span></code></td>
-		<td class="description"><div>
-			<a href="#$level" class="anchor">#</a>
+			<a href="#$parentCentralStore" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -549,8 +431,52 @@
 	</tr>
 	</table>
 
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-ObjRuleContainer.html#properties">ObjRuleContainer</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjRuleContainer.html#$classn"><var>$classn</var></a>, 
+			<a href="class-ObjRuleContainer.html#$fasthashcomp"><var>$fasthashcomp</var></a>, 
+			<a href="class-ObjRuleContainer.html#$name"><var>$name</var></a>, 
+			<a href="class-ObjRuleContainer.html#$o"><var>$o</var></a>, 
+			<a href="class-ObjRuleContainer.html#$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
 
+	<table class="summary used">
+	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
 
+	<table class="summary" id="magicProperties">
+	<caption>Magic properties summary</caption>
+	<tr data-order="owner" id="m$owner">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-VirtualSystem.html">VirtualSystem</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$owner</var>		</td>
+		<td class="description"><div>
+			<a href="#m$owner" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 

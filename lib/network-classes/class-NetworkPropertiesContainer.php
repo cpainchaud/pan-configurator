@@ -227,16 +227,13 @@ class NetworkPropertiesContainer
 
         foreach( $this->loopbackIfStore->getInterfaces() as $if )
         {
-            if( $if->type() == 'layer3' )
+            $ipAddresses = $if->getIPv4Addresses();
+            foreach( $ipAddresses as $ipAddress )
             {
-                $ipAddresses = $if->getIPv4Addresses();
-                foreach( $ipAddresses as $ipAddress )
+                if( cidr::netMatch($ip, $ipAddress) > 0)
                 {
-                    if( cidr::netMatch($ip, $ipAddress) > 0)
-                    {
-                        $ifs[] = $if;
-                        break;
-                    }
+                    $ifs[] = $if;
+                    break;
                 }
             }
         }

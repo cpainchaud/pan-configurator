@@ -190,6 +190,7 @@ class PanoramaConf
 		$this->localhostroot = DH::findFirstElementByNameAttrOrDie('entry', 'localhost.localdomain',$this->devicesroot);
 
 		$this->devicegrouproot = DH::findFirstElementOrDie('device-group', $this->localhostroot);
+        $this->templateroot = DH::findFirstElementOrDie('template', $this->localhostroot);
 
         //
         // Extract Tag objects
@@ -252,9 +253,20 @@ class PanoramaConf
         $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
         $this->decryptionRules->load_from_domxml($tmp, $tmpPost);
 
+        //
+        // loading templates
+        //
 
+        //
+        // end of Templates
+        //
+
+
+
+
+        //
 		// loading Device Groups now
-
+        //
         if( $this->version < 70 )
         {
             foreach ($this->devicegrouproot->childNodes as $node)

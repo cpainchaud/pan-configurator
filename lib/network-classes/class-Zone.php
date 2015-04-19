@@ -32,8 +32,8 @@ class Zone
 
 
 
-    /** @var string[] */
-    private $attachedInterfaces = Array();
+    /** @var InterfaceContainer */
+    public $attachedInterfaces;
 
 
     const TypeTmp = 0;
@@ -51,6 +51,13 @@ class Zone
  	public function Zone($name, $owner, $fromXmlTemplate = false)
  	{
  		$this->owner = $owner;
+
+        if( $this->owner->owner->isVirtualSystem() )
+        {
+            $this->attachedInterfaces = new InterfaceContainer($this, $this->owner->owner->owner->network);
+        }
+        else
+            $this->attachedInterfaces = new InterfaceContainer($this, null);
 
 
         if( $fromXmlTemplate )
@@ -114,23 +121,11 @@ class Zone
             {
                 $this->type = 'layer3';
 
-                foreach( $node->childNodes as $ifNode )
-                {
-                    if( $ifNode->nodeType != XML_ELEMENT_NODE )
-                        continue;
-                    $this->attachedInterfaces[$ifNode->textContent] = $ifNode->textContent;
-                }
+                $this->attachedInterfaces->load_from_domxml($node);
             }
         }
     }
 
-    /**
-     * @return string[]
-     */
-    public function getAttachedInterfaces()
-    {
-        return $this->attachedInterfaces;
-    }
 
     public function API_setName($newname)
     {

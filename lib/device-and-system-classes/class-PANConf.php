@@ -69,12 +69,12 @@ class PANConf
     /** @var PanAPIConnector|null */
 	public $connector = null;
 
+    /** @var null|Template  */
+    public $owner = null;
 
 	/** @var NetworkPropertiesContainer */
 	public $network;
 
-    /** @var Template|null */
-    public $owner = null;
 
 
 	public function name()
@@ -84,13 +84,17 @@ class PANConf
 	
 	/**
 	 * @param PanoramaConf|null $withPanorama
+     * @param string|null $serial
+     * @param Template|null $fromTemplate
 	 */
-	public function PANConf($withPanorama = null, $serial = null)
+	public function PANConf($withPanorama = null, $serial = null, $fromTemplate = null)
 	{
 		if( !is_null($withPanorama) )
 			$this->panorama = $withPanorama;
 		if( !is_null($serial) )
 			$this->serial = $serial;
+
+        $this->owner = $fromTemplate;
 
 		$this->tagStore = new TagStore($this);
 		$this->tagStore->setName('tagStore');
@@ -113,8 +117,6 @@ class PANConf
 			$this->addressStore->panoramaShared = $this->panorama->addressStore;
 
 		$this->network = new NetworkPropertiesContainer($this);
-
-		
 	}
 
 
@@ -164,44 +166,47 @@ class PANConf
 
 
 
-        //
-        // Extract Tag objects
-        //
-        if( $this->version >= 60 )
+        if( $this->owner !== null )
         {
-            $tmp = DH::findFirstElementOrCreate('tag', $this->sharedroot);
-            $this->tagStore->load_from_domxml($tmp);
+            //
+            // Extract Tag objects
+            //
+            if( $this->version >= 60 )
+            {
+                $tmp = DH::findFirstElementOrCreate('tag', $this->sharedroot);
+                $this->tagStore->load_from_domxml($tmp);
+            }
+            // End of Tag objects extraction
+
+
+            //
+            // Shared address objects extraction
+            //
+            $tmp = DH::findFirstElementOrCreate('address', $this->sharedroot);
+            $this->addressStore->load_addresses_from_domxml($tmp);
+            // end of address extraction
+
+            //
+            // Extract address groups
+            //
+            $tmp = DH::findFirstElementOrCreate('address-group', $this->sharedroot);
+            $this->addressStore->load_addressgroups_from_domxml($tmp);
+            // End of address groups extraction
+
+            //
+            // Extract services
+            //
+            $tmp = DH::findFirstElementOrCreate('service', $this->sharedroot);
+            $this->serviceStore->load_services_from_domxml($tmp);
+            // End of address groups extraction
+
+            //
+            // Extract service groups
+            //
+            $tmp = DH::findFirstElementOrCreate('service-group', $this->sharedroot);
+            $this->serviceStore->load_servicegroups_from_domxml($tmp);
+            // End of address groups extraction
         }
-        // End of Tag objects extraction
-
-
-		//
-		// Shared address objects extraction
-		//
-		$tmp = DH::findFirstElementOrCreate('address', $this->sharedroot);
-		$this->addressStore->load_addresses_from_domxml($tmp);
-		// end of address extraction
-
-		//
-		// Extract address groups 
-		//
-		$tmp = DH::findFirstElementOrCreate('address-group', $this->sharedroot);
-		$this->addressStore->load_addressgroups_from_domxml($tmp);
-		// End of address groups extraction
-
-		//
-		// Extract services
-		//
-		$tmp = DH::findFirstElementOrCreate('service', $this->sharedroot);
-		$this->serviceStore->load_services_from_domxml($tmp);
-		// End of address groups extraction
-
-		//
-		// Extract service groups 
-		//
-		$tmp = DH::findFirstElementOrCreate('service-group', $this->sharedroot);
-		$this->serviceStore->load_servicegroups_from_domxml($tmp);
-		// End of address groups extraction
 
 		//
 		// Extract network related configs
@@ -236,7 +241,7 @@ class PANConf
 			$lvsys->load_from_domxml($node);
 			$this->virtualSystems[] = $lvsys;
 
-            $importedInterfaces = $lvsys->importedInterfaces();
+            $importedInterfaces = $lvsys->importedInterfaces->interfaces();
             foreach( $importedInterfaces as &$ifName )
             {
                 $resolvedIf = $this->network->findInterface($ifName);

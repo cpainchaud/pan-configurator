@@ -1,9 +1,10 @@
 CHANGELOG
 
 
-1.5.0-beta4
+1.5.0-beta5
 * 6.1 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
 * support for 7.0 new Security rules actions : drop, reset-client, reset-server, reset-both
+* basic support of Panorama templates
 * moved preRules and postRules into one single store (see getPreRules and getPostRules)
 * VirtualRouter and Static route implemented
 * Major interface/network additions were made to allow future tools like routes calculation etc etc.

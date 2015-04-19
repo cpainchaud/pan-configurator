@@ -94,12 +94,12 @@ class ZoneStore extends ObjStore
 	}
 
     /**
-     * @param Zone|string $zone can be Zone object or zone name (string). this is case sensitive
+     * @param Zone|string $zoneName can be Zone object or zone name (string). this is case sensitive
      * @return bool
      */
-    public function hasZoneNamed( $zone, $caseSensitive = true )
+    public function hasZoneNamed( $zoneName, $caseSensitive = true )
     {
-        return $this->has($zone, $caseSensitive);
+        return $this->has($zoneName, $caseSensitive);
     }
 
 
@@ -114,9 +114,9 @@ class ZoneStore extends ObjStore
             if( $zone->isTmp() )
                 continue;
 
-            foreach( $zone->getAttachedInterfaces() as $ifs )
+            foreach( $zone->attachedInterfaces->interfaces() as $if )
             {
-                if( $ifs == $ifName )
+                if( $if->name() == $ifName )
                     return $zone;
             }
         }

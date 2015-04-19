@@ -7,7 +7,7 @@
 	<title>Class IPsecTunnel | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3989079112"></script>
+	<script type="text/javascript" src="elementlist.js?3225097435"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,8 +50,12 @@
 				<li><a href="class-DH.html">DH</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
 				<li class="active"><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
 				<li><a href="class-NatRule.html">NatRule</a></li>
 				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
 				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
@@ -92,7 +96,6 @@
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
-				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
@@ -172,11 +175,13 @@
 <b><span>IPsecTunnel</span></b>			
 			
 			 uses 
-				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>, 
+				<a href="class-InterfaceType.html"><span>InterfaceType</span></a>, 
+			
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
 			
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
-				<a href="class-InterfaceType.html"><span>InterfaceType</span></a>
+				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>
 			
 		</dd>
 	</dl>
@@ -536,6 +541,35 @@ $remote-&gt;nodeValue, 'xmlroot' =&gt; $proxyNode );</p>
 
 
 	<table class="summary used">
+	<caption>Methods used from <a href="class-InterfaceType.html#methods">InterfaceType</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-InterfaceType.html#_isAggregateType"><b>isAggregateType()</b></a>, 
+			<a href="class-InterfaceType.html#_isEthernetType"><b>isEthernetType()</b></a>, 
+			<a href="class-InterfaceType.html#_isLoopbackType"><b>isLoopbackType()</b></a>, 
+			<a href="class-InterfaceType.html#_isTmpType"><b>isTmpType()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
 	<caption>Methods used from <a href="class-ReferencableObject.html#methods">ReferencableObject</a></caption>
 	<tr>
 		<td><code>
@@ -555,24 +589,6 @@ $remote-&gt;nodeValue, 'xmlroot' =&gt; $proxyNode );</p>
 		</code></td>
 	</tr>
 	</table>
-	<table class="summary used">
-	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
-		</code></td>
-	</tr>
-	</table>
-	<table class="summary used">
-	<caption>Methods used from <a href="class-InterfaceType.html#methods">InterfaceType</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-InterfaceType.html#_isAggregateType"><b>isAggregateType()</b></a>, 
-			<a href="class-InterfaceType.html#_isEthernetType"><b>isEthernetType()</b></a>, 
-			<a href="class-InterfaceType.html#_isTmpType"><b>isTmpType()</b></a>
-		</code></td>
-	</tr>
-	</table>
 
 
 
@@ -585,28 +601,6 @@ $remote-&gt;nodeValue, 'xmlroot' =&gt; $proxyNode );</p>
 
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
-	<tr data-order="xmlroot" id="$xmlroot">
-		<td class="attributes"><code>
-			public  
-			null|string[]|<code><a href="class-DOMElement.html">DOMElement</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$xmlroot</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$xmlroot" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
 	<tr data-order="typeRoot" id="$typeRoot">
 		<td class="attributes"><code>
 			public  
@@ -699,20 +693,28 @@ $remote-&gt;nodeValue, 'xmlroot' =&gt; $proxyNode );</p>
 
 
 	<table class="summary used">
+	<caption>Properties used from <a href="class-InterfaceType.html#properties">InterfaceType</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-InterfaceType.html#$importedByVSYS"><var>$importedByVSYS</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
 	<caption>Properties used from <a href="class-ReferencableObject.html#properties">ReferencableObject</a></caption>
 	<tr>
 		<td><code>
 			<a href="class-ReferencableObject.html#$name"><var>$name</var></a>, 
 			<a href="class-ReferencableObject.html#$refcomphash"><var>$refcomphash</var></a>, 
 			<a href="class-ReferencableObject.html#$refrules"><var>$refrules</var></a>
-		</code></td>
-	</tr>
-	</table>
-	<table class="summary used">
-	<caption>Properties used from <a href="class-InterfaceType.html#properties">InterfaceType</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-InterfaceType.html#$importedByVSYS"><var>$importedByVSYS</var></a>
 		</code></td>
 	</tr>
 	</table>

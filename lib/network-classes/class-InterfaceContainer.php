@@ -16,9 +16,63 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
+/**
+ * Class InterfaceContainer
+ * @property VirtualSystem $owner
+ * @property EthernetInterface[]|LoopbackInterface[]|IPsecTunnel[] $o
+ */
 class InterfaceContainer extends ObjRuleContainer
 {
+    /** @var  NetworkPropertiesContainer */
+    public $parentCentralStore;
+
+    /**
+     * @param VirtualSystem|Zone|VirtualRouter $owner
+     * @param NetworkPropertiesContainer $centralStore
+     */
+    public function InterfaceContainer($owner, $centralStore)
+    {
+        $this->owner = $owner;
+        $this->parentCentralStore = $centralStore;
+
+        $this->o = Array();
+    }
+
+    public function load_from_domxml(DOMElement $xml)
+    {
+        $this->xmlroot = $xml;
+
+        foreach($xml->childNodes as $node)
+        {
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $interfaceString = $node->textContent;
+
+            $interface = $this->parentCentralStore->findInterfaceOrCreateTmp($interfaceString);
+
+            $this->add($interface);
+        }
+    }
+
+    /**
+     * @return EthernetInterface[]|IPsecTunnel[]|LoopbackInterface[]
+     */
+    public function interfaces()
+    {
+        return $this->o;
+    }
 
 
+    /**
+     * @param string $ifName
+     * @param bool $caseSensitive
+     * @return bool
+     */
+    public function hasInterfaceNamed($ifName, $caseSensitive=true)
+    {
+        return $this->has($ifName, $caseSensitive);
+    }
 
 }

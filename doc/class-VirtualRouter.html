@@ -7,7 +7,7 @@
 	<title>Class VirtualRouter | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3989079112"></script>
+	<script type="text/javascript" src="elementlist.js?3225097435"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,8 +50,12 @@
 				<li><a href="class-DH.html">DH</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
 				<li><a href="class-NatRule.html">NatRule</a></li>
 				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
 				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
@@ -92,7 +96,6 @@
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
-				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
@@ -172,9 +175,11 @@
 <b><span>VirtualRouter</span></b>			
 			
 			 uses 
-				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>, 
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
 			
-				<a href="class-PathableName.html"><span>PathableName</span></a>
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>
 			
 		</dd>
 	</dl>
@@ -342,42 +347,27 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="getAttachedInterfaces" id="_getAttachedInterfaces">
-
-		<td class="attributes"><code>
-			 public 
-			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-TmpInterface.html">TmpInterface</a>[]</code>
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_getAttachedInterfaces">#</a>
-		<code><b>getAttachedInterfaces</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-TmpInterface.html">TmpInterface</a>[]</code></code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	</table>
 
 
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
 	<table class="summary used">
 	<caption>Methods used from <a href="class-ReferencableObject.html#methods">ReferencableObject</a></caption>
 	<tr>
@@ -395,14 +385,6 @@
 			<a href="class-ReferencableObject.html#_removeReference"><b>removeReference()</b></a>, 
 			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
 			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>
-		</code></td>
-	</tr>
-	</table>
-	<table class="summary used">
-	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -462,17 +444,17 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="_attachedInterfaces" id="$_attachedInterfaces">
+	<tr data-order="attachedInterfaces" id="$attachedInterfaces">
 		<td class="attributes"><code>
-			protected  
-			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-TmpInterface.html">TmpInterface</a>[]</code>
+			public  
+			<code><a href="class-InterfaceContainer.html">InterfaceContainer</a></code>
 		</code></td>
 
 		<td class="name">
-<var>$_attachedInterfaces</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+<var>$attachedInterfaces</var>		</td>
+		<td class="value"><code></code></td>
 		<td class="description"><div>
-			<a href="#$_attachedInterfaces" class="anchor">#</a>
+			<a href="#$attachedInterfaces" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -487,6 +469,14 @@
 	</table>
 
 
+	<table class="summary used">
+	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
 	<table class="summary used">
 	<caption>Properties used from <a href="class-ReferencableObject.html#properties">ReferencableObject</a></caption>
 	<tr>

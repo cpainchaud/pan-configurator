@@ -60,9 +60,8 @@ class VirtualSystem
     /** @var ZoneStore */
     public $zoneStore=null;
 
-
-    /** @var string[] */
-    protected $_importedInterface = Array();
+    /** @var  InterfaceContainer */
+    public $importedInterfaces;
 
 	
 	
@@ -76,6 +75,8 @@ class VirtualSystem
         $this->tagStore->name = 'tags';
         $this->tagStore->setCentralStoreRole(true);
 
+
+        $this->importedInterfaces = new InterfaceContainer($this, $owner->network);
 
 		$this->appStore = $owner->appStore;
 
@@ -135,24 +136,15 @@ class VirtualSystem
         }
         // End of Tag objects extraction
 
-        $this->importroot = DH::findFirstElement('import',$xml);
-        if( $this->importroot !== false )
-        {
-            $networkRoot = DH::findFirstElement('network', $this->importroot);
-            if( $networkRoot !== false )
-            {
-                $tmp = DH::findFirstElement('interface', $networkRoot);
-                if( $tmp !== false )
-                {
-                    foreach( $tmp->childNodes as $node )
-                    {
-                        if( $node->nodeType != XML_ELEMENT_NODE )
-                            continue;
-                        $this->_importedInterface[] = $node->textContent;
-                    }
-                }
-            }
-        }
+        //
+        // loading the imported objects list
+        //
+        $this->importroot = DH::findFirstElementOrCreate('import',$xml);
+        $networkRoot = DH::findFirstElementOrCreate('network', $this->importroot);
+        $tmp = DH::findFirstElementOrCreate('interface', $networkRoot);
+        $this->importedInterfaces->load_from_domxml($tmp);
+        //
+
 		
 		//
 		// Extract address objects 
@@ -299,15 +291,6 @@ class VirtualSystem
         return true;
     }
 
-    /**
-     * @return string[]
-     */
-    public function importedInterfaces()
-    {
-        return $this->_importedInterface;
-    }
-
-	
 
     static public $templateXml = '<entry name="temporarynamechangemeplease"><address/><address-group/><service/><service-group/><rulebase></rulebase></entry>';
 

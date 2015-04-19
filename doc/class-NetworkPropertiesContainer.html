@@ -7,7 +7,7 @@
 	<title>Class NetworkPropertiesContainer | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3989079112"></script>
+	<script type="text/javascript" src="elementlist.js?3225097435"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,8 +50,12 @@
 				<li><a href="class-DH.html">DH</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
 				<li><a href="class-NatRule.html">NatRule</a></li>
 				<li class="active"><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
 				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
@@ -92,7 +96,6 @@
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
-				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
@@ -259,7 +262,7 @@
 
 		<td class="attributes"><code>
 			 public 
-			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>
+			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>|<code><a href="class-LoopbackInterface.html">LoopbackInterface</a>[]</code>|<code><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>[]</code>|<code><a href="class-TmpInterface.html">TmpInterface</a>[]</code>
 			
 			</code>
 		</td>
@@ -279,7 +282,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code></code><br />
+					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>|<code><a href="class-LoopbackInterface.html">LoopbackInterface</a>[]</code>|<code><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>[]</code>|<code><a href="class-TmpInterface.html">TmpInterface</a>[]</code></code><br />
 				</div>
 
 
@@ -364,18 +367,18 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="findInterfaceAttachedToVSYS" id="_findInterfaceAttachedToVSYS">
+	<tr data-order="findInterfacesAttachedToVSYS" id="_findInterfacesAttachedToVSYS">
 
 		<td class="attributes"><code>
 			 public 
-			<code><a href="class-EthernetInterface.html">EthernetInterface</a></code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a></code>|null
+			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>|<code><a href="class-LoopbackInterface.html">LoopbackInterface</a>[]</code>|<code><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>[]</code>|<code><a href="class-TmpInterface.html">TmpInterface</a>[]</code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_findInterfaceAttachedToVSYS">#</a>
-		<code><b>findInterfaceAttachedToVSYS</b>( <span><code><a href="class-VirtualSystem.html">VirtualSystem</a></code> <var>$vsys</var></span> )</code>
+		<a class="anchor" href="#_findInterfacesAttachedToVSYS">#</a>
+		<code><b>findInterfacesAttachedToVSYS</b>( <span><code><a href="class-VirtualSystem.html">VirtualSystem</a></code> <var>$vsys</var></span> )</code>
 
 		<div class="description short">
 			
@@ -393,7 +396,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a></code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a></code>|null</code><br />
+					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>|<code><a href="class-LoopbackInterface.html">LoopbackInterface</a>[]</code>|<code><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>[]</code>|<code><a href="class-TmpInterface.html">TmpInterface</a>[]</code></code><br />
 				</div>
 
 
@@ -406,7 +409,7 @@
 
 		<td class="attributes"><code>
 			 public 
-			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>
+			<code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>|<code><a href="class-LoopbackInterface.html">LoopbackInterface</a>[]</code>|<code><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>[]</code>
 			
 			</code>
 		</td>
@@ -431,7 +434,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code></code><br />
+					<code><code><a href="class-EthernetInterface.html">EthernetInterface</a>[]</code>|<code><a href="class-IPsecTunnel.html">IPsecTunnel</a>[]</code>|<code><a href="class-LoopbackInterface.html">LoopbackInterface</a>[]</code>|<code><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a>[]</code></code><br />
 				</div>
 
 
@@ -540,6 +543,28 @@
 		<td class="value"><code></code></td>
 		<td class="description"><div>
 			<a href="#$ipsecTunnelStore" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="loopbackIfStore" id="$loopbackIfStore">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$loopbackIfStore</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$loopbackIfStore" class="anchor">#</a>
 
 			<div class="description short">
 				

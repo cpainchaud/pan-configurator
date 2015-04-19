@@ -38,5 +38,10 @@ trait PanSubHelperTrait
 	{
 		false;
 	}
+
+    public function isTemplate()
+    {
+        false;
+    }
 	
 }

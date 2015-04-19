@@ -7,7 +7,7 @@
 	<title>Class NatRule | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3989079112"></script>
+	<script type="text/javascript" src="elementlist.js?3225097435"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,8 +50,12 @@
 				<li><a href="class-DH.html">DH</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
 				<li class="active"><a href="class-NatRule.html">NatRule</a></li>
 				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
 				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
@@ -92,7 +96,6 @@
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
-				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
@@ -174,6 +177,8 @@
 			
 			 uses 
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
 			
 				<a href="class-centralServiceStoreUser.html"><span>centralServiceStoreUser</span></a>, 
 			
@@ -717,6 +722,66 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="isNatRule" id="_isNatRule">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isNatRule">#</a>
+		<code><b>isNatRule</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_isNatRule">Rule::isNatRule()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="storeVariableName" id="_storeVariableName">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_storeVariableName">#</a>
+		<code><b>storeVariableName</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	</table>
 
 	<table class="summary inherited">
@@ -739,10 +804,13 @@
 			<a href="class-Rule.html#_init_source_with_store"><b>init_source_with_store()</b></a>, 
 			<a href="class-Rule.html#_init_tags_with_store"><b>init_tags_with_store()</b></a>, 
 			<a href="class-Rule.html#_init_to_with_store"><b>init_to_with_store()</b></a>, 
+			<a href="class-Rule.html#_isDecryptionRule"><b>isDecryptionRule()</b></a>, 
 			<a href="class-Rule.html#_isDisabled"><b>isDisabled()</b></a>, 
 			<a href="class-Rule.html#_isEnabled"><b>isEnabled()</b></a>, 
+			<a href="class-Rule.html#_isPbfRule"><b>isPbfRule()</b></a>, 
 			<a href="class-Rule.html#_isPostRule"><b>isPostRule()</b></a>, 
 			<a href="class-Rule.html#_isPreRule"><b>isPreRule()</b></a>, 
+			<a href="class-Rule.html#_isSecurityRule"><b>isSecurityRule()</b></a>, 
 			<a href="class-Rule.html#_load_destination"><b>load_destination()</b></a>, 
 			<a href="class-Rule.html#_load_from"><b>load_from()</b></a>, 
 			<a href="class-Rule.html#_load_source"><b>load_source()</b></a>, 
@@ -763,6 +831,16 @@
 	<tr>
 		<td><code>
 			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -974,28 +1052,6 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="xmlroot" id="$xmlroot">
-		<td class="attributes"><code>
-			public  
-			<code><a href="class-DOMElement.html">DOMElement</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$xmlroot</var>		</td>
-		<td class="value"><code></code></td>
-		<td class="description"><div>
-			<a href="#$xmlroot" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
 	<tr data-order="templatexml" id="$templatexml">
 		<td class="attributes"><code>
 			protected static 
@@ -1063,6 +1119,14 @@
 	</tr>
 	</table>
 
+	<table class="summary used">
+	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
 	<table class="summary used">
 	<caption>Properties used from <a href="class-centralServiceStoreUser.html#properties">centralServiceStoreUser</a></caption>
 	<tr>

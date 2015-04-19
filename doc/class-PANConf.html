@@ -7,7 +7,7 @@
 	<title>Class PANConf | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3989079112"></script>
+	<script type="text/javascript" src="elementlist.js?3225097435"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,8 +50,12 @@
 				<li><a href="class-DH.html">DH</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
+				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
+				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
+				<li><a href="class-LoopbackInterface.html">LoopbackInterface</a></li>
+				<li><a href="class-ManagedDevice.html">ManagedDevice</a></li>
 				<li><a href="class-NatRule.html">NatRule</a></li>
 				<li><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></li>
 				<li><a href="class-ObjRuleContainer.html">ObjRuleContainer</a></li>
@@ -92,7 +96,6 @@
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
-				<li><a href="class-centralZoneStore.html">centralZoneStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
@@ -209,7 +212,7 @@ $vsys1-&gt;display_statistics();</p>
 		
 		
 
-		<b>Located at</b> class-PANConf.php<br />
+		<b>Located at</b> device-and-system-classes/class-PANConf.php<br />
 	</div>
 
 
@@ -256,7 +259,7 @@ $vsys1-&gt;display_statistics();</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_PANConf">#</a>
-		<code><b>PANConf</b>( <span><code><a href="class-PanoramaConf.html">PanoramaConf</a></code>|null <var>$withPanorama</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$serial</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><b>PANConf</b>( <span><code><a href="class-PanoramaConf.html">PanoramaConf</a></code>|null <var>$withPanorama</var> = <span class="php-keyword1">null</span></span>, <span>string|null <var>$serial</var> = <span class="php-keyword1">null</span></span>, <span><code><a href="class-Template.html">Template</a></code>|null <var>$fromTemplate</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -271,7 +274,9 @@ $vsys1-&gt;display_statistics();</p>
 					<dt><var>$withPanorama</var></dt>
 					<dd><code><code><a href="class-PanoramaConf.html">PanoramaConf</a></code>|null</code><br>$withPanorama</dd>
 					<dt><var>$serial</var></dt>
-					<dd></dd>
+					<dd><code>string|null</code><br>$serial</dd>
+					<dt><var>$fromTemplate</var></dt>
+					<dd><code><code><a href="class-Template.html">Template</a></code>|null</code><br>$fromTemplate</dd>
 				</dl></div>
 
 
@@ -688,6 +693,35 @@ $vsys1-&gt;display_statistics();</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="findSubSystemByName" id="_findSubSystemByName">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findSubSystemByName">#</a>
+		<code><b>findSubSystemByName</b>( <span>mixed <var>$location</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	</table>
 
 
@@ -721,6 +755,7 @@ $vsys1-&gt;display_statistics();</p>
 		<td><code>
 			<a href="class-PanSubHelperTrait.html#_isDeviceGroup"><b>isDeviceGroup()</b></a>, 
 			<a href="class-PanSubHelperTrait.html#_isPanorama"><b>isPanorama()</b></a>, 
+			<a href="class-PanSubHelperTrait.html#_isTemplate"><b>isTemplate()</b></a>, 
 			<a href="class-PanSubHelperTrait.html#_isVirtualSystem"><b>isVirtualSystem()</b></a>
 		</code></td>
 	</tr>
@@ -990,6 +1025,28 @@ $vsys1-&gt;display_statistics();</p>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
 			<a href="#$connector" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="owner" id="$owner">
+		<td class="attributes"><code>
+			public  
+			null|<code><a href="class-Template.html">Template</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$owner</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$owner" class="anchor">#</a>
 
 			<div class="description short">
 				

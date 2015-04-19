@@ -865,7 +865,6 @@ class RuleStore
      * @param Rule|SecurityRule $rule
      * @param bool $deleteForever
      * @return bool
-     * @internal param bool $rewriteXml
      */
 	public function remove($rule, $deleteForever = false)
 	{
