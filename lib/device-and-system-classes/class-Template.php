@@ -32,8 +32,7 @@ class Template
     {
         $this->name = $name;
         $this->owner = $owner;
-        $this->deviceConfiguration = new PANConf();
-        $this->deviceConfiguration->owner = $this;
+        $this->deviceConfiguration = new PANConf(null, null, $this);
     }
 
     public function load_from_domxml(DOMElement $xml)
@@ -43,8 +42,6 @@ class Template
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
             derr("zone name not found\n", $xml);
-
-
     }
 
 

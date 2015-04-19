@@ -105,7 +105,6 @@ class DeviceGroup
 		
 		$this->tagStore = new TagStore($this);
         $this->tagStore->name = 'tags';
-        $this->tagStore->setCentralStoreRole(true);
 
 		$this->zoneStore = $owner->zoneStore;
 		$this->appStore = $owner->appStore;

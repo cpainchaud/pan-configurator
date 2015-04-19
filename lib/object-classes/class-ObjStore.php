@@ -32,8 +32,6 @@ class ObjStore
 	public $o = Array();
 
 	protected $classn=null;
-	
-	protected $centralStore = false;
 
     protected $skipEmptyXmlObjects = false;
 
@@ -119,28 +117,6 @@ class ObjStore
 		
 		return $f;
 	}
-	
-	
-	
-	/**
-	*
-	*
-	*/
-	public function isCentralStore()
-	{
-		return $this->centralStore;
-	}
-	
-	
-	
-	/**
-	*
-	*
-	*/
-	public function setCentralStoreRole($is)
-	{
-		$this->centralStore = $is;
-	}
 
 	
 	/**
@@ -188,16 +164,9 @@ class ObjStore
 		if( !in_array($Obj,$this->o,true) )
 		{
 			$fasthashcomp = null;
-
 			$this->o[] = $Obj;
-			if( !$this->centralStore )
-			{
-				$Obj->addReference($this);
-			}
-			else
-			{
-				$Obj->owner = $this;
-			}
+			$Obj->owner = $this;
+
 			return true;
 		}
 		
@@ -210,10 +179,7 @@ class ObjStore
 
 		foreach( $this->o as $o)
 		{
-			if( !$this->centralStore )
-				$o->removeReference($this);
-			else
-				$o->owner = null;
+			$o->owner = null;
 		}
 
 		$this->o = Array();

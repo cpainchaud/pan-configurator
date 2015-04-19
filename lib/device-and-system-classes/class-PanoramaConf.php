@@ -38,20 +38,15 @@ class PanoramaConf
 	use PanSubHelperTrait;
 
 
-    /**
-     * @var string[]|DomNode
-     */
+    /** @var DOMElement */
 	public $xmlroot;
 
-    /**
-     * @var string[]|DomNode
-     */
+    /** @var DOMElement */
 	public $sharedroot;
 	public $devicesroot;
 	public $localhostlocaldomain;
-    /**
-     * @var string[]|DomNode
-     */
+
+    /** @var string[]|DomNode */
 	public $devicegrouproot;
 
 
@@ -59,44 +54,32 @@ class PanoramaConf
 
 	protected $managedFirewallsSerials = Array();
 
-    /**
-     * @var DeviceGroup[]
-     */
+    /** @var DeviceGroup[] */
 	public $deviceGroups = Array();
 
-    /**
-     * @var RuleStore
-     */
+    /** @var Template[]  */
+    public $templates = Array();
+
+    /** @var RuleStore */
 	public $securityRules;
 
-    /**
-     * @var RuleStore
-     */
+    /** @var RuleStore */
 	public $natRules;
 
-    /**
-     * @var RuleStore
-     */
+    /** @var RuleStore */
     public $decryptionRules=null;
 
-    /**
-     * @var AddressStore
-     */
+    /** @var AddressStore */
     public $addressStore=null;
-    /**
-     * @var ServiceStore
-     */
+
+    /** @var ServiceStore */
     public $serviceStore=null;
 
-    /**
-     * @var ZoneStore
-     */
+    /** @var ZoneStore */
     public $zoneStore=null;
 
 
-    /**
-     * @var PanAPIConnector|null
-     */
+    /** @var PanAPIConnector|null */
 	public $connector = null;
 	
 	public $name = '';
@@ -110,16 +93,11 @@ class PanoramaConf
 	{
 		$this->tagStore = new TagStore($this);
 		$this->tagStore->setName('tagStore');
-		$this->tagStore->setCentralStoreRole(true);
 		
 		$this->zoneStore = new ZoneStore($this);
 		$this->zoneStore->setName('zoneStore');
-		$this->zoneStore->setCentralStoreRole(true);
 		
-		$this->appStore = new AppStore($this);
-		$this->appStore->setName('appStore');
-		$this->appStore->setCentralStoreRole(true);
-		$this->appStore->load_from_predefinedfile();
+		$this->appStore = AppStore::getPredefinedStore();
 		
 		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
@@ -256,12 +234,18 @@ class PanoramaConf
         //
         // loading templates
         //
+        foreach ($this->templateroot->childNodes as $node)
+        {
+            if ($node->nodeType != XML_ELEMENT_NODE) continue;
 
+            $ldv = new Template('*tmp*', $this);
+            $ldv->load_from_domxml($node);
+            $this->templates[] = $ldv;
+            //print "Template '{$ldv->name()}' found\n";
+        }
         //
         // end of Templates
         //
-
-
 
 
         //
@@ -271,7 +255,7 @@ class PanoramaConf
         {
             foreach ($this->devicegrouproot->childNodes as $node)
             {
-                if ($node->nodeType != 1) continue;
+                if ($node->nodeType != XML_ELEMENT_NODE) continue;
                 $lvname = $node->nodeName;
                 //print "Device Group '$lvname' found\n";
 
@@ -416,6 +400,22 @@ class PanoramaConf
 
 		return null;
 	}
+
+    /**
+     * @param string $name
+     * @return Template|null
+     */
+    public function findTemplate($name)
+    {
+        foreach($this->templates as $template )
+        {
+            if( $template->name() == $name )
+                return $template;
+        }
+
+        return null;
+    }
+
 	
 	public function save_to_file($filename, $printMessage=true)
 	{

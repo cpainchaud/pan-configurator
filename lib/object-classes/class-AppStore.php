@@ -19,14 +19,31 @@
 
 class AppStore extends ObjStore
 {
-    /**
-     * @var array|App[]
-     */
+    /** @var array|App[] */
 	public $apps=Array();
 	
 	public $parentCentralStore = null;
 	
 	public static $childn = 'App';
+
+
+    /** @var null|AppStore  */
+    public static $predefinedStore = null;
+
+    /**
+     * @return AppStore|null
+     */
+    public static function getPredefinedStore()
+    {
+        if( self::$predefinedStore !== null )
+            return self::$predefinedStore;
+
+        self::$predefinedStore = new AppStore(null);
+        self::$predefinedStore->setName('predefined Apps');
+        self::$predefinedStore->load_from_predefinedfile();
+
+        return self::$predefinedStore;
+    }
 	
 	public function AppStore($owner)
 	{
@@ -45,105 +62,6 @@ class AppStore extends ObjStore
 
 
 	/**
-	* add a App to this store
-	*
-	*/
-	public function addApp( App $Obj, $rewritexml = true )
-	{
-		if( $this->centralStore )
-			derr('cannot be called from a central store');
-
-		$fasthashcomp=null;
-
-		$ret = $this->add($Obj);
-
-		if( $ret && $rewritexml && !$this->centralStore)
-		{
-			$this->rewriteXML();
-		}
-		return $ret;
-
-	}
-
-
-	/**
-	* add a App to this store
-	*
-	*/
-	public function API_addApp( App $Obj, $rewritexml = true )
-	{
-		$ret = addApp($Obj, $rewritexml);
-
-		if( !$ret )
-			return false;
-
-		$con = findConnectorOrDie($this);
-		$xpath = &$this->owner->getXPath();
-
-		if( $this->count() == 1)
-		{
-			$con->sendDeleteRequest($xpath.'/application');
-		}
-
-		$con->sendSetRequest($xpath.'/application', '<member>'.$Obj->name().'</member>');
-
-		return true;
-	}
-
-	public function API_synchronize()
-	{
-		if( $this->centralStore )
-			derr('cannot be called from a centralStore');
-
-		$con = findConnectorOrDie($this);
-
-		$xpath = &$this->owner->getXPath();
-		$con->sendDeleteRequest($xpath.'/application');
-
-		$element = &array_to_xml( $this->xmlroot, -1, false);
-		$con->sendSetRequest($xpath, $element);
-	}
-
-
-
-	/**
-	* remove an App to this store. Be careful if you remove last zone as
-	* it would become 'any' and won't let you do so.
-	 * @param App $Object
-	* @param bool $rewriteXml
-	* @param bool $forceAny
-	 * @return bool
-	*/
-	public function removeApp( App $Object, $rewriteXml = true, $forceAny = false )
-	{
-		$count = count($this->o);
-
-		$ret = $this->remove($Object);
-
-		if( $ret && $count == 1 && !$forceAny && !$this->centralStore )
-		{
-			derr("you are trying to remove last App from a rule which will set it to ANY, please use forceAny=true for object: "
-				 .$this->toString() ) ;
-		}
-
-		if( $ret && $rewriteXml && !$this->centralStore)
-		{
-			$this->rewriteXML();
-		}
-		return $ret;
-	}
-
-	/**
-	* returns true if rule app is Any
-	*
-	*/
-	public function isAny()
-	{
-		return  ( count($this->o) == 0 );
-	}
-
-
-	/**
 	* return an array with all Apps in this store
 	*
 	*/
@@ -151,33 +69,6 @@ class AppStore extends ObjStore
 	{
 		return $this->o;
 	}
-
-
-	/**
-	* should only be called from a Rule constructor
-	* @ignore
-	*/
-	public function load_from_domxml(DOMElement $xml)
-	{
-		//print "started to extract '".$this->toString()."' from xml\n";
-		$this->xmlroot = $xml;
-		$i=0;
-		foreach( $xml->childNodes as $node )
-		{
-			if( $node->nodeType != 1 ) continue;
-
-			if( $i == 0 && strtolower($node->textContent) == 'any' )
-			{
-				return;
-			}
-
-			$f = $this->parentCentralStore->findOrCreate( $node->textContent, $this);
-			$this->o[] = $f;
-			$i++;
-		}
-	}
-
-
 
 
 	/**

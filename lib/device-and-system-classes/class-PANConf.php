@@ -98,18 +98,13 @@ class PANConf
 
 		$this->tagStore = new TagStore($this);
 		$this->tagStore->setName('tagStore');
-		$this->tagStore->setCentralStoreRole(true);
-		
-		$this->appStore = new AppStore($this);
-		$this->appStore->setName('appStore');
-		$this->appStore->setCentralStoreRole(true);
-		$this->appStore->load_from_predefinedfile();
+
+		$this->appStore = AppStore::getPredefinedStore();
 
 		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
 		if( !is_null($withPanorama) )
 			$this->serviceStore->panoramaShared = $this->panorama->serviceStore;
-
 
 		$this->addressStore = new AddressStore($this);
 		$this->addressStore->name = 'addresses';
@@ -166,7 +161,7 @@ class PANConf
 
 
 
-        if( $this->owner !== null )
+        if( $this->owner === null )
         {
             //
             // Extract Tag objects

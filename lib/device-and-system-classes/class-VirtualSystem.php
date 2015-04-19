@@ -73,8 +73,6 @@ class VirtualSystem
 		
 		$this->tagStore = new TagStore($this);
         $this->tagStore->name = 'tags';
-        $this->tagStore->setCentralStoreRole(true);
-
 
         $this->importedInterfaces = new InterfaceContainer($this, $owner->network);
 
@@ -82,7 +80,6 @@ class VirtualSystem
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
-        $this->zoneStore->setCentralStoreRole(true);
 		
 		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
@@ -126,63 +123,64 @@ class VirtualSystem
 
 		$this->rulebaseroot = DH::findFirstElementOrCreate('rulebase', $xml);
 
-        //
-        // Extract Tag objects
-        //
-        if( $this->owner->version >= 60 )
+        if( $this->owner->owner === null )
         {
-            $tmp = DH::findFirstElementOrCreate('tag', $xml);
-            $this->tagStore->load_from_domxml($tmp);
+
+            //
+            // Extract Tag objects
+            //
+            if ($this->owner->version >= 60)
+            {
+                $tmp = DH::findFirstElementOrCreate('tag', $xml);
+                $this->tagStore->load_from_domxml($tmp);
+            }
+            // End of Tag objects extraction
+
+            //
+            // loading the imported objects list
+            //
+            $this->importroot = DH::findFirstElementOrCreate('import', $xml);
+            $networkRoot = DH::findFirstElementOrCreate('network', $this->importroot);
+            $tmp = DH::findFirstElementOrCreate('interface', $networkRoot);
+            $this->importedInterfaces->load_from_domxml($tmp);
+            //
+
+
+            //
+            // Extract address objects
+            //
+            $tmp = DH::findFirstElementOrCreate('address', $xml);
+            $this->addressStore->load_addresses_from_domxml($tmp);
+            //print "VSYS '".$this->name."' address objectsloaded\n" ;
+            // End of address objects extraction
+
+
+            //
+            // Extract address groups in this DV
+            //
+            $tmp = DH::findFirstElementOrCreate('address-group', $xml);
+            $this->addressStore->load_addressgroups_from_domxml($tmp);
+            //print "VSYS '".$this->name."' address groups loaded\n" ;
+            // End of address groups extraction
+
+
+            //												//
+            // Extract service objects in this VSYS			//
+            //												//
+            $tmp = DH::findFirstElementOrCreate('service', $xml);
+            $this->serviceStore->load_services_from_domxml($tmp);
+            //print "VSYS '".$this->name."' service objects\n" ;
+            // End of <service> extraction
+
+
+            //												//
+            // Extract service groups in this VSYS			//
+            //												//
+            $tmp = DH::findFirstElementOrCreate('service-group', $xml);
+            $this->serviceStore->load_servicegroups_from_domxml($tmp);
+            //print "VSYS '".$this->name."' service groups loaded\n" ;
+            // End of <service-group> extraction
         }
-        // End of Tag objects extraction
-
-        //
-        // loading the imported objects list
-        //
-        $this->importroot = DH::findFirstElementOrCreate('import',$xml);
-        $networkRoot = DH::findFirstElementOrCreate('network', $this->importroot);
-        $tmp = DH::findFirstElementOrCreate('interface', $networkRoot);
-        $this->importedInterfaces->load_from_domxml($tmp);
-        //
-
-		
-		//
-		// Extract address objects 
-		//
-		$tmp = DH::findFirstElementOrCreate('address', $xml);
-		$this->addressStore->load_addresses_from_domxml($tmp);
-		//print "VSYS '".$this->name."' address objectsloaded\n" ;
-		// End of address objects extraction
-		
-		
-		//
-		// Extract address groups in this DV
-		//
-		$tmp = DH::findFirstElementOrCreate('address-group', $xml);
-		$this->addressStore->load_addressgroups_from_domxml($tmp);
-		//print "VSYS '".$this->name."' address groups loaded\n" ;
-		// End of address groups extraction
-		
-		
-		
-		//												//
-		// Extract service objects in this VSYS			//
-		//												//
-		$tmp = DH::findFirstElementOrCreate('service', $xml);
-		$this->serviceStore->load_services_from_domxml($tmp);
-		//print "VSYS '".$this->name."' service objects\n" ;
-		// End of <service> extraction
-		
-		
-		
-		//												//
-		// Extract service groups in this VSYS			//
-		//												//
-		$tmp = DH::findFirstElementOrCreate('service-group', $xml);
-		$this->serviceStore->load_servicegroups_from_domxml($tmp);
-		//print "VSYS '".$this->name."' service groups loaded\n" ;
-		// End of <service-group> extraction
-
 
         //
         // Extract Zone objects
@@ -191,29 +189,29 @@ class VirtualSystem
         $this->zoneStore->load_from_domxml($tmp);
         // End of Zone objects extraction
 
+        if( $this->owner->owner === null )
+        {
+            //
+            // Security Rules extraction
+            //
+            $tmproot = DH::findFirstElementOrCreate('security', $this->rulebaseroot);
+            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
+            $this->securityRules->load_from_domxml($tmprulesroot);
 
-		//
-		// Security Rules extraction
-		//
-		$tmproot = DH::findFirstElementOrCreate('security', $this->rulebaseroot );
-		$tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-		$this->securityRules->load_from_domxml($tmprulesroot);
+            //
+            // Nat Rules extraction
+            //
+            $tmproot = DH::findFirstElementOrCreate('nat', $this->rulebaseroot);
+            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
+            $this->natRules->load_from_domxml($tmprulesroot);
 
-		//
-		// Nat Rules extraction
-		//
-		$tmproot = DH::findFirstElementOrCreate('nat', $this->rulebaseroot );
-		$tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-		$this->natRules->load_from_domxml($tmprulesroot);
-
-		//
-		// Decryption Rules extraction
-		//
-		$tmproot = DH::findFirstElementOrCreate('decryption', $this->rulebaseroot );
-		$tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-		$this->decryptionRules->load_from_domxml($tmprulesroot);
-
-		
+            //
+            // Decryption Rules extraction
+            //
+            $tmproot = DH::findFirstElementOrCreate('decryption', $this->rulebaseroot);
+            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
+            $this->decryptionRules->load_from_domxml($tmprulesroot);
+        }
 	}
 
     public function &getXPath()
