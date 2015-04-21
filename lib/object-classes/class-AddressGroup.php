@@ -141,7 +141,12 @@ class AddressGroup
 				{
 					if( $node->nodeType != 1 ) continue;
 
-					$f = $this->owner->findOrCreate($node->textContent, $this, true);
+                    $memberName = $node->textContent;
+
+                    if( strlen($memberName) < 1 )
+                        derr('found a member with empty name !', $node);
+
+					$f = $this->owner->findOrCreate($memberName, $this, true);
 					$this->members[] = $f;
 
 				}
@@ -153,7 +158,12 @@ class AddressGroup
 			{
 				if( $node->nodeType != 1 ) continue;
 
-				$f = $this->owner->findOrCreate($node->textContent, $this, true);
+                $memberName = $node->textContent;
+
+                if( strlen($memberName) < 1 )
+                    derr('found a member with empty name !', $node);
+
+				$f = $this->owner->findOrCreate($memberName, $this, true);
 				$this->members[] = $f;
 
 			}

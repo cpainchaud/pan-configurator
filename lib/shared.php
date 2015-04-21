@@ -1131,5 +1131,46 @@ function removeNetworkFromIP4Mapping(&$targetMapping, &$zoneMapping)
 }
 
 
+class IP4Mapping
+{
+
+    /**
+     * @param $mapping1
+     * @param $mapping2
+     * @return bool
+     */
+    public static function mapsAreEqual(&$mapping1, &$mapping2)
+    {
+        if( isset($mapping1['map']) )
+            $ref1 = &$mapping1['map'];
+        else
+            $ref1 = &$mapping1;
+
+        if( isset($mapping2['map']) )
+            $ref2 = &$mapping2['map'];
+        else
+            $ref2 = &$mapping2;
+
+        if( count($ref1) != count($ref2) )
+            return false;
+
+        $key1 = array_keys($ref1);
+        $key2 = array_keys($ref2);
+
+
+        for( $i=0; $i<count($key1); $i++)
+        {
+            if ($ref1[$key1[$i]]['start'] != $ref2[$key2[$i]]['start'] )
+                return false;
+            if ($ref1[$key1[$i]]['end'] != $ref2[$key2[$i]]['end'] )
+                return false;
+        }
+
+        return true;
+    }
+
+}
+
+
 
 

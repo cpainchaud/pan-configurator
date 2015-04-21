@@ -73,7 +73,12 @@ class ServiceGroup
 			{
 				if( $node->nodeType != 1 ) continue;
 
-				$f = $this->owner->findOrCreate($node->textContent, $this, true);
+                $memberName = $node->textContent;
+
+                if( strlen($memberName) < 1 )
+                    derr('found a member with empty name !', $node);
+
+				$f = $this->owner->findOrCreate($memberName, $this, true);
 				$this->members[] = $f;
 			}
 
@@ -84,7 +89,12 @@ class ServiceGroup
 			{
 				if( $node->nodeType != 1 ) continue;
 
-				$f = $this->owner->findOrCreate($node->textContent, $this, true);
+                $memberName = $node->textContent;
+
+                if( strlen($memberName) < 1 )
+                    derr('found a member with empty name !', $node);
+
+				$f = $this->owner->findOrCreate($memberName, $this, true);
 				$this->members[] = $f;
 
 			}
@@ -308,6 +318,35 @@ class ServiceGroup
 
 		return true;
 	}
+
+    public function & getValueDiff( ServiceGroup $otherObject)
+    {
+        $result = Array('minus' => Array(), 'plus' => Array() );
+
+        $localObjects = $this->members;
+        $otherObjects = $otherObject->members;
+
+
+        usort($localObjects, '__CmpObjName');
+        usort($otherObjects, '__CmpObjName');
+
+        $diff = array_udiff($otherObjects, $localObjects, '__CmpObjName');
+
+        if( count($diff) != 0 )
+            foreach($diff as $d )
+            {
+                $result['minus'][] = $d;
+            }
+
+        $diff = array_udiff($localObjects, $otherObjects, '__CmpObjName');
+        if( count($diff) != 0 )
+            foreach($diff as $d )
+            {
+                $result['plus'][] = $d;
+            }
+
+        return $result;
+    }
 
 
 	public function displayValueDiff( ServiceGroup $otherObject, $indent=0, $toString = false)
