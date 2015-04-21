@@ -194,6 +194,11 @@ class ZoneRuleContainer extends ObjRuleContainer
                 return;
             }
 
+            if( strlen($node->textContent) < 1 )
+            {
+                derr('this container has members with empty name!', $node);
+            }
+
             $f = $this->parentCentralStore->findOrCreate( $node->textContent, $this);
             $this->o[] = $f;
             $i++;

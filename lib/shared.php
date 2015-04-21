@@ -629,7 +629,7 @@ function derr($msg, $object=null)
         $class = get_class($object);
         if( $class == 'DOMNode' || $class == 'DOMElement' || is_subclass_of($object, 'DOMNode') )
         {
-            $msg .="\nXML line #".$object->getLineNo().", XPATH: ".$object->getNodePath()."\n".DH::dom_to_xml($object,0,true,3);
+            $msg .="\nXML line #".$object->getLineNo().", XPATH: ".DH::elementToPanXPath($object)."\n".DH::dom_to_xml($object,0,true,3);
         }
     }
 
