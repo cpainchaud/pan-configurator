@@ -23,16 +23,12 @@ class Address
 	use ReferencableObject {removeReference as super_removeReference;}
 	use PathableName;
 	use XmlConvertible;
+    use ObjectWithDescription;
 
     /**
      * @var string|null
      */
 	protected $value;
-
-    /**
-     * @var null|string
-     */
-    protected $description;
 
     /** @var AddressStore|null */
 	public $owner;
@@ -115,6 +111,8 @@ class Address
 		$this->name = DH::findAttribute('name', $xml);
 		if( $this->name === FALSE )
 			derr("address name not found\n");
+
+        $this->_load_description_from_domxml();
 		
 		//print "object named '".$this->name."' found\n";
 
@@ -132,10 +130,6 @@ class Address
 				$typeFound = true;
 				$this->type = $lsearch;
 				$this->value = $node->textContent;
-			}
-			elseif( $node->nodeName == 'description' )
-			{
-				$this->description = $node->textContent;
 			}
 		}
 
@@ -159,41 +153,6 @@ class Address
 		return $this->value;
 	}
 
-	public function description()
-	{
-		return $this->description;
-	}
-
-	/**
-	 * @param string|null $newDesc
-	 * @return bool
-	 */
-	public function setDescription($newDesc)
-	{
-		if( $newDesc === null || strlen($newDesc) < 1)
-		{
-			if($this->description === null )
-				return false;
-
-			$this->description = null;
-			$tmpRoot = DH::findFirstElement('description', $this->xmlroot);
-
-			if( $tmpRoot === false )
-				return true;
-			$this->xmlroot->removeChild($tmpRoot);
-		}
-		else
-		{
-			if( $this->description == $newDesc )
-				return false;
-			$this->description = $newDesc;
-			$tmpRoot = DH::findFirstElementOrCreate('description', $this->xmlroot);
-			DH::setDomNodeText( $tmpRoot, $this->description() );
-		}
-
-		return true;
-	}
-
 	/**
 	 * @param string|null $newDesc
 	 * @return bool
@@ -205,10 +164,10 @@ class Address
 		if( $ret )
 		{
 			$con = findConnectorOrDie($this);
-			if( $this->description === null )
+			if( $this->_description === null )
 				$con->sendDeleteRequest($this->getXPath().'/description');
 			else
-				$con->sendSetRequest($this->getXPath(), '<description>'.$this->description.'</description>');
+				$con->sendSetRequest($this->getXPath(), '<description>'.$this->_description.'</description>');
 		}
 
 		return $ret;
@@ -315,9 +274,9 @@ class Address
 
 		$tmp = DH::createElement($this->xmlroot, self::$AddressTypes[$this->type], $this->value);
 
-		if( $this->description !== null && strlen($this->description) > 0 )
+		if( $this->_description !== null && strlen($this->_description) > 0 )
 		{
-			DH::createElement($this->xmlroot, 'description', $this->description );
+			DH::createElement($this->xmlroot, 'description', $this->_description );
 		}
 
 	}

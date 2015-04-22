@@ -24,10 +24,10 @@ class Rule
     use XmlConvertible;
 	use centralServiceStoreUser;
 	use centralAddressStoreUser;
+    use ObjectWithDescription;
 	
 	protected $name = 'temporaryname';
 	protected $disabled = false;
-	protected $description = '';
 	
 	/**
 	* @var ZoneRuleContainer
@@ -65,10 +65,6 @@ class Rule
      * @var null|string[]|DOMNode
      */
 	protected $disabledroot = null;
-    /**
-     * @var null|string[]|DOMNode
-     */
-	protected $descroot = null;
 	
 	/**
 	* Returns name of this rule
@@ -98,15 +94,6 @@ class Rule
 			return false;
 		
 		return true;
-	}
-	
-	/**
-	* Returns description for this rule
-	* @return string
-	*/
-	public function description()
-	{
-		return $this->description;
 	}
 	
 	
@@ -248,26 +235,7 @@ class Rule
 			$this->disabled = true;
 		}
 	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function extract_description_from_xml()
-	{
-		$xml = &$this->xmlroot;
-		
-		$this->descroot = &searchForName('name', 'description', $xml['children']);
-		if( $this->descroot === null )
-		{
-			return;
-		}
 
-		if( !isset($this->descroot['content']) )
-			$this->descroot['content'] = '';
-		$this->description = $this->descroot['content'];
-
-	}
 
 	/**
 	* For developper use only
@@ -275,17 +243,7 @@ class Rule
 	*/
 	protected function extract_description_from_domxml()
 	{
-		$xml = $this->xmlroot;
-		
-		$this->descroot = DH::findFirstElement('description', $xml );
-        if( $this->descroot === false )
-        {
-            $this->descroot = null;
-            return;
-        }
-		else
-			$this->description = $this->descroot->textContent;
-
+        $this->_load_description_from_domxml();
 	}
 	
 
@@ -371,54 +329,16 @@ class Rule
 			$xpath = $this->getXPath().'/description';
 			$con = findConnectorOrDie($this);
 
-			if( strlen($this->description) < 1 )
+			if( strlen($this->_description) < 1 )
 				$con->sendDeleteRequest($xpath);
 			else
-				$con->sendSetRequest($xpath, $this->description);
+				$con->sendSetRequest($xpath, $this->_description);
 
 		}
 
 		return $ret;
 	}
 
-
-	/**
-	 * @param string $newDescription
-	 * @return bool true if value was changed
-	 */
-	public function setDescription($newDescription)
-	{
-		if( $newDescription === null )
-			$newDescription = '';
-
-		if( $this->description == $newDescription )
-			return false;
-
-		$this->description = $newDescription;
-
-        if( strlen($this->description) < 1 )
-        {
-            if( $this->descroot !== null )
-            {
-                $this->xmlroot->removeChild($this->descroot);
-                $this->descroot = null;
-            }
-        }
-        else
-        {
-            if( $this->descroot === null )
-            {
-                $this->descroot = DH::createElement($this->xmlroot, 'description', $this->description);
-                $this->descroot->appendChild($this->descroot);
-            }
-            else
-            {
-                DH::setDomNodeText($this->descroot, $this->description);
-            }
-        }
-
-		return true;
-	}
 
     public function &getXPath()
     {

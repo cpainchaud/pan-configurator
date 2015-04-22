@@ -81,6 +81,7 @@ function my_shutdown()
 
 require_once dirname(__FILE__).'/misc-classes/'."trait-ReferenceableObject.php";
 require_once dirname(__FILE__).'/misc-classes/'."trait-XmlConvertible.php";
+require_once dirname(__FILE__).'/misc-classes/'."trait-ObjectWithDescription.php";
 require_once dirname(__FILE__).'/misc-classes/'."class-DH.php";
 require_once dirname(__FILE__).'/misc-classes/'."class-PH.php";
 require_once dirname(__FILE__).'/misc-classes/'."class-RQuery.php";

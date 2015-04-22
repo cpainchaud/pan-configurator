@@ -23,8 +23,8 @@ class Service
 	use ReferencableObject {removeReference as super_removeReference;}
 	use PathableName;
 	use XmlConvertible;
-	
-	public $description = '';
+    use ObjectWithDescription;
+
 	public $protocol = 'tcp';
 	public $dport = '';
 	public $sport = '';
@@ -37,10 +37,6 @@ class Service
 	 * @var null|DOMElement
 	 */
 	public $dportroot = null;
-	/**
-	 * @var null|DOMElement
-	 */
-	public $descroot = null;
 	
 	public $type = '';
 
@@ -93,13 +89,7 @@ class Service
 		if( $this->name === FALSE )
 			derr("service name not found\n");
 		
-		$this->descroot = DH::findFirstElement('description', $xml);
-        if( $this->descroot === false )
-        {
-            $this->descroot = null;
-        }
-        else
-		    $this->description = $this->descroot->textContent;
+        $this->_load_description_from_domxml();
 		
 		//
 		// seeking <protocol>
