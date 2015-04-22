@@ -373,17 +373,16 @@ class PanAPIConnector
      * @param bool $checkResultTag
      * @param string|null $filecontent
      * @param string $filename
+     * @param Array $moreOptions
      * @return DomDocument
      */
-	public function sendRequest(&$parameters, $checkResultTag=false, &$filecontent=null, $filename = '')
+	public function sendRequest(&$parameters, $checkResultTag=false, &$filecontent=null, $filename = '', $moreOptions=Array())
 	{
 
         $sendThroughPost = false;
 
         if( is_array($parameters) )
             $sendThroughPost = true;
-
-        //
 
         $host = $this->apihost;
         if( $this->port != 443 )
@@ -409,7 +408,13 @@ class PanAPIConnector
         }
 
 
-		$c = new mycurl($finalUrl);
+        if( isset($moreOptions['timeout']) )
+            $timeout = $moreOptions['timeout'];
+        else
+            $timeout = 7;
+
+        $c = new mycurl($finalUrl, false, $timeout);
+
 
         if( !is_null($filecontent) )
         {
@@ -798,7 +803,7 @@ class PanAPIConnector
 
         $url = "&type=import&category=configuration&category=configuration";
 
-        $answer = $this->sendRequest($url, false, DH::dom_to_xml($configDomXml), $configName );
+        $answer = $this->sendRequest($url, false, DH::dom_to_xml($configDomXml), $configName, Array('timeout'=>7) );
 
         if( $verbose )
             print "OK!\n";
@@ -894,7 +899,7 @@ class mycurl
 
          curl_setopt($s,CURLOPT_URL, str_replace(' ', '%20',$this->_url) ); 
          //curl_setopt($s,CURLOPT_HTTPHEADER,array('Expect:')); 
-         curl_setopt($s,CURLOPT_CONNECTTIMEOUT,7);
+         curl_setopt($s,CURLOPT_CONNECTTIMEOUT,$this->_timeout);
          curl_setopt($s,CURLOPT_TIMEOUT,3600);
          curl_setopt($s,CURLOPT_LOW_SPEED_LIMIT,500);
          curl_setopt($s,CURLOPT_LOW_SPEED_TIME,60);
