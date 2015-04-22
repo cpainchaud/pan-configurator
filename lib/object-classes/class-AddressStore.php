@@ -771,7 +771,7 @@ class AddressStore
 	}
 
 
-	public function referencedObjectRenamed($h, &$oldName)
+	public function referencedObjectRenamed($h, $oldName)
 	{
 		if( ! $this->inStore($h) )
 			return false;

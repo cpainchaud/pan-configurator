@@ -290,7 +290,14 @@ class ServiceStore
 		//print $this->toString().": no parent store found\n";
 
 	}
-	
+
+    /**
+     * @param string $fn
+     * @param null $ref
+     * @param bool $nested
+     * @param string $type
+     * @return null|Service|ServiceStore
+     */
 	public function find( $fn , $ref=null, $nested=true, $type = '')
 	{
 		$f = null;

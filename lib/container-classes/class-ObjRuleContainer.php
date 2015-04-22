@@ -186,7 +186,7 @@ class ObjRuleContainer
 
     public function referencedObjectRenamed($h)
     {
-        if( in_array($h,$this->o) )
+        if( in_array($h,$this->o,true) )
         {
             $this->fasthashcomp = null;
             $this->rewriteXML();

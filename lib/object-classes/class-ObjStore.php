@@ -145,9 +145,9 @@ class ObjStore
 	}
 	
 	
-	public function referencedObjectRenamed($h)
+	public function referencedObjectRenamed($h, $oldName)
 	{
-		/**if( in_array($h,$this->o) )
+		/**if( in_array($h,$this->o, true) )
 		{
 			$this->rewriteXML();
 		}*/

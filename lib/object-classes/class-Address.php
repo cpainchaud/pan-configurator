@@ -188,7 +188,7 @@ class Address
 				return false;
 			$this->description = $newDesc;
 			$tmpRoot = DH::findFirstElementOrCreate('description', $this->xmlroot);
-			$tmpRoot->nodeValue = $this->description();
+			DH::setDomNodeText( $tmpRoot, $this->description() );
 		}
 
 		return true;

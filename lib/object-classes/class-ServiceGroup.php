@@ -236,7 +236,7 @@ class ServiceGroup
 	public function referencedObjectRenamed($h)
 	{
 		//derr("****  SG referencedObjectRenamed was called  ****\n");
-		if( in_array($h, $this->members) )
+		if( in_array($h, $this->members, true) )
 			$this->rewriteXML();
 	}
 	
