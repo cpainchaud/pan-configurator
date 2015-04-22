@@ -1169,6 +1169,50 @@ class IP4Mapping
         return true;
     }
 
+    public static function IP4mapSubstraction( $referenceMap , &$substractedMap )
+    {
+        if( isset($referenceMap['map']) )
+            $ref = &$referenceMap['map'];
+        else
+            $ref = &$referenceMap;
+
+        if( isset($substractedMap['map']) )
+            $sub = &$substractedMap['map'];
+        else
+            $sub = &$substractedMap;
+
+
+        foreach( $sub as &$ip4map )
+        {
+            removeNetworkFromIP4Mapping($ref, $ip4map );
+            if( count($ref) == 0 )
+                break;
+        }
+
+        return $referenceMap;
+    }
+
+    public static function & IP4mapDiff( $referenceMap , $substractedMap )
+    {
+        if( isset($referenceMap['map']) )
+            $ref = &$referenceMap['map'];
+        else
+            $ref = &$referenceMap;
+
+        if( isset($substractedMap['map']) )
+            $sub = &$substractedMap['map'];
+        else
+            $sub = &$substractedMap;
+
+
+        $diff = Array();
+
+        $diff['plus'] = IP4Mapping::IP4mapSubstraction($ref, $sub);
+        $diff['minus'] = IP4Mapping::IP4mapSubstraction( $sub, $ref);
+
+        return $diff;
+    }
+
 }
 
 
