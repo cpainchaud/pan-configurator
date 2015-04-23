@@ -21,7 +21,7 @@ $outputfile = "output.xml";
 
 
 // We're going to load a PANConf object (PANConf is for PANOS Firewall,
-$panc = new PANconf();
+$panc = new PANConf();
 $panc->load_from_file($origfile);
 
 
