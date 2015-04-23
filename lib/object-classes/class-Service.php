@@ -26,13 +26,15 @@ class Service
     use ObjectWithDescription;
 
 	public $protocol = 'tcp';
-	public $dport = '';
-	public $sport = '';
+	protected $_dport = '';
+	protected $_sport = '';
 
-	/**
-	 * @var null|DOMElement
-	 */
+	/** @var null|DOMElement */
 	public $protocolroot = null;
+
+    /** @var null|DOMElement */
+    protected $tcpOrUdpRoot = null;
+
 	/**
 	 * @var null|DOMElement
 	 */
@@ -96,32 +98,60 @@ class Service
 		//
 		$this->protocolroot = DH::findFirstElementOrDie('protocol', $xml);
 		
-		$portroot = DH::findFirstElement('tcp', $this->protocolroot );
+		$this->tcpOrUdpRoot = DH::findFirstElement('tcp', $this->protocolroot );
 
-		if( $portroot === FALSE )
+		if( $this->tcpOrUdpRoot === FALSE )
 		{
 			$this->protocol = 'udp';
-			$portroot = DH::findFirstElement('udp', $this->protocolroot );
+			$this->tcpOrUdpRoot = DH::findFirstElement('udp', $this->protocolroot );
 		}
-		if( $portroot === FALSE )
+		if( $this->tcpOrUdpRoot === FALSE )
 			derr("Error: <tcp> or <udp> not found for service".$this->name."\n");
 		
-		$this->dportroot = DH::findFirstElementOrDie('port', $portroot );
+		$this->dportroot = DH::findFirstElementOrDie('port', $this->tcpOrUdpRoot );
 		
-		$this->dport = $this->dportroot->textContent;
+		$this->_dport = $this->dportroot->textContent;
 		
-		$sportroot = DH::findFirstElement('sport', $this->protocolroot);
+		$sportroot = DH::findFirstElement('source-port', $this->tcpOrUdpRoot);
 		if( $sportroot !== FALSE )
 		{
-			$this->sport = $sportroot->textContent;
+			$this->_sport = $sportroot->textContent;
 		}
 	}
 	
 	public function setDestPort($newport)
 	{
-		$this->dport = $newport;
-		$this->dportroot['content'] = $this->dport;
+		$this->_dport = $newport;
+		$this->dportroot['content'] = $this->_dport;
 	}
+
+
+    public function setSourcePort($newValue)
+    {
+        if( $newValue === null || strlen($newValue) == 0 )
+        {
+            if( strlen($this->_sport) == 0 )
+                return false;
+
+            $this->_sport = $newValue;
+            $sportroot = DH::findFirstElement('source-port', $this->tcpOrUdpRoot);
+            if( $sportroot !== false )
+                $this->tcpOrUdpRoot->removeChild($sportroot);
+
+            return true;
+        }
+        if( $this->_sport == $newValue )
+            return false;
+
+        if( strlen($this->_sport) == 0 )
+        {
+            DH::findFirstElementOrCreate('sport', $this->tcpOrUdpRoot,$newValue);
+            return true;
+        }
+        $sportroot = DH::findFirstElementOrCreate('source-port', $this->tcpOrUdpRoot);
+        DH::setDomNodeText($sportroot, $newValue);
+        return true;
+    }
 
 	public function setProtocol($newport)
 	{
@@ -131,8 +161,13 @@ class Service
 	
 	public function getDestPort()
 	{
-		return $this->dport;
+		return $this->_dport;
 	}
+
+    public function getSourcePort()
+    {
+        return $this->_sport;
+    }
 	
 
 	
@@ -191,10 +226,10 @@ class Service
 		if( $otherObject->protocol !== $this->protocol )
 			return false;
 
-		if( $otherObject->dport !== $this->dport )
+		if( $otherObject->_dport !== $this->_dport )
 			return false;
 
-		if( $otherObject->sport !== $this->sport )
+		if( $otherObject->_sport !== $this->_sport )
 			return false;
 
 		return true;
