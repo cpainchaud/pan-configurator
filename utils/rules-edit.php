@@ -109,6 +109,7 @@ $supportedActions = Array();
 //                                              //
 $supportedActions['from-add'] = Array(
     'name' => 'from-Add',
+    'section' => 'zone',
     'file' => "\$rule->from->addZone(!value!);",
     'api' => "\$rule->from->API_addZone(!value!);",
     'args' => true,
@@ -116,6 +117,7 @@ $supportedActions['from-add'] = Array(
 );
 $supportedActions['from-add-force'] = Array(
     'name' => 'from-Add-Force',
+    'section' => 'zone',
     'file' => "\$rule->from->addZone(!value!);",
     'api' => "\$rule->from->API_addZone(!value!);",
     'args' => true,
@@ -124,6 +126,7 @@ $supportedActions['from-add-force'] = Array(
 );
 $supportedActions['from-remove'] = Array(
     'name' => 'from-Remove',
+    'section' => 'zone',
     'file' => "\$rule->from->removeZone(!value!);",
     'api' => "\$rule->from->API_removeZone(!value!);",
     'args' => true,
@@ -131,6 +134,7 @@ $supportedActions['from-remove'] = Array(
 );
 $supportedActions['from-remove-force-any'] = Array(
     'name' => 'from-Remove-Force-Any',
+    'section' => 'zone',
     'file' => "\$rule->from->removeZone(!value!, true, true);",
     'api' => "\$rule->from->API_removeZone(!value!, true, true);",
     'args' => true,
@@ -138,6 +142,7 @@ $supportedActions['from-remove-force-any'] = Array(
 );
 $supportedActions['from-set-any'] = Array(
     'name' => 'from-Set-Any',
+    'section' => 'zone',
     'file' => "\$rule->from->setAny();",
     'api' => "\$rule->from->API_setAny();",
     'args' => false
@@ -145,6 +150,7 @@ $supportedActions['from-set-any'] = Array(
 
 $supportedActions['to-add'] = Array(
     'name' => 'to-Add',
+    'section' => 'zone',
     'file' => "\$rule->to->addZone(!value!);",
     'api' => "\$rule->to->API_addZone(!value!);",
     'args' => true,
@@ -152,6 +158,7 @@ $supportedActions['to-add'] = Array(
 );
 $supportedActions['to-add-force'] = Array(
     'name' => 'to-Add-Force',
+    'section' => 'zone',
     'file' => "\$rule->to->addZone(!value!);",
     'api' => "\$rule->to->API_addZone(!value!);",
     'args' => true,
@@ -160,6 +167,7 @@ $supportedActions['to-add-force'] = Array(
 );
 $supportedActions['to-remove'] = Array(
     'name' => 'to-Remove',
+    'section' => 'zone',
     'file' => "\$rule->to->removeZone(!value!);",
     'api' => "\$rule->to->API_removeZone(!value!);",
     'args' => true,
@@ -167,6 +175,7 @@ $supportedActions['to-remove'] = Array(
 );
 $supportedActions['to-remove-force-any'] = Array(
     'name' => 'to-Remove-Force-Any',
+    'section' => 'zone',
     'file' => "\$rule->to->removeZone(!value!, true, true);",
     'api' => "\$rule->to->API_removeZone(!value!, true, true);",
     'args' => true,
@@ -174,6 +183,7 @@ $supportedActions['to-remove-force-any'] = Array(
 );
 $supportedActions['to-set-any'] = Array(
     'name' => 'to-Set-Any',
+    'section' => 'zone',
     'file' => "\$rule->to->setAny();",
     'api' => "\$rule->to->API_setAny();",
     'args' => false
@@ -185,6 +195,7 @@ $supportedActions['to-set-any'] = Array(
 //                                                   //
 $supportedActions['src-add'] = Array(
     'name' => 'src-Add',
+    'section' => 'address',
     'file' => "\$rule->source->addObject(!value!);",
     'api' => "\$rule->source->API_add(!value!);",
     'args' => true,
@@ -192,6 +203,7 @@ $supportedActions['src-add'] = Array(
 );
 $supportedActions['src-remove'] = Array(
     'name' => 'src-Remove',
+    'section' => 'address',
     'file' => "\$rule->source->remove(!value!);",
     'api' => "\$rule->source->API_remove(!value!);",
     'args' => true,
@@ -199,6 +211,7 @@ $supportedActions['src-remove'] = Array(
 );
 $supportedActions['src-remove-force-any'] = Array(
     'name' => 'src-Remove-Force-Any',
+    'section' => 'address',
     'file' => "\$rule->source->remove(!value!, true, true);",
     'api' => "\$rule->source->API_remove(!value!, true);",
     'args' => true,
@@ -206,6 +219,7 @@ $supportedActions['src-remove-force-any'] = Array(
 );
 $supportedActions['dst-add'] = Array(
     'name' => 'dst-Add',
+    'section' => 'address',
     'file' => "\$rule->destination->addObject(!value!);",
     'api' => "\$rule->destination->API_add(!value!);",
     'args' => true,
@@ -213,6 +227,7 @@ $supportedActions['dst-add'] = Array(
 );
 $supportedActions['dst-remove'] = Array(
     'name' => 'dst-Remove',
+    'section' => 'address',
     'file' => "\$rule->destination-remove(!value!);",
     'api' => "\$rule->destination->API_remove(!value!);",
     'args' => true,
@@ -220,6 +235,7 @@ $supportedActions['dst-remove'] = Array(
 );
 $supportedActions['dst-remove-force-any'] = Array(
     'name' => 'dst-Remove-Force-Any',
+    'section' => 'address',
     'file' => "\$rule->destination-remove(!value!, true, true);",
     'api' => "\$rule->destination->API_remove(!value!, true);",
     'args' => true,
@@ -227,12 +243,14 @@ $supportedActions['dst-remove-force-any'] = Array(
 );
 $supportedActions['src-set-any'] = Array(
     'name' => 'src-set-Any',
+    'section' => 'address',
     'file' => "\$rule->source->setAny();",
     'api' => "\$rule->source->API_setAny();",
     'args' => false
 );
 $supportedActions['dst-set-any'] = Array(
     'name' => 'dst-set-Any',
+    'section' => 'address',
     'file' => "\$rule->destination->setAny();",
     'api' => "\$rule->destination->API_setAny();",
     'args' => false
@@ -243,6 +261,7 @@ $supportedActions['dst-set-any'] = Array(
 //                                                  //
 $supportedActions['tag-add'] = Array(
     'name' => 'tag-Add',
+    'section' => 'tag',
     'file' => "\$rule->tags->addTag(!value!);",
     'api' => "\$rule->tags->API_addTag(!value!);",
     'args' => true,
@@ -250,6 +269,7 @@ $supportedActions['tag-add'] = Array(
 );
 $supportedActions['tag-add-force'] = Array(
     'name' => 'tag-Add-Force',
+    'section' => 'tag',
     'file' => "\$rule->tags->addTag(!value!);",
     'api' => "\$rule->tags->API_addTag(!value!);",
     'args' => true,
@@ -261,6 +281,7 @@ $supportedActions['tag-add-force'] = Array(
 );
 $supportedActions['tag-remove'] = Array(
     'name' => 'tag-Remove',
+    'section' => 'tag',
     'file' => "\$rule->tags->removeTag(!value!);",
     'api' => "\$rule->tags->API_removeTag(!value!);",
     'args' => true,
@@ -274,18 +295,21 @@ $supportedActions['tag-remove'] = Array(
 //                                                   //
 $supportedActions['service-set-appdefault'] = Array(
     'name' => 'service-Set-AppDefault',
+    'section' => 'service',
     'file' => "\$rule->services->setApplicationDefault();",
     'api' => "\$rule->services->API_setApplicationDefault();",
     'args' => false
 );
 $supportedActions['service-set-any'] = Array(
     'name' => 'service-Set-Any',
+    'section' => 'service',
     'file' => "\$rule->services->setAny();",
     'api' =>  "\$rule->services->API_setAny();",
     'args' => false
 );
 $supportedActions['service-add'] = Array(
     'name' => 'service-Add',
+    'section' => 'service',
     'file' => "\$rule->services->addObject(!value!);",
     'api' =>  "\$rule->services->API_add(!value!);",
     'args' => true,
@@ -293,6 +317,7 @@ $supportedActions['service-add'] = Array(
 );
 $supportedActions['service-remove'] = Array(
     'name' => 'service-Remove',
+    'section' => 'service',
     'file' => "\$rule->services->remove(!value!);",
     'api' =>  "\$rule->services->API_remove(!value!);",
     'args' => true,
@@ -300,6 +325,7 @@ $supportedActions['service-remove'] = Array(
 );
 $supportedActions['service-remove-force-any'] = Array(
     'name' => 'service-Remove-Force-Any',
+    'section' => 'service',
     'file' => "\$rule->services->remove(!value!, true, true);",
     'api' => "\$rule->services->API_remove(!value!, true, true);",
     'args' => true,
@@ -313,18 +339,21 @@ $supportedActions['service-remove-force-any'] = Array(
 //                                                   //
 $supportedActions['logstart-enable'] = Array(
     'name' => 'logStart-enable',
+    'section' => 'log',
     'file' => "\$rule->setLogStart(true);",
     'api' => "\$rule->API_setLogStart(true);",
     'args' => false
 );
 $supportedActions['logstart-disable'] = Array(
     'name' => 'logStart-disable',
+    'section' => 'log',
     'file' => "\$rule->setLogStart(false);",
     'api' => "\$rule->API_setLogStart(false);",
     'args' => false
 );
 $supportedActions['logend-enable'] = Array(
     'name' => 'logEnd-enable',
+    'section' => 'log',
     'file' => "\$rule->setLogEnd(true);",
     'api' => "\$rule->API_setLogEnd(true);",
     'args' => false
@@ -332,12 +361,14 @@ $supportedActions['logend-enable'] = Array(
 
 $supportedActions['logend-disable'] = Array(
     'name' => 'logEnd-disable',
+    'section' => 'log',
     'file' => "\$rule->setLogEnd(false);",
     'api' => "\$rule->API_setLogEnd(false);",
     'args' => false
 );
 $supportedActions['logsetting-set'] = Array(
     'name' => 'logSetting-set',
+    'section' => 'log',
     'file' => "\$rule->setLogSetting('!value!');",
     'api' => "\$rule->API_setLogSetting('!value!');",
     'args' => true
