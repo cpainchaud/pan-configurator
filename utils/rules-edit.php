@@ -1009,6 +1009,8 @@ foreach( $rulesToProcess as &$rulesRecord )
             }
             else
             {
+                print "   - rule '" . $rule->name() . "' passing through Action='{$doAction['name']}'\n";
+
                 if ($configInput['type'] == 'file')
                     $toEval = $supportedActions[$doAction['name']]['file'];
                 else if ($configInput['type'] == 'api')
