@@ -101,6 +101,7 @@ $supportedMethods_tmp = Array(  'matchFromToSrcDstApp'  => 1 ,
     'matchToSrcDstSvcApp'   => 6 ,
     'matchToDstSvcApp'   => 7 ,
     'matchFromSrcSvcApp' => 8 ,
+    'identical' => 9 ,
 );
 $supportedMethods = Array();
 foreach( $supportedMethods_tmp as $methodName => $method )
@@ -412,6 +413,7 @@ function updateRuleHash($rule, $method)
                                 'matchToSrcDstSvcApp'   => 6 ,
                                 'matchToDstSvcApp'   => 7 ,
                                 'matchFromSrcSvcApp' => 8 ,
+                                identical' => 9 ,
     */
 
     if( $method == 1)
@@ -446,6 +448,11 @@ function updateRuleHash($rule, $method)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->from->getFastHashComp() .
             $rule->destination->getFastHashComp() .
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
+    elseif( $method == 9)
+        $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->from->getFastHashComp() . $rule->to->getFastHashComp() .
+            $rule->source->getFastHashComp() . $rule->destination->getFastHashComp() .
+            $rule->services->getFastHashComp() .
+            $rule->apps->getFastHashComp(), true);
     else
         derr("unsupported method #$method");
 
@@ -469,6 +476,8 @@ function mergeRules( $rule, $ruleToMerge, $method )
                                 'matchToSrcDstSvcApp'   => 6 ,
                                 'matchToDstSvcApp'   => 7 ,
                                 'matchFromSrcSvcApp' => 8 ,
+                                'matchFromSrcSvcApp' => 9 ,
+
     */
 
     global $hashTable;
@@ -507,6 +516,10 @@ function mergeRules( $rule, $ruleToMerge, $method )
         $rule->to->merge($ruleToMerge->to);
         $rule->destination->merge($ruleToMerge->destination);
     }
+    elseif( $method == 9)
+    {
+        //
+    }
     else
         derr("unsupported method #$method");
 
@@ -522,10 +535,15 @@ function mergeRules( $rule, $ruleToMerge, $method )
 $denyRules = Array();
 
 print " - Calculating all rules hash, please be patient... ";
-foreach( $rulesToProcess as $index => $rule )
+foreach( array_keys($rulesToProcess) as $index)
 {
+    $rule = $rulesToProcess[$index];
+
     if( $rule->isDisabled() )
+    {
         unset($rulesToProcess[$index]);
+        continue;
+    }
 
     $rule->serial = spl_object_hash($rule);
     $rule->indexPosition = $index;
@@ -568,8 +586,9 @@ function findNearestDenyRule($rule)
 
     foreach( $denyRules as $index => $denyRule )
     {
+        //var_dump($rulesArrayIndex);
         $denyRulePosition = $rulesArrayIndex[$denyRule->indexPosition];
-        if( $rulePosition < $rulesArrayIndex[$denyRule->indexPosition] )
+        if( $rulePosition < $denyRulePosition )
         {
             return $denyRule;
         }
