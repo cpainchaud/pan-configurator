@@ -67,17 +67,7 @@ class ServiceRuleContainer extends ObjRuleContainer
     {
         if( $this->add($Obj, $rewritexml) )
         {
-            $xpath = &$this->getXPath();
-            $con = findConnectorOrDie($this);
-
-            if( count($this->o) == 1 )
-            {
-                $url = "type=config&action=delete&xpath=" . $xpath;
-                $con->sendRequest($url);
-            }
-
-            $url = "type=config&action=set&xpath=$xpath&element=<member>".$Obj->name()."</member>";
-            $con->sendRequest($url);
+            $this->API_sync();
 
             return true;
         }
@@ -127,21 +117,7 @@ class ServiceRuleContainer extends ObjRuleContainer
     {
         if( $this->remove($Obj, $rewriteXml, $forceAny) )
         {
-            $xpath = &$this->getXPath();
-            $con = findConnectorOrDie($this);
-
-            if( count($this->o) == 0 )
-            {
-                $url = "type=config&action=delete&xpath=" . $xpath;
-                $con->sendRequest($url);
-                $url = "type=config&action=set&xpath=$xpath&element=<member>any</member>";
-                $con->sendRequest($url);
-                return true;
-            }
-
-            $url = "type=config&action=delete&xpath=" . $xpath."/member[text()='".$Obj->name()."']";
-            $con->sendRequest($url);
-
+            $this->API_sync();
             return true;
         }
 
@@ -355,14 +331,7 @@ class ServiceRuleContainer extends ObjRuleContainer
     public function API_setAny()
     {
         $this->setAny();
-        $xpath = &$this->getXPath();
-        $con = findConnectorOrDie($this);
-
-        $url = "type=config&action=delete&xpath=".$xpath;
-        $con->sendRequest($url);
-
-        $url = "type=config&action=set&xpath=$xpath&element=<member>any</member>";
-        $con->sendRequest($url);
+        $this->API_sync();
     }
 
     /**
@@ -375,12 +344,7 @@ class ServiceRuleContainer extends ObjRuleContainer
         if( !$ret )
             return false;
 
-        $con = findConnectorOrDie($this);
-        $xpath = &$this->getXPath();
-
-        $con->sendDeleteRequest($xpath);
-
-        $con->sendSetRequest($xpath, '<member>application-default</member>');
+        $this->API_sync();
 
         return true;
     }

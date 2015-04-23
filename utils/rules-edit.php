@@ -267,6 +267,8 @@ $supportedActions['tag-remove'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->tags->parentCentralStore->find('!value!');"
 );
 
+
+
 //                                                   //
 //                Services Based Actions       //
 //                                                   //
@@ -276,6 +278,34 @@ $supportedActions['service-set-appdefault'] = Array(
     'api' => "\$rule->services->API_setApplicationDefault();",
     'args' => false
 );
+$supportedActions['service-set-any'] = Array(
+    'name' => 'service-Set-Any',
+    'file' => "\$rule->services->setAny();",
+    'api' =>  "\$rule->services->API_setAny();",
+    'args' => false
+);
+$supportedActions['service-add'] = Array(
+    'name' => 'service-Add',
+    'file' => "\$rule->services->addObject(!value!);",
+    'api' =>  "\$rule->services->API_add(!value!);",
+    'args' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->services->parentCentralStore->find('!value!');"
+);
+$supportedActions['service-remove'] = Array(
+    'name' => 'service-Remove',
+    'file' => "\$rule->services->remove(!value!);",
+    'api' =>  "\$rule->services->API_remove(!value!);",
+    'args' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->services->parentCentralStore->find('!value!');"
+);
+$supportedActions['service-remove-force-any'] = Array(
+    'name' => 'service-Remove-Force-Any',
+    'file' => "\$rule->services->remove(!value!, true, true);",
+    'api' => "\$rule->services->API_remove(!value!, true, true);",
+    'args' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->services->parentCentralStore->find('!value!');"
+);
+
 
 
 //                                                   //

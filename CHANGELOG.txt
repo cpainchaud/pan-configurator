@@ -14,6 +14,7 @@ CHANGELOG
 * util rule-edit : service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
 * util rule-edit : new filters :  src/dst 'included-in.full included-in.partial included-in.full.or.partial' and 'includes.full includes-full.or.partial includes.partial'
 * util rule-edit : new filters for app 'has' and 'has.nocase'
+* util rule-edit : new actions for services
 * util service-edit and address-edit new actions: replaceByMembersAndDelete, showIP4Mapping
 * util upload-config : now supports inject xml parts direct in candidate config (see 'toXpath' option)
 * util upload-config : you can now preserve target firewall config (like its mgmt ip for example, look for 'help' to see options available).

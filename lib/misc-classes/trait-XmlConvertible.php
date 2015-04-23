@@ -39,5 +39,13 @@ trait XmlConvertible
         return DH::domlist_to_xml($this->xmlroot->childNodes, -1, false);
     }
 
+    public function API_sync()
+    {
+        $xpath = DH::elementToPanXPath($this->xmlroot);
+        $con = findConnectorOrDie($this);
+
+        $con->sendEditRequest($xpath, $this->getXmlText_inline());
+    }
+
 }
 
