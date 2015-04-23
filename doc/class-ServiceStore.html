@@ -7,7 +7,7 @@
 	<title>Class ServiceStore | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3225097435"></script>
+	<script type="text/javascript" src="elementlist.js?1164641316"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -51,6 +51,7 @@
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
+				<li><a href="class-IP4Mapping.html">IP4Mapping</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -97,6 +98,7 @@
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
+				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
@@ -601,14 +603,14 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			null|<code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceStore.html">ServiceStore</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_find">#</a>
-		<code><b>find</b>( <span>mixed <var>$fn</var></span>, <span>mixed <var>$ref</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$nested</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$type</var> = <span class="php-quote">''</span></span> )</code>
+		<code><b>find</b>( <span>string <var>$fn</var></span>, <span>null <var>$ref</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$nested</var> = <span class="php-keyword1">true</span></span>, <span>string <var>$type</var> = <span class="php-quote">''</span></span> )</code>
 
 		<div class="description short">
 			
@@ -618,7 +620,22 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$fn</var></dt>
+					<dd><code>string</code><br>$fn</dd>
+					<dt><var>$ref</var></dt>
+					<dd><code>null</code><br>$ref</dd>
+					<dt><var>$nested</var></dt>
+					<dd><code>boolean</code><br>$nested</dd>
+					<dt><var>$type</var></dt>
+					<dd><code>string</code><br>$type</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>null|<code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceStore.html">ServiceStore</a></code></code><br />
+				</div>
 
 
 

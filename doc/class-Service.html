@@ -7,7 +7,7 @@
 	<title>Class Service | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3225097435"></script>
+	<script type="text/javascript" src="elementlist.js?1164641316"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -51,6 +51,7 @@
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
+				<li><a href="class-IP4Mapping.html">IP4Mapping</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -97,6 +98,7 @@
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
+				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
@@ -179,7 +181,9 @@
 			
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
-				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
+			
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>
 			
 		</dd>
 	</dl>
@@ -300,6 +304,35 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="setSourcePort" id="_setSourcePort">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_setSourcePort">#</a>
+		<code><b>setSourcePort</b>( <span>mixed <var>$newValue</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="setProtocol" id="_setProtocol">
 
 		<td class="attributes"><code>
@@ -341,6 +374,35 @@
 		<td class="name"><div>
 		<a class="anchor" href="#_getDestPort">#</a>
 		<code><b>getDestPort</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getSourcePort" id="_getSourcePort">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getSourcePort">#</a>
+		<code><b>getSourcePort</b>( )</code>
 
 		<div class="description short">
 			
@@ -660,6 +722,16 @@
 		</code></td>
 	</tr>
 	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ObjectWithDescription.html#methods">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#__load_description_from_domxml"><b>_load_description_from_domxml()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_description"><b>description()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_setDescription"><b>setDescription()</b></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
@@ -672,28 +744,6 @@
 
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
-	<tr data-order="description" id="$description">
-		<td class="attributes"><code>
-			public  
-			string
-		</code></td>
-
-		<td class="name">
-<var>$description</var>		</td>
-		<td class="value"><code><span class="php-quote">''</span></code></td>
-		<td class="description"><div>
-			<a href="#$description" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
 	<tr data-order="protocol" id="$protocol">
 		<td class="attributes"><code>
 			public  
@@ -716,17 +766,17 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="dport" id="$dport">
+	<tr data-order="_dport" id="$_dport">
 		<td class="attributes"><code>
-			public  
+			protected  
 			string
 		</code></td>
 
 		<td class="name">
-<var>$dport</var>		</td>
+<var>$_dport</var>		</td>
 		<td class="value"><code><span class="php-quote">''</span></code></td>
 		<td class="description"><div>
-			<a href="#$dport" class="anchor">#</a>
+			<a href="#$_dport" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -738,17 +788,17 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="sport" id="$sport">
+	<tr data-order="_sport" id="$_sport">
 		<td class="attributes"><code>
-			public  
+			protected  
 			string
 		</code></td>
 
 		<td class="name">
-<var>$sport</var>		</td>
+<var>$_sport</var>		</td>
 		<td class="value"><code><span class="php-quote">''</span></code></td>
 		<td class="description"><div>
-			<a href="#$sport" class="anchor">#</a>
+			<a href="#$_sport" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -782,17 +832,17 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="dportroot" id="$dportroot">
+	<tr data-order="tcpOrUdpRoot" id="$tcpOrUdpRoot">
 		<td class="attributes"><code>
-			public  
+			protected  
 			null|<code><a href="class-DOMElement.html">DOMElement</a></code>
 		</code></td>
 
 		<td class="name">
-<var>$dportroot</var>		</td>
+<var>$tcpOrUdpRoot</var>		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
-			<a href="#$dportroot" class="anchor">#</a>
+			<a href="#$tcpOrUdpRoot" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -804,17 +854,17 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="descroot" id="$descroot">
+	<tr data-order="dportroot" id="$dportroot">
 		<td class="attributes"><code>
 			public  
 			null|<code><a href="class-DOMElement.html">DOMElement</a></code>
 		</code></td>
 
 		<td class="name">
-<var>$descroot</var>		</td>
+<var>$dportroot</var>		</td>
 		<td class="value"><code><span class="php-keyword1">null</span></code></td>
 		<td class="description"><div>
-			<a href="#$descroot" class="anchor">#</a>
+			<a href="#$dportroot" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -935,9 +985,25 @@
 		</code></td>
 	</tr>
 	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#$_description"><var>$_description</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#m$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 </div>
 

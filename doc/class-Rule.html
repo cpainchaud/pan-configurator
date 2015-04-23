@@ -7,7 +7,7 @@
 	<title>Class Rule | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3225097435"></script>
+	<script type="text/javascript" src="elementlist.js?1164641316"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -51,6 +51,7 @@
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
+				<li><a href="class-IP4Mapping.html">IP4Mapping</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -97,6 +98,7 @@
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
+				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
@@ -181,7 +183,9 @@
 			
 				<a href="class-centralServiceStoreUser.html"><span>centralServiceStoreUser</span></a>, 
 			
-				<a href="class-centralAddressStoreUser.html"><span>centralAddressStoreUser</span></a>
+				<a href="class-centralAddressStoreUser.html"><span>centralAddressStoreUser</span></a>, 
+			
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>
 			
 		</dd>
 	</dl>
@@ -307,43 +311,6 @@
 				<h4>Returns</h4>
 				<div class="list">
 					<code>boolean</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="description" id="_description">
-
-		<td class="attributes"><code>
-			 public 
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_description">#</a>
-		<code><b>description</b>( )</code>
-
-		<div class="description short">
-			
-<p>Returns description for this rule</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>Returns description for this rule</p>
-
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>string</code><br />
 				</div>
 
 
@@ -781,39 +748,6 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="extract_description_from_xml" id="_extract_description_from_xml">
-
-		<td class="attributes"><code>
-			 protected 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_extract_description_from_xml">#</a>
-		<code><b>extract_description_from_xml</b>( )</code>
-
-		<div class="description short">
-			
-<p>For developper use only</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>For developper use only</p>
-
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="extract_description_from_domxml" id="_extract_description_from_domxml">
 
 		<td class="attributes"><code>
@@ -1034,44 +968,6 @@
 		<td class="name"><div>
 		<a class="anchor" href="#_API_setDescription">#</a>
 		<code><b>API_setDescription</b>( <span>string <var>$newDescription</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$newDescription</var></dt>
-					<dd><code>string</code><br>$newDescription</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean</code><br>true if value was changed<br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="setDescription" id="_setDescription">
-
-		<td class="attributes"><code>
-			 public 
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_setDescription">#</a>
-		<code><b>setDescription</b>( <span>string <var>$newDescription</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1409,6 +1305,16 @@
 		</code></td>
 	</tr>
 	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ObjectWithDescription.html#methods">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#__load_description_from_domxml"><b>_load_description_from_domxml()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_description"><b>description()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_setDescription"><b>setDescription()</b></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
@@ -1454,28 +1360,6 @@
 		<td class="value"><code><span class="php-keyword1">false</span></code></td>
 		<td class="description"><div>
 			<a href="#$disabled" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="description" id="$description">
-		<td class="attributes"><code>
-			protected  
-			string
-		</code></td>
-
-		<td class="name">
-<var>$description</var>		</td>
-		<td class="value"><code><span class="php-quote">''</span></code></td>
-		<td class="description"><div>
-			<a href="#$description" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -1663,28 +1547,6 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="descroot" id="$descroot">
-		<td class="attributes"><code>
-			protected  
-			null|string[]|<code><a href="class-DOMNode.html">DOMNode</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$descroot</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$descroot" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
 	</table>
 
 
@@ -1712,6 +1574,14 @@
 		</code></td>
 	</tr>
 	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#$_description"><var>$_description</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
@@ -1720,6 +1590,14 @@
 	<tr>
 		<td><code>
 			<a href="class-centralAddressStoreUser.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#m$xmlroot"><var>$xmlroot</var></a>
 		</code></td>
 	</tr>
 	</table>

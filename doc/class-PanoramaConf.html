@@ -7,7 +7,7 @@
 	<title>Class PanoramaConf | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3225097435"></script>
+	<script type="text/javascript" src="elementlist.js?1164641316"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -51,6 +51,7 @@
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
+				<li><a href="class-IP4Mapping.html">IP4Mapping</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -97,6 +98,7 @@
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
+				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
@@ -364,6 +366,44 @@ $pan-&gt;display_statistics();</p>
 				<h4>Returns</h4>
 				<div class="list">
 					<code><code><a href="class-DeviceGroup.html">DeviceGroup</a></code>|null</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="findTemplate" id="_findTemplate">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Template.html">Template</a></code>|null
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_findTemplate">#</a>
+		<code><b>findTemplate</b>( <span>string <var>$name</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>string</code><br>$name</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Template.html">Template</a></code>|null</code><br />
 				</div>
 
 
@@ -835,7 +875,7 @@ $fromRunning = TRUE</p>
 	<tr data-order="xmlroot" id="$xmlroot">
 		<td class="attributes"><code>
 			public  
-			string[]|DomNode
+			<code><a href="class-DOMElement.html">DOMElement</a></code>
 		</code></td>
 
 		<td class="name">
@@ -857,7 +897,7 @@ $fromRunning = TRUE</p>
 	<tr data-order="sharedroot" id="$sharedroot">
 		<td class="attributes"><code>
 			public  
-			string[]|DomNode
+			<code><a href="class-DOMElement.html">DOMElement</a></code>
 		</code></td>
 
 		<td class="name">
@@ -997,6 +1037,28 @@ $fromRunning = TRUE</p>
 		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
 		<td class="description"><div>
 			<a href="#$deviceGroups" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="templates" id="$templates">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-Template.html">Template</a>[]</code>
+		</code></td>
+
+		<td class="name">
+<var>$templates</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$templates" class="anchor">#</a>
 
 			<div class="description short">
 				
