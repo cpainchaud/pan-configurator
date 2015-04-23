@@ -75,30 +75,10 @@ class AppRuleContainer extends ObjRuleContainer
         if( ! $this->addApp($Obj, $rewritexml) )
             return false;
 
-        $con = findConnectorOrDie($this);
-        $xpath = &$this->owner->getXPath();
-
-        if( $this->count() == 1)
-        {
-            $con->sendDeleteRequest($xpath.'/application');
-        }
-
-        $con->sendSetRequest($xpath.'/application', '<member>'.$Obj->name().'</member>');
+        $this->API_sync();
 
         return true;
     }
-
-    public function API_synchronize()
-    {
-
-        $con = findConnectorOrDie($this);
-
-        $xpath = &$this->owner->getXPath();
-        $con->sendDeleteRequest($xpath.'/application');
-
-        $con->sendSetRequest($xpath, $this->getXmlText_inline());
-    }
-
 
 
     /**
@@ -127,6 +107,28 @@ class AppRuleContainer extends ObjRuleContainer
         }
         return $ret;
     }
+
+    /**
+     * remove an App to this store. Be careful if you remove last zone as
+     * it would become 'any' and won't let you do so.
+     * @param App $Object
+     * @param bool $rewritexml
+     * @param bool $forceAny
+     * @return bool
+     */
+    public function API_removeApp( App $Object, $rewritexml = true, $forceAny = false )
+    {
+        if( ! $this->removeApp($Object, $rewritexml, $forceAny) )
+            return false;
+
+        $this->API_sync();
+
+        return true;
+    }
+
+
+
+
 
     /**
      * returns true if rule app is Any
@@ -221,6 +223,12 @@ class AppRuleContainer extends ObjRuleContainer
         $this->removeAll();
 
         $this->rewriteXML();
+    }
+
+    public function API_setAny()
+    {
+        $this->setAny();
+        $this->API_sync();
     }
 
 

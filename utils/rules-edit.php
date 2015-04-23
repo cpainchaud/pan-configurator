@@ -334,6 +334,44 @@ $supportedActions['service-remove-force-any'] = Array(
 
 
 
+
+//                                                   //
+//                App Based Actions       //
+//                                                   //
+$supportedActions['app-set-any'] = Array(
+    'name' => 'app-Set-Any',
+    'section' => 'app',
+    'file' => "\$rule->apps->setAny();",
+    'api' =>  "\$rule->apps->API_setAny();",
+    'args' => false
+);
+$supportedActions['app-add'] = Array(
+    'name' => 'app-Add',
+    'section' => 'app',
+    'file' => "\$rule->apps->addApp(!value!);",
+    'api' =>  "\$rule->apps->API_addApp(!value!);",
+    'args' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->apps->parentCentralStore->find('!value!');"
+);
+$supportedActions['app-remove'] = Array(
+    'name' => 'app-Remove',
+    'section' => 'app',
+    'file' => "\$rule->apps->removeApp(!value!);",
+    'api' =>  "\$rule->apps->API_removeApp(!value!);",
+    'args' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->apps->parentCentralStore->find('!value!');"
+);
+$supportedActions['app-remove-force-any'] = Array(
+    'name' => 'app-Remove-Force-Any',
+    'section' => 'app',
+    'file' => "\$rule->apps->removeApp(!value!, true, true);",
+    'api' => "\$rule->apps->API_removeApp(!value!, true, true);",
+    'args' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->apps->parentCentralStore->find('!value!');"
+);
+
+
+
 //                                                   //
 //                Log based Actions       //
 //                                                   //
