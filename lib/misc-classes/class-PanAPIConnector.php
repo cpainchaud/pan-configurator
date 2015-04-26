@@ -939,6 +939,7 @@ class mycurl
          
          curl_setopt($s,CURLOPT_SSL_VERIFYPEER,false);
          curl_setopt($s,CURLOPT_SSL_VERIFYHOST,false);
+         curl_setopt($s,CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
          //curl_setopt($s,CURLOPT_VERBOSE, 1); 
 
 
