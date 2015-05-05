@@ -1,17 +1,18 @@
 PAN-Configurator
 ================
 
-Requirement : PHP 5.5 with curl module
+PAN-Configurator is a PHP library aimed at making PANOS config changes easy (and XML free ;), maintainable and allowing complex scenarios like rule merging, unused object tracking, conversion of checkpoint exclusion groups, massive rule editing, AppID conversion … to name the ones I do on a regular basis and which are not offered by our GUI. It will work seamlessly on local config file or API.
 
-Usage: include the file lib/panconfigurator.php in your own script to load the necessary classes.
+**Requirements** : PHP 5.5 with curl module
+
+**Usage**: include the file lib/panconfigurator.php in your own script to load the necessary classes.
 
 File tree:
-* */lib/* contains library files source code
-* */utils/* contains ready to run scripts, more information in utils/readme.txt
-* */doc/index.html*  has all classes documentations
-* */example-xxx.php* are examples about using this library
+* **/lib/** contains library files source code
+* **/utils/** contains ready to run scripts, more information in utils/readme.txt
+* **/doc/index.html**  has all classes documentations
+* **/example-xxx.php** are examples about using this library
 
-PAN-Configurator is a PHP library aimed at making PANOS config changes easy (and XML free ;), maintainable and allowing complex scenarios like rule merging, unused object tracking, conversion of checkpoint exclusion groups, massive rule editing, AppID conversion … to name the ones I do on a regular basis and which are not offered by our GUI. It will work seamlessly on local config file or API.
 
 With less than 20 lines of code, you should be able to solve most of your needs. Brief overview:
 
