@@ -2,10 +2,10 @@ PAN-Configurator
 ================
 
 Requirement : PHP 5.5 with curl module
+
 Usage: include the file lib/panconfigurator.php in your own script to load the necessary classes.
 
 File tree:
-
 * */lib/* contains library files source code
 * */utils/* contains ready to run scripts, more information in utils/readme.txt
 * */doc/index.html*  has all classes documentations
@@ -50,11 +50,11 @@ Want to add security profile group 'Block-Forward-Critical-High' in rules which 
            $rule->setSecurityProfileGroup('Block-Forward-Critical-High');
 
 Do you hate scripting ? Utility script 'rules-edit.php' is a swiss knife to edit rules and takes advantage of PAN Configurator
- library from a single CLI query:
+ library from a single CLI query, ie :
 
 Do you want to enable log at start for rule going to DMZ zone and that has only object group 'Webfarms' as a destination ?
 
-    rules-edit –in=api://fw1.mycompany.com –type=panos –actions=enableLogStart 'filter=(to has dmz) and (dst has.only Webfarms)'
+    rules-edit.php –in=api://fw1.mycompany.com –type=panos –actions=enableLogStart 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 You are not sure about your filter and want to see rules before making changes ? Use action 'display' :
 
@@ -69,6 +69,7 @@ Move post-SecurityRules with source zone 'dmz' or source object 'Admin-networks'
     rules-edit.php  –in=api://panorama.mycompany.com –type=panorama –actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
 
 Want to know what actions are supported ?
+
     rules-edit.php  listActions
     rules-edit.php listFilters
 
