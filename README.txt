@@ -17,13 +17,13 @@
 *
 ******************************************************************************/
 
-Requirement : PHP 5.4 with curl module
-Use: include the file lib/panconfigurator.php in your own script to load the necessary classes.
+Requirement : PHP 5.5 with curl module
+Usage: include the file lib/panconfigurator.php in your own script to load the necessary classes.
 
 File tree:
 
 - /lib/ contains library files source code
-- /utils/ contains ready to run scripts
+- /utils/ contains ready to run scripts, more information in utils/readme.txt
 - /doc/index.html  has all classes documentations
 - /example-*.php are examples about using this library
 - /sample-configs/ hold dummy configuration files to run examples on
