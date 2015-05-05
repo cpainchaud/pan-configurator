@@ -17,9 +17,10 @@ File tree:
 With less than 20 lines of code, you should be able to solve most of your needs. Brief overview:
 
 Loading a config from a file :
-
+```php
     $pan = new PANConf();
     $pan->load_from_file('myconfig.xml');
+```
 
 Prefer to load it from API candidate config ?
 
