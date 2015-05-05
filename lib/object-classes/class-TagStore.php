@@ -164,7 +164,8 @@ class TagStore extends ObjStore
         {
             $xpath = $this->getXPath();
             $con = findConnectorOrDie($this);
-            $con->sendSetRequest($xpath, array_to_xml( $newTag->xmlroot ,false, false));
+            $element = $newTag->getXmlText_inline();
+            $con->sendSetRequest($xpath, $element);
         }
 
         return $newTag;

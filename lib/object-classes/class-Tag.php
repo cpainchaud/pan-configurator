@@ -27,8 +27,6 @@ class Tag
      */
 	public $owner = null;
 
-    private $isTmp = true;
-
 
     /**
      * @param string $name
@@ -75,7 +73,9 @@ class Tag
 
     public function isTmp()
     {
-        return $this->isTmp;
+        if( $this->xmlroot === null )
+            return true;
+        return false;
     }
 
 
