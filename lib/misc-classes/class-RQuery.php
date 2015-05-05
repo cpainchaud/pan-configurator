@@ -727,11 +727,11 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = Array(
 //                Other properties              //
 //                                              //
 RQuery::$defaultFilters['rule']['action']['operators']['is.deny'] = Array(
-    'eval' => '$object->isDeny()',
+    'eval' => '$object->actionIsDeny()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['action']['operators']['is.allow'] = Array(
-    'eval' => '$object->isAllow()',
+    'eval' => '$object->actionIsAllow()',
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['log']['operators']['at.start'] = Array(
