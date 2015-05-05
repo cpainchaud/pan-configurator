@@ -167,8 +167,6 @@ class PANConf
         }
 
 
-		$this->sharedroot = DH::findFirstElementOrDie('shared', $this->configroot);
-
 		$this->devicesroot = DH::findFirstElementOrDie('devices', $this->configroot);
 
 		$this->localhostroot = DH::findFirstElementByNameAttrOrDie('entry', 'localhost.localdomain',$this->devicesroot);
@@ -179,6 +177,7 @@ class PANConf
 
         if( $this->owner === null )
         {
+            $this->sharedroot = DH::findFirstElementOrDie('shared', $this->configroot);
             //
             // Extract Tag objects
             //

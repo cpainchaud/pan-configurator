@@ -548,7 +548,7 @@ class RuleStore
 		$con = findConnectorOrDie($this);
 
 		$xpath = $this->getXPath($rule);
-		$element = array_to_xml($nr->xmlroot, -1, false);
+		$element = $nr->getXmlText_inline();
 
 		$con->sendSetRequest($xpath, $element);
 
