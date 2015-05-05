@@ -23,33 +23,38 @@ Loading a config from a file :
 ```
 
 Prefer to load it from API candidate config ?
-
+```php
     $connector = panAPIConnector::findOrCreateConnectorFromHost('fw1.mycompany.com');
     $pan = new PANConf();
     $pan->API_load_from_candidate($connector);
+```
 
 Delete unused objects from a config :
-
+```php
     foreach($pan->addressStore->addressObjects() as $object )
       if( $object->countReferences() == 0 )
         $pan->addressStore->remove($object);
+```
 
 Want to know where an object is used ?
-
+```php
     $object = $pan->addressStore->find('H-WebServer4');
     foreach( $object->getReferences() as $ref )
        print $ref->toString()."\n";
+```
 
 Replace that object by another one :
-
+```php
     $object->replaceMeGlobally($anotherObject);
+```
 
 Want to add security profile group 'Block-Forward-Critical-High' in rules which have destination zone 'External' and
  source zone 'DMZ'?
-
+```php
     foreach( $vsys1->securityRules->rules() as $rule )
        if( $rule->from->has('DMZ') && $rule->to->has('External') )
            $rule->setSecurityProfileGroup('Block-Forward-Critical-High');
+```
 
 Do you hate scripting ? Utility script 'rules-edit.php' is a swiss knife to edit rules and takes advantage of PAN Configurator
  library from a single CLI query, ie :
