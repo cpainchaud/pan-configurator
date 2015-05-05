@@ -9,7 +9,7 @@ PAN-Configurator is a PHP library aimed at making PANOS config changes easy (and
 
 File tree:
 * **/lib/** contains library files source code
-* **/utils/** contains ready to run scripts, more information in utils/readme.txt
+* **/utils/** contains ready to run scripts, more information in [utils/readme.txt](utils/readme.txt)
 * **/doc/index.html**  has all classes documentations
 * **/example-xxx.php** are examples about using this library
 
