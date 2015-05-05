@@ -18,53 +18,53 @@ With less than 20 lines of code, you should be able to solve most of your needs.
 
 Loading a config from a file ?
 
-   $pan = new PANConf();
-   $pan->load_from_file('myconfig.xml');
+    $pan = new PANConf();
+    $pan->load_from_file('myconfig.xml');
 
 Prefer to load it from API candidate config ?
 
-   $connector = panAPIConnector::findOrCreateConnectorFromHost('fw1.mycompany.com');
-   $pan = new PANConf();
-   $pan->API_load_from_candidate($connector);
+    $connector = panAPIConnector::findOrCreateConnectorFromHost('fw1.mycompany.com');
+    $pan = new PANConf();
+    $pan->API_load_from_candidate($connector);
 
 Delete unused objects from a config ?
 
-   foreach($pan->addressStore->addressObjects() as $object )
-     if( $object->countReferences() == 0 )
+    foreach($pan->addressStore->addressObjects() as $object )
+      if( $object->countReferences() == 0 )
         $pan->addressStore->remove($object);
 
 Want to know where an object is used ?
 
-   $object = $pan->addressStore->find('H-WebServer4');
-   foreach( $object->getReferences() as $ref )
-      print $ref->toString()."\n";
+    $object = $pan->addressStore->find('H-WebServer4');
+    foreach( $object->getReferences() as $ref )
+       print $ref->toString()."\n";
 
 Replace that object by another one ?
 
-   $object->replaceMeGlobally($anotherObject);
+    $object->replaceMeGlobally($anotherObject);
 
 Want to add security profile group 'Block-Forward-Critical-High' in rules which have destination zone 'External' and source zone 'DMZ'?
 
-   foreach( $vsys1->securityRules->rules() as $rule )
-      if( $rule->from->has('DMZ') && $rule->to->has('External') )
-            $rule->setSecurityProfileGroup('Block-Forward-Critical-High');
+    foreach( $vsys1->securityRules->rules() as $rule )
+       if( $rule->from->has('DMZ') && $rule->to->has('External') )
+           $rule->setSecurityProfileGroup('Block-Forward-Critical-High');
 
 Do you hate scripting ? Utility script 'rules-edit.php' is a swiss knife to edit rules and takes advantage of PAN Configurator library from a single CLI query:
 
 Do you want to enable log at start for rule going to DMZ zone and that has only object group 'Webfarms' as a destination ?
-   rules-edit –in=api://fw1.mycompany.com –type=panos –actions=enableLogStart 'filter=(to has dmz) and (dst has.only Webfarms)'
+    rules-edit –in=api://fw1.mycompany.com –type=panos –actions=enableLogStart 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 You are not sure about your filter and want to see rules before making changes ? Use action 'display' :
-   rules-edit.php  –in=api://fw1.mycompany.com –type=panos –actions=display 'filter=(to has dmz) and (dst has.only Webfarms)'
+    rules-edit.php  –in=api://fw1.mycompany.com –type=panos –actions=display 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 Change all rules using Application + Any service to application default ?
-   rules-edit.php –in=api://fw1.mycompany.com –type=panos –actions=service-Set-AppDefault 'filter=!(app is.any) and (service is.any)'
+    rules-edit.php –in=api://fw1.mycompany.com –type=panos –actions=service-Set-AppDefault 'filter=!(app is.any) and (service is.any)'
 
 Move post-SecurityRules with source zone 'dmz' or source object 'Admin-networks' to pre-Security rule ?
-   rules-edit.php  –in=api://panorama.mycompany.com –type=panorama –actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
+    rules-edit.php  –in=api://panorama.mycompany.com –type=panorama –actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
 
 Want to know what actions are supported ?
-   rules-edit.php  listActions
-   rules-edit listFilters
+    rules-edit.php  listActions
+    rules-edit listFilters
 
 
