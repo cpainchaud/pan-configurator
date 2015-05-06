@@ -11,7 +11,7 @@ require_once("../lib/shared.php");
 
 
 // input and ouput xml files
-$inputfile = 'sample-configs/panorama-example4.xml';
+$inputfile = 'sample-configs/panorama-example.xml';
 $outputfile = 'output.xml';
 
 

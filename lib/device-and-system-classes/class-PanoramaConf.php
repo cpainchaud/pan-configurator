@@ -506,8 +506,8 @@ class PanoramaConf
 
 		print "- ".$this->serviceStore->countTmpServices()." (".$gnTmpServices.") temporary service objects\n";
 		
-		print "- ".$this->zoneStore()->count()." zones\n";
-		print "- ".$this->tagStore()->count()." tags\n";
+		print "- ".$this->zoneStore->count()." zones\n";
+		print "- ".$this->tagStore->count()." tags\n";
 	}
 
     public function API_load_from_running( PanAPIConnector $conn )
