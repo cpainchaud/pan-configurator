@@ -92,7 +92,6 @@ $supportedArguments['actions'] = Array('niceName' => 'Actions', 'shortHelp' => '
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "filters rules based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator value)');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
-$supportedArguments['usedomxml'] = Array('niceName' => 'useDomXML', 'shortHelp' => 'enable alternative XML engine (faster but experimental');
 $supportedArguments['stats'] = Array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
 
 
@@ -594,11 +593,6 @@ foreach ( PH::$args as $index => &$arg )
 if( isset(PH::$args['help']) )
 {
     display_usage_and_exit();
-}
-
-if( isset(PH::$args['usedomxml']) )
-{
-    PH::enableDomXMLSupport();
 }
 
 if( isset(PH::$args['listactions']) )
