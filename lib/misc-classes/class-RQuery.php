@@ -140,11 +140,19 @@ class RQuery
             }
             else
             {
-                $eval = '$boolReturn = ('.$this->refOperator['eval'].');';
-
-                if( eval($eval) === FALSE )
+                if( !is_string($this->refOperator['eval']) )
                 {
-                    derr("\neval code was : $eval\n");
+                    $boolReturn = $this->refOperator['eval']($object, $nestedQueries);
+                }
+                else
+                {
+                    $eval = '$boolReturn = (' . $this->refOperator['eval'] . ');';
+
+                    if (eval($eval) === FALSE)
+                    {
+                        derr("\neval code was : $eval\n");
+                    }
+
                 }
                 if( $this->inverted )
                     return !$boolReturn;
@@ -741,6 +749,32 @@ RQuery::$defaultFilters['rule']['log']['operators']['at.start'] = Array(
 RQuery::$defaultFilters['rule']['log']['operators']['at.end'] = Array(
     'eval' => '$object->logEnd()',
     'arg' => false
+);
+RQuery::$defaultFilters['rule']['logprof']['operators']['is.set'] = Array(
+    'eval' => function($rule, &$nestedQueries)
+    {
+        /** @var $rule Rule|SecurityRule|NatRule|DecryptionRule */
+        if( $rule->logSetting() === null || $rule->logSetting() == '' )
+            return false;
+
+        return true;
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['rule']['logprof']['operators']['is'] = Array(
+    'eval' => function($rule, &$nestedQueries, $value)
+    {
+        /** @var $rule Rule|SecurityRule|NatRule|DecryptionRule */
+
+        if( $rule->logSetting() === null )
+            return false;
+
+        if( $rule->logSetting() == $value )
+            return true;
+
+        return false;
+    },
+    'arg' => true
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.prerule'] = Array(
     'eval' => '$object->isPreRule()',

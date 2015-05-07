@@ -505,11 +505,11 @@ $supportedActions['copy'] = Array(
     'args' => true,
     'argsCount' => 2,
     'argsName' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
-                            'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre'=>true, 'post'=>true) ) )
+                            'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => array_flip(Array('pre','post')) ) )
 );
 $supportedActions['copy']['api'] = &$supportedActions['copy']['file'];
 // </editor-fold>
-//TODO add action=copy and action==move
+//TODO add action==move
 
 /** @ignore */
 function &prepareArgumentsForAction(&$args, &$action)
@@ -531,7 +531,7 @@ function &prepareArgumentsForAction(&$args, &$action)
             $argValue = $ex[$count];
 
 
-        if( $properties['default'] == '*nodefault*' && ($argValue === null || strlen($argValue)) == 0 )
+        if( (!isset($properties['default']) || $properties['default'] == '*nodefault*') && ($argValue === null || strlen($argValue)) == 0 )
             derr("action '{$action['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");
 
         if( $argValue !== null && strlen($argValue) > 0)
@@ -881,7 +881,7 @@ if( $rulesFilter !== null )
         exit(1);
     }
 
-    print "Parsing Rule filter and output it after sanitization: ";
+    print " - Rule filter after sanitization: ";
     $objectFilterRQuery->display();
     print "\n";
 }
