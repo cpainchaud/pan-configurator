@@ -21,7 +21,7 @@
  */
 trait ObjectWithDescription
 {
-    /** @var null|string  */
+    /** @var string  */
     protected $_description = null;
 
     function description()

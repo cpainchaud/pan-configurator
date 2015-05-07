@@ -101,10 +101,18 @@ class RQuery
                         fwrite(STDERR, "\n\n**ERROR** cannot find object with name '".$this->argument."'\n\n");
                         exit(1);
                     }
-                    $eval = '$boolReturn = ('.str_replace('!value!', '$objectFind', $this->refOperator['eval']).');';
-                    if( eval($eval) === FALSE )
+                    if( !is_string($this->refOperator['eval']) )
                     {
-                        derr("\neval code was : $eval\n");
+                        $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $objectFind);
+                    }
+                    else
+                    {
+                        $eval = '$boolReturn = (' . str_replace('!value!', '$objectFind', $this->refOperator['eval']) . ');';
+
+                        if( eval($eval) === FALSE )
+                        {
+                            derr("\neval code was : $eval\n");
+                        }
                     }
 
                     if( $this->inverted )
@@ -142,7 +150,7 @@ class RQuery
             {
                 if( !is_string($this->refOperator['eval']) )
                 {
-                    $boolReturn = $this->refOperator['eval']($object, $nestedQueries);
+                    $boolReturn = $this->refOperator['eval']($object, $nestedQueries, null);
                 }
                 else
                 {
@@ -424,12 +432,21 @@ class RQuery
 
     public function display( $indentLevel = 0)
     {
+        if( $indentLevel == 0 )
+            print $this->sanitizedString();
+        else
+            print str_pad($this->sanitizedString(), $indentLevel);
+    }
+
+    public function sanitizedString()
+    {
+        $retString = '';
 
         if( $this->inverted )
-            print '!';
+            $retString .= '!';
 
         if( $this->level != 0 )
-            print "(";
+            $retString .= '(';
 
         $loop = 0;
 
@@ -439,22 +456,24 @@ class RQuery
             foreach ($this->subQueries as $query)
             {
                 if( $loop > 0 )
-                    print ' '.$this->subQueriesOperators[$loop-1].' ';
-                $query->display();
+                    $retString .= ' '.$this->subQueriesOperators[$loop-1].' ';
+
+                $retString .= $query->sanitizedString();
                 $loop++;
             }
         }
         else
         {
             if( isset($this->argument) )
-                print $this->field.' '.$this->operator.' '.$this->argument;
+                $retString .= $this->field.' '.$this->operator.' '.$this->argument;
             else
-                print $this->field.' '.$this->operator;
+                $retString .= $this->field.' '.$this->operator;
         }
 
         if( $this->level != 0 )
-            print ")";
+            $retString .= ")";
 
+        return $retString;
     }
 
     public function toString()
@@ -469,33 +488,57 @@ class RQuery
 //                Zone Based Actions            //
 //                                              //
 RQuery::$defaultFilters['rule']['from']['operators']['has'] = Array(
-    'eval' => '$object->from->hasZone(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->from->hasZone($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->from->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['from']['operators']['has.only'] = Array(
-    'eval' => '$object->from->count() == 1 && $object->from->hasZone(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->from->count() == 1 && $object->from->hasZone($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->from->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
-    'eval' => '$object->to->hasZone(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->to->hasZone($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->to->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['to']['operators']['has.only'] = Array(
-    'eval' => '$object->to->count() == 1 && $object->to->hasZone(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->to->count() == 1 && $object->to->hasZone($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->to->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['from']['operators']['is.any'] = Array(
-    'eval' => '$object->from->isAny()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->from->isAny();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
-    'eval' => '$object->to->isAny()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->to->isAny();
+    },
     'arg' => false
 );
 
@@ -503,29 +546,49 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
 //                Dst/Src Based Actions            //
 //                                              //
 RQuery::$defaultFilters['rule']['src']['operators']['has'] = Array(
-    'eval' => '$object->source->has(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->has($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['src']['operators']['has.only'] = Array(
-    'eval' => '$object->source->count() == 1 && $object->source->has(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->count() == 1 && $object->source->has($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['src']['operators']['has.recursive'] = Array(
-    'eval' => '$object->source->hasObjectRecursive(!value!, false) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->hasObjectRecursive($value, false) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['has'] = Array(
-    'eval' => '$object->destination->has(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destination->has($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
 
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['has.only'] = Array(
-    'eval' => '$object->destination->count() == 1 && $object->destination->has(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destination->count() == 1 && $object->destination->has($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
 );
@@ -535,54 +598,102 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['src']['operators']['is.any'] = Array(
-    'eval' => '$object->source->count() == 0',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->count() == 0;
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['is.any'] = Array(
-    'eval' => '$object->destination->count() == 0',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destination->count() == 0;
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['src']['operators']['is.negated'] = Array(
-    'eval' => '$object->sourceIsNegated()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->sourceIsNegated();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['is.negated'] = Array(
-    'eval' => '$object->destinationIsNegated()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destinationIsNegated();
+    },
     'arg' => false
 );
 
 RQuery::$defaultFilters['rule']['src']['operators']['included-in.full'] = Array(
-    'eval' => "\$object->source->includedInIP4Network('!value!') == 1",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->includedInIP4Network($value) == 1;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['src']['operators']['included-in.partial'] = Array(
-    'eval' => "\$object->source->includedInIP4Network('!value!') == 2",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->includedInIP4Network($value) == 2;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['src']['operators']['included-in.full.or.partial'] = Array(
-    'eval' => "\$object->source->includedInIP4Network('!value!') > 0",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->includedInIP4Network($value) > 0;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['src']['operators']['includes.full'] = Array(
-    'eval' => "\$object->source->includesIP4Network('!value!') == 1",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->includesIP4Network($value) == 1;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['src']['operators']['includes.partial'] = Array(
-    'eval' => "\$object->source->includesIP4Network('!value!') == 2",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->includesIP4Network($value) == 2;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['src']['operators']['includes.full.or.partial'] = Array(
-    'eval' => "\$object->source->includesIP4Network('!value!') > 0",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->source->includesIP4Network($value) > 0;
+    },
     'arg' => true
 );
 
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full'] = Array(
-    'eval' => "\$object->destination->includedInIP4Network('!value!') == 1",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destination->includedInIP4Network($value) == 1;
+    },
     'arg' => true,
     'argDesc' => 'ie: 192.168.0.0/24 | 192.168.50.10/32 | 192.168.50.10 | 10.0.0.0-10.33.0.0'
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.partial'] = Array(
-    'eval' => "\$object->destination->includedInIP4Network('!value!') == 2",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destination->includedInIP4Network($value) == 2;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full.or.partial'] = Array(
@@ -590,15 +701,27 @@ RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full.or.partial
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['includes.full'] = Array(
-    'eval' => "\$object->destination->includesIP4Network('!value!') == 1",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destination->includesIP4Network($value) == 1;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['includes.partial'] = Array(
-    'eval' => "\$object->destination->includesIP4Network('!value!') == 2",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destination->includesIP4Network($value) == 2;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['includes.full.or.partial'] = Array(
-    'eval' => "\$object->destination->includesIP4Network('!value!') > 0",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->destination->includesIP4Network($value) > 0;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['src']['operators']['has.any.from.query'] = Array(
@@ -657,12 +780,20 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.any.from.query'] = Arra
 //                Tag Based filters         //
 //                                              //
 RQuery::$defaultFilters['rule']['tag']['operators']['has'] = Array(
-    'eval' => '$object->tags->hasTag(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->tags->hasTag($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['tag']['operators']['has.nocase'] = Array(
-    'eval' => '$object->tags->hasTag("!value!", false) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->tags->hasTag($value, false) === true;
+    },
     'arg' => true
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
@@ -677,16 +808,28 @@ RQuery::$defaultFilters['rule']['tag.count']['operators']['>,<,=,!'] = Array(
 //          Application properties              //
 //                                              //
 RQuery::$defaultFilters['rule']['app']['operators']['is.any'] = Array(
-    'eval' => '$object->apps->isAny()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->apps->isAny();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['app']['operators']['has'] = Array(
-    'eval' => '$object->apps->hasApp(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->apps->hasApp($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->apps->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = Array(
-    'eval' => '$object->apps->hasApp("!value!", false) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->apps->hasApp($value, false) === true;
+    },
     'arg' => true
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
@@ -696,15 +839,27 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = Array(
 //          Services properties                 //
 //                                              //
 RQuery::$defaultFilters['rule']['services']['operators']['is.any'] = Array(
-    'eval' => '$object->services->isAny()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->services->isAny();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['services']['operators']['is.application-default'] = Array(
-    'eval' => '$object->services->isApplicationDefault()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->services->isApplicationDefault();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['services']['operators']['has'] = Array(
-    'eval' => '$object->services->has(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->services->has($value) === true;
+        },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
 );
@@ -714,19 +869,32 @@ RQuery::$defaultFilters['rule']['services']['operators']['has'] = Array(
 //                SecurityProfile properties    //
 //                                              //
 RQuery::$defaultFilters['rule']['secprof']['operators']['not.set'] = Array(
-    'eval' => '$object->securityProfileType() == "none"',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->securityProfileType() == "none";
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.profile'] = Array(
-    'eval' => '$object->securityProfileType() == "profile"',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->securityProfileType() == "profile";
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.group'] = Array(
-    'eval' => '$object->securityProfileType() == "group"',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->securityProfileType() == "group";
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = Array(
-    'eval' => '$object->securityProfileType() == "group" && $object->securityProfileGroup() == "!value!"',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->securityProfileType() == "group" && $object->securityProfileGroup() == $value;
+    },
     'arg' => true
 );
 
@@ -735,19 +903,32 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = Array(
 //                Other properties              //
 //                                              //
 RQuery::$defaultFilters['rule']['action']['operators']['is.deny'] = Array(
-    'eval' => '$object->actionIsDeny()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->actionIsDeny();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['action']['operators']['is.allow'] = Array(
-    'eval' => '$object->actionIsAllow()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->actionIsAllow();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['log']['operators']['at.start'] = Array(
-    'eval' => '$object->logStart()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->logStart();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['log']['operators']['at.end'] = Array(
-    'eval' => '$object->logEnd()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->logEnd();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['logprof']['operators']['is.set'] = Array(
@@ -781,11 +962,17 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.prerule'] = Array(
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.postrule'] = Array(
-    'eval' => '$object->isPostRule()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->isPostRule();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(
-    'eval' => '$object->isDisabled()',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->isDisabled();
+    },
     'arg' => false
 );
 
@@ -813,15 +1000,25 @@ RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
 
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
-    'eval' => "\$object->name() == '!value!'",
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->name() == $value;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['name']['operators']['eq.nocase'] = Array(
-    'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return strtolower($object->name()) == strtolower($value);
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
-    'eval' => "stripos(\$object->name(), '!value!') !== false",
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return stripos($object->name(), $value) !== false;
+    },
     'arg' => true
 );
 
@@ -833,32 +1030,57 @@ RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
 //
 
 // <editor-fold desc=" ***** Address filters *****" defaultstate="collapsed" >
+
 RQuery::$defaultFilters['address']['refcount']['operators']['>,<,=,!'] = Array(
     'eval' => '$object->countReferences() !operator! !value!',
     'arg' => true
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = Array(
-    'eval' => '$object->countReferences() == 0',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        return $object->countReferences() == 0;
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.group'] = Array(
-    'eval' => '$object->isGroup() == true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        return $object->isGroup() == true;
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
-    'eval' => '$object->isTmpAddr() == true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        return $object->isTmpAddr() == true;
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
-    'eval' => "\$object->name() == '!value!'",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        return $object->name() == $value;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
-    'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        return strtolower($object->name()) == strtolower($value);
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['address']['name']['operators']['contains'] = Array(
-    'eval' => "strpos(\$object->name(), '!value!') !== false",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        return strpos($object->name(), $value) !== false;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['address']['members.count']['operators']['>,<,=,!'] = Array(
@@ -870,12 +1092,20 @@ RQuery::$defaultFilters['address']['tag.count']['operators']['>,<,=,!'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has'] = Array(
-    'eval' => '$object->tags->hasTag(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        return $object->tags->hasTag($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has.nocase'] = Array(
-    'eval' => '$object->tags->hasTag("!value!", false) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        return $object->tags->hasTag($value, false) === true;
+    },
     'arg' => true
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
@@ -913,23 +1143,43 @@ RQuery::$defaultFilters['service']['refcount']['operators']['>,<,=,!'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
-    'eval' => '$object->countReferences() == 0',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Service|ServiceGroup */
+        return $object->countReferences() == 0;
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.group'] = Array(
-    'eval' => '$object->isGroup() == true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Service|ServiceGroup */
+        return $object->isGroup();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.tmp'] = Array(
-    'eval' => '$object->isTmpSrv() == true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Service|ServiceGroup */
+        return $object->isTmpSrv();
+    },
     'arg' => false
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(
-    'eval' => "\$object->name() == '!value!'",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Service|ServiceGroup */
+        return $object->name() == $value;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq.nocase'] = Array(
-    'eval' => "strtolower(\$object->name()) == strtolower('!value!')",
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Service|ServiceGroup */
+        return strtolower($object->name()) == strtolower($value);
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['service']['members.count']['operators']['>,<,=,!'] = Array(
@@ -937,12 +1187,19 @@ RQuery::$defaultFilters['service']['members.count']['operators']['>,<,=,!'] = Ar
     'arg' => true
 );
 RQuery::$defaultFilters['service']['tag']['operators']['has'] = Array(
-    'eval' => '$object->tags->hasTag(!value!) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Service|ServiceGroup */
+        return $object->tags->hasTag($value) === true;
+    },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['service']['tag']['operators']['has.nocase'] = Array(
-    'eval' => '$object->tags->hasTag("!value!", false) === true',
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Service|ServiceGroup */
+        return $object->tags->hasTag($value, false) === true;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
