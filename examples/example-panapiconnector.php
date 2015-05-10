@@ -7,7 +7,7 @@
 
 
 // load 'PAN Configurator' library
-require_once("../lib/shared.php");
+require_once("../lib/panconfigurator.php");
 
 $apikey = 'LUFRPT14MW5xOEo1R09KVlBZNnpnemh0VHRBOWl6TGM9bXcwM3JHUGVhRlNiY0dCR0srNERUQT09';
 $apihost = '192.168.50.10';

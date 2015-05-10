@@ -10,7 +10,7 @@
 *****************************************************************************/
 
 // load PAN-Configurator library
-require_once("../lib/shared.php");
+require_once("../lib/panconfigurator.php");
 
 // input and output files
 $origfile = "sample-configs/panos-example-2.xml";

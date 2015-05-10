@@ -18,7 +18,7 @@
 
 
 // load 'PAN Configurator' library
-require_once("../lib/shared.php");
+require_once("../lib/panconfigurator.php");
 
 //$mode = 'panos';
 $mode = 'panorama';

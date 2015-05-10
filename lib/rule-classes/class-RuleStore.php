@@ -1097,6 +1097,35 @@ class RuleStore
 		return count($this->postRules);
 	}
 
+    /**
+     * @param $rule string|Rule|SecurityRule|NatRule|DecryptionRule
+     */
+    /* public function getRulePosition($rule)
+    {
+        if( is_string($rule) )
+        {
+            $rule = $this->find($rule);
+            if( $rule === null )
+                derr("cannot find a rule named '{$rule->name()}'");
+            return $this->getRulePosition($rule);
+        }
+        elseif( !is_object($rule) )
+            derr("unsupported object type");
+
+        if( !$this->isPreOrPost || $this->ruleIsPreRule($rule) )
+        {
+            $index = $this->fastNameToIndex[$rule->name()];
+            $indexToPost = $this->
+        }
+        elseif( $this->ruleIsPostRule($rule) )
+        {
+            $index = $this->fastNameToIndex_forPost[$rule->name()];
+        }
+        else
+            derr("rule '{$rule->name()}'");
+
+    }*/
+
 
 }
 
