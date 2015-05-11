@@ -343,6 +343,9 @@ class DH
 	{
 		$xpath = '';
 
+        if( $element->nodeType == XML_DOCUMENT_NODE )
+            $element = DH::firstChildElement($element);
+
 		if( $element->nodeType == 1 )
 		{
 			if( $element->hasAttribute('name') )

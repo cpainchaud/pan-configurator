@@ -998,6 +998,49 @@ RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
     'arg' => true
 );
 
+RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        if( !$object->isSecurityRule() )
+            derr("unsupported filter : this is not a security rule.".$object->toString());
+
+        $vsys = $object->owner->owner;
+        if( !$vsys->isVirtualSystem() )
+            derr("this is filter is only supported on firewall/vsys based, Panorama is not allowed.".$object->toString());
+
+        $connector = findConnector($vsys);
+
+        if( $connector === null )
+            derr("this filter is available only from API enabled PANConf objects");
+
+        if( !isset($vsys->apiCache) )
+            $vsys->apiCache = Array();
+
+        // caching results for speed improvements
+        if( !isset($vsys->apiCache['unusedSecurity']) )
+        {
+            $vsys->apiCache['unusedSecurity'] = Array();
+
+            $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $vsys->name() . '</vsys></rule-use></running></show>';
+            $apiResult = $connector->sendCmdRequest($apiCmd);
+
+            $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
+
+            for ($i = 0; $i < $rulesXml->length; $i++)
+            {
+                $ruleName = $rulesXml->item($i)->textContent;
+                $vsys->apiCache['unusedSecurity'][$ruleName] = $ruleName;
+            }
+        }
+
+        if( isset($vsys->apiCache['unusedSecurity'][$object->name()]) )
+            true;
+
+        return false;
+    },
+    'arg' => false
+);
+
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
