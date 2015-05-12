@@ -100,143 +100,132 @@ class AppStore extends ObjStore
 
 	}
 
+    public function load_from_domxml( DOMElement $xml )
+    {
+        foreach ($xml->childNodes as $appx)
+        {
+            if( $appx->nodeType != XML_ELEMENT_NODE )
+                continue;
 
-	public function load_from_xmlarr( &$xmlArr )
-	{
-		foreach( $xmlArr['children'] as &$appx )
-		{
-			$app = new App($appx['attributes']['name'], $this);
-			$app->type = 'predefined';
-			$this->add($app);
+            $appName= DH::findAttribute('name', $appx);
+            if( $appName === FALSE )
+                derr("app name not found\n");
 
-			$cursor = &searchForName('name', 'default', $appx['children'] );
-			if( is_null($cursor) )
-				continue;
+            $app = new App($appName, $this);
+            $app->type = 'predefined';
+            $this->add($app);
 
-			$protocur = &searchForName('name', 'ident-by-ip-protocol', $cursor['children'] );
-			if( !is_null($protocur) )
-			{
-				$app->proto = $protocur['content'];
-			}
+            $cursor = DH::findFirstElement('default', $appx);
+            if ( $cursor === false )
+                continue;
 
-			$icmpcur = &searchForName('name', 'ident-by-icmp-type', $cursor['children'] );
-			if( !is_null($icmpcur) )
-			{
-				$app->icmpsub = $icmpcur['content'];
-			}
+            $protocur = DH::findFirstElement('ident-by-ip-protocol', $cursor);
+            if( $protocur !== false )
+            {
+                $app->proto = $protocur->textContent;
+            }
 
-			$cursor = &searchForName('name', 'port', $cursor['children'] );
-			if( is_null($cursor) )
-				continue;
+            $icmpcur = DH::findFirstElement('ident-by-icmp-type', $cursor);
+            if( $icmpcur !== false )
+            {
+                $app->icmpsub = $icmpcur->textContent;
+            }
+            
+            $cursor = DH::findFirstElement('port', $cursor);
+            if( $cursor === false )
+                continue;
 
-			foreach( $cursor['children'] as &$portx )
-			{
-				$ex = explode('/', $portx['content'] );
-				if( count($ex) != 2 )
-					derr('unsupported port description: '.$portx['content']);
-				if( $ex[0] == 'tcp' )
-				{
-					$exports = explode(',', $ex[1]);
-					$ports = Array();
+            foreach( $cursor->childNodes as $portx )
+            {
+                if( $portx->nodeType != XML_ELEMENT_NODE )
+                    continue;
 
-					if( count($exports) < 1 )
-						derr('unsupported port description: '.$portx['content']);
+                /** @var  $portx DOMElement */
 
-					foreach( $exports as &$sport )
-					{
-						if( $sport == 'dynamic')
-						{
-							$ports[] = Array( 0 => 'dynamic' );
-							continue;
-						}
-						$tmpex = explode('-', $sport);
-						if( count($tmpex) < 2 )
-						{
-							$ports[] = Array( 0 => 'single' , 1 => $sport );
-							continue;
-						}
+                $ex = explode('/', $portx->textContent );
 
-						$ports[] = Array( 0 => 'range' , 1 => $tmpex[0], 2 => $tmpex[1] );
+                if( count($ex) != 2 )
+                    derr('unsupported port description: '.$portx->textContent);
 
-					}
-					//print_r($ports);
+                if( $ex[0] == 'tcp' )
+                {
+                    $exports = explode(',', $ex[1]);
+                    $ports = Array();
 
-					if( is_null($app->tcp) )
-						$app->tcp = $ports;
-					else
-						$app->tcp = array_merge($app->tcp, $ports);
-				}
-				elseif( $ex[0] == 'udp' )
-				{
-					$exports = explode(',', $ex[1]);
-					$ports = Array();
+                    if( count($exports) < 1 )
+                        derr('unsupported port description: '.$portx->textContent);
 
-					if( count($exports) < 1 )
-						derr('unsupported port description: '.$portx['content']);
+                    foreach( $exports as &$sport )
+                    {
+                        if( $sport == 'dynamic')
+                        {
+                            $ports[] = Array( 0 => 'dynamic' );
+                            continue;
+                        }
+                        $tmpex = explode('-', $sport);
+                        if( count($tmpex) < 2 )
+                        {
+                            $ports[] = Array( 0 => 'single' , 1 => $sport );
+                            continue;
+                        }
 
-					foreach( $exports as &$sport )
-					{
-						if( $sport == 'dynamic')
-						{
-							$ports[] = Array( 0 => 'dynamic' );
-							continue;
-						}
-						$tmpex = explode('-', $sport);
-						if( count($tmpex) < 2 )
-						{
-							$ports[] = Array( 0 => 'single' , 1 => $sport );
-							continue;
-						}
+                        $ports[] = Array( 0 => 'range' , 1 => $tmpex[0], 2 => $tmpex[1] );
 
-						$ports[] = Array( 0 => 'range' , 1 => $tmpex[0], 2 => $tmpex[1] );
+                    }
+                    //print_r($ports);
 
-					}
-					//print_r($ports);
+                    if( is_null($app->tcp) )
+                        $app->tcp = $ports;
+                    else
+                        $app->tcp = array_merge($app->tcp, $ports);
+                }
+                elseif( $ex[0] == 'udp' )
+                {
+                    $exports = explode(',', $ex[1]);
+                    $ports = Array();
 
-					if( is_null($app->udp) )
-						$app->udp = $ports;
-					else
-						$app->udp = array_merge($app->udp, $ports);
-				}
-				elseif( $ex[0] == 'icmp' )
-				{
-					$app->icmp = $ex[1];
-				}
-				else
-					derr('unsupported port description: '.$portx['content']);
+                    if( count($exports) < 1 )
+                        derr('unsupported port description: '.$portx->textContent);
 
+                    foreach( $exports as &$sport )
+                    {
+                        if( $sport == 'dynamic')
+                        {
+                            $ports[] = Array( 0 => 'dynamic' );
+                            continue;
+                        }
+                        $tmpex = explode('-', $sport);
+                        if( count($tmpex) < 2 )
+                        {
+                            $ports[] = Array( 0 => 'single' , 1 => $sport );
+                            continue;
+                        }
 
-			}
-		}
-	}
+                        $ports[] = Array( 0 => 'range' , 1 => $tmpex[0], 2 => $tmpex[1] );
 
-	public function loadcontainers_from_xmlarr( &$xmlArr )
-	{
-		foreach( $xmlArr['children'] as &$appx )
-		{
-			$app = new App($appx['attributes']['name'], $this);
-			$app->type = 'predefined';
-			$this->add($app);
+                    }
+                    //print_r($ports);
 
-			$app->subapps = Array();
-
-			//print "found container ".$app->name()."\n";
-
-			$cursor = &searchForName('name', 'functions', $appx['children'] );
-			if( is_null($cursor) )
-				continue;
-
-			foreach( $cursor['children'] as &$function)
-			{
-				$app->subapps[] = $this->findOrCreate($function['content']);
-				//print "  subapp: ".$subapp->name()." type :".$subapp->type."\n";
-			}
+                    if( is_null($app->udp) )
+                        $app->udp = $ports;
+                    else
+                        $app->udp = array_merge($app->udp, $ports);
+                }
+                elseif( $ex[0] == 'icmp' )
+                {
+                    $app->icmp = $ex[1];
+                }
+                else
+                    derr('unsupported port description: '.$portx->textContent);
 
 
-		}
-	}
+            }
 
-	public function loadcontainers_from_xmldom( &$xmlDom )
+        }
+
+    }
+
+	public function loadcontainers_from_domxml( &$xmlDom )
 	{
 		foreach( $xmlDom->childNodes as $appx )
 		{
@@ -271,21 +260,17 @@ class AppStore extends ObjStore
 		{
 			$filename = dirname(__FILE__).'/predefined.xml';
 		}
-		$content = file_get_contents($filename);
-		$xmlobj = new XmlArray();
-		$xmlArr = &$xmlobj->load_string($content);
-		unset($content);
 
-		$cursor = &searchForName('name','application', $xmlArr['children']);
+        $xmlDoc = new DOMDocument();
+        $xmlDoc->load($filename);
 
-		if( is_null($cursor) )
-			derr('could not find <application>');
+        $cursor = DH::findXPathSingleEntryOrDie('/predefined/application', $xmlDoc);
 
-		$this->load_from_xmlarr( $cursor );
+		$this->load_from_domxml( $cursor );
 
-		$cursor = &searchForName('name','application-container', $xmlArr['children']);
-		if( !is_null($cursor) )
-			$this->loadcontainers_from_xmlarr( $cursor );
+        $cursor = DH::findXPathSingleEntryOrDie('/predefined/application-container', $xmlDoc);
+
+		$this->loadcontainers_from_domxml( $cursor );
 
 		// fixing someone mess ;)
 		$app = $this->findOrCreate('ftp');
