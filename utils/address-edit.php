@@ -517,9 +517,7 @@ if( $objectsFilter !== null )
         exit(1);
     }
 
-    print "Parsing Rule filter and output it after sanitization: ";
-    $objectFilterRQuery->display();
-    print "\n";
+    print " - filter after sanitization : ".$objectFilterRQuery->sanitizedString()."\n";
 }
 // --------------------
 

@@ -130,7 +130,7 @@ class AppStore extends ObjStore
             {
                 $app->icmpsub = $icmpcur->textContent;
             }
-            
+
             $cursor = DH::findFirstElement('port', $cursor);
             if( $cursor === false )
                 continue;
@@ -249,7 +249,6 @@ class AppStore extends ObjStore
 				//print "  subapp: ".$subapp->name()." type :".$subapp->type."\n";
 			}
 
-
 		}
 	}
 
@@ -276,8 +275,7 @@ class AppStore extends ObjStore
 		$app = $this->findOrCreate('ftp');
 		$app->tcp[] = Array( 0 => 'dynamic');
 	}
-	
-	
+
 }
 
 trait centralAppStore

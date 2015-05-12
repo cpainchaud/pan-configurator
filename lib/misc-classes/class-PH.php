@@ -31,38 +31,32 @@ class PH
 
     public static $useExceptions = false;
 
+    public static $outputFormattingEnabled = true;
+
     /**
      * will throw Exceptions instead of print errors (useful for web embeded or scrips that want
      * to support errors handling without quiting.
      */
-    public function enableExceptionSupport()
+    static public function enableExceptionSupport()
     {
         PH::$useExceptions = true;
     }
 
-    public function disableExceptionSupport()
+    static public function disableExceptionSupport()
     {
         PH::$useExceptions = false;
     }
 
-    /**
-     * enables faster but very experimental DomXML support in Pan Configurator
-     */
-    static public function enableDomXMLSupport()
+
+    static public function enableOutputFormatting()
     {
-        self::$UseDomXML = true;
-        mwarning('this function is deprecated');
+        PH::$outputFormattingEnabled = true;
     }
 
-    /**
-     * disable DOM XML to switch back to old library (but can trigger unpredictable errors)
-     */
-    static public function disableDomXMLSupport()
+    static public function disableOutputFormatting()
     {
-        self::$UseDomXML = false;
-        print "\n\nWARNING, disabling DOM XML support can trigger unpredictable errors\n\n";
+        PH::$outputFormattingEnabled = false;
     }
-
 
     public static function processCliArgs()
     {
@@ -217,7 +211,7 @@ class PH
     {
         $term = getenv('TERM');
 
-        if( $term === false || strpos($term, 'xterm') === false )
+        if( $term === false || strpos($term, 'xterm') === false || ! PH::$outputFormattingEnabled )
         {
             //if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
             //    $msg = "\027[1;37m".$msg."\027[37m";
@@ -232,13 +226,14 @@ class PH
 
 foreach( $argv as $argIndex => &$arg )
 {
-    if( $arg == 'shadow-disabledomxml')
+    if( $arg == 'shadow-disableoutputformatting')
     {
-        PH::disableDomXMLSupport();
+        PH::disableOutputFormatting();
         unset($argv[$argIndex]);
-        unset($argIndex);
-        unset($arg);
         $argc--;
         break;
     }
+
+    unset($argIndex);
+    unset($arg);
 }
