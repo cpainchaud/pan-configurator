@@ -236,7 +236,7 @@ class PANConf
 			$lvname = DH::findAttribute('name', $node);
 
 			if( $lvname === FALSE )
-				derr('cannot finc VirtualSystem name');
+				derr('cannot find VirtualSystem name');
 
 			if( isset($this->panorama) )
 			{

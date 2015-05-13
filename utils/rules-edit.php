@@ -97,10 +97,11 @@ $supportedArguments['stats'] = Array('niceName' => 'Stats', 'shortHelp' => 'disp
 
 /***************************************
  *
- *         Supported actions
+ *         Supported Actions
  *
  **************************************/
 $supportedActions = Array();
+
 // <editor-fold desc="Supported Actions Array" defaultstate="collapsed" >
 
 //                                              //
@@ -510,19 +511,51 @@ $supportedActions['copy'] = Array(
 $supportedActions['copy']['api'] = &$supportedActions['copy']['file'];
 // </editor-fold>
 //TODO add action==move
+/************************************ */
+
 
 /** @ignore */
-function &prepareArgumentsForAction(&$args, &$action)
+class CallContext
+{
+    public $arguments = Array();
+
+    /** @var  $object Rule|SecurityRule|NatRule|DecryptionRule */
+    public $object;
+    public $actionRef;
+
+    public $isAPI = false;
+
+    public $connector = null;
+
+    public function CallContext($actionProperties, $arguments)
+    {
+        $this->actionRef = $actionProperties;
+        $this->arguments = prepareArgumentsForAction($arguments, $actionProperties);
+    }
+
+    /**
+     * @param $object Rule|SecurityRule|NatRule|DecryptionRule
+     */
+    public function executeAction($object)
+    {
+        $this->object = $object;
+        $this->actionRef['function']($this);
+    }
+}
+
+
+/** @ignore */
+function &prepareArgumentsForAction(&$arguments, &$actionProperties)
 {
     $returnedArguments = Array();
 
-    $ex = explode(',', $args);
+    $ex = explode(',', $arguments);
 
-    if( count($ex) > count($action['argsName']) )
-        display_error_usage_exit("error while processing argument '{$action['name']}' : too many arguments provided");
+    if( count($ex) > count($actionProperties['argsName']) )
+        display_error_usage_exit("error while processing argument '{$actionProperties['name']}' : too many arguments provided");
 
     $count = -1;
-    foreach( $action['argsName'] as $argName => &$properties )
+    foreach( $actionProperties['argsName'] as $argName => &$properties )
     {
         $count++;
 
@@ -532,7 +565,7 @@ function &prepareArgumentsForAction(&$args, &$action)
 
 
         if( (!isset($properties['default']) || $properties['default'] == '*nodefault*') && ($argValue === null || strlen($argValue)) == 0 )
-            derr("action '{$action['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");
+            derr("action '{$actionProperties['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");
 
         if( $argValue !== null && strlen($argValue) > 0)
             $argValue = trim($argValue);
@@ -545,7 +578,7 @@ function &prepareArgumentsForAction(&$args, &$action)
             {
                 $argValue = strtolower($argValue);
                 if( !isset($properties['choices'][$argValue]) )
-                    derr("unsupported value '{$argValue}' for action '{$action['name']}' arg#{$count} '{$argName}'");
+                    derr("unsupported value '{$argValue}' for action '{$actionProperties['name']}' arg#{$count} '{$argName}'");
             }
         }
         elseif( $properties['type'] == 'boolean' )
@@ -555,16 +588,16 @@ function &prepareArgumentsForAction(&$args, &$action)
             elseif( $argValue == '0' || strtolower($argValue) == 'false' || strtolower($argValue) == 'no' )
                 $argValue = false;
             else
-                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
+                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$actionProperties['name']}' arg#{$count} helper#'{$argName}'");
         }
         elseif( $properties['type'] == 'integer' )
         {
             if( !is_integer($argValue) )
-                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
+                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$actionProperties['name']}' arg#{$count} helper#'{$argName}'");
         }
         else
         {
-            derr("unsupported argument type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
+            derr("unsupported argument type '{$properties['type']}' for  action '{$actionProperties['name']}' arg#{$count} helper#'{$argName}'");
         }
         $returnedArguments[$argName] = $argValue;
     }

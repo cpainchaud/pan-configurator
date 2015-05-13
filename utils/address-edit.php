@@ -188,37 +188,38 @@ $supportedActions['replacebymembersanddelete'] = Array(
     'args' => false,
 );
 
+
 $supportedActions['showip4mapping'] = Array(
     'name' => 'showIP4Mapping',
     'args' => false,
     'file' => function ( $object )
+                {
+                    /* @var Address|AddressGroup $object */
+                    if( $object->isGroup() )
                     {
-                        /* @var Address|AddressGroup $object */
-                        if( $object->isGroup() )
+                        $resolvMap=$object->getIP4Mapping();
+                        foreach($resolvMap['map'] as &$resolvRecord)
                         {
-                            $resolvMap=$object->getIP4Mapping();
-                            foreach($resolvMap['map'] as &$resolvRecord)
-                            {
-                                print "     * ".str_pad(long2ip($resolvRecord['start']), 14)." - ".long2ip($resolvRecord['end'])."\n";
-                            }
-                            foreach($resolvMap['unresolved'] as &$resolvRecord)
-                            {
-                                print "     * UNRESOLVED: {$resolvRecord->name()}\n";
-                            }
-
+                            print "     * ".str_pad(long2ip($resolvRecord['start']), 14)." - ".long2ip($resolvRecord['end'])."\n";
                         }
-                        elseif( ! $object->isTmpAddr() )
+                        foreach($resolvMap['unresolved'] as &$resolvRecord)
                         {
-                            $type = $object->type();
-
-                            if( $type != 'ip-netmask' && $type != 'ip-range' )
-                            {
-                                $resolvMap = $object->resolveIP_StartEnd();
-                                print "     * ".str_pad(long2ip($resolvMap['start']), 14)." - ".long2ip($resolvMap['end'])."\n";
-                            }
-                            print "     * UNSUPPORTED \n";
+                            print "     * UNRESOLVED: {$resolvRecord->name()}\n";
                         }
+
                     }
+                    elseif( ! $object->isTmpAddr() )
+                    {
+                        $type = $object->type();
+
+                        if( $type == 'ip-netmask' || $type == 'ip-range' )
+                        {
+                            $resolvMap = $object->resolveIP_Start_End();
+                            print "     * ".str_pad(long2ip($resolvMap['start']), 14)." - ".long2ip($resolvMap['end'])."\n";
+                        }
+                        print "     * UNSUPPORTED \n";
+                    }
+                }
 );
 $supportedActions['showip4mapping']['api'] = & $supportedActions['showip4mapping']['file'];
 
@@ -226,9 +227,10 @@ $supportedActions['showip4mapping']['api'] = & $supportedActions['showip4mapping
 $supportedActions['displayreferences'] = Array(
     'name' => 'displayReferences',
     'file' =>  "\$object->display_references(7);",
-    'api' =>   "\$object->display_references(7);",
     'args' => false
 );
+$supportedActions['displayreferences']['api'] = & $supportedActions['displayreferences']['file'];
+
 
 $supportedActions['display'] = Array(
     'name' => 'display',
@@ -243,6 +245,65 @@ $supportedActions['display'] = Array(
 // </editor-fold>
 
 
+/** @ignore */
+function &prepareArgumentsForAction(&$args, &$action)
+{
+    $returnedArguments = Array();
+
+    $ex = explode(',', $args);
+
+    if( count($ex) > count($action['argsName']) )
+        display_error_usage_exit("error while processing argument '{$action['name']}' : too many arguments provided");
+
+    $count = -1;
+    foreach( $action['argsName'] as $argName => &$properties )
+    {
+        $count++;
+
+        $argValue = null;
+        if( isset($ex[$count]) )
+            $argValue = $ex[$count];
+
+
+        if( (!isset($properties['default']) || $properties['default'] == '*nodefault*') && ($argValue === null || strlen($argValue)) == 0 )
+            derr("action '{$action['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");
+
+        if( $argValue !== null && strlen($argValue) > 0)
+            $argValue = trim($argValue);
+        else
+            $argValue = $properties['default'];
+
+        if( $properties['type'] == 'string' )
+        {
+            if( isset( $properties['choices']) )
+            {
+                $argValue = strtolower($argValue);
+                if( !isset($properties['choices'][$argValue]) )
+                    derr("unsupported value '{$argValue}' for action '{$action['name']}' arg#{$count} '{$argName}'");
+            }
+        }
+        elseif( $properties['type'] == 'boolean' )
+        {
+            if( $argValue == '1' || strtolower($argValue) == 'true' || strtolower($argValue) == 'yes' )
+                $argValue = true;
+            elseif( $argValue == '0' || strtolower($argValue) == 'false' || strtolower($argValue) == 'no' )
+                $argValue = false;
+            else
+                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
+        }
+        elseif( $properties['type'] == 'integer' )
+        {
+            if( !is_integer($argValue) )
+                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
+        }
+        else
+        {
+            derr("unsupported argument type '{$properties['type']}' for  action '{$action['name']}' arg#{$count} helper#'{$argName}'");
+        }
+        $returnedArguments[$argName] = $argValue;
+    }
+    return $returnedArguments;
+}
 
 PH::processCliArgs();
 
@@ -485,11 +546,17 @@ foreach( $explodedActions as &$exAction )
         display_error_usage_exit('unsupported Action: "'.$newAction['name'].'"');
     }
 
+    $newAction['referencedAction'] = &$supportedActions[$newAction['name']];
+
     if( count($explodedAction) > 1 )
     {
         if( $supportedActions[$newAction['name']]['args'] === false )
             display_error_usage_exit('action "'.$newAction['name'].'" does not accept arguments');
-        $newAction['arguments'] = explode(',', $explodedAction[1]);
+
+        if( !isset($newAction['referencedAction']['argsCount']) || $newAction['referencedAction']['argsCount'] <= 1 )
+            $newAction['arguments'] = explode(',', $explodedAction[1]);
+        else
+            $newAction['arguments'] = Array($explodedAction[1]);
     }
     else if( $supportedActions[$newAction['name']]['args'] !== false )
         display_error_usage_exit('action "'.$newAction['name'].'" requires arguments');
@@ -653,6 +720,11 @@ foreach( $objectsToProcess as &$objectsRecord )
 
         foreach( $doActions as &$doAction )
         {
+            $currentReferencedAction = &$doAction['referencedAction'];
+
+            $context = Array();
+            $context['PAN-Object'] = $pan;
+
             print "\n   - object '" . PH::boldText($object->name()) . "' passing through Action='" . PH::boldText($doAction['name']) . "'\n";
             if ($supportedActions[$doAction['name']]['args'] !== false)
             {
@@ -721,7 +793,7 @@ foreach( $objectsToProcess as &$objectsRecord )
         }
     }
 
-    print "* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed\n\n";
+    print "\n* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed\n\n";
 }
 // </editor-fold>
 
