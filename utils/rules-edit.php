@@ -23,6 +23,7 @@ print "************ RULE-EDIT UTILITY ****************\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
+require_once("common/actions.php");
 
 
 function display_usage_and_exit($shortMessage = false)
@@ -110,306 +111,578 @@ $supportedActions = Array();
 $supportedActions['from-add'] = Array(
     'name' => 'from-Add',
     'section' => 'zone',
-    'file' => "\$rule->from->addZone(!value!);",
-    'api' => "\$rule->from->API_addZone(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->from->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
+        if ($objectFind === null)
+            derr("zone named '{$context->arguments['objName']}' not found");
+
+        if ($context->isAPI)
+            $rule->from->API_addZone($objectFind);
+        else
+            $rule->from->addZone($objectFind);
+    },
+    'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['from-add-force'] = Array(
     'name' => 'from-Add-Force',
     'section' => 'zone',
-    'file' => "\$rule->from->addZone(!value!);",
-    'api' => "\$rule->from->API_addZone(!value!);",
-    'args' => true,
-    'argObjectFinder' => $supportedActions['from-add']['argObjectFinder'].
-        "\nif( \$objectFind===null)\n{\$objectFind=\$rule->from->parentCentralStore->findOrCreate('!value!');}\n"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->from->parentCentralStore->findOrCreate($context->arguments['zoneName']);
+        if ($objectFind === null)
+            derr("zone named '{$context->arguments['objName']}' not found");
+
+        if ($context->isAPI)
+            $rule->from->API_addZone($objectFind);
+        else
+            $rule->from->addZone($objectFind);
+    },
+    'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['from-remove'] = Array(
     'name' => 'from-Remove',
     'section' => 'zone',
-    'file' => "\$rule->from->removeZone(!value!);",
-    'api' => "\$rule->from->API_removeZone(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->from->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
+        if ($objectFind === null)
+            derr("zone named '{$context->arguments['objName']}' not found");
+
+        if ($context->isAPI)
+            $rule->from->API_removeZone($objectFind);
+        else
+            $rule->from->removeZone($objectFind);
+    },
+    'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['from-remove-force-any'] = Array(
     'name' => 'from-Remove-Force-Any',
     'section' => 'zone',
-    'file' => "\$rule->from->removeZone(!value!, true, true);",
-    'api' => "\$rule->from->API_removeZone(!value!, true, true);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->from->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
+        if ($objectFind === null)
+            derr("zone named '{$context->arguments['objName']}' not found");
+
+        if ($context->isAPI)
+            $rule->from->API_removeZone($objectFind, true, true);
+        else
+            $rule->from->removeZone($objectFind, true, true);
+    },
+    'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['from-set-any'] = Array(
     'name' => 'from-Set-Any',
     'section' => 'zone',
-    'file' => "\$rule->from->setAny();",
-    'api' => "\$rule->from->API_setAny();",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+
+        if ($context->isAPI)
+            $rule->from->API_setAny();
+        else
+            $rule->from->setAny();
+    },
 );
 
 $supportedActions['to-add'] = Array(
     'name' => 'to-Add',
     'section' => 'zone',
-    'file' => "\$rule->to->addZone(!value!);",
-    'api' => "\$rule->to->API_addZone(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->to->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
+        if ($objectFind === null)
+            derr("zone named '{$context->arguments['objName']}' not found");
+
+        if ($context->isAPI)
+            $rule->to->API_addZone($objectFind);
+        else
+            $rule->to->addZone($objectFind);
+    },
+    'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['to-add-force'] = Array(
     'name' => 'to-Add-Force',
     'section' => 'zone',
-    'file' => "\$rule->to->addZone(!value!);",
-    'api' => "\$rule->to->API_addZone(!value!);",
-    'args' => true,
-    'argObjectFinder' => $supportedActions['to-add']['argObjectFinder'].
-        "\nif( \$objectFind===null)\n{\$objectFind=\$rule->to->parentCentralStore->findOrCreate('!value!');}\n"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->from->parentCentralStore->findOrCreate($context->arguments['zoneName']);
+        if ($objectFind === null)
+            derr("zone named '{$context->arguments['objName']}' not found");
+
+        if ($context->isAPI)
+            $rule->to->API_addZone($objectFind);
+        else
+            $rule->to->addZone($objectFind);
+    },
+    'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['to-remove'] = Array(
     'name' => 'to-Remove',
     'section' => 'zone',
-    'file' => "\$rule->to->removeZone(!value!);",
-    'api' => "\$rule->to->API_removeZone(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->to->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
+        if ($objectFind === null)
+            derr("zone named '{$context->arguments['objName']}' not found");
+
+        if ($context->isAPI)
+            $rule->to->API_removeZone($objectFind);
+        else
+            $rule->to->removeZone($objectFind);
+    },
+    'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['to-remove-force-any'] = Array(
     'name' => 'to-Remove-Force-Any',
     'section' => 'zone',
-    'file' => "\$rule->to->removeZone(!value!, true, true);",
-    'api' => "\$rule->to->API_removeZone(!value!, true, true);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->to->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
+        if( $objectFind === null )
+            derr("zone named '{$context->arguments['objName']}' not found");
+
+        if ($context->isAPI)
+            $rule->to->API_removeZone($objectFind, true, true);
+        else
+            $rule->to->removeZone($objectFind, true, true);
+    },
+    'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['to-set-any'] = Array(
     'name' => 'to-Set-Any',
     'section' => 'zone',
-    'file' => "\$rule->to->setAny();",
-    'api' => "\$rule->to->API_setAny();",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $context->isAPI )
+            $rule->to->API_setAny();
+        else
+            $rule->to->setAny();
+    },
 );
 
 
-//                                                   //
-//                Source/Dest Based Actions          //
-//                                                   //
+  //                                                    //
+ //                Source/Dest Based Actions           //
+//                                                    //
 $supportedActions['src-add'] = Array(
     'name' => 'src-Add',
     'section' => 'address',
-    'file' => "\$rule->source->addObject(!value!);",
-    'api' => "\$rule->source->API_add(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->source->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
+        if( $objectFind === null )
+            derr("address-type object named '{$context->arguments['objName']}' not found");
+
+        if( $context->isAPI )
+            $rule->source->API_add($objectFind);
+        else
+            $rule->source->addObject($objectFind);
+    },
+    'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['src-remove'] = Array(
     'name' => 'src-Remove',
     'section' => 'address',
-    'file' => "\$rule->source->remove(!value!);",
-    'api' => "\$rule->source->API_remove(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->source->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
+        if( $objectFind === null )
+            derr("address-type object named '{$context->arguments['objName']}' not found");
+
+        if( $context->isAPI )
+            $rule->source->API_remove($objectFind);
+        else
+            $rule->source->remove($objectFind);
+    },
+    'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['src-remove-force-any'] = Array(
     'name' => 'src-Remove-Force-Any',
     'section' => 'address',
-    'file' => "\$rule->source->remove(!value!, true, true);",
-    'api' => "\$rule->source->API_remove(!value!, true);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->source->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
+        if( $objectFind === null )
+            derr("address-type object named '{$context->arguments['objName']}' not found");
+
+        if( $context->isAPI )
+            $rule->source->API_remove($objectFind, true);
+        else
+            $rule->source->remove($objectFind, true, true);
+    },
+    'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['dst-add'] = Array(
     'name' => 'dst-Add',
     'section' => 'address',
-    'file' => "\$rule->destination->addObject(!value!);",
-    'api' => "\$rule->destination->API_add(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->destination->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
+        if( $objectFind === null )
+            derr("address-type object named '{$context->arguments['objName']}' not found");
+
+        if( $context->isAPI )
+            $rule->destination->API_add($objectFind);
+        else
+            $rule->destination->addObject($objectFind);
+    },
+    'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['dst-remove'] = Array(
     'name' => 'dst-Remove',
     'section' => 'address',
-    'file' => "\$rule->destination-remove(!value!);",
-    'api' => "\$rule->destination->API_remove(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->destination->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
+        if( $objectFind === null )
+            derr("address-type object named '{$context->arguments['objName']}' not found");
+
+        if( $context->isAPI )
+            $rule->destination->API_remove($objectFind);
+        else
+            $rule->destination->remove($objectFind);
+    },
+    'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['dst-remove-force-any'] = Array(
     'name' => 'dst-Remove-Force-Any',
     'section' => 'address',
-    'file' => "\$rule->destination-remove(!value!, true, true);",
-    'api' => "\$rule->destination->API_remove(!value!, true);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->destination->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
+        if( $objectFind === null )
+            derr("address-type object named '{$context->arguments['objName']}' not found");
+
+        if( $context->isAPI )
+            $rule->destination->API_remove($objectFind, true);
+        else
+            $rule->destination-remove($objectFind, true, true);
+    },
+    'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['src-set-any'] = Array(
     'name' => 'src-set-Any',
     'section' => 'address',
-    'file' => "\$rule->source->setAny();",
-    'api' => "\$rule->source->API_setAny();",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->source->API_setAny();
+        else
+            $rule->source->setAny();
+    },
 );
 $supportedActions['dst-set-any'] = Array(
     'name' => 'dst-set-Any',
     'section' => 'address',
-    'file' => "\$rule->destination->setAny();",
-    'api' => "\$rule->destination->API_setAny();",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->destination->API_setAny();
+        else
+            $rule->destination->setAny();
+    },
 );
 
-//                                                   //
-//                Tag property Based Actions       //
-//                                                  //
+
+  //                                                 //
+ //              Tag property Based Actions         //
+//                                                 //
 $supportedActions['tag-add'] = Array(
     'name' => 'tag-Add',
     'section' => 'tag',
-    'file' => "\$rule->tags->addTag(!value!);",
-    'api' => "\$rule->tags->API_addTag(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->tags->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->tags->parentCentralStore->find($context->arguments['tagName']);
+        if( $objectFind === null )
+            derr("tag named '{$context->arguments['tagName']}' not found");
+
+        if( $context->isAPI )
+            $rule->tags->API_addTag($objectFind);
+        else
+            $rule->tags->addTag($objectFind);
+    },
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['tag-add-force'] = Array(
     'name' => 'tag-Add-Force',
     'section' => 'tag',
-    'file' => "\$rule->tags->addTag(!value!);",
-    'api' => "\$rule->tags->API_addTag(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n
-                            if( !\$inputIsAPI )\$objectFind=\$rule->tags->parentCentralStore->findOrCreate('!value!');
-                            else {
-                               \$objectFind = \$rule->tags->parentCentralStore->find('!value!');
-                                if( \$objectFind === null)  \$objectFind = \$rule->tags->parentCentralStore->API_createTag('!value!'); }"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+        {
+            $objectFind = $rule->tags->parentCentralStore->find($context->arguments['tagName']);
+            if( $objectFind === null)
+                $objectFind = $rule->tags->parentCentralStore->API_createTag($context->arguments['tagName']);
+        }
+        else
+            $objectFind = $rule->tags->parentCentralStore->find($context->arguments['tagName']);
+
+        if( $objectFind === null )
+            derr("tag named '{$context->arguments['tagName']}' not found");
+
+        if( $context->isAPI )
+            $rule->tags->API_removeTag($objectFind);
+        else
+            $rule->tags->removeTag($objectFind);
+    },
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['tag-remove'] = Array(
     'name' => 'tag-Remove',
     'section' => 'tag',
-    'file' => "\$rule->tags->removeTag(!value!);",
-    'api' => "\$rule->tags->API_removeTag(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->tags->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->tags->parentCentralStore->find($context->arguments['tagName']);
+        if( $objectFind === null )
+            derr("tag named '{$context->arguments['tagName']}' not found");
+
+        if( $context->isAPI )
+            $rule->tags->API_removeTag($objectFind);
+        else
+            $rule->tags->removeTag($objectFind);
+    },
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 
 
-
-//                                                   //
-//                Services Based Actions       //
+  //                                                   //
+ //                Services Based Actions             //
 //                                                   //
 $supportedActions['service-set-appdefault'] = Array(
     'name' => 'service-Set-AppDefault',
     'section' => 'service',
-    'file' => "\$rule->services->setApplicationDefault();",
-    'api' => "\$rule->services->API_setApplicationDefault();",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $context->isAPI )
+            $rule->services->API_setApplicationDefault();
+        else
+            $rule->services->setApplicationDefault();
+    },
 );
 $supportedActions['service-set-any'] = Array(
     'name' => 'service-Set-Any',
     'section' => 'service',
-    'file' => "\$rule->services->setAny();",
-    'api' =>  "\$rule->services->API_setAny();",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $context->isAPI )
+            $rule->services->API_setAny();
+        else
+            $rule->services->setAny();
+    },
 );
 $supportedActions['service-add'] = Array(
     'name' => 'service-Add',
     'section' => 'service',
-    'file' => "\$rule->services->addObject(!value!);",
-    'api' =>  "\$rule->services->API_add(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->services->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
+        if( $objectFind === null )
+            derr("service named '{$context->arguments['svcName']}' not found");
+
+        if( $context->isAPI )
+            $rule->services->API_add($objectFind);
+        else
+            $rule->services->addObject($objectFind);
+    },
+    'args' => Array( 'svcName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['service-remove'] = Array(
     'name' => 'service-Remove',
     'section' => 'service',
-    'file' => "\$rule->services->remove(!value!);",
-    'api' =>  "\$rule->services->API_remove(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->services->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
+        if( $objectFind === null )
+            derr("service named '{$context->arguments['svcName']}' not found");
+
+        if( $context->isAPI )
+            $rule->services->API_remove($objectFind);
+        else
+            $rule->services->remove($objectFind);
+    },
+    'args' => Array( 'svcName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['service-remove-force-any'] = Array(
     'name' => 'service-Remove-Force-Any',
     'section' => 'service',
-    'file' => "\$rule->services->remove(!value!, true, true);",
-    'api' => "\$rule->services->API_remove(!value!, true, true);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->services->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
+        if( $objectFind === null )
+            derr("service named '{$context->arguments['svcName']}' not found");
+
+        if( $context->isAPI )
+            $rule->services->API_remove($objectFind, true, true);
+        else
+            $rule->services->remove($objectFind, true, true);
+    },
+    'args' => Array( 'svcName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 
 
-
-
-//                                                   //
-//                App Based Actions       //
+  //                                                   //
+ //                App Based Actions                  //
 //                                                   //
 $supportedActions['app-set-any'] = Array(
     'name' => 'app-Set-Any',
     'section' => 'app',
-    'file' => "\$rule->apps->setAny();",
-    'api' =>  "\$rule->apps->API_setAny();",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->apps->API_setAny();
+        else
+            $rule->apps->setAny();
+    },
 );
 $supportedActions['app-add'] = Array(
     'name' => 'app-Add',
     'section' => 'app',
-    'file' => "\$rule->apps->addApp(!value!);",
-    'api' =>  "\$rule->apps->API_addApp(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->apps->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
+        if( $objectFind === null )
+            derr("application named '{$context->arguments['appName']}' not found");
+
+        if( $context->isAPI )
+            $rule->apps->API_addApp($objectFind);
+        else
+            $rule->apps->addApp($objectFind);
+    },
+    'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['app-remove'] = Array(
     'name' => 'app-Remove',
     'section' => 'app',
-    'file' => "\$rule->apps->removeApp(!value!);",
-    'api' =>  "\$rule->apps->API_removeApp(!value!);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->apps->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
+        if( $objectFind === null )
+            derr("application named '{$context->arguments['appName']}' not found");
+
+        if( $context->isAPI )
+            $rule->apps->API_removeApp($objectFind);
+        else
+            $rule->apps->removeApp($objectFind);
+    },
+    'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 $supportedActions['app-remove-force-any'] = Array(
     'name' => 'app-Remove-Force-Any',
     'section' => 'app',
-    'file' => "\$rule->apps->removeApp(!value!, true, true);",
-    'api' => "\$rule->apps->API_removeApp(!value!, true, true);",
-    'args' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$rule->apps->parentCentralStore->find('!value!');"
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
+        if( $objectFind === null )
+            derr("application named '{$context->arguments['appName']}' not found");
+
+        if( $context->isAPI )
+            $rule->apps->API_removeApp($objectFind, true, true);
+        else
+            $rule->apps->removeApp($objectFind, true, true);
+    },
+    'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 
 
 
-//                                                   //
-//                Log based Actions       //
-//                                                   //
+  //                                                 //
+ //               Log based Actions                 //
+//                                                 //
 $supportedActions['logstart-enable'] = Array(
     'name' => 'logStart-enable',
     'section' => 'log',
-    'file' => "\$rule->setLogStart(true);",
-    'api' => "\$rule->API_setLogStart(true);",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->API_setLogStart(true);
+        else
+            $rule->setLogStart(true);
+    },
 );
 $supportedActions['logstart-disable'] = Array(
     'name' => 'logStart-disable',
     'section' => 'log',
-    'file' => "\$rule->setLogStart(false);",
-    'api' => "\$rule->API_setLogStart(false);",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->API_setLogStart(false);
+        else
+            $rule->setLogStart(false);
+    },
 );
 $supportedActions['logend-enable'] = Array(
     'name' => 'logEnd-enable',
     'section' => 'log',
-    'file' => "\$rule->setLogEnd(true);",
-    'api' => "\$rule->API_setLogEnd(true);",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->API_setLogEnd(true);
+        else
+            $rule->setLogEnd(true);
+    }
 );
 
 $supportedActions['logend-disable'] = Array(
     'name' => 'logEnd-disable',
     'section' => 'log',
-    'file' => "\$rule->setLogEnd(false);",
-    'api' => "\$rule->API_setLogEnd(false);",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->API_setLogEnd(false);
+        else
+            $rule->setLogEnd(false);
+    }
 );
 $supportedActions['logsetting-set'] = Array(
     'name' => 'logSetting-set',
     'section' => 'log',
-    'file' => "\$rule->setLogSetting('!value!');",
-    'api' => "\$rule->API_setLogSetting('!value!');",
-    'args' => true
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->API_setLogSetting($context->arguments['profName']);
+        else
+            $rule->setLogSetting($context->arguments['profName']);
+    },
+    'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 
 
@@ -417,72 +690,102 @@ $supportedActions['logsetting-set'] = Array(
 //                                                   //
 //                Security profile Based Actions       //
 //                                                   //
-$supportedActions['setsecurityprofile'] = Array(
-    'name' => 'setSecurityProfile',
-    'file' => "\$rule->setSecurityProfileGroup('!value!');",
-    'api' => "\$rule->API_setSecurityProfileGroup('!value!');",
-    'args' => true
+$supportedActions['securityprofile-group-set'] = Array(
+    'name' => 'securityProfile-Group-Set',
+    'MainFunction' =>  function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->API_setSecurityProfileGroup($context->arguments['profName']);
+        else
+            $rule->setSecurityProfileGroup($context->arguments['profName']);
+    },
+    'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
-
 
 //                                                   //
 //                Other property Based Actions       //
 //                                                   //
 $supportedActions['enable'] = Array(
     'name' => 'enable',
-    'file' => "\$rule->setEnabled(true);",
-    'api' => "\$rule->API_setEnabled(true);",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->API_setEnabled(true);
+        else
+            $rule->setEnabled(true);
+    }
 );
 $supportedActions['disable'] = Array(
     'name' => 'disable',
-    'file' => "\$rule->setEnabled(false);",
-    'api' => "\$rule->API_setEnabled(false);",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->API_setEnabled(false);
+        else
+            $rule->setEnabled(false);
+    }
 );
 $supportedActions['delete'] = Array(
     'name' => 'delete',
-    'file' => "\$rule->owner->remove(\$rule);",
-    'api' => "\$rule->owner->API_remove(\$rule);",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        if( $context->isAPI )
+            $rule->owner->API_remove($rule);
+        else
+            $rule->owner->remove($rule);
+    }
 );
 $supportedActions['display'] = Array(
     'name' => 'display',
-    'file' => "\$rule->display(7);",
-    'api' => "\$rule->display(7);",
-    'args' => false
+    'MainFunction' => function(CallContext $context) { $context->object->display(7); }
 );
 $supportedActions['invertpreandpost'] = Array(
     'name' => 'invertPreAndPost',
-    'file' => "if( \$rule->isPreRule() ) \$rule->owner->moveRuleToPostRulebase(\$rule);
-                else if( \$rule->isPostRule() ) \$rule->owner->moveRuleToPreRulebase(\$rule);
-                else derr('unsupported');",
-    'api' => "if( \$rule->isPreRule() ) \$rule->owner->API_moveRuleToPostRulebase(\$rule);
-                else if( \$rule->isPostRule() ) \$rule->owner->API_moveRuleToPreRulebase(\$rule);
-                else derr('unsupported');",
-    'args' => false
+    'MainFunction' => function(CallContext $context)
+                    {
+                        if( !$context->isAPI )
+                        {
+                            if( $context->object->isPreRule() )
+                                $context->object->owner->moveRuleToPostRulebase($context->object);
+                            else if( $context->object->isPostRule() )
+                                $context->object->owner->moveRuleToPreRulebase($context->object);
+                            else
+                                derr('unsupported');
+                        }
+                        else
+                        {
+                            if( $context->object->isPreRule() )
+                                $context->object->owner->API_moveRuleToPostRulebase($context->object);
+                            else if( $context->object->isPostRule() )
+                                $context->object->owner->API_moveRuleToPreRulebase($context->object);
+                            else
+                                derr('unsupported');
+                        }
+                    }
 );
 
 
 $supportedActions['copy'] = Array(
     'name' => 'copy',
-    'file' => function($object, &$context)
+    'MainFunction' => function(CallContext $context)
                 {
-                    /** @var SecurityRule $object */
-
-                    $args = &$context['sanitizedArguments'];
+                    $args = &$context->arguments;
                     $location = $args['location'];
+                    $pan = $context->baseObject;
+
                     if( $args['preORpost'] == "post" )
                         $preORpost = true;
                     else
                         $preORpost = false;
 
-                    /** @var PANConf|PanoramaConf $pan */
-                    $pan = $context['PAN-Object'];
 
                     /** @var RuleStore $ruleStore */
                     $ruleStore = null;
-                    $variableName = $object->storeVariableName();
+                    $variableName = $context->object->storeVariableName();
 
                     if( strtolower($location) == 'shared' )
                     {
@@ -498,111 +801,17 @@ $supportedActions['copy'] = Array(
                             derr("cannot find vsys or device group named '{$location}'");
                         $ruleStore = $sub->$variableName;
                     }
-                    if( $context['api'] === true )
-                        $ruleStore->API_cloneRule($object, null, $preORpost);
+                    if( $context->isAPI )
+                        $ruleStore->API_cloneRule($context->object, null, $preORpost);
                     else
-                        $ruleStore->cloneRule($object, null, $preORpost);
+                        $ruleStore->cloneRule($context->object, null, $preORpost);
                 },
-    'args' => true,
-    'argsCount' => 2,
-    'argsName' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+    'args' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
                             'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => array_flip(Array('pre','post')) ) )
 );
-$supportedActions['copy']['api'] = &$supportedActions['copy']['file'];
 // </editor-fold>
 //TODO add action==move
 /************************************ */
-
-
-/** @ignore */
-class CallContext
-{
-    public $arguments = Array();
-
-    /** @var  $object Rule|SecurityRule|NatRule|DecryptionRule */
-    public $object;
-    public $actionRef;
-
-    public $isAPI = false;
-
-    public $connector = null;
-
-    public function CallContext($actionProperties, $arguments)
-    {
-        $this->actionRef = $actionProperties;
-        $this->arguments = prepareArgumentsForAction($arguments, $actionProperties);
-    }
-
-    /**
-     * @param $object Rule|SecurityRule|NatRule|DecryptionRule
-     */
-    public function executeAction($object)
-    {
-        $this->object = $object;
-        $this->actionRef['function']($this);
-    }
-}
-
-
-/** @ignore */
-function &prepareArgumentsForAction(&$arguments, &$actionProperties)
-{
-    $returnedArguments = Array();
-
-    $ex = explode(',', $arguments);
-
-    if( count($ex) > count($actionProperties['argsName']) )
-        display_error_usage_exit("error while processing argument '{$actionProperties['name']}' : too many arguments provided");
-
-    $count = -1;
-    foreach( $actionProperties['argsName'] as $argName => &$properties )
-    {
-        $count++;
-
-        $argValue = null;
-        if( isset($ex[$count]) )
-            $argValue = $ex[$count];
-
-
-        if( (!isset($properties['default']) || $properties['default'] == '*nodefault*') && ($argValue === null || strlen($argValue)) == 0 )
-            derr("action '{$actionProperties['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");
-
-        if( $argValue !== null && strlen($argValue) > 0)
-            $argValue = trim($argValue);
-        else
-            $argValue = $properties['default'];
-
-        if( $properties['type'] == 'string' )
-        {
-            if( isset( $properties['choices']) )
-            {
-                $argValue = strtolower($argValue);
-                if( !isset($properties['choices'][$argValue]) )
-                    derr("unsupported value '{$argValue}' for action '{$actionProperties['name']}' arg#{$count} '{$argName}'");
-            }
-        }
-        elseif( $properties['type'] == 'boolean' )
-        {
-            if( $argValue == '1' || strtolower($argValue) == 'true' || strtolower($argValue) == 'yes' )
-                $argValue = true;
-            elseif( $argValue == '0' || strtolower($argValue) == 'false' || strtolower($argValue) == 'no' )
-                $argValue = false;
-            else
-                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$actionProperties['name']}' arg#{$count} helper#'{$argName}'");
-        }
-        elseif( $properties['type'] == 'integer' )
-        {
-            if( !is_integer($argValue) )
-                derr("unsupported argument value '{$argValue}' which should of type '{$properties['type']}' for  action '{$actionProperties['name']}' arg#{$count} helper#'{$argName}'");
-        }
-        else
-        {
-            derr("unsupported argument type '{$properties['type']}' for  action '{$actionProperties['name']}' arg#{$count} helper#'{$argName}'");
-        }
-        $returnedArguments[$argName] = $argValue;
-    }
-    return $returnedArguments;
-}
 
 
 PH::processCliArgs();
@@ -635,33 +844,44 @@ if( isset(PH::$args['listactions']) )
     print "Listing of supported actions:\n\n";
 
     print str_pad('', 100, '-')."\n";
-    print str_pad('       Action name', 50, ' ')."| OFF | API |     comment\n";
+    print str_pad('Action name', 28, ' ', STR_PAD_BOTH)."|".str_pad("Argument:Type",24, ' ', STR_PAD_BOTH)." |".
+            str_pad("Def. Values",12, ' ', STR_PAD_BOTH)."|   Choices\n";
     print str_pad('', 100, '-')."\n";
 
     foreach($supportedActions as &$action )
     {
-        if( isset($action['api']) && $action['api'] != 'unsupported' )
-            $apiSupport = 'yes';
-        else
-            $apiSupport = 'no ';
 
-        if( isset($action['file']) && $action['file'] != 'unsupported' )
-            $offlineSupport = 'yes';
-        else
-            $offlineSupport = 'no ';
+        $output = "* ".$action['name'];
 
-        if( $action['args'] )
-            $output = "* ".$action['name'].":value1[,value2...]"; //--- OFF:$offlineSupport  API:$apiSupport \n";
-        else
-            $output = "* ".$action['name'];//."   --- OFF:$offlineSupport  API:$apiSupport \n";
+        $output = str_pad($output, 28).'|';
 
-        $output = str_pad($output, 50);
+        if( isset($action['args']) )
+        {
+            $first = true;
+            $count=1;
+            foreach($action['args'] as $argName => &$arg)
+            {
+                if( !$first )
+                    $output .= "\n".str_pad('',28).'|';
 
-        $output2 = "| $offlineSupport | $apiSupport |";
+                $output .= " ".str_pad("#$count $argName:{$arg['type']}", 24)."| ".str_pad("{$arg['default']}",12)."| ";
+                if( isset($arg['choices']) )
+                {
+                    foreach ($arg['choices'] as $choice => $value )
+                    {
+                        $output .= "$choice,";
+                    }
+                }
 
-        print $output.$output2."\n";
+                $count++;
+                $first = false;
+            }
+        }
 
-        print str_pad('', 100, '-')."\n";
+
+        print $output."\n";
+
+        print str_pad('', 100, '=')."\n";
 
         //print "\n";
     }
@@ -861,36 +1081,29 @@ else
 // Extracting actions
 //
 $explodedActions = explode('/', $doActions);
+/** @var CallContext[] $doActions */
 $doActions = Array();
 foreach( $explodedActions as &$exAction )
 {
-    $newAction = Array();
     $explodedAction = explode(':', $exAction);
     if( count($explodedAction) > 2 )
         display_error_usage_exit('"actions" argument has illegal syntax: '.PH::$args['actions']);
-    $newAction['name'] = strtolower($explodedAction[0]);
 
-    if( !isset($supportedActions[$newAction['name']]) )
+    $actionName = strtolower($explodedAction[0]);
+
+    if( !isset($supportedActions[$actionName]) )
     {
-        display_error_usage_exit('unsupported Action: "'.$newAction['name'].'"');
+        display_error_usage_exit('unsupported Action: "'.$actionName.'"');
     }
 
-    $newAction['referencedAction'] = &$supportedActions[$newAction['name']];
+    if( count($explodedAction) == 1 )
+        $explodedAction[1] = '';
 
-    if( count($explodedAction) > 1 )
-    {
-        if( $supportedActions[$newAction['name']]['args'] === false )
-            display_error_usage_exit('action "'.$newAction['name'].'" does not accept arguments');
+    $context = new CallContext($supportedActions[$actionName], $explodedAction[1]);
+    if( $configInput['type'] == 'api' )
+        $context->isAPI = true;
 
-        if( !isset($newAction['referencedAction']['argsCount']) || $newAction['referencedAction']['argsCount'] <= 1 )
-            $newAction['arguments'] = explode(',', $explodedAction[1]);
-        else
-            $newAction['arguments'] = Array($explodedAction[1]);
-    }
-    else if( $supportedActions[$newAction['name']]['args'] !== false )
-        display_error_usage_exit('action "'.$newAction['name'].'" requires arguments');
-
-    $doActions[] = $newAction;
+    $doActions[] = $context;
 }
 //
 // ---------
@@ -1071,83 +1284,11 @@ foreach( $rulesToProcess as &$rulesRecord )
         $subObjectsProcessed++;
 
         // object will pass through every action now
-        foreach( $doActions as &$doAction )
+        foreach( $doActions as $doAction )
         {
-            $currentReferencedAction = &$doAction['referencedAction'];
+            $doAction->executeAction($rule);
 
-            $context = Array();
-            $context['PAN-Object'] = $pan;
-
-            if ($supportedActions[$doAction['name']]['args'] !== false)
-            {
-                foreach($doAction['arguments'] as $arg)
-                {
-                    print "   - rule '" . $rule->name() . "' passing through Action='{$doAction['name']} Arg='{$arg}'\n";
-
-                    if( isset($currentReferencedAction['argsCount']) )
-                    {
-                        $context['sanitizedArguments'] = prepareArgumentsForAction($arg, $currentReferencedAction);
-                    }
-                    else
-                        $context['sanitizedArguments'] = Array();
-
-
-                    $objectFind = null;
-
-                    if ($configInput['type'] == 'file')
-                    {
-                        $toEval = $supportedActions[$doAction['name']]['file'];
-                        $inputIsAPI = false;
-                        $context['api'] = false;
-                    }
-                    else
-                    {
-                        $toEval = $supportedActions[$doAction['name']]['api'];
-                        $inputIsAPI = true;
-                        $context['api'] = true;
-                    }
-
-                    if( is_string($toEval) )
-                    {
-                        if (isset($supportedActions[$doAction['name']]['argObjectFinder']))
-                        {
-                            $findObjectEval = $supportedActions[$doAction['name']]['argObjectFinder'];
-                            $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
-                            if (eval($findObjectEval) === false)
-                                derr("\neval code was : $findObjectEval\n");
-                            if ($objectFind === null)
-                                display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
-                            $toEval = str_replace('!value!', '$objectFind', $toEval);
-                        } else
-                            $toEval = str_replace('!value!', $arg, $toEval);
-
-                        if (eval($toEval) === false)
-                            derr("\neval code was : $toEval\n");
-                    }
-                    else
-                    {
-                        $toEval($rule, $context);
-                    }
-
-                    //print $toEval;
-                    print "\n";
-                }
-            }
-            else
-            {
-                print "   - rule '" . $rule->name() . "' passing through Action='{$doAction['name']}'\n";
-
-                if ($configInput['type'] == 'file')
-                    $toEval = $supportedActions[$doAction['name']]['file'];
-                else if ($configInput['type'] == 'api')
-                    $toEval = $supportedActions[$doAction['name']]['api'];
-                else
-                    derr('unsupported input type');
-
-                if (eval($toEval) === false)
-                    derr("\neval code was : $toEval\n");
-
-            }
+            print "\n";
         }
     }
 

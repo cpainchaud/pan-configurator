@@ -912,7 +912,6 @@ class RuleStore
      * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
      * @param Rule $rule
      * @return bool
-     * @internal param bool $rewritexml
      */
 	public function API_remove($rule)
 	{
@@ -1019,8 +1018,6 @@ class RuleStore
 
 
             $str .= '/'.self::$storeNameByType[$this->type]['xpathRoot'].'/rules';
-
-
 
 			return $str;
 	}
