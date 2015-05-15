@@ -19,6 +19,8 @@ class CallContext
 
     public $connector = null;
 
+    public $padding = '';
+
     public function CallContext($actionProperties, $arguments)
     {
         $this->actionRef = $actionProperties;

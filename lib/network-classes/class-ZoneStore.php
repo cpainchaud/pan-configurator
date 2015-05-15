@@ -114,11 +114,8 @@ class ZoneStore extends ObjStore
             if( $zone->isTmp() )
                 continue;
 
-            foreach( $zone->attachedInterfaces->interfaces() as $if )
-            {
-                if( $if->name() == $ifName )
-                    return $zone;
-            }
+            if( $zone->attachedInterfaces->hasInterfaceNamed($ifName) )
+                return $zone;
         }
 
         return null;

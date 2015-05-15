@@ -39,7 +39,7 @@ class VirtualRouterStore extends ObjStore
     }
 
     /**
-     * @return IPsecTunnel[]
+     * @return VirtualRouter[]
      */
     public function virtualRouters()
     {

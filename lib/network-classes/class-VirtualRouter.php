@@ -92,8 +92,6 @@ class VirtualRouter
      */
     public function getIPtoZoneRouteMapping($contextVSYS, $orderByNarrowest=true )
     {
-        $interfaces  = $this->owner->owner->network->findInterfacesAttachedToVSYS($contextVSYS);
-
         $ipv4 = Array();
         $ipv6 = Array();
 
@@ -106,18 +104,24 @@ class VirtualRouter
             $nexthopIf = $route->nexthopInterface();
             if( $nexthopIf !== null )
             {
-                if( $this->attachedInterfaces->hasInterfaceNamed($nexthopIf->name()) )
+                if( !$this->attachedInterfaces->hasInterfaceNamed($nexthopIf->name()) )
                 {
                     mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface does not belong to this virtual router'");
                     continue;
                 }
-                if( isset($interfaces[$nexthopIf->name()]) )
+                if( $contextVSYS->importedInterfaces->hasInterfaceNamed($nexthopIf->name()) )
                 {
                     $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($nexthopIf->name());
                     if( $findZone === null )
                     {
                         mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is not attached to a Zone in vsys {$contextVSYS->name()}'");
                         continue;
+                    }
+                    else
+                    {
+                        $record = Array( 'network' => $route->destination(), 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'static', 'priority' => 2);
+                        $ipv4sort[ $record['end']-$record['start'] ][$record['start']][] = &$record;
+                        unset($record);
                     }
                 }
                 else
@@ -127,9 +131,7 @@ class VirtualRouter
                 }
 
             }
-            $nextHopType = $route->nexthopType();
-
-            if( $nextHopType == 'ip-address' )
+            else if( $route->nexthopType() == 'ip-address' )
             {
                 $nexthopIP = $route->nexthopIP();
                 $findZone = null;
@@ -137,7 +139,7 @@ class VirtualRouter
                 {
                     if( ($if->isEthernetType()|| $if->isAggregateType()) && $if->type() == 'layer3' || $if->isLoopbackType() )
                     {
-                        if( $if->importedByVSYS !== $contextVSYS )
+                        if( ! $contextVSYS->importedInterfaces->hasInterfaceNamed($if->name()) )
                             continue;
 
                         if( $if->isLoopbackType() )
@@ -189,7 +191,7 @@ class VirtualRouter
 
         foreach( $this->attachedInterfaces->interfaces() as $if )
         {
-            if($if->importedByVSYS !== $contextVSYS )
+            if( ! $contextVSYS->importedInterfaces->hasInterfaceNamed($if->name()) )
                 continue;
 
             if( ($if->isEthernetType() || $if->isAggregateType()) && $if->type() == 'layer3' )

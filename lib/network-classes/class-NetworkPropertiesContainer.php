@@ -155,37 +155,6 @@ class NetworkPropertiesContainer
     }
 
     /**
-     * @param VirtualSystem $vsys
-     * @return EthernetInterface[]|IPsecTunnel[]|LoopbackInterface[]|AggregateEthernetInterface[]|TmpInterface[]
-     */
-    function findInterfacesAttachedToVSYS( VirtualSystem $vsys )
-    {
-        $ifs = Array();
-
-        foreach( $this->ethernetIfStore->getInterfaces() as $if )
-            if( $if->importedByVSYS === $vsys )
-                $ifs[$if->name()] = $if;
-
-        foreach( $this->aggregateEthernetIfStore->getInterfaces() as $if )
-            if( $if->importedByVSYS === $vsys )
-                $ifs[$if->name()] = $if;
-
-        foreach( $this->loopbackIfStore->getInterfaces() as $if )
-            if( $if->importedByVSYS === $vsys )
-                $ifs[$if->name()] = $if;
-
-        foreach( $this->ipsecTunnelStore->getAll() as $if )
-            if( $if->importedByVSYS === $vsys )
-                $ifs[$if->name()] = $if;
-
-        foreach( $this->tmpInterfaceStore->getAll() as $if )
-            if( $if->importedByVSYS === $vsys )
-                $ifs[$if->name()] = $if;
-
-        return $ifs;
-    }
-
-    /**
      * @param string $ip
      * @return EthernetInterface[]|IPsecTunnel[]|LoopbackInterface[]|AggregateEthernetInterface[]
      */
