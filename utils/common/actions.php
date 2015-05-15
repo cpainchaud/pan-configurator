@@ -25,9 +25,6 @@ class CallContext
         $this->prepareArgumentsForAction($arguments);
     }
 
-    /**
-     * @param $object Rule|SecurityRule|NatRule|DecryptionRule
-     */
     public function executeAction($object)
     {
         $this->object = $object;
