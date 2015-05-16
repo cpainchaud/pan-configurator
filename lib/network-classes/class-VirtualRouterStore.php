@@ -46,5 +46,14 @@ class VirtualRouterStore extends ObjStore
         return $this->o;
     }
 
+    /**
+     * @param $vrName string
+     * @return null|VirtualRouter
+     */
+    public function findVirtualRouter($vrName)
+    {
+        return $this->findByName($vrName);
+    }
+
 
 }

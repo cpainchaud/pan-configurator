@@ -121,6 +121,34 @@ class ZoneStore extends ObjStore
         return null;
     }
 
+    /**
+     * @param $vsys string|VirtualSystem
+     * @return null|Zone
+     */
+    public function findZoneWithExternalVsys($vsys)
+    {
+        if( is_string($vsys) )
+        {
+            foreach($this->o as $zone )
+            {
+                if( $zone->type() == 'external' )
+                    if( isset($zone->externalVsys[$vsys]) )
+                        return $zone;
+            }
+            return null;
+        }
+
+        foreach($this->o as $zone )
+        {
+            if( $zone->type() == 'external' )
+            {
+                if (isset($zone->externalVsys[$vsys->name()]))
+                    return $zone;
+            }
+        }
+        return null;
+    }
+
 	
 	/**
 	* return an array with all Zones in this store

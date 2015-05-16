@@ -84,6 +84,22 @@ class VirtualRouter
         return $this->_staticRoutes;
     }
 
+    /**
+     * @return VirtualSystem[]
+     */
+    public function & findConcernedVsys()
+    {
+        $vsysList = Array();
+        foreach($this->attachedInterfaces->interfaces() as $if )
+        {
+            $vsys = $this->owner->owner->network->findVsysInterfaceOwner($if->name());
+            if( $vsys !== null )
+                $vsysList[$vsys->name()] = $vsys;
+        }
+
+        return $vsysList;
+    }
+
 
     /**
      * @param $contextVSYS VirtualSystem
@@ -126,13 +142,30 @@ class VirtualRouter
                 }
                 else
                 {
-                    mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is attached to wrong vsys '{$contextVSYS->name()}'");
-                    continue;
+                    $findVsys = $contextVSYS->owner->network->findVsysInterfaceOwner($nexthopIf->name());
+
+                    if( $findVsys === null )
+                    {
+                        mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is attached to no VSYS");
+                        continue;
+                    }
+                    $externalZone = $contextVSYS->zoneStore->findZoneWithExternalVsys($findVsys);
+
+                    if( $externalZone == null )
+                    {
+                        mwarning("route {$route->name()}/{$route->destination()} ignored because its attached to interface {$nexthopIf->name()} but this interface is attached to wrong vsys '{$findVsys->name()}' and no external zone could be found");
+                        continue;
+                    }
+
+                    $record = Array( 'network' => $route->destination(), 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $externalZone->name(), 'origin' => 'static', 'priority' => 2);
+                    $ipv4sort[ $record['end']-$record['start'] ][$record['start']][] = &$record;
+                    unset($record);
                 }
 
             }
             else if( $route->nexthopType() == 'ip-address' )
             {
+                $nextHopType = $route->nexthopType();
                 $nexthopIP = $route->nexthopIP();
                 $findZone = null;
                 foreach($this->attachedInterfaces->interfaces() as $if )
@@ -176,17 +209,16 @@ class VirtualRouter
                     mwarning("route {$route->name()}/{$route->destination()} ignored because no matching interface was found for nexthop={$nexthopIP}");
                     continue;
                 }
+
+                $record = Array( 'network' => $route->destination(), 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'static', 'priority' => 2);
+                $ipv4sort[ $record['end']-$record['start'] ][$record['start']][] = &$record;
+                unset($record);
             }
             else
             {
                 mwarning("route {$route->name()}/{$route->destination()} ignored because of unknown type '{$nextHopType}'");
                 continue;
             }
-
-            $record = Array( 'network' => $route->destination(), 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'static', 'priority' => 2);
-            $ipv4sort[ $record['end']-$record['start'] ][$record['start']][] = &$record;
-            //$ipv4sort = &$record;
-            unset($record);
         }
 
         foreach( $this->attachedInterfaces->interfaces() as $if )

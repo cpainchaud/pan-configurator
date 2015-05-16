@@ -82,7 +82,6 @@ class NetworkPropertiesContainer
 
         $tmp = DH::findFirstElementOrCreate('virtual-router', $this->xmlroot);
         $this->virtualRouterStore->load_from_domxml($tmp);
-
     }
 
     /**
@@ -136,6 +135,22 @@ class NetworkPropertiesContainer
         foreach( $this->tmpInterfaceStore->getInterfaces() as $if )
             if( $if->name() == $interfaceName )
                 return $if;
+
+        return null;
+    }
+
+
+    /**
+     * @param string $interfaceName
+     * @return null|VirtualSystem
+     */
+    function findVsysInterfaceOwner( $interfaceName )
+    {
+        foreach( $this->owner->virtualSystems as $vsys )
+        {
+            if( $vsys->importedInterfaces->hasInterfaceNamed($interfaceName) )
+                return $vsys;
+        }
 
         return null;
     }

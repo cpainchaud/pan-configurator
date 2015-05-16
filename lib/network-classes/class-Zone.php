@@ -30,6 +30,9 @@ class Zone
 	
 	private $isTmp = true;
 
+    public $externalVsys = Array();
+
+    public $_type = 'tmp';
 
 
     /** @var InterfaceContainer */
@@ -38,9 +41,11 @@ class Zone
 
     const TypeTmp = 0;
     const TypeLayer3 = 1;
+    const TypeExternal = 2;
 
     static private $ZoneTypes = Array(self::TypeTmp => 'tmp',
         self::TypeLayer3 => 'layer3',
+        self::TypeExternal => 'external',
          );
 
 
@@ -97,6 +102,11 @@ class Zone
         return $this->isTmp;
     }
 
+    public function type()
+    {
+        return $this->_type;
+    }
+
 
     public function load_from_domxml(DOMElement $xml)
     {
@@ -119,7 +129,19 @@ class Zone
 
             if( $node->tagName == 'layer3')
             {
-                $this->type = 'layer3';
+                $this->_type = 'layer3';
+
+                $this->attachedInterfaces->load_from_domxml($node);
+            }
+            else if( $node->tagName == 'external')
+            {
+                $this->_type = 'external';
+                foreach($node->childNodes as $memberNode)
+                {
+                    if( $memberNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
+                    $this->externalVsys[$memberNode->textContent] = $memberNode->textContent;
+                }
 
                 $this->attachedInterfaces->load_from_domxml($node);
             }

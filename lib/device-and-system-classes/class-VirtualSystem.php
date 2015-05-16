@@ -121,6 +121,16 @@ class VirtualSystem
             $this->_alternativeName = $displayNameNode->textContent;
 
 
+        //
+        // loading the imported objects list
+        //
+        $this->importroot = DH::findFirstElementOrCreate('import', $xml);
+        $networkRoot = DH::findFirstElementOrCreate('network', $this->importroot);
+        $tmp = DH::findFirstElementOrCreate('interface', $networkRoot);
+        $this->importedInterfaces->load_from_domxml($tmp);
+        //
+
+
 		$this->rulebaseroot = DH::findFirstElementOrCreate('rulebase', $xml);
 
         if( $this->owner->owner === null )
@@ -135,15 +145,6 @@ class VirtualSystem
                 $this->tagStore->load_from_domxml($tmp);
             }
             // End of Tag objects extraction
-
-            //
-            // loading the imported objects list
-            //
-            $this->importroot = DH::findFirstElementOrCreate('import', $xml);
-            $networkRoot = DH::findFirstElementOrCreate('network', $this->importroot);
-            $tmp = DH::findFirstElementOrCreate('interface', $networkRoot);
-            $this->importedInterfaces->load_from_domxml($tmp);
-            //
 
 
             //

@@ -47,9 +47,7 @@ class Template
 
         $this->deviceConfiguration->load_from_domxml($tmp);
 
-
     }
-
 
     public function isTemplate()
     {

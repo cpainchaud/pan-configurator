@@ -102,6 +102,191 @@ $supportedArguments['stats'] = Array('niceName' => 'Stats', 'shortHelp' => 'disp
  *
  **************************************/
 $supportedActions = Array();
+$commonActionFunctions = Array();
+
+$commonActionFunctions['calculate-zones'] = function (CallContext $context, $fromOrTo)
+{
+    $rule = $context->object;
+
+    if( $fromOrTo == 'from' )
+    {
+        $zoneContainer  = $rule->from;
+        $addrContainer = $rule->source;
+    }
+    elseif( $fromOrTo == 'to' )
+    {
+        $zoneContainer  = $rule->to;
+        $addrContainer = $rule->destination;
+    }
+    else
+        derr('unsupported');
+
+    $mode = $context->arguments['mode'];
+    $system = $rule->owner->owner;
+
+    /** @var VirtualRouter $virtualRouterToProcess */
+    $virtualRouterToProcess = null;
+
+    if( !isset($context->cachedIPmapping) )
+        $context->cachedIPmapping = Array();
+
+    $serial = spl_object_hash($rule->owner);
+
+    if( !isset($context->cachedIPmapping[$serial]) )
+    {
+        if( $system->isDeviceGroup() || $system->isPanorama() )
+        {
+            $panorama = $system;
+            if( $system->isDeviceGroup() )
+                $panorama = $system->owner;
+
+            if( $context->arguments['template'] == $context->actionRef['args']['template']['default'] )
+                derr('with Panorama configs, you need to specify a template name');
+
+            if( $context->arguments['virtualRouter'] == $context->actionRef['args']['virtualRouter']['default'] )
+                derr('with Panorama configs, you need to specify virtualRouter argument');
+
+
+            /** @var Template $template */
+            $template = $panorama->findTemplate($context->arguments['template']);
+            if( $template === null )
+                derr("cannot find Template named '{$context->arguments['template']}'. Available template list:".PH::list_to_string($panorama->templates));
+
+            $virtualRouterToProcess = $template->deviceConfiguration->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+            if( $virtualRouterToProcess === null )
+            {
+                $tmpVar = $template->deviceConfiguration->network->virtualRouterStore->virtualRouters();
+                derr("cannot find VirtualRouter named '{$context->arguments['virtualRouter']}' in Template '{$context->arguments['template']}'. Available VR list: " . PH::list_to_string($tmpVar));
+            }
+
+            if( count($template->deviceConfiguration->virtualSystems) == 1)
+                $system = $template->deviceConfiguration->virtualSystems[0];
+            else
+            {
+                $vsysConcernedByVR = $virtualRouterToProcess->findConcernedVsys();
+                if(count($vsysConcernedByVR) == 1)
+                {
+                    $system = array_pop($vsysConcernedByVR);
+                }
+                elseif( $context->arguments['vsys'] == '*autodetermine*')
+                {
+                    derr("cannot autodetermine resolution context from Template '{$context->arguments['template']}' VR '{$context->arguments['virtualRouter']}'' , multiple VSYS are available: ".PH::list_to_string($vsysConcernedByVR).". Please provide choose a VSYS.");
+                }
+                else
+                {
+                    $vsys = $template->deviceConfiguration->findVirtualSystem($context->arguments['vsys']);
+                    if( $vsys === null )
+                        derr("cannot find VSYS '{$context->arguments['vsys']}' in Template '{$context->arguments['template']}'");
+                    $system = $vsys;
+                }
+            }
+
+            //derr(DH::dom_to_xml($template->deviceConfiguration->xmlroot));
+            //$tmpVar = $system->importedInterfaces->interfaces();
+            //derr(count($tmpVar)." ".PH::list_to_string($tmpVar));
+        }
+        else if ($context->arguments['virtualRouter'] != '*autodetermine*')
+        {
+            $virtualRouterToProcess = $system->owner->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+            if( $virtualRouterToProcess === null )
+                derr("VirtualRouter named '{$context->arguments['virtualRouter']}' not found");
+        }
+        else
+        {
+            $vRouters = $system->owner->network->virtualRouterStore->virtualRouters();
+            $foundRouters = Array();
+
+            foreach ($vRouters as $router)
+            {
+                foreach ($router->attachedInterfaces->interfaces() as $if)
+                {
+                    if ($system->importedInterfaces->hasInterfaceNamed($if->name()))
+                    {
+                        $foundRouters[] = $router;
+                        break;
+                    }
+                }
+            }
+
+            print $context->padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers\n";
+            if (count($foundRouters) > 1)
+                derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
+            if (count($foundRouters) == 0)
+                derr("no suitable VirtualRouter found, please force one or check your configuration");
+
+            $virtualRouterToProcess = $foundRouters[0];
+        }
+        $context->cachedIPmapping[$serial] = $virtualRouterToProcess->getIPtoZoneRouteMapping($system);
+    }
+
+
+    $ipMapping = &$context->cachedIPmapping[$serial];
+
+    $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4'], $rule->sourceIsNegated());
+
+    if( count($resolvedZones) == 0 )
+    {
+        print $context->padding." - WARNING : no zone resolved (FQDN? IPv6?)\n";
+        return;
+    }
+
+    $plus = $resolvedZones;
+    $minus = Array();
+    $common = Array();
+
+    foreach( $zoneContainer->zones() as $ruleZone )
+    {
+        if( isset($plus[$ruleZone->name()]) )
+        {
+            unset($plus[$ruleZone->name()]);
+            $common[] = $ruleZone->name();
+            continue;
+        }
+        $minus[] = $ruleZone->name();
+    }
+
+    if( count($common) > 0 )
+        print $context->padding." - untouched zones: ".PH::list_to_string($common)."\n";
+    if( count($minus) > 0 )
+        print $context->padding." - missing zones: ".PH::list_to_string($minus)."\n";
+    if( count($plus) > 0 )
+        print $context->padding." - superfluous zones: ".PH::list_to_string($plus)."\n";
+
+    if( $mode == 'replace' )
+    {
+        print $context->padding." - REPLACE MODE, syncing with (".count($resolvedZones).") resolved zones.";
+        if( $addrContainer->isAny() )
+            print " *** IGNORED because value is 'ANY' ***\n";
+        elseif(count($resolvedZones) == 0)
+            print " *** IGNORED because no zone was resolved ***\n";
+        else
+        {
+            print "\n";
+            $zoneContainer->setAny();
+            foreach( $resolvedZones as $zone )
+                $zoneContainer->addZone($zoneContainer->parentCentralStore->findOrCreate($zone));
+            if( $context->isAPI )
+                $zoneContainer->API_sync();
+        }
+    }
+    elseif( $mode == 'append' )
+    {
+        print $context->padding." - APPEND MODE: adding missing (".count($plus).") zones only.";
+        if( $addrContainer->isAny() )
+            print " *** IGNORED because value is 'ANY' ***\n";
+        elseif(count($plus) == 0)
+            print " *** IGNORED because no missing zones were found ***\n";
+        else
+        {
+            print "\n";
+            foreach( $plus as $zone )
+                $zoneContainer->addZone($zoneContainer->parentCentralStore->findOrCreate($zone));
+            if( $context->isAPI )
+                $zoneContainer->API_sync();
+        }
+    }
+};
+
 
 // <editor-fold desc="Supported Actions Array" defaultstate="collapsed" >
 
@@ -270,6 +455,37 @@ $supportedActions['to-set-any'] = Array(
         else
             $rule->to->setAny();
     },
+);
+
+$supportedActions['from-calculate-zones'] = Array(
+    'name' => 'from-calculate-zones',
+    'section' => 'zone',
+    'MainFunction' => function(CallContext $context)
+    {
+        global $commonActionFunctions;
+
+        $commonActionFunctions['calculate-zones']($context, 'from');
+    },
+    'args' => Array(    'mode' => Array( 'type' => 'string', 'default' => 'append', 'choices' => array_flip(Array('replace', 'append', 'show')) ),
+                        'virtualRouter' => Array('type' => 'string', 'default' => '*autodetermine*'),
+                        'template' => Array('type' => 'string', 'default' => '*notPanorama*'),
+                        'vsys' => Array('type' => 'string', 'default' => '*autodetermine*'),
+    ),
+);
+$supportedActions['to-calculate-zones'] = Array(
+    'name' => 'to-calculate-zones',
+    'section' => 'zone',
+    'MainFunction' => function(CallContext $context)
+    {
+        global $commonActionFunctions;
+
+        $commonActionFunctions['calculate-zones']($context, 'to');
+    },
+    'args' => Array(    'mode' => Array( 'type' => 'string', 'default' => 'append', 'choices' => array_flip(Array('replace', 'append', 'show')) ),
+        'virtualRouter' => Array('type' => 'string', 'default' => '*autodetermine*'),
+        'template' => Array('type' => 'string', 'default' => '*notPanorama*'),
+        'vsys' => Array('type' => 'string', 'default' => '*autodetermine*'),
+    ),
 );
 
 
@@ -1286,6 +1502,7 @@ foreach( $rulesToProcess as &$rulesRecord )
         // object will pass through every action now
         foreach( $doActions as $doAction )
         {
+            $doAction->padding = '      ';
             $doAction->executeAction($rule);
 
             print "\n";
