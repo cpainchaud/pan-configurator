@@ -30,6 +30,9 @@
       <entry name="Datacenter Subnet">
         <ip-netmask>10.0.0.0/16</ip-netmask>
       </entry>
+      <entry name="Webserver1-128.0.1.20">
+        <ip-netmask>128.0.1.20</ip-netmask>
+      </entry>
     </address>
     <address-group>
       <entry name="shared-group1">
@@ -316,11 +319,96 @@
         <entry name="Datacenter-Firewalls">
           <devices/>
         </entry>
+        <entry name="ResolvZoneTest">
+          <devices/>
+          <pre-rulebase>
+            <security>
+              <rules>
+                <entry name="Webfarm access">
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <to>
+                    <member>Public-DMZ</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>Webserver1-128.0.1.20</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>allow</action>
+                </entry>
+                <entry name="Access to Domain Controllers">
+                  <from>
+                    <member>WAN</member>
+                  </from>
+                  <to>
+                    <member>LAN</member>
+                  </to>
+                  <source>
+                    <member>ASIA-Offices-172.17.0.0-16</member>
+                    <member>EMEA-Offices-172.18.0.0-16</member>
+                  </source>
+                  <destination>
+                    <member>DomainController1-10.1.10.21</member>
+                    <member>DomainController2-10.1.10.22</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>allow</action>
+                </entry>
+              </rules>
+            </security>
+          </pre-rulebase>
+          <address>
+            <entry name="ASIA-Offices-172.17.0.0-16">
+              <ip-netmask>172.17.0.0/16</ip-netmask>
+            </entry>
+            <entry name="EMEA-Offices-172.18.0.0-16">
+              <ip-netmask>172.18.0.0/16</ip-netmask>
+            </entry>
+            <entry name="DomainController1-10.1.10.21">
+              <ip-netmask>10.1.10.21</ip-netmask>
+            </entry>
+            <entry name="DomainController2-10.1.10.22">
+              <ip-netmask>10.1.10.22</ip-netmask>
+            </entry>
+          </address>
+        </entry>
       </device-group>
       <template>
-        <entry name="Template-test">
+        <entry name="ZoneResolvTest">
           <settings>
-            <multi-vsys>no</multi-vsys>
+            <multi-vsys>yes</multi-vsys>
             <operational-mode>normal</operational-mode>
             <vpn-disable-mode>no</vpn-disable-mode>
           </settings>
@@ -328,8 +416,160 @@
             <devices>
               <entry name="localhost.localdomain">
                 <vsys>
-                  <entry name="vsys1"/>
+                  <entry name="vsys1">
+                    <zone>
+                      <entry name="Internet">
+                        <network>
+                          <layer3>
+                            <member>ethernet1/1</member>
+                          </layer3>
+                        </network>
+                      </entry>
+                      <entry name="LAN">
+                        <network>
+                          <layer3>
+                            <member>ethernet1/2</member>
+                          </layer3>
+                        </network>
+                      </entry>
+                      <entry name="WAN">
+                        <network>
+                          <layer3>
+                            <member>ethernet1/3</member>
+                          </layer3>
+                        </network>
+                      </entry>
+                      <entry name="Public-DMZ">
+                        <network>
+                          <layer3>
+                            <member>ethernet1/4</member>
+                          </layer3>
+                        </network>
+                      </entry>
+                    </zone>
+                    <import>
+                      <network>
+                        <interface>
+                          <member>ethernet1/1</member>
+                          <member>ethernet1/2</member>
+                          <member>ethernet1/3</member>
+                          <member>ethernet1/4</member>
+                        </interface>
+                      </network>
+                    </import>
+                  </entry>
+                  <entry name="vsys2"/>
                 </vsys>
+                <network>
+                  <virtual-router>
+                    <entry name="vr1">
+                      <protocol>
+                        <bgp>
+                          <routing-options>
+                            <graceful-restart>
+                              <enable>yes</enable>
+                            </graceful-restart>
+                            <as-format>2-byte</as-format>
+                          </routing-options>
+                          <enable>no</enable>
+                        </bgp>
+                      </protocol>
+                      <routing-table>
+                        <ip>
+                          <static-route>
+                            <entry name="default">
+                              <nexthop>
+                                <ip-address>81.255.255.1</ip-address>
+                              </nexthop>
+                              <metric>10</metric>
+                              <destination>0.0.0.0/0</destination>
+                            </entry>
+                            <entry name="wan">
+                              <nexthop>
+                                <ip-address>192.168.1.1</ip-address>
+                              </nexthop>
+                              <metric>10</metric>
+                              <destination>172.16.0.0/12</destination>
+                            </entry>
+                            <entry name="LAN-DC">
+                              <nexthop>
+                                <ip-address>192.168.0.1</ip-address>
+                              </nexthop>
+                              <metric>10</metric>
+                              <destination>10.0.0.0/8</destination>
+                            </entry>
+                          </static-route>
+                        </ip>
+                      </routing-table>
+                      <interface>
+                        <member>ethernet1/1</member>
+                        <member>ethernet1/2</member>
+                        <member>ethernet1/3</member>
+                        <member>ethernet1/4</member>
+                      </interface>
+                    </entry>
+                  </virtual-router>
+                  <interface>
+                    <ethernet>
+                      <entry name="ethernet1/1">
+                        <layer3>
+                          <ipv6>
+                            <neighbor-discovery>
+                              <router-advertisement>
+                                <enable>no</enable>
+                              </router-advertisement>
+                            </neighbor-discovery>
+                          </ipv6>
+                          <ip>
+                            <entry name="81.255.255.10/24"/>
+                          </ip>
+                        </layer3>
+                      </entry>
+                      <entry name="ethernet1/2">
+                        <layer3>
+                          <ipv6>
+                            <neighbor-discovery>
+                              <router-advertisement>
+                                <enable>no</enable>
+                              </router-advertisement>
+                            </neighbor-discovery>
+                          </ipv6>
+                          <ip>
+                            <entry name="192.168.0.10/24"/>
+                          </ip>
+                        </layer3>
+                      </entry>
+                      <entry name="ethernet1/3">
+                        <layer3>
+                          <ipv6>
+                            <neighbor-discovery>
+                              <router-advertisement>
+                                <enable>no</enable>
+                              </router-advertisement>
+                            </neighbor-discovery>
+                          </ipv6>
+                          <ip>
+                            <entry name="192.168.1.10/24"/>
+                          </ip>
+                        </layer3>
+                      </entry>
+                      <entry name="ethernet1/4">
+                        <layer3>
+                          <ipv6>
+                            <neighbor-discovery>
+                              <router-advertisement>
+                                <enable>no</enable>
+                              </router-advertisement>
+                            </neighbor-discovery>
+                          </ipv6>
+                          <ip>
+                            <entry name="128.0.1.0/24"/>
+                          </ip>
+                        </layer3>
+                      </entry>
+                    </ethernet>
+                  </interface>
+                </network>
               </entry>
             </devices>
           </config>
