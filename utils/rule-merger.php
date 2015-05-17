@@ -28,7 +28,7 @@ function display_usage_and_exit($shortMessage = false)
 {
     global $argv;
     print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml|api://... location=shared|sub [out=outputfile.xml]".
-        "actions=action1:arg1 ['filter=(from has external) or (to has dmz)']\n";
+        " ['filter=(from has external) or (to has dmz)']\n";
     print "php ".basename(__FILE__)." help          : more help messages\n";
     print PH::boldText("\nExamples:\n");
     print " - php ".basename(__FILE__)." in=api://192.169.50.10 location=DMZ-Firewall-Group\n";
@@ -108,10 +108,7 @@ foreach( $supportedMethods_tmp as $methodName => $method )
 {
     $supportedMethods[strtolower($methodName)] = $method;
 }
-foreach($supportedMethods_tmp as $methodName => $method )
-{
-    $supportedArguments['method']['shortHelp'] .= $methodName.',';
-}
+$supportedArguments['method']['shortHelp'] .= PH::list_to_string(array_flip($supportedMethods_tmp));
 
 
 
