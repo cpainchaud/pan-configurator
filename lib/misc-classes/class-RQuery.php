@@ -506,6 +506,7 @@ RQuery::$defaultFilters['rule']['from']['operators']['has.only'] = Array(
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->from->parentCentralStore->find('!value!');"
 );
+
 RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
@@ -525,6 +526,53 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.only'] = Array(
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->to->parentCentralStore->find('!value!');"
 );
+
+
+RQuery::$defaultFilters['rule']['from']['operators']['has.regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+
+        foreach($object->from->zones() as $zone )
+        {
+            $matching = preg_match($value, $zone->name());
+            if( $matching === FALSE )
+                derr("regular expression error on '$value'");
+            if( $matching === 1 )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+);
+RQuery::$defaultFilters['rule']['to']['operators']['has.regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        foreach($object->to->zones() as $zone )
+        {
+            $matching = preg_match( $value, $zone->name() );
+            if( $matching === FALSE )
+                derr("regular expression error on '$value'");
+            if( $matching === 1 )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+);
+
+RQuery::$defaultFilters['rule']['from.count']['operators']['>,<,=,!'] = Array(
+    'eval' => "\$object->from->count() !operator! !value!",
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['to.count']['operators']['>,<,=,!'] = Array(
+    'eval' => "\$object->to->count() !operator! !value!",
+    'arg' => true
+);
+
 RQuery::$defaultFilters['rule']['from']['operators']['is.any'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {

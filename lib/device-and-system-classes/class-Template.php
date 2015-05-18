@@ -20,6 +20,7 @@ class Template
 {
     use ReferencableObject;
     use PathableName;
+    use PanSubHelperTrait;
 
     /** @var  PanoramaConf */
     public $owner;
