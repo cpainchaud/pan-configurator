@@ -17,6 +17,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/**
+ * Class ObjRuleContainer
+ * @property $fasthashcomp string
+ */
 class ObjRuleContainer
 {
     use PathableName;
@@ -28,8 +32,6 @@ class ObjRuleContainer
 
     public $o = null;
     protected $classn=null;
-
-    public $fasthashcomp = null;
 
 
     public function count()
@@ -67,16 +69,10 @@ class ObjRuleContainer
 
     public function equals_fasterHash( $other )
     {
-        if( is_null($this->fasthashcomp) )
-        {
-            $this->generateFastHashComp();
-        }
-        if( is_null($other->fasthashcomp) )
-        {
-            $other->generateFastHashComp();
-        }
+        $thisHash = $this->getFastHashComp();
+        $otherHash = $other->getFastHashComp();
 
-        if( $this->fasthashcomp == $other->fasthashcomp  )
+        if( $thisHash == $otherHash )
         {
             if( $this->equals($other) )
                 return true;
@@ -88,11 +84,11 @@ class ObjRuleContainer
 
     public function generateFastHashComp($force=false )
     {
-        if( !is_null($this->fasthashcomp) && !$force )
+        if( isset($this->fasthashcomp) && $this->fasthashcomp !== null && !$force )
             return;
 
         $class = get_class($this);
-        $fasthashcomp = $class;
+        $this->fasthashcomp = $class;
 
         $tmpa = $this->o;
 
@@ -100,10 +96,10 @@ class ObjRuleContainer
 
         foreach( $tmpa as $o )
         {
-            $fasthashcomp .= '.*/'.$o->name();
+            $this->fasthashcomp .= '.*/'.$o->name();
         }
 
-        $this->fasthashcomp = md5($fasthashcomp,true);
+        $this->fasthashcomp = md5($this->fasthashcomp,true);
 
     }
 
@@ -228,7 +224,8 @@ class ObjRuleContainer
     {
         if( !in_array($Obj,$this->o,true) )
         {
-            $this->fasthashcomp = null;
+            if( isset($this->fasthashcomp) )
+                unset($this->fasthashcomp);
 
             $this->o[] = $Obj;
 
@@ -242,7 +239,8 @@ class ObjRuleContainer
 
     protected function removeAll()
     {
-        $this->fasthashcomp = null;
+        if( isset($this->fasthashcomp) )
+            unset($this->fasthashcomp);
 
         foreach( $this->o as $o)
         {
@@ -255,7 +253,8 @@ class ObjRuleContainer
 
     protected function remove($Obj)
     {
-        $this->fasthashcomp = null;
+        if( isset($this->fasthashcomp) )
+            unset($this->fasthashcomp);
 
         $pos = array_search($Obj,$this->o,true);
         if( $pos !== FALSE )

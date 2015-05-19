@@ -49,8 +49,6 @@ class ZoneRuleContainer extends ObjRuleContainer
      */
     public function addZone( Zone $Obj, $rewritexml = true )
     {
-        $fasthashcomp=null;
-
         $ret = $this->add($Obj);
         if( $ret && $rewritexml )
         {
@@ -68,15 +66,14 @@ class ZoneRuleContainer extends ObjRuleContainer
     {
         if( $this->addZone($Obj, $rewritexml) )
         {
-            $xpath = &$this->getXPath();
-            $con = findConnectorOrDie($this);
-
             if( count($this->o) == 1 )
             {
-                $url = "type=config&action=delete&xpath=" . $xpath;
-                $con->sendRequest($url);
+                $this->API_sync();
+                return true;
             }
 
+            $xpath = &$this->getXPath();
+            $con = findConnectorOrDie($this);
             $url = "type=config&action=set&xpath=$xpath&element=<member>".$Obj->name()."</member>";
             $con->sendRequest($url);
 
@@ -129,10 +126,7 @@ class ZoneRuleContainer extends ObjRuleContainer
 
             if( count($this->o) == 0 )
             {
-                $url = "type=config&action=delete&xpath=" . $xpath;
-                $con->sendRequest($url);
-                $url = "type=config&action=set&xpath=$xpath&element=<member>any</member>";
-                $con->sendRequest($url);
+                $this->API_sync();
                 return true;
             }
 
@@ -262,8 +256,6 @@ class ZoneRuleContainer extends ObjRuleContainer
      */
     public function merge($other)
     {
-        $this->fasthashcomp = null;
-
         if( count($this->o) == 0 )
             return;
 
