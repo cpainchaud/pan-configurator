@@ -1025,6 +1025,125 @@ $supportedActions['copy'] = Array(
     'args' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
                             'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => array_flip(Array('pre','post')) ) )
 );
+
+$supportedActions['cloneforappoverride'] = Array(
+    'name' => 'cloneForAppOverride',
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $rule->actionIsNegative() )
+        {
+            print $context->padding . " - IGNORED because Action is DENY\n";
+            return;
+        }
+
+        if( !$rule->apps->isAny() )
+        {
+            print $context->padding . " - IGNORED because Application is NOT EQUAL ANYY\n";
+            return;
+        }
+
+        $ports = '';
+
+        if( ($rule->services->isAny() || $rule->services->isApplicationDefault()) && !$context->arguments['restrictToListOfServices'] == '*sameAsInRule*' )
+        {
+            $ports = '1-65535';
+            $portMapping = ServiceDstPortMapping::mappingFromText($ports, true);
+            $udpPortMapping = ServiceDstPortMapping::mappingFromText($ports, false);
+
+            $portMapping->mergeWithMapping($udpPortMapping);
+        }
+        else
+        {
+            $portMapping = new ServiceDstPortMapping();
+
+            if( $context->arguments['restrictToListOfServices'] == '*sameAsInRule*' )
+            {
+                $services = $rule->services->members();
+            }
+            else
+            {
+                $listOfServicesQueryName = $context->arguments['restrictToListOfServices'];
+                if( !isset($context->nestedQueries[$listOfServicesQueryName]) )
+                {
+                    derr("cannot find query filter called '$listOfServicesQueryName'");
+                }
+
+                $rQuery = new RQuery('service');
+                $errorMessage = '';
+                if( !$rQuery->parseFromString($context->nestedQueries[$listOfServicesQueryName], $errorMessage) )
+                    derr("error while parsing query: {$context->nestedQueries[$listOfServicesQueryName]}");
+
+                $services = Array();
+
+                foreach( $rule->services->membersExpanded() as $member )
+                {
+                    if( $rQuery->matchSingleObject($member) )
+                    {
+                        $services[] = $member;
+                    }
+                }
+            }
+            if( count($services) == 0)
+            {
+                print $context->padding." - IGNORED because NO MATCHING SERVICE FOUND\n";
+                return;
+            }
+            $portMapping->mergeWithArrayOfServiceObjects($services);
+        }
+
+        $application = $rule->apps->parentCentralStore->findOrCreate($context->arguments['applicationName']);
+
+        print $context->padding." - Port mapping to import in AppOverride: ".$portMapping->mappingToText()."\n";
+        if( count($portMapping->tcpPortMap) > 0)
+        {
+            $newName = $rule->owner->owner->appOverrideRules->findAvailableName($rule->name(), '');
+            $newRule = $rule->owner->owner->appOverrideRules->newAppOverrideRule($newName, $rule->isPreRule());
+            if( $rule->sourceIsNegated() )
+                $newRule->setSourceIsNegated(true);
+            if( $rule->destinationIsNegated() )
+                $newRule->setDestinationIsNegated(true);
+
+            $newRule->from->copy($rule->from);
+            $newRule->to->copy($rule->to);
+            $newRule->source->copy($rule->source);
+            $newRule->destination->copy($rule->destination);
+            $newRule->setTcp();
+            $newRule->setPorts($portMapping->tcpMappingToText());
+            $newRule->setApplication($application);
+
+            if( $context->isAPI )
+                $newRule->API_sync();
+            print $context->padding." - created TCP appOverride rule '{$newRule->name()}'\n";
+        }
+        if( count($portMapping->udpPortMap) > 0)
+        {
+            $newName = $rule->owner->owner->appOverrideRules->findAvailableName($rule->name(), '');
+            $newRule = $rule->owner->owner->appOverrideRules->newAppOverrideRule($newName, $rule->isPreRule());
+            if( $rule->sourceIsNegated() )
+                $newRule->setSourceIsNegated(true);
+            if( $rule->destinationIsNegated() )
+                $newRule->setDestinationIsNegated(true);
+
+            $newRule->from->copy($rule->from);
+            $newRule->to->copy($rule->to);
+            $newRule->source->copy($rule->source);
+            $newRule->destination->copy($rule->destination);
+            $newRule->setUdp();
+            $newRule->setPorts($portMapping->udpMappingToText());
+            $newRule->setApplication($application);
+
+            if( $context->isAPI )
+                $newRule->API_sync();
+            print $context->padding." - created TCP appOverride rule '{$newRule->name()}'\n";
+        }
+
+
+    },
+    'args' => Array(    'applicationName' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+                        'restrictToListOfServices' => Array( 'type' => 'string', 'default' => '*sameAsInRule*'  ), )
+);
 // </editor-fold>
 //TODO add action==move
 /************************************ */
@@ -1038,7 +1157,7 @@ foreach ( PH::$args as $index => &$arg )
 {
     if( !isset($supportedArguments[$index]) )
     {
-        if( strpos($index,'subquery') == 0 )
+        if( strpos($index,'subquery') === 0 )
         {
             $nestedQueries[$index] = &$arg;
             continue;
@@ -1268,7 +1387,7 @@ else
 //
 // Determine rule types
 //
-$supportedRuleTypes = Array('all', 'any', 'security', 'nat', 'decryption');
+$supportedRuleTypes = Array('all', 'any', 'security', 'nat', 'decryption', 'appoverride');
 if( !isset(PH::$args['ruletype'])  )
 {
     print " - No 'ruleType' specified, using 'security' by default\n";
@@ -1315,7 +1434,7 @@ foreach( $explodedActions as &$exAction )
     if( count($explodedAction) == 1 )
         $explodedAction[1] = '';
 
-    $context = new CallContext($supportedActions[$actionName], $explodedAction[1]);
+    $context = new CallContext($supportedActions[$actionName], $explodedAction[1], $nestedQueries);
     if( $configInput['type'] == 'api' )
         $context->isAPI = true;
 
@@ -1402,6 +1521,10 @@ foreach( $rulesLocation as $location )
                 {
                     $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
                 }
+                if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->rules());
+                }
                 $locationFound = true;
             }
         }
@@ -1422,6 +1545,10 @@ foreach( $rulesLocation as $location )
             {
                 $rulesToProcess[] = Array('store' => $pan->decryptionRules, 'rules' => $pan->decryptionRules->rules());
             }
+            if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->appOverrideRules, 'rules' => $pan->appOverrideRules->rules());
+            }
             $locationFound = true;
         }
 
@@ -1440,6 +1567,10 @@ foreach( $rulesLocation as $location )
                 if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
                 {
                     $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->rules());
                 }
                 $locationFound = true;
             }

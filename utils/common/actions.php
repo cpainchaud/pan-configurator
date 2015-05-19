@@ -21,10 +21,17 @@ class CallContext
 
     public $padding = '';
 
-    public function CallContext($actionProperties, $arguments)
+    public $nestedQueries;
+
+    public function CallContext($actionProperties, $arguments, $nestedQueries = null)
     {
         $this->actionRef = $actionProperties;
         $this->prepareArgumentsForAction($arguments);
+
+        if( $nestedQueries === null )
+            $nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
     }
 
     public function executeAction($object)
