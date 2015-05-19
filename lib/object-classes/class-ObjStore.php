@@ -163,7 +163,6 @@ class ObjStore
 	{	
 		if( !in_array($Obj,$this->o,true) )
 		{
-			$fasthashcomp = null;
 			$this->o[] = $Obj;
 			$Obj->owner = $this;
 
@@ -175,8 +174,6 @@ class ObjStore
 
 	protected function removeAll()
 	{
-		$fasthashcomp = null;
-
 		foreach( $this->o as $o)
 		{
 			$o->owner = null;
@@ -188,8 +185,6 @@ class ObjStore
 	
 	protected function remove($Obj)
 	{
-		$fasthashcomp = null;
-		
 		$pos = array_search($Obj,$this->o,true);
 		if( $pos !== FALSE )
 		{

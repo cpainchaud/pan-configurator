@@ -69,9 +69,6 @@ class AddressStore
      */
 	public $addrgroot;
 
-	
-	public $fasthashcomp = null;
-
 
     /**
      * @param VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null $owner
@@ -127,9 +124,7 @@ class AddressStore
 	*/
 	public function load_addresses_from_domxml($xml)
 	{
-		$this->fasthashcomp = null;
-		
-		$this->addrroot = $xml;
+        $this->addrroot = $xml;
 		
 		foreach( $this->addrroot->childNodes as $node )
 		{
@@ -167,8 +162,6 @@ class AddressStore
 
 	public function load_addressgroups_from_domxml($xml)
 	{
-		$this->fasthashcomp = null;
-		
 		$this->addrgroot = $xml;
 		
 		foreach( $xml->childNodes as $node )
@@ -490,7 +483,6 @@ class AddressStore
      */
 	public function remove($s, $rewriteXML = true)
 	{
-		$this->fasthashcomp = null;
 		$class = get_class($s);
 
 		$objectName = $s->name();
@@ -576,8 +568,6 @@ class AddressStore
         $found = $this->find($name,null, true);
         if( $found !== null )
             derr("cannot create Address named '".$name."' as this name is already in use");
-
-		$this->fasthashcomp = null;
 		
 		$newObject = new Address($name,$this, true);
 		$newObject->setType($type);
@@ -677,8 +667,6 @@ class AddressStore
 	*/
 	function createTmp($name, $ref=null)
 	{
-		$this->fasthashcomp = null;
-		
 		$f = new Address($name,$this);
         $f->setValue($name);
 		//$f->type = 'tmp';
@@ -687,87 +675,6 @@ class AddressStore
 		$f->addReference($ref);
 		
 		return $f;
-	}
-	
-	/**
-	* Compares address objects with another store to see if they all match each other
-	*
-	*/
-	public function equals( $other )
-	{
-		
-		if( count($this->all) != count($other->all) )
-			return false;
-		
-		
-		$indexes = array_keys($this->all);
-		
-		foreach( $indexes as &$index )
-		{
-			if( ! isset($other->all[$index]) )
-			{
-				return false;
-			}
-			if( $other->all[$index] === $this->all[$index] )
-			{
-			}
-			else
-				return false;
-		}
-		
-		
-		return true;
-	}
-	
-	/**
-	* Same as Equals() but uses faster method for batch use.
-	*
-	*/
-	public function equals_fasterHash( $other )
-	{
-		if( is_null($this->fasthashcomp) )
-		{
-			$this->generateFastHashComp();
-		}
-		if( is_null($other->fasthashcomp) )
-		{
-			$other->generateFastHashComp();
-		}
-		
-		if( $this->fasthashcomp == $other->fasthashcomp  )
-		{
-			if( $this->equals($other) )
-				return true;
-		}
-		
-		return false;
-	}
-	
-	public function generateFastHashComp($force=false)
-	{
-		if( !is_null($this->fasthashcomp) && !$force )
-			return;
-		
-		$fasthashcomp = 'AddressStore';
-		
-		$tmpa = $this->all;
-		
-		usort($tmpa, "__CmpObjName");
-		
-		foreach( $tmpa as $o )
-		{
-			$fasthashcomp .= '.*/'.$o->name();
-		}
-		
-		$this->fasthashcomp = md5($fasthashcomp,true);
-		unset($fasthashcomp);
-		
-	}
-	
-	public function getFastHashComp()
-	{
-		$this->generateFastHashComp();
-		return $this->fasthashcomp;
 	}
 
 
@@ -780,8 +687,6 @@ class AddressStore
 
 		unset($this->all[$oldName]);
 		$this->all[$newName] = $h;
-
-		$this->fasthashcomp = null;
 
 		$class = get_class($h);
 
