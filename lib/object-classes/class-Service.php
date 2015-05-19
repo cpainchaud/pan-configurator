@@ -235,6 +235,23 @@ class Service
 		return true;
 	}
 
+    /**
+     * @return ServiceDstPortMapping
+     * @throws Exception
+     */
+    public function dstPortMapping()
+    {
+        if( $this->isTmpSrv() )
+            derr("unsupported with tmp services");
+
+        if( $this->protocol == 'tcp' )
+            $tcp = true;
+        else
+            $tcp = false;
+
+        return ServiceDstPortMapping::mappingFromText($this->_dport, $tcp);
+    }
+
 
 	public function API_delete()
 	{

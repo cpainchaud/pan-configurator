@@ -328,6 +328,17 @@ class ZoneRuleContainer extends ObjRuleContainer
 
     }
 
+    public function copy(ZoneRuleContainer $other)
+    {
+        if( $other->count() == 0 && $this->count() != 0 )
+            $this->removeAll();
+
+        foreach( $other->o as $member )
+        {
+            $this->addZone($member);
+        }
+    }
+
     /**
      * @return bool
      */

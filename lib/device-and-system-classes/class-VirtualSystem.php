@@ -57,6 +57,9 @@ class VirtualSystem
     /** @var RuleStore */
     public $decryptionRules;
 
+    /** @var RuleStore */
+    public $appOverrideRules;
+
     /** @var ZoneStore */
     public $zoneStore=null;
 
@@ -95,6 +98,9 @@ class VirtualSystem
 
         $this->decryptionRules = new RuleStore($this, 'DecryptionRule');
         $this->decryptionRules->name = 'Decryption';
+
+        $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule');
+        $this->appOverrideRules->name = 'AppOverride';
 		
 	}
 
@@ -212,6 +218,13 @@ class VirtualSystem
             $tmproot = DH::findFirstElementOrCreate('decryption', $this->rulebaseroot);
             $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
             $this->decryptionRules->load_from_domxml($tmprulesroot);
+
+            //
+            // Decryption Rules extraction
+            //
+            $tmproot = DH::findFirstElementOrCreate('application-override', $this->rulebaseroot);
+            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
+            $this->appOverrideRules->load_from_domxml($tmprulesroot);
         }
 	}
 

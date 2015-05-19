@@ -40,6 +40,8 @@ class RQuery
 
     public $objectType = null;
 
+    public $argument = null;
+
 
     public $inverted = false;
 
@@ -59,6 +61,9 @@ class RQuery
         {
             derr("unsupported object type '$objectType'");
         }
+
+        if($this->objectType == 'service' )
+            $this->contextObject = new ServiceRQueryContext($this);
     }
 
     /**
@@ -86,85 +91,92 @@ class RQuery
 
         if( count($this->subQueries) == 0 )
         {
-           // print $this->padded."about to eval\n";
-            if( $this->refOperator['arg'] == true )
+            // print $this->padded."about to eval\n";
+            if( isset($this->refOperator['Function'] ) )
             {
-                if( isset($this->refOperator['argObjectFinder']) )
+                return $this->contextObject->execute($object);
+            }
+            else
+            {
+                if( $this->refOperator['arg'] == true )
                 {
-                    $eval = str_replace('!value!', $this->argument, $this->refOperator['argObjectFinder']);
-                    if( eval($eval) === FALSE )
+                    if( isset($this->refOperator['argObjectFinder']) )
                     {
-                        derr("\neval code was : $eval\n");
-                    }
-                    if( $objectFind === null )
-                    {
-                        fwrite(STDERR, "\n\n**ERROR** cannot find object with name '".$this->argument."'\n\n");
-                        exit(1);
-                    }
-                    if( !is_string($this->refOperator['eval']) )
-                    {
-                        $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $objectFind);
-                    }
-                    else
-                    {
-                        $eval = '$boolReturn = (' . str_replace('!value!', '$objectFind', $this->refOperator['eval']) . ');';
-
+                        $eval = str_replace('!value!', $this->argument, $this->refOperator['argObjectFinder']);
                         if( eval($eval) === FALSE )
                         {
                             derr("\neval code was : $eval\n");
                         }
-                    }
+                        if( $objectFind === null )
+                        {
+                            fwrite(STDERR, "\n\n**ERROR** cannot find object with name '".$this->argument."'\n\n");
+                            exit(1);
+                        }
+                        if( !is_string($this->refOperator['eval']) )
+                        {
+                            $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $objectFind);
+                        }
+                        else
+                        {
+                            $eval = '$boolReturn = (' . str_replace('!value!', '$objectFind', $this->refOperator['eval']) . ');';
 
-                    if( $this->inverted )
-                        return !$boolReturn;
-                    return $boolReturn;
+                            if( eval($eval) === FALSE )
+                            {
+                                derr("\neval code was : $eval\n");
+                            }
+                        }
+
+                        if( $this->inverted )
+                            return !$boolReturn;
+                        return $boolReturn;
+                    }
+                    else
+                    {
+                        if( !is_string($this->refOperator['eval']) )
+                        {
+                            $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $this->argument);
+                        }
+                        else
+                        {
+                            $eval = '$boolReturn = (' . str_replace('!value!', $this->argument, $this->refOperator['eval']) . ');';
+
+                            if (isset(self::$mathOps[$this->operator]))
+                            {
+                                $eval = str_replace('!operator!', self::$mathOps[$this->operator], $eval);
+                            }
+
+                            if (eval($eval) === FALSE)
+                            {
+                                derr("\neval code was : $eval\n");
+                            }
+                        }
+                        if ($this->inverted)
+                            return !$boolReturn;
+
+                        return $boolReturn;
+
+                    }
                 }
                 else
                 {
                     if( !is_string($this->refOperator['eval']) )
                     {
-                        $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $this->argument);
+                        $boolReturn = $this->refOperator['eval']($object, $nestedQueries, null);
                     }
                     else
                     {
-                        $eval = '$boolReturn = (' . str_replace('!value!', $this->argument, $this->refOperator['eval']) . ');';
-
-                        if (isset(self::$mathOps[$this->operator]))
-                        {
-                            $eval = str_replace('!operator!', self::$mathOps[$this->operator], $eval);
-                        }
+                        $eval = '$boolReturn = (' . $this->refOperator['eval'] . ');';
 
                         if (eval($eval) === FALSE)
                         {
                             derr("\neval code was : $eval\n");
                         }
+
                     }
-                    if ($this->inverted)
+                    if( $this->inverted )
                         return !$boolReturn;
-
                     return $boolReturn;
-
                 }
-            }
-            else
-            {
-                if( !is_string($this->refOperator['eval']) )
-                {
-                    $boolReturn = $this->refOperator['eval']($object, $nestedQueries, null);
-                }
-                else
-                {
-                    $eval = '$boolReturn = (' . $this->refOperator['eval'] . ');';
-
-                    if (eval($eval) === FALSE)
-                    {
-                        derr("\neval code was : $eval\n");
-                    }
-
-                }
-                if( $this->inverted )
-                    return !$boolReturn;
-                return $boolReturn;
             }
         }
 
@@ -1241,6 +1253,41 @@ RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['service']['name']['operators']['is.in.file'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === false )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        if($object->isService())
+            return isset($list[$object->name()]);
+
+        return isset($list[$object->name()]);
+
+        return false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['service']['object']['operators']['is.group'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
@@ -1315,6 +1362,58 @@ RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
     'arg' => true
 );
 // </editor-fold>
+
+/**
+ * Class RQueryContext
+ * @ignore
+ */
+class RQueryContext
+{
+
+
+}
+
+/**
+ * Class ServiceRQueryContext
+ * @ignore
+ */
+class ServiceRQueryContext extends RQueryContext
+{
+    /** @var  Service|ServiceGroup */
+    public $object;
+    public $value;
+
+    public $rQueryObject;
+
+    public $nestedQueries;
+
+    function ServiceRQueryContext(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
+    }
+
+    /**
+     * @param $object Service|ServiceGroup
+     * @return bool
+     */
+    function execute($object, $nestedQueries = null)
+    {
+        if( $nestedQueries !== null )
+            $this->nestedQueries = &$nestedQueries;
+
+        $this->object = $object;
+        $this->value = &$this->rQueryObject->argument;
+
+        return $this->rQueryObject->refOperator['Function']($this);
+    }
+
+}
 
 
 

@@ -614,6 +614,17 @@ class AddressRuleContainer extends ObjRuleContainer
         return $result;
     }
 
+    public function copy(AddressRuleContainer $other)
+    {
+        if( $other->count() == 0 && $this->count() != 0 )
+            $this->removeAll();
+
+        foreach( $other->o as $member )
+        {
+            $this->addObject($member);
+        }
+    }
+
 
     /**
      * @param $zoneIP4Mapping array  array of IP start-end to zone ie  Array( 0=>Array('start'=>0, 'end'=>50, 'zone'=>'internet') 1=>...  )

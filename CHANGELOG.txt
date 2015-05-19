@@ -2,22 +2,26 @@ CHANGELOG
 
 
 1.5.0-beta7
+Library:
 * 6.1 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
 * support for 7.0 new Security rules actions : drop, reset-client, reset-server, reset-both
 * basic support of Panorama templates
 * moved preRules and postRules into one single store (see getPreRules and getPostRules)
 * VirtualRouter and Static route implemented
 * Major interface/network additions were made to allow future tools like routes calculation etc etc.
-* new utility : rule-merger.php to find similar rules and merge them
+* Support for AppOverride rules
 
+Utilities:
+* new utility : rule-merger.php to find similar rules and merge them
 * util rule-edit : new action 'resolve-zones' to do a rule resolution
 * util rule-edit : new action 'copy' to copy rules into another vsys/device-group
+* util rule-edit : new action 'cloneForAppOverride' to clone a security rule and make it an AppOverride
 * util rule-edit : service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
 * util rule-edit : new filters : 'rule is.unused.fast' will check if a rule was not used since reboot (use cli 'show running rule-use rule-base security type unused vsys vsys1')
 * util rule-edit : new filters : src/dst 'included-in.full included-in.partial included-in.full.or.partial' and 'includes.full includes-full.or.partial includes.partial'
 * util rule-edit : new filters for app 'has' and 'has.nocase' and log profile : 'logprof is.set' 'logprof is xxx'
 * util rule-edit : new filters for zones : 'has.regex' and 'from.count' 'to.count'
-* util rule-edit : new actions for services and apps
+* util rule-edit : new filters for services : 'name is.in.file'
 * util rule-edit : new listActions menu
 * util service-edit and address-edit new actions: replaceByMembersAndDelete, showIP4Mapping
 * util upload-config : now supports inject xml parts direct in candidate config (see 'toXpath' option)

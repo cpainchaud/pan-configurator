@@ -403,6 +403,20 @@ class ServiceGroup
 	}
 
 
+    public function dstPortMapping()
+    {
+        $mapping = new ServiceDstPortMapping();
+
+        foreach( $this->members as $member)
+        {
+            $localMapping = $member->dstPortMapping();
+            $mapping->mergeWithMapping($localMapping);
+        }
+
+        return $mapping;
+    }
+
+
 	public function xml_convert_to_v6()
 	{
         $newElement = $this->xmlroot->ownerDocument->createElement('members');

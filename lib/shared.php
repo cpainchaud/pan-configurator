@@ -138,6 +138,7 @@ require_once dirname(__FILE__).'/rule-classes/class-Rule.php';
 require_once dirname(__FILE__).'/rule-classes/class-SecurityRule.php';
 require_once dirname(__FILE__).'/rule-classes/class-NatRule.php';
 require_once dirname(__FILE__).'/rule-classes/class-DecryptionRule.php';
+require_once dirname(__FILE__).'/rule-classes/class-AppOverrideRule.php';
 
 
 function & array_diff_no_cast(&$ar1, &$ar2)
@@ -1216,6 +1217,257 @@ class IP4Mapping
 
 }
 
+class ServiceDstPortMapping
+{
+    public $tcpPortMap = Array();
+    public $udpPortMap = Array();
 
+
+    /**
+     * @param $text
+     * @return ServiceDstPortMapping
+     */
+    static public function mappingFromText($text, $tcp = true)
+    {
+        $newMapping = new ServiceDstPortMapping();
+
+        $commaExplode = explode(',', $text);
+
+        foreach($commaExplode as &$comma)
+        {
+            $dashExplode = explode('-',$comma);
+            if( count($dashExplode) == 1)
+            {
+                $port = &$dashExplode[0];
+                if( !is_string($port) || strlen($port) == 0)
+                    derr("unsupported port number: '$port'");
+
+                if( !is_numeric($port) )
+                    derr("port is not an integer: '$port'");
+
+                $port = (int)$port;
+
+                if( $port < 0 || $port > 65535)
+                    derr('port value is not within 0-65535');
+
+                if( $tcp )
+                    $newMapping->tcpPortMap[] = Array('start' => $port , 'end' => $port);
+                else
+                    $newMapping->udpPortMap[] = Array('start' => $port , 'end' => $port);
+            }
+            else
+            {
+                if( count($dashExplode) > 2 )
+                    derr("invalid port range syntax: '$comma'");
+
+                $port = $dashExplode[0];
+                if( !is_string($port) || strlen($port) == 0)
+                    derr("unsupported port number: '$port'");
+
+                if( !is_numeric($port) )
+                    derr("port is not an integer: '$port'");
+
+                $port = (int)$port;
+
+                if( $port < 0 || $port > 65535)
+                    derr('port value is not within 0-65535');
+
+                $portStart = $port;
+
+                $port = $dashExplode[1];
+                if( !is_string($port) || strlen($port) == 0)
+                    derr("unsupported port number: '$port'");
+
+                if( !is_numeric($port) )
+                    derr("port is not an integer: '$port'");
+
+                $port = (int)$port;
+
+                if( $port < 0 || $port > 65535)
+                    derr('port value is not within 0-65535');
+
+                $portEnd = $port;
+
+                if( $tcp )
+                    $newMapping->tcpPortMap[] = Array('start' => $portStart , 'end' => $portEnd);
+                else
+                    $newMapping->udpPortMap[] = Array('start' => $portStart , 'end' => $portEnd);
+
+            }
+        }
+
+        $newMapping->mergeOverlappingMappings();
+
+        return $newMapping;
+    }
+
+    private function sortMappings()
+    {
+        $this->tcpPortMap = & sortArrayByStartValue($this->tcpPortMap);
+        $this->udpPortMap = & sortArrayByStartValue($this->udpPortMap);
+    }
+
+    public function mergeOverlappingMappings()
+    {
+        $this->sortMappings();
+
+        $newMapping = & $this->tcpPortMap;
+
+        $mapKeys = array_keys($newMapping);
+        $mapCount = count($newMapping);
+        for( $i=0; $i<$mapCount; $i++)
+        {
+            $current = &$newMapping[$mapKeys[$i]];
+            //print "     - handling ".long2ip($current['start'])."-".long2ip($current['end'])."\n";
+            for( $j=$i+1; $j<$mapCount; $j++)
+            {
+                $compare = &$newMapping[$mapKeys[$j]];
+                //print "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end'])."\n";
+
+                if( $compare['start'] > $current['end'] + 1 )
+                    break;
+
+                $current['end'] = $compare['end'];
+
+                unset($newMapping[$mapKeys[$j]]);
+
+                $i++;
+            }
+        }
+
+        $newMapping = & $this->udpPortMap;
+
+        $mapKeys = array_keys($newMapping);
+        $mapCount = count($newMapping);
+        for( $i=0; $i<$mapCount; $i++)
+        {
+            $current = &$newMapping[$mapKeys[$i]];
+            //print "     - handling ".long2ip($current['start'])."-".long2ip($current['end'])."\n";
+            for( $j=$i+1; $j<$mapCount; $j++)
+            {
+                $compare = &$newMapping[$mapKeys[$j]];
+                //print "       - vs ".long2ip($compare['start'])."-".long2ip($compare['end'])."\n";
+
+                if( $compare['start'] > $current['end'] + 1 )
+                    break;
+
+                $current['end'] = $compare['end'];
+
+                unset($newMapping[$mapKeys[$j]]);
+                $i++;
+            }
+        }
+
+    }
+
+    public function mergeWithMapping(ServiceDstPortMapping $otherMapping)
+    {
+        foreach($otherMapping->tcpPortMap as $map)
+        {
+            $this->tcpPortMap[] = $map;
+        }
+
+        foreach($otherMapping->udpPortMap as $map)
+        {
+            $this->udpPortMap[] = $map;
+        }
+
+        $this->mergeOverlappingMappings();
+    }
+
+    /**
+     * @param $array Service[]|ServiceGroup[]
+     */
+    public function mergeWithArrayOfServiceObjects(&$array)
+    {
+        foreach( $array as $object)
+        {
+            $this->mergeWithMapping($object->dstPortMapping());
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function & tcpMappingToText()
+    {
+        $returnText = '';
+
+        if( count($this->tcpPortMap) != 0 )
+        {
+            $mapsText = Array();
+            foreach( $this->tcpPortMap as &$map )
+            {
+                if( $map['start'] == $map['end'] )
+                    $mapsText[] = (string)$map['start'];
+                else
+                    $mapsText[] = $map['start'].'-'.$map['end'];
+            }
+
+            $returnText = PH::list_to_string($mapsText);
+        }
+
+        return $returnText;
+    }
+
+    /**
+     * @return string
+     */
+    public function & udpMappingToText()
+    {
+        $returnText = '';
+
+        if( count($this->udpPortMap) != 0 )
+        {
+            $mapsText = Array();
+            foreach( $this->udpPortMap as &$map )
+            {
+                if( $map['start'] == $map['end'] )
+                    $mapsText[] = (string)$map['start'];
+                else
+                    $mapsText[] = $map['start'].'-'.$map['end'];
+            }
+
+            $returnText = PH::list_to_string($mapsText);
+        }
+
+        return $returnText;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasTcpMappings()
+    {
+        return count($this->tcpPortMap) > 0;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasUdpMappings()
+    {
+        return count($this->udpPortMap) > 0;
+    }
+
+    /**
+     * @return string
+     */
+    public function & mappingToText()
+    {
+        $returnText = '';
+
+        if( $this->hasTcpMappings() )
+            $returnText .= 'tcp/'.$this->tcpMappingToText();
+
+        if( $this->hasTcpMappings() && $this->hasUdpMappings() )
+            $returnText .= ' ';
+
+        if( $this->hasUdpMappings() )
+            $returnText .= 'udp/'.$this->udpMappingToText();
+
+        return $returnText;
+    }
+}
 
 

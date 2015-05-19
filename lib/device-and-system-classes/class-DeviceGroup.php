@@ -77,6 +77,9 @@ class DeviceGroup
      */
     public $decryptionRules=null;
 
+    /** @var RuleStore */
+    public $appOverrideRules;
+
     /**
      * @var null|DeviceGroup
      */
@@ -118,6 +121,7 @@ class DeviceGroup
 		$this->securityRules = new RuleStore($this, 'SecurityRule', true);
 		$this->natRules = new RuleStore($this, 'NatRule', true);
 		$this->decryptionRules = new RuleStore($this, 'DecryptionRule', true);
+        $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule', true);
 
 	}
 
@@ -218,9 +222,16 @@ class DeviceGroup
 
 		$tmp = DH::findFirstElementOrCreate('decryption', $prerulebase);
 		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$tmpPost = DH::findFirstElementOrCreate('nat', $postrulebase);
+		$tmpPost = DH::findFirstElementOrCreate('decryption', $postrulebase);
 		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
 		$this->decryptionRules->load_from_domxml($tmp, $tmpPost);
+
+
+        $tmp = DH::findFirstElementOrCreate('application-override', $prerulebase);
+        $tmp = DH::findFirstElementOrCreate('rules', $tmp);
+        $tmpPost = DH::findFirstElementOrCreate('application-override', $postrulebase);
+        $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+        $this->appOverrideRules->load_from_domxml($tmp, $tmpPost);
 
 
 		// Devices extraction

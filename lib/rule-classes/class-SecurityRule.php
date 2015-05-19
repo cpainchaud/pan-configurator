@@ -20,7 +20,6 @@
 
 /**
  * Class SecurityRule
- * @property RuleStore $owner
  */
 class SecurityRule extends Rule
 {
@@ -706,7 +705,7 @@ class SecurityRule extends Rule
 				if( !$yes )
 					$this->xmlroot->removeChild($tmpRoot);
 				else
-					$tmpRoot->nodeValue = 'yes';
+					DH::setDomNodeText($tmpRoot, 'yes');
 			}
 
 			$this->negatedSource = $yes;
@@ -759,7 +758,7 @@ class SecurityRule extends Rule
 				if( !$yes )
 					$this->xmlroot->removeChild($tmpRoot);
 				else
-					$tmpRoot->nodeValue = 'yes';
+                    DH::setDomNodeText($tmpRoot, 'yes');
 			}
 
 			$this->negatedDestination = $yes;

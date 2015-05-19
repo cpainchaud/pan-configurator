@@ -23,13 +23,13 @@ class RuleStore
     use XmlConvertible;
 
 	/**
-	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]
+	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
 	 */
 	protected $rules = Array();
 
 
 	/**
-	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]
+	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
 	 */
 	protected $postRules = Array();
 
@@ -60,7 +60,8 @@ class RuleStore
 
         'SecurityRule' => Array( 'name' => 'Security', 'varName' => 'securityRules', 'xpathRoot' => 'security' ),
         'NatRule' => Array( 'name' => 'NAT', 'varName' => 'natRules', 'xpathRoot' => 'nat' ),
-        'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'decryptRules', 'xpathRoot' => 'decryption' )
+        'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'decryptRules', 'xpathRoot' => 'decryption' ),
+        'AppOverrideRule' => Array( 'name' => 'AppOverride', 'varName' => 'appOverrideRules', 'xpathRoot' => 'application-override' )
 
     );
  
@@ -836,6 +837,7 @@ class RuleStore
 	public function newSecurityRule($name, $inPost = false)
 	{
 		$rule = new SecurityRule($this,true);
+        $rule->owner = null;
 
 		$this->addRule($rule, $inPost);
 		$rule->setName($name);		
@@ -858,6 +860,24 @@ class RuleStore
 		
 		return $rule;
 	}
+
+
+    /**
+     * Creates a new AppOverrideRule in this store. It will be placed at the end of the list.
+     * @param String $name name of the new Rule
+     * @param bool $inPost  create it in post or pre (if applicable)
+     * @return AppOverrideRule
+     */
+    public function newAppOverrideRule($name, $inPost = false)
+    {
+        $rule = new AppOverrideRule($this,true);
+        $rule->owner = null;
+
+        $this->addRule($rule, $inPost);
+        $rule->setName($name);
+
+        return $rule;
+    }
 
 
     /**
