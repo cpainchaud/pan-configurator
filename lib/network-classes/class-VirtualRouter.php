@@ -44,7 +44,7 @@ class VirtualRouter
         $this->owner = $owner;
         $this->name = $name;
 
-        $this->attachedInterfaces = new InterfaceContainer($this, $owner->owner->network);
+        $this->attachedInterfaces = new InterfaceContainer($this, $owner->network);
     }
 
     /**
