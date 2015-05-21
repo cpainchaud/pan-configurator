@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Trait PanSubHelperTrait | PAN-Configurator</title>
+	<title>Class ServiceDstPortMapping | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
 	<script type="text/javascript" src="elementlist.js?3675473479"></script>
@@ -71,7 +71,7 @@
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
 				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
 				<li><a href="class-Service.html">Service</a></li>
-				<li><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></li>
+				<li class="active"><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></li>
 				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
 				<li><a href="class-ServiceRuleContainer.html">ServiceRuleContainer</a></li>
 				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
@@ -101,7 +101,7 @@
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
-				<li class="active"><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
+				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
 				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
@@ -170,7 +170,7 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Trait PanSubHelperTrait</h1>
+	<h1>Class ServiceDstPortMapping</h1>
 
 
 
@@ -180,14 +180,6 @@
 
 
 
-	<div>
-		<h4>Direct Known Users</h4>
-			<a href="class-DeviceGroup.html">DeviceGroup</a>, 
-			<a href="class-PANConf.html">PANConf</a>, 
-			<a href="class-PanoramaConf.html">PanoramaConf</a>, 
-			<a href="class-Template.html">Template</a>, 
-			<a href="class-VirtualSystem.html">VirtualSystem</a>
-	</div>
 
 
 	<div class="info">
@@ -196,14 +188,54 @@
 		
 		
 
-		<b>Located at</b> misc-classes/trait-PanSubHelperTrait.php<br />
+		<b>Located at</b> shared.php<br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="isPanorama" id="_isPanorama">
+	<tr data-order="mappingFromText" id="_mappingFromText">
+
+		<td class="attributes"><code>
+			 public static
+			<code><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_mappingFromText">#</a>
+		<code><b>mappingFromText</b>( <span>mixed <var>$text</var></span>, <span>mixed <var>$tcp</var> = <span class="php-keyword1">true</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$text</var></dt>
+					<dd><code>mixed</code><br>$text</dd>
+					<dt><var>$tcp</var></dt>
+					<dd></dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="mergeOverlappingMappings" id="_mergeOverlappingMappings">
 
 		<td class="attributes"><code>
 			 public 
@@ -213,8 +245,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_isPanorama">#</a>
-		<code><b>isPanorama</b>( )</code>
+		<a class="anchor" href="#_mergeOverlappingMappings">#</a>
+		<code><b>mergeOverlappingMappings</b>( )</code>
 
 		<div class="description short">
 			
@@ -232,7 +264,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isPanOS" id="_isPanOS">
+	<tr data-order="mergeWithMapping" id="_mergeWithMapping">
 
 		<td class="attributes"><code>
 			 public 
@@ -242,8 +274,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_isPanOS">#</a>
-		<code><b>isPanOS</b>( )</code>
+		<a class="anchor" href="#_mergeWithMapping">#</a>
+		<code><b>mergeWithMapping</b>( <span><code><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></code> <var>$otherMapping</var></span> )</code>
 
 		<div class="description short">
 			
@@ -261,7 +293,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isVirtualSystem" id="_isVirtualSystem">
+	<tr data-order="mergeWithArrayOfServiceObjects" id="_mergeWithArrayOfServiceObjects">
 
 		<td class="attributes"><code>
 			 public 
@@ -271,8 +303,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_isVirtualSystem">#</a>
-		<code><b>isVirtualSystem</b>( )</code>
+		<a class="anchor" href="#_mergeWithArrayOfServiceObjects">#</a>
+		<code><b>mergeWithArrayOfServiceObjects</b>( <span>mixed <var>&amp; $array</var></span> )</code>
 
 		<div class="description short">
 			
@@ -282,6 +314,11 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$array</var></dt>
+					<dd><code>mixed</code><br>$array Service[]|ServiceGroup[]</dd>
+				</dl></div>
 
 
 
@@ -290,18 +327,18 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isDeviceGroup" id="_isDeviceGroup">
+	<tr data-order="tcpMappingToText" id="_tcpMappingToText">
 
 		<td class="attributes"><code>
 			 public 
-			
-			
+			string
+			&amp;
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_isDeviceGroup">#</a>
-		<code><b>isDeviceGroup</b>( )</code>
+		<a class="anchor" href="#_tcpMappingToText">#</a>
+		<code><b>tcpMappingToText</b>( )</code>
 
 		<div class="description short">
 			
@@ -312,6 +349,10 @@
 
 
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
 
 
 
@@ -319,18 +360,18 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isTemplate" id="_isTemplate">
+	<tr data-order="udpMappingToText" id="_udpMappingToText">
 
 		<td class="attributes"><code>
 			 public 
-			
-			
+			string
+			&amp;
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_isTemplate">#</a>
-		<code><b>isTemplate</b>( )</code>
+		<a class="anchor" href="#_udpMappingToText">#</a>
+		<code><b>udpMappingToText</b>( )</code>
 
 		<div class="description short">
 			
@@ -341,6 +382,109 @@
 
 
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="hasTcpMappings" id="_hasTcpMappings">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_hasTcpMappings">#</a>
+		<code><b>hasTcpMappings</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="hasUdpMappings" id="_hasUdpMappings">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_hasUdpMappings">#</a>
+		<code><b>hasUdpMappings</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="mappingToText" id="_mappingToText">
+
+		<td class="attributes"><code>
+			 public 
+			string
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_mappingToText">#</a>
+		<code><b>mappingToText</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
 
 
 
@@ -361,6 +505,53 @@
 
 
 
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="tcpPortMap" id="$tcpPortMap">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$tcpPortMap</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$tcpPortMap" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="udpPortMap" id="$udpPortMap">
+		<td class="attributes"><code>
+			public  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$udpPortMap</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$udpPortMap" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 

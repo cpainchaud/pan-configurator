@@ -7,7 +7,7 @@
 	<title>Class RuleStore | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?1164641316"></script>
+	<script type="text/javascript" src="elementlist.js?3675473479"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -41,6 +41,7 @@
 				<li><a href="class-AggregateEthernetIfStore.html">AggregateEthernetIfStore</a></li>
 				<li><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></li>
 				<li><a href="class-App.html">App</a></li>
+				<li><a href="class-AppOverrideRule.html">AppOverrideRule</a></li>
 				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
 				<li><a href="class-AppStore.html">AppStore</a></li>
 				<li><a href="class-cidr.html">cidr</a></li>
@@ -70,6 +71,7 @@
 				<li class="active"><a href="class-RuleStore.html">RuleStore</a></li>
 				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
 				<li><a href="class-Service.html">Service</a></li>
+				<li><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></li>
 				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
 				<li><a href="class-ServiceRuleContainer.html">ServiceRuleContainer</a></li>
 				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
@@ -1230,6 +1232,52 @@ list.</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="newAppOverrideRule" id="_newAppOverrideRule">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-AppOverrideRule.html">AppOverrideRule</a></code>
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_newAppOverrideRule">#</a>
+		<code><b>newAppOverrideRule</b>( <span>String <var>$name</var></span>, <span>boolean <var>$inPost</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Creates a new AppOverrideRule in this store. It will be placed at the end of
+the list.</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Creates a new AppOverrideRule in this store. It will be placed at the end of
+the list.</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>String</code><br>$name name of the new Rule</dd>
+					<dt><var>$inPost</var></dt>
+					<dd><code>boolean</code><br>$inPost create it in post or pre (if applicable)</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-AppOverrideRule.html">AppOverrideRule</a></code></code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="remove" id="_remove">
 
 		<td class="attributes"><code>
@@ -1661,7 +1709,7 @@ time. You should not need to call it by yourself in normal situations</p>
 	<tr data-order="rules" id="$rules">
 		<td class="attributes"><code>
 			protected  
-			<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>
+			<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>|<code><a href="class-AppOverrideRule.html">AppOverrideRule</a>[]</code>
 		</code></td>
 
 		<td class="name">
@@ -1683,7 +1731,7 @@ time. You should not need to call it by yourself in normal situations</p>
 	<tr data-order="postRules" id="$postRules">
 		<td class="attributes"><code>
 			protected  
-			<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>
+			<code><a href="class-Rule.html">Rule</a>[]</code>|<code><a href="class-SecurityRule.html">SecurityRule</a>[]</code>|<code><a href="class-NatRule.html">NatRule</a>[]</code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a>[]</code>|<code><a href="class-AppOverrideRule.html">AppOverrideRule</a>[]</code>
 		</code></td>
 
 		<td class="name">

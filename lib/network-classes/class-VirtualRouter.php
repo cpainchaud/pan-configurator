@@ -37,14 +37,14 @@ class VirtualRouter
 
     /**
      * @param $name string
-     * @param $owner PANConf
+     * @param $owner VirtualRouterStore
      */
     public function VirtualRouter($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;
 
-        $this->attachedInterfaces = new InterfaceContainer($this, $owner->network);
+        $this->attachedInterfaces = new InterfaceContainer($this, $owner->owner->network);
     }
 
     /**
