@@ -429,12 +429,12 @@ class PanoramaConf
     }
 
 	
-	public function save_to_file($filename, $printMessage=true)
+	public function save_to_file($filename, $printMessage=true, $indentingXml = 1)
 	{
         if($printMessage)
             print "Now saving PANConf to file '$filename'...";
 
-        $xml = &DH::dom_to_xml($this->xmlroot);
+        $xml = &DH::dom_to_xml($this->xmlroot, 0, true, -1, 2 );
         file_put_contents ( $filename , $xml);
 
         if($printMessage)

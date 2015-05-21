@@ -342,7 +342,9 @@ print "OK!\n";
 if( $loadConfigAfterUpload )
 {
     print "Loading config in the firewall (will display warnings if any) ...\n";
-    $xmlResponse = $configOutput['connector']->sendCmdRequest('<load><config><from>' . $saveName . '</from></config></load>');
+    /** @var PanAPIConnector $targetConnector */
+    $targetConnector = $configOutput['connector'];
+    $xmlResponse = $targetConnector->sendCmdRequest('<load><config><from>' . $saveName . '</from></config></load>', true, 180);
 
     $xmlResponse = DH::firstChildElement($xmlResponse);
 

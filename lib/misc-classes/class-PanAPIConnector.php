@@ -415,6 +415,11 @@ class PanAPIConnector
 
         $c = new mycurl($finalUrl, false, $timeout);
 
+        if( array_key_exists('lowSpeedTime', $moreOptions ) )
+        {
+            $c->_lowspeedtime = $moreOptions['lowSpeedTime'];
+        }
+
 
         if( !is_null($filecontent) )
         {
@@ -441,7 +446,6 @@ class PanAPIConnector
                 {
                     $paramURl .= '&'.$paramIndex.'='.str_replace('#', '%23',$param);
                 }
-
 
                 print("API call through POST: \"".$finalUrl.'?'.$paramURl."\"\r\n");
             }
@@ -726,10 +730,17 @@ class PanAPIConnector
      * @param $cmd
      * @return DomDocument|string[]
      */
-    public function sendCmdRequest($cmd, $checkResultTag = true)
+    public function sendCmdRequest($cmd, $checkResultTag = true, $maxWaitTime = -1)
     {
         $req = "type=op&cmd=$cmd";
-        $ret = $this->sendRequest($req, $checkResultTag);
+        if( $maxWaitTime == -1 )
+            $moreOptions['lowSpeedTime'] = null;
+        else
+            $moreOptions['lowSpeedTime'] = $maxWaitTime;
+
+        $nullVar = null;
+
+        $ret = $this->sendRequest($req, $checkResultTag, $nullVar, '', $moreOptions);
 
         return $ret;
     }
@@ -838,6 +849,8 @@ class mycurl
      protected $_infilecontent;
      protected $_infilename;
 
+     public $_lowspeedtime = 60;
+
      public    $authentication = 0; 
      public    $auth_name      = ''; 
      public    $auth_pass      = ''; 
@@ -901,8 +914,12 @@ class mycurl
          //curl_setopt($s,CURLOPT_HTTPHEADER,array('Expect:')); 
          curl_setopt($s,CURLOPT_CONNECTTIMEOUT,$this->_timeout);
          curl_setopt($s,CURLOPT_TIMEOUT,3600);
-         curl_setopt($s,CURLOPT_LOW_SPEED_LIMIT,500);
-         curl_setopt($s,CURLOPT_LOW_SPEED_TIME,60);
+
+         if( $this->_lowspeedtime !== null )
+         {
+             curl_setopt($s,CURLOPT_LOW_SPEED_LIMIT,500);
+             curl_setopt($s, CURLOPT_LOW_SPEED_TIME, $this->_lowspeedtime);
+         }
 
          curl_setopt($s,CURLOPT_MAXREDIRS,$this->_maxRedirects); 
          curl_setopt($s,CURLOPT_RETURNTRANSFER,true); 
@@ -945,9 +962,6 @@ class mycurl
 
          if( !is_null($this->_infilecontent) )
          {
-
-
-            
 
             $content =  "----ABC1234\r\n"
                         . "Content-Disposition: form-data; name=\"file\"; filename=\"".$this->_infilename."\"\r\n"

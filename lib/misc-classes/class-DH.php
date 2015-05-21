@@ -240,7 +240,7 @@ class DH
      * @param int $limitSubLevels
      * @return string
      */
-	static function &dom_to_xml(DOMNode $node, $indenting = 0, $lineReturn = true, $limitSubLevels = -1)
+	static function &dom_to_xml(DOMNode $node, $indenting = 0, $lineReturn = true, $limitSubLevels = -1, $indentingIncrement = 1)
 	{
 		$ind = '';
 		$out = '';
@@ -272,7 +272,7 @@ class DH
 				if( $n->nodeType != 1 ) continue;
 
 				if( $indenting != -1 )
-					$tmpout .= DH::dom_to_xml($n, $indenting + 1,$lineReturn, $limitSubLevels);
+					$tmpout .= DH::dom_to_xml($n, $indenting + $indentingIncrement,$lineReturn, $limitSubLevels, $indentingIncrement);
 				else
 					$tmpout .= DH::dom_to_xml($n, -1, $lineReturn, $limitSubLevels);
 				$wroteChildren = true;
