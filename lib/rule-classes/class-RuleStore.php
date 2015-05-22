@@ -1044,7 +1044,7 @@ class RuleStore
 
 
 	/**
-	 * @return DecryptionRule[]|NatRule[]|Rule[]|SecurityRule[]
+	 * @return DecryptionRule[]|AppOverrideRule[]|NatRule[]|Rule[]|SecurityRule[]
 	 */
 	public function preRules()
 	{
@@ -1056,7 +1056,7 @@ class RuleStore
 
 
 	/**
-	 * @return DecryptionRule[]|NatRule[]|Rule[]|SecurityRule[]
+	 * @return DecryptionRule[]|AppOverrideRule[]|NatRule[]|Rule[]|SecurityRule[]
 	 */
 	public function postRules()
 	{

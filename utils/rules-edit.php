@@ -989,6 +989,7 @@ $supportedActions['copy'] = Array(
     'name' => 'copy',
     'MainFunction' => function(CallContext $context)
                 {
+                    $rule = $context->object;
                     $args = &$context->arguments;
                     $location = $args['location'];
                     $pan = $context->baseObject;
@@ -1001,7 +1002,7 @@ $supportedActions['copy'] = Array(
 
                     /** @var RuleStore $ruleStore */
                     $ruleStore = null;
-                    $variableName = $context->object->storeVariableName();
+                    $variableName = $rule->storeVariableName();
 
                     if( strtolower($location) == 'shared' )
                     {
@@ -1018,9 +1019,9 @@ $supportedActions['copy'] = Array(
                         $ruleStore = $sub->$variableName;
                     }
                     if( $context->isAPI )
-                        $ruleStore->API_cloneRule($context->object, null, $preORpost);
+                        $ruleStore->API_cloneRule($rule, null, $preORpost);
                     else
-                        $ruleStore->cloneRule($context->object, null, $preORpost);
+                        $ruleStore->cloneRule($rule, null, $preORpost);
                 },
     'args' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
                             'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => array_flip(Array('pre','post')) ) )
@@ -1040,7 +1041,7 @@ $supportedActions['cloneforappoverride'] = Array(
 
         if( !$rule->apps->isAny() )
         {
-            print $context->padding . " - IGNORED because Application is NOT EQUAL ANYY\n";
+            print $context->padding . " - IGNORED because Application is NOT EQUAL ANY\n";
             return;
         }
 

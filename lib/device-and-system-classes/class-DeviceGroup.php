@@ -303,7 +303,7 @@ class DeviceGroup
         print "- {$this->natRules->countPreRules()} / {$this->natRules->countPostRules()} pre/post NatRules\n";
 		print "- {$this->addressStore->countAddresses()} / {$this->addressStore->countAddressGroups()} / {$this->addressStore->countTmpAddresses()} address/group/tmp/total objects\n";
 		print "- {$this->serviceStore->countServices()} / {$this->serviceStore->countServiceGroups()} / {$this->serviceStore->countTmpServices()} service/group/tmp/total objects\n";
-		print "- ".$this->tagStore->count()." tags. ".$this->tagStore->countUnused()." unused\n";
+		print "- {$this->tagStore->count()} tags. {$this->tagStore->countUnused()} unused\n";
 	}
 	
 	
