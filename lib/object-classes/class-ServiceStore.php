@@ -19,6 +19,7 @@
 class ServiceStore 
 {
 	use PathableName;
+    use XmlConvertible;
 	
 	public $owner;
 
@@ -160,41 +161,12 @@ class ServiceStore
 		$this->regen_Indexes();
 	}
 
-	
-	public function load_local_objects_xml(&$xml)
-	{
-		$this->xmlroot = &$xml;
 
-		foreach($xml['children'] as &$cur)
-		{
-			$lname = $cur['content'];
-			
-			if( $i == 0 )
-			{
-				if( $lname == 'any' )
-				{
-					break;
-				}
-				if( $lname == 'application-default' )
-				{
-					$this->appdef = true;
-					break;
-				}
-			}
-			$f = $this->parentCentralStore->findOrCreate($lname);
-			
-			$f->addReference($this);
-			$this->all[] = $f;
-			$this->add_Obj_inIndex($f, lastIndex($this->all));
-		}
-		
-		$this->regen_Indexes();
-		
-	}
-
+    /**
+     * @param DOMElement $xml
+     */
 	public function load_local_objects_domxml($xml)
 	{
-
 		$this->xmlroot = $xml;
 		
 		$i=0;
@@ -224,7 +196,6 @@ class ServiceStore
 		}
 		
 		$this->regen_Indexes();
-		
 	}
 	
 	/**
@@ -506,8 +477,12 @@ class ServiceStore
 			$this->servgroot->appendChild($s->xmlroot);
 		}
 	}
-	
-	
+
+    /**
+     * @param Service|ServiceGroup $s
+     * @param bool $rewritexml
+     * @throws Exception
+     */
 	public function add($s, $rewritexml=true)
 	{
 		//print "Service->add was called\n";

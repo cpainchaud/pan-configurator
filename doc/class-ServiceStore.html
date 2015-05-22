@@ -179,7 +179,9 @@
 <b><span>ServiceStore</span></b>			
 			
 			 uses 
-				<a href="class-PathableName.html"><span>PathableName</span></a>
+				<a href="class-PathableName.html"><span>PathableName</span></a>, 
+			
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>
 			
 		</dd>
 	</dl>
@@ -423,35 +425,6 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="load_local_objects_xml" id="_load_local_objects_xml">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_load_local_objects_xml">#</a>
-		<code><b>load_local_objects_xml</b>( <span>mixed <var>&amp; $xml</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="load_local_objects_domxml" id="_load_local_objects_domxml">
 
 		<td class="attributes"><code>
@@ -463,7 +436,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_load_local_objects_domxml">#</a>
-		<code><b>load_local_objects_domxml</b>( <span>mixed <var>$xml</var></span> )</code>
+		<code><b>load_local_objects_domxml</b>( <span><code><a href="class-DOMElement.html">DOMElement</a></code> <var>$xml</var></span> )</code>
 
 		<div class="description short">
 			
@@ -473,6 +446,11 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$xml</var></dt>
+					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code></code><br>$xml</dd>
+				</dl></div>
 
 
 
@@ -912,7 +890,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_add">#</a>
-		<code><b>add</b>( <span>mixed <var>$s</var></span>, <span>mixed <var>$rewritexml</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><b>add</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$s</var></span>, <span>boolean <var>$rewritexml</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -922,8 +900,19 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$s</var></dt>
+					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$s</dd>
+					<dt><var>$rewritexml</var></dt>
+					<dd><code>boolean</code><br>$rewritexml</dd>
+				</dl></div>
 
 
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
 
 
 
@@ -1293,6 +1282,17 @@
 		</code></td>
 	</tr>
 	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_API_sync"><b>API_sync()</b></a>, 
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
@@ -1550,6 +1550,14 @@
 	</table>
 
 
+	<table class="summary used">
+	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 

@@ -266,7 +266,7 @@ class PANConf
 
     /**
      * !!OBSOLETE!!
-     *
+     * @obsolete
      * @param string $name
      * @return VirtualSystem|null
      */
@@ -292,22 +292,29 @@ class PANConf
 
         return null;
     }
-	
-	public function save_to_file($filename, $printMessage=true)
+
+    /**
+     * @param string $fileName
+     * @param bool $printMessage
+     */
+	public function save_to_file($fileName, $printMessage=true)
 	{
         if($printMessage)
-            print "Now saving PANConf to file '$filename'...";
+            print "Now saving PANConf to file '$fileName'...";
 
 		$xml = &DH::dom_to_xml($this->xmlroot);
-		file_put_contents ( $filename , $xml);
+		file_put_contents ( $fileName , $xml);
 
         if($printMessage)
             print "     done!\n\n";
 	}
-	
-	public function load_from_file($filename)
+
+    /**
+     * @param $fileName string
+     */
+	public function load_from_file($fileName)
 	{
-		$filecontents = file_get_contents($filename);
+		$filecontents = file_get_contents($fileName);
 
 		$this->load_from_xmlstring($filecontents);
 	}

@@ -493,14 +493,14 @@
 
 		<td class="attributes"><code>
 			 public static
-			
+			<code><a href="class-DOMElement.html">DOMElement</a></code>|<code><a href="class-DOMNode.html">DOMNode</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_createElement">#</a>
-		<code><b>createElement</b>( <span><code><a href="class-DOMNode.html">DOMNode</a></code> <var>$parent</var></span>, <span>mixed <var>$tagName</var></span>, <span>mixed <var>$withText</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><b>createElement</b>( <span><code><a href="class-DOMElement.html">DOMElement</a></code> <var>$parent</var></span>, <span>string <var>$tagName</var></span>, <span>null <var>$withText</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -510,7 +510,20 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$parent</var></dt>
+					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code></code><br>$parent</dd>
+					<dt><var>$tagName</var></dt>
+					<dd><code>string</code><br>$tagName</dd>
+					<dt><var>$withText</var></dt>
+					<dd><code>null</code><br>$withText</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-DOMElement.html">DOMElement</a></code>|<code><a href="class-DOMNode.html">DOMNode</a></code></code><br />
+				</div>
 
 
 
@@ -697,7 +710,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_dom_to_xml">#</a>
-		<code><b>dom_to_xml</b>( <span><code><a href="class-DOMNode.html">DOMNode</a></code> <var>$node</var></span>, <span>integer <var>$indenting</var> = <span class="php-num">0</span></span>, <span>boolean <var>$lineReturn</var> = <span class="php-keyword1">true</span></span>, <span>integer <var>$limitSubLevels</var> = -<span class="php-num">1</span></span> )</code>
+		<code><b>dom_to_xml</b>( <span><code><a href="class-DOMNode.html">DOMNode</a></code> <var>$node</var></span>, <span>integer <var>$indenting</var> = <span class="php-num">0</span></span>, <span>boolean <var>$lineReturn</var> = <span class="php-keyword1">true</span></span>, <span>integer <var>$limitSubLevels</var> = -<span class="php-num">1</span></span>, <span>mixed <var>$indentingIncrement</var> = <span class="php-num">1</span></span> )</code>
 
 		<div class="description short">
 			
@@ -717,6 +730,8 @@
 					<dd><code>boolean</code><br>$lineReturn</dd>
 					<dt><var>$limitSubLevels</var></dt>
 					<dd><code>integer</code><br>$limitSubLevels</dd>
+					<dt><var>$indentingIncrement</var></dt>
+					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>

@@ -177,13 +177,16 @@ class AddressGroup
 	public function name()
 	{
 		return $this->name;
-	}	
-	
-	public function setName($newname)
-	{
-		$this->setRefName($newname);
+	}
 
-		$this->xmlroot->setAttribute('name', $newname);
+    /**
+     * @param string $newName
+     */
+	public function setName($newName)
+	{
+		$this->setRefName($newName);
+
+		$this->xmlroot->setAttribute('name', $newName);
 	}
 
 
@@ -371,6 +374,9 @@ class AddressGroup
 		return $this->members;
 	}
 
+    /**
+     * @param string $newName
+     */
 	public function API_setName($newName)
 	{
 		$c = findConnectorOrDie($this);
@@ -562,10 +568,7 @@ class AddressGroup
 
 	public function API_delete()
 	{
-		$connector = findConnectorOrDie($this);
-		$xpath = $this->getXPath();
-
-		$connector->sendDeleteRequest($xpath);
+		return $this->owner->API_remove($this);
 	}
 
 

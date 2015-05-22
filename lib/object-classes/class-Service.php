@@ -30,7 +30,7 @@ class Service
 	protected $_sport = '';
 
 	/** @var null|DOMElement */
-	public $protocolroot = null;
+	public $protocolRoot = null;
 
     /** @var null|DOMElement */
     protected $tcpOrUdpRoot = null;
@@ -82,7 +82,10 @@ class Service
 	}
 
 
-
+    /**
+     * @param DOMElement $xml
+     * @throws Exception
+     */
 	public function load_from_domxml($xml)
 	{
 		$this->xmlroot = $xml;
@@ -96,14 +99,14 @@ class Service
 		//
 		// seeking <protocol>
 		//
-		$this->protocolroot = DH::findFirstElementOrDie('protocol', $xml);
+		$this->protocolRoot = DH::findFirstElementOrDie('protocol', $xml);
 		
-		$this->tcpOrUdpRoot = DH::findFirstElement('tcp', $this->protocolroot );
+		$this->tcpOrUdpRoot = DH::findFirstElement('tcp', $this->protocolRoot );
 
 		if( $this->tcpOrUdpRoot === FALSE )
 		{
 			$this->protocol = 'udp';
-			$this->tcpOrUdpRoot = DH::findFirstElement('udp', $this->protocolroot );
+			$this->tcpOrUdpRoot = DH::findFirstElement('udp', $this->protocolRoot );
 		}
 		if( $this->tcpOrUdpRoot === FALSE )
 			derr("Error: <tcp> or <udp> not found for service".$this->name."\n");
@@ -118,45 +121,75 @@ class Service
 			$this->_sport = $sportroot->textContent;
 		}
 	}
-	
-	public function setDestPort($newport)
+
+    /**
+     * @param string $newPorts
+     * @return bool
+     */
+	public function setDestPort($newPorts)
 	{
-		$this->_dport = $newport;
-		$this->dportroot['content'] = $this->_dport;
+        if( strlen($newPorts) == 0 )
+            derr("invalid blank value for newPorts");
+
+        if( $newPorts == $this->_dport )
+            return false;
+
+		$this->_dport = $newPorts;
+		$tmp = DH::findFirstElementOrCreate('port', $this->tcpOrUdpRoot, $this->_dport);
+        DH::setDomNodeText($tmp, $newPorts);
+
+        return true;
 	}
 
 
-    public function setSourcePort($newValue)
+    public function setSourcePort($newPorts)
     {
-        if( $newValue === null || strlen($newValue) == 0 )
+        if( $newPorts === null || strlen($newPorts) == 0 )
         {
             if( strlen($this->_sport) == 0 )
                 return false;
 
-            $this->_sport = $newValue;
+            $this->_sport = $newPorts;
             $sportroot = DH::findFirstElement('source-port', $this->tcpOrUdpRoot);
             if( $sportroot !== false )
                 $this->tcpOrUdpRoot->removeChild($sportroot);
 
             return true;
         }
-        if( $this->_sport == $newValue )
+        if( $this->_sport == $newPorts )
             return false;
 
         if( strlen($this->_sport) == 0 )
         {
-            DH::findFirstElementOrCreate('sport', $this->tcpOrUdpRoot,$newValue);
+            DH::findFirstElementOrCreate('source-port', $this->tcpOrUdpRoot,$newPorts);
             return true;
         }
         $sportroot = DH::findFirstElementOrCreate('source-port', $this->tcpOrUdpRoot);
-        DH::setDomNodeText($sportroot, $newValue);
+        DH::setDomNodeText($sportroot, $newPorts);
         return true;
     }
 
-	public function setProtocol($newport)
+    /**
+     * @param string $newProtocol
+     */
+	public function setProtocol($newProtocol)
 	{
-		$this->protocol = $newport;
-		$this->portroot['name'] = $this->protocol;
+        if( $newProtocol != 'tcp' || $newProtocol != 'udp' )
+            derr("unsupported protocol '{$newProtocol}'");
+
+        if( $newProtocol == $this->protocol )
+            return;
+
+		$this->protocol = $newProtocol;
+
+        DH::clearDomNodeChilds($this->protocolRoot);
+
+        $this->tcpOrUdpRoot = DH::createElement($this->protocolRoot, $this->protocol);
+
+        DH::createElement($this->tcpOrUdpRoot, 'port' ,$this->_dport);
+
+        if( strlen($this->_sport) > 0 )
+            DH::createElement($this->tcpOrUdpRoot, 'source-port' ,$this->_dport);
 	}
 	
 	public function getDestPort()
@@ -168,9 +201,11 @@ class Service
     {
         return $this->_sport;
     }
-	
 
-	
+
+    /**
+     * @param string $newName
+     */
 	public function setName($newName)
 	{
 		$this->setRefName($newName);
@@ -178,6 +213,9 @@ class Service
 		$this->xmlroot->setAttribute('name', $newName);
 	}
 
+    /**
+     * @return string
+     */
 	public function &getXPath()
 	{
 		$str = $this->owner->getServiceStoreXPath()."/entry[@name='".$this->name."']";
@@ -258,10 +296,7 @@ class Service
 		if($this->isTmpSrv())
 			derr('cannot be called on a Tmp service object');
 
-		$connector = findConnectorOrDie($this);
-		$xpath = $this->getXPath();
-
-		$connector->sendDeleteRequest($xpath);
+		return $this->owner->API_remove($this);
 	}
 
 	public function removeReference($object)

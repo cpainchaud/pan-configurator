@@ -138,7 +138,13 @@ class DH
 		}
 	}
 
-	static function createElement(DOMNode $parent,$tagName, $withText = null)
+    /**
+     * @param DOMElement $parent
+     * @param string $tagName
+     * @param null $withText
+     * @return DOMElement|DOMNode
+     */
+	static function createElement(DOMElement $parent,$tagName, $withText = null)
 	{
 		$ret = $parent->ownerDocument->createElement($tagName);
 		$ret = $parent->appendChild($ret);

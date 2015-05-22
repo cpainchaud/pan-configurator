@@ -92,10 +92,8 @@ class Address
 		if($this->isTmpAddr())
 			derr('cannot be called on a Tmp address object');
 
-		$connector = findConnectorOrDie($this);
-		$xpath = $this->getXPath();
 
-		$connector->sendDeleteRequest($xpath);
+        return $this->owner->API_remove($this);
 	}
 
 
@@ -173,6 +171,12 @@ class Address
 		return $ret;
 	}
 
+    /**
+     * @param string $newValue
+     * @param bool $rewriteXml
+     * @return bool
+     * @throws Exception
+     */
 	public function setValue( $newValue, $rewriteXml = true )
 	{
         if( isset($this->_ipStartEnd) )
@@ -282,31 +286,35 @@ class Address
 	}
 	
 	/**
-	* change the name of this object
-	* @param string $newname
+	 * change the name of this object
+	 * @param string $newName
      *
 	*/
-	public function setName($newname)
+	public function setName($newName)
 	{
-		$this->setRefName($newname);
-
-		$this->xmlroot->getAttributeNode('name')->nodeValue = $newname;
-
+		$this->setRefName($newName);
+		$this->xmlroot->setAttribute('name', $newName);
 	}
 
-	public function API_setName($newname)
+    /**
+     * @param string $newName
+     */
+	public function API_setName($newName)
 	{
 		$c = findConnectorOrDie($this);
 		$path = $this->getXPath();
 
-		$url = "type=config&action=rename&xpath=$path&newname=$newname";
+		$url = "type=config&action=rename&xpath=$path&newname=$newName";
 
 		$c->sendRequest($url);
 
-		$this->setName($newname);	
+		$this->setName($newName);
 	}
 
 
+    /**
+     * @return string
+     */
 	public function &getXPath()
 	{
 		$str = $this->owner->getAddressStoreXPath()."/entry[@name='".$this->name."']";
@@ -316,7 +324,7 @@ class Address
 
 
 	/**
-	* @return string ie: ip-netmask
+	* @return string ie: 'ip-netmask' 'ip-range'
 	*/
 	public function type()
 	{
@@ -449,6 +457,7 @@ class Address
 	{
 		$this->super_removeReference($object);
 
+        // adding extra cleaning
 		if( $this->isTmpAddr() && $this->countReferences() == 0 && $this->owner !== null )
 		{
 			$this->owner->remove($this);

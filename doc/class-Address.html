@@ -356,14 +356,14 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			boolean
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setValue">#</a>
-		<code><b>setValue</b>( <span>mixed <var>$newValue</var></span>, <span>mixed <var>$rewriteXml</var> = <span class="php-keyword1">true</span> </span> )</code>
+		<code><b>setValue</b>( <span>string <var>$newValue</var></span>, <span>boolean <var>$rewriteXml</var> = <span class="php-keyword1">true</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -373,8 +373,23 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$newValue</var></dt>
+					<dd><code>string</code><br>$newValue</dd>
+					<dt><var>$rewriteXml</var></dt>
+					<dd><code>boolean</code><br>$rewriteXml</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
 
 
 
@@ -537,7 +552,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setName">#</a>
-		<code><b>setName</b>( <span>string <var>$newname</var></span> )</code>
+		<code><b>setName</b>( <span>string <var>$newName</var></span> )</code>
 
 		<div class="description short">
 			
@@ -553,8 +568,8 @@
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$newname</var></dt>
-					<dd><code>string</code><br>$newname</dd>
+					<dt><var>$newName</var></dt>
+					<dd><code>string</code><br>$newName</dd>
 				</dl></div>
 
 
@@ -575,7 +590,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_API_setName">#</a>
-		<code><b>API_setName</b>( <span>mixed <var>$newname</var></span> )</code>
+		<code><b>API_setName</b>( <span>string <var>$newName</var></span> )</code>
 
 		<div class="description short">
 			
@@ -585,6 +600,11 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$newName</var></dt>
+					<dd><code>string</code><br>$newName</dd>
+				</dl></div>
 
 
 
@@ -597,7 +617,7 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			string
 			&amp;
 			</code>
 		</td>
@@ -615,6 +635,10 @@
 
 
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
 
 
 
@@ -646,7 +670,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>string</code><br>ie: ip-netmask<br />
+					<code>string</code><br>ie: 'ip-netmask' 'ip-range'<br />
 				</div>
 
 
