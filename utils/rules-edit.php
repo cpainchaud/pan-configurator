@@ -590,7 +590,7 @@ $supportedActions['dst-remove-force-any'] = Array(
         if( $context->isAPI )
             $rule->destination->API_remove($objectFind, true);
         else
-            $rule->destination-remove($objectFind, true, true);
+            $rule->destination->remove($objectFind, true, true);
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
