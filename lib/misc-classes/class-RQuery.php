@@ -1084,6 +1084,8 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
             $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $vsys->name() . '</vsys></rule-use></running></show>';
             $apiResult = $connector->sendCmdRequest($apiCmd);
 
+            DH::dom_to_xml($apiResult);
+
             $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
 
             for ($i = 0; $i < $rulesXml->length; $i++)
@@ -1094,7 +1096,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
         }
 
         if( isset($vsys->apiCache['unusedSecurity'][$object->name()]) )
-            true;
+            return true;
 
         return false;
     },

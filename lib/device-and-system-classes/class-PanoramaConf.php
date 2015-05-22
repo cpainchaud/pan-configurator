@@ -428,22 +428,30 @@ class PanoramaConf
         return null;
     }
 
-	
-	public function save_to_file($filename, $printMessage=true, $indentingXml = 1)
+
+    /**
+     * @param string $fileName
+     * @param bool $printMessage
+     * @param int $indentingXml
+     */
+	public function save_to_file($fileName, $printMessage=true, $indentingXml = 1)
 	{
         if($printMessage)
-            print "Now saving PANConf to file '$filename'...";
+            print "Now saving PANConf to file '$fileName'...";
 
         $xml = &DH::dom_to_xml($this->xmlroot, 0, true, -1, 2 );
-        file_put_contents ( $filename , $xml);
+        file_put_contents ( $fileName , $xml);
 
         if($printMessage)
             print "     done!\n\n";
 	}
 
-	public function load_from_file($filename)
+    /**
+     * @param string $fileName
+     */
+	public function load_from_file($fileName)
 	{
-		$filecontents = file_get_contents($filename);
+		$filecontents = file_get_contents($fileName);
 
 		$this->load_from_xmlstring($filecontents);
 

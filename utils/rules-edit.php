@@ -659,9 +659,9 @@ $supportedActions['tag-add-force'] = Array(
             derr("tag named '{$context->arguments['tagName']}' not found");
 
         if( $context->isAPI )
-            $rule->tags->API_removeTag($objectFind);
+            $rule->tags->API_addTag($objectFind);
         else
-            $rule->tags->removeTag($objectFind);
+            $rule->tags->addTag($objectFind);
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
@@ -1100,7 +1100,7 @@ $supportedActions['cloneforappoverride'] = Array(
         if( count($portMapping->tcpPortMap) > 0)
         {
             $newName = $rule->owner->owner->appOverrideRules->findAvailableName($rule->name(), '');
-            $newRule = $rule->owner->owner->appOverrideRules->newAppOverrideRule($newName, $rule->isPreRule());
+            $newRule = $rule->owner->owner->appOverrideRules->newAppOverrideRule($newName, $rule->isPostRule());
             if( $rule->sourceIsNegated() )
                 $newRule->setSourceIsNegated(true);
             if( $rule->destinationIsNegated() )
@@ -1437,7 +1437,9 @@ foreach( $explodedActions as &$exAction )
 
     $context = new CallContext($supportedActions[$actionName], $explodedAction[1], $nestedQueries);
     if( $configInput['type'] == 'api' )
+    {
         $context->isAPI = true;
+    }
 
     $doActions[] = $context;
 }

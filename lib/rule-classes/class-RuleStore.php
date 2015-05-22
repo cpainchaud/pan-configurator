@@ -186,7 +186,7 @@ class RuleStore
 
 		$ser = spl_object_hash($rule);
 
-		if( ! $inPost )
+		if( $inPost !== true )
 		{
 			if (!isset($this->fastMemToIndex[$ser]))
 			{
@@ -440,7 +440,7 @@ class RuleStore
 	 * @param string $suffix
 	 * @return string
 	 */
-	public function findAvailableName($base, $suffix)
+	public function findAvailableName($base, $suffix= '')
 	{
 		$maxl = 31;
 		$basel = strlen($base);
@@ -508,13 +508,16 @@ class RuleStore
      * @param string $newName
      * @return SecurityRule|NatRule
      */
-	public function cloneRule($rule, $newName = null, $inPost=false)
+	public function cloneRule($rule, $newName = null, $inPostRuleBase=null)
 	{
 		if( $newName !== null )
         {
             if (!$this->isRuleNameAvailable($newName))
                 derr('this rule name is not available: ' . $newName);
         }
+
+        if( $inPostRuleBase === null )
+            $inPostRuleBase = $rule->isPostRule();
 
         /** @var SecurityRule|NatRule|DecryptionRule $newRule */
 		$newRule = new $this->type($this);
@@ -532,7 +535,7 @@ class RuleStore
 		$newRule->setName($newName);
 
         // finally add it to the store
-		$this->addRule($newRule, $inPost);
+		$this->addRule($newRule, $inPostRuleBase);
 
 		return $newRule;
 	}
@@ -865,15 +868,15 @@ class RuleStore
     /**
      * Creates a new AppOverrideRule in this store. It will be placed at the end of the list.
      * @param String $name name of the new Rule
-     * @param bool $inPost  create it in post or pre (if applicable)
+     * @param bool $inPostRulebase  create it in post or pre (if applicable)
      * @return AppOverrideRule
      */
-    public function newAppOverrideRule($name, $inPost = false)
+    public function newAppOverrideRule($name, $inPostRulebase = false)
     {
         $rule = new AppOverrideRule($this,true);
         $rule->owner = null;
 
-        $this->addRule($rule, $inPost);
+        $this->addRule($rule, $inPostRulebase);
         $rule->setName($name);
 
         return $rule;
