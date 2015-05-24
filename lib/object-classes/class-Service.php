@@ -63,16 +63,16 @@ class Service
 		
 		if( $fromtemplatexml )
 		{
-			if( is_null(self::$templatexmlroot) )
-			{
-				$xmlobj = new XmlArray();
-				self::$templatexmlroot = $xmlobj->load_string(self::$templatexml);
-				//print_r(self::$templatexmlroot);
-				//die();
-			}
-			
-			$this->load_from_xml(cloneArray(self::$templatexmlroot));
-			$this->setName($name);
+            $doc = new DOMDocument();
+            $doc->loadXML(self::$templatexml);
+
+            $node = DH::findFirstElementOrDie('entry',$doc);
+
+            $rootDoc = $this->owner->servroot->ownerDocument;
+            $this->xmlroot = $rootDoc->importNode($node, true);
+            $this->load_from_domxml($this->xmlroot);
+
+            $this->setName($name);
 		}
 		else
 			$this->name = $name;
