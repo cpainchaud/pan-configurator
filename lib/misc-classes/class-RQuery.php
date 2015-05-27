@@ -1111,6 +1111,18 @@ RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['rule']['name']['operators']['regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        $matching = preg_match($value, $object->name());
+        if( $matching === FALSE )
+            derr("regular expression error on '$value'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['rule']['name']['operators']['eq.nocase'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
