@@ -142,6 +142,12 @@ $supportedActions['replacebymembersanddelete'] = Array(
     {
         $object = $context->object;
 
+        if( !$object->isGroup() )
+        {
+            print $context->padding."     *  skipped it's not a group\n";
+            return;
+        }
+
         $objectRefs = $object->getReferences();
         $clearForAction = true;
         foreach( $objectRefs as $objectRef )
@@ -151,7 +157,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
             {
                 $clearForAction = false;
                 print "     *  skipped because its used in unsupported class $class\n";
-                break;
+                return;
             }
         }
         if( $clearForAction )
@@ -168,7 +174,11 @@ $supportedActions['replacebymembersanddelete'] = Array(
                         if( $context->isAPI )
                             $objectRef->API_add($objectMember);
                         else
-                            $objectRef->addObject($objectMember);
+                            if( $class == 'AddressRuleContainer' )
+                                $objectRef->addObject($objectMember);
+                            else
+                                $objectRef->add($objectMember);
+
                     }
                     if( $context->isAPI )
                         $objectRef->API_remove($object);
