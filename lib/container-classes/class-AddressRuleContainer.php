@@ -41,6 +41,7 @@ class AddressRuleContainer extends ObjRuleContainer
      * @param Address|AddressGroup $Obj
      * @param bool $rewriteXml
      * @return bool
+     * @obsolete
      */
     public function add( $Obj, $rewriteXml = true )
     {

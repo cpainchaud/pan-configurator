@@ -171,7 +171,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
                         if( $context->isAPI )
                             $objectRef->API_add($objectMember);
                         else
-                            $objectRef->add($objectMember);
+                            $objectRef->addObject($objectMember);
                     }
                     if( $context->isAPI )
                         $objectRef->API_remove($object);
