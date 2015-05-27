@@ -294,37 +294,39 @@ $supportedActions['move'] = Array(
         {
             if( $object->equals($conflictObject) )
             {
-                $object->replaceMeGlobally($conflictObject);
-
-                if($context->isAPI)
-                    $object->owner->API_remove($object);
-                else
-                    $object->owner->remove($object);
-
                 print "    * Removed because target has same content\n";
+                goto do_replace;
             }
             else
             {
+                $object->displayValueDiff($conflictObject, 9);
                 if( $context->arguments['mode'] == 'removeifmatch')
                 {
                     print $context->padding."    * SKIPPED because of mismatching group content\n";
-                    $object->displayValueDiff($conflictObject, 9);
                     return;
                 }
+
+                $localMap = $object->getIP4Mapping();
+                $targetMap = $conflictObject->getIP4Mapping();
+
+                if( !IP4Mapping::mapsAreEqual($localMap, $targetMap) )
+                {
+                    print $context->padding."    * SKIPPED because of mismatching group content and numerical values\n";
+                    return;
+                }
+
+                print "    * Removed because it has same numerical value\n";
+
+                goto do_replace;
+
             }
             return;
         }
 
         if( $object->equals($conflictObject) )
         {
-            $object->replaceMeGlobally($conflictObject);
-            if($context->isAPI)
-                $object->owner->API_remove($object);
-            else
-                $object->owner->remove($object);
-
             print "    * Removed because target has same content\n";
-            return;
+            goto do_replace;
         }
 
         if( $context->arguments['mode'] == 'removeifmatch' )
@@ -339,12 +341,16 @@ $supportedActions['move'] = Array(
             return;
         }
 
+        print "    * Removed because target has same numerical value\n";
+
+        do_replace:
+
         $object->replaceMeGlobally($conflictObject);
         if($context->isAPI)
             $object->owner->API_remove($object);
         else
             $object->owner->remove($object);
-        print "    * Removed because target has same numerical value\n";
+
 
     },
     'args' => Array( 'location' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
