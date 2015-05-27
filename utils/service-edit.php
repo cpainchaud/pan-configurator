@@ -24,6 +24,7 @@ print   "*********** SERVICE-EDIT UTILITY **************\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
+require_once("common/actions.php");
 
 
 function display_usage_and_exit($shortMessage = false)
@@ -68,6 +69,12 @@ function display_error_usage_exit($msg)
     display_usage_and_exit(true);
 }
 
+class ServiceCallContext extends CallContext
+{
+    /** @var  Service|ServiceGroup */
+    public $object;
+}
+
 print "\n";
 
 $configType = null;
@@ -103,109 +110,160 @@ $supportedActions = Array();
 
 $supportedActions['delete'] = Array(
     'name' => 'delete',
-    'file' => 'if( $object->countReferences() != 0)
-                    derr("this object is used by other objects and cannot be deleted (use deleteForce to try anyway)");
-                $object->owner->remove($object);',
-    'api' => 'if( $object->countReferences() != 0)
-                    derr("this object is used by other objects and cannot be deleted (use deleteForce to try anyway)");
-                $object->owner->API_remove($object);',
-    'args' => false,
+    'MainFunction' => function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->countReferences() != 0)
+            derr("this object is used by other objects and cannot be deleted (use deleteForce to try anyway)");
+        if( $context->isAPI )
+            $object->owner->API_remove($object);
+        else
+            $object->owner->remove($object);
+    },
 );
 
 $supportedActions['deleteforce'] = Array(
     'name' => 'deleteForce',
-    'file' => '$object->owner->remove($object);',
-    'api' => '$object->owner->API_remove($object);',
-    'args' => false,
+    'MainFunction' => function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $context->isAPI )
+            $object->owner->API_remove($object);
+        else
+            $object->owner->remove($object);
+    },
+);
+
+$supportedActions['addobjectwhereused'] = Array(
+    'name' => 'addObjectWhereUsed',
+    'MainFunction' => function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+        $objectRefs = $object->getReferences();
+
+        $foundObject = $object->owner->find($context->arguments['objectName']);
+
+        if( $foundObject === null )
+            derr("cannot find an object named '{$context->arguments['objectName']}'");
+
+        $clearForAction = true;
+        foreach ($objectRefs as $objectRef)
+        {
+            $class = get_class($objectRef);
+            if ($class != 'ServiceRuleContainer' && $class != 'ServiceGroup')
+            {
+                $clearForAction = false;
+                print "     *  skipped because its used in unsupported class $class\n";
+                break;
+            }
+        }
+        if( $clearForAction )
+        {
+            foreach ($objectRefs as $objectRef)
+            {
+                $class = get_class($objectRef);
+                if ($class == 'ServiceRuleContainer' || $class == 'ServiceGroup')
+                {
+                    print $context->padding." - adding in {$objectRef->toString()}\n";
+                    if( $context->isAPI )
+                        $objectRef->API_add($foundObject);
+                    else
+                        $objectRef->add($foundObject);
+                } else
+                {
+                    derr('unsupported class');
+                }
+
+            }
+        }
+    },
+    'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 
 $supportedActions['replacebymembersanddelete'] = Array(
     'name' => 'replaceByMembersAndDelete',
-    'file' => "\$objectRefs = \$object->getReferences();
-                \$clearForAction = true;
-                foreach( \$objectRefs as \$objectRef )
-                {
-                    \$class = get_class(\$objectRef);
-                    if( \$class != 'ServiceRuleContainer' && \$class != 'ServiceGroup' )
-                    {
-                        \$clearForAction = false;
-                        print \"     *  skipped because its used in unsupported class \$class\\n\";
-                        break;
-                    }
-                }
-                if( \$clearForAction )
-                {
-                    foreach( \$objectRefs as \$objectRef )
-                    {
-                        \$class = get_class(\$objectRef);
-                        if( \$class == 'ServiceRuleContainer' || \$class == 'ServiceGroup')
-                        {
-                            foreach( \$object->members() as \$objectMember )
-                            {
-                                \$objectRef->add(\$objectMember);
-                            }
-                            \$objectRef->remove(\$object);
-                        }
-                        else
-                        {
-                            derr('unsupported class');
-                        }
+    'MainFunction' => function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
 
-                    }
-                    \$object->owner->remove(\$object);
-                }",
-    'api' => "\$objectRefs = \$object->getReferences();
-                \$clearForAction = true;
-                foreach( \$objectRefs as \$objectRef )
+
+        if( !$object->isGroup() )
+        {
+            print $context->padding."     *  skipped it's not a group\n";
+            return;
+        }
+
+
+        $objectRefs = $object->getReferences();
+
+        $clearForAction = true;
+        foreach( $objectRefs as $objectRef )
+        {
+            $class = get_class($objectRef);
+            if( $class != 'ServiceRuleContainer' && $class != 'ServiceGroup' )
+            {
+                $clearForAction = false;
+                print "     *  skipped because its used in unsupported class $class\n";
+                return;
+            }
+        }
+        if( $clearForAction )
+        {
+            foreach ($objectRefs as $objectRef)
+            {
+                $class = get_class($objectRef);
+                if ($class == 'ServiceRuleContainer' || $class == 'ServiceGroup')
                 {
-                    \$class = get_class(\$objectRef);
-                    if( \$class != 'ServiceRuleContainer' && \$class != 'ServiceGroup' )
+                    print $context->padding."    - in Reference: {$objectRef->toString()}\n";
+                    /** @var ServiceRuleContainer|ServiceGroup $objectRef */
+                    foreach ($object->members() as $objectMember)
                     {
-                        \$clearForAction = false;
-                        print \"     *  skipped because its used in unsupported class \$class\\n\";
-                        break;
-                    }
-                }
-                if( \$clearForAction )
-                {
-                    foreach( \$objectRefs as \$objectRef )
-                    {
-                        \$class = get_class(\$objectRef);
-                        if( \$class == 'ServiceRuleContainer' || \$class == 'ServiceGroup')
-                        {
-                            foreach( \$object->members() as \$objectMember )
-                            {
-                                \$objectRef->API_add(\$objectMember);
-                            }
-                            \$objectRef->API_remove(\$object);
-                        }
+                        print $context->padding."      - adding {$objectMember->name()}\n";
+                        if( $context->isAPI )
+                            $objectRef->API_add($objectMember);
                         else
-                        {
-                            derr('unsupported class');
-                        }
+                            $objectRef->add($objectMember);
                     }
-                    \$object->owner->API_remove(\$object);
-                }",
-    'args' => false,
+                    if( $context->isAPI )
+                        $objectRef->API_remove($object);
+                    else
+                        $objectRef->remove($object);
+                } else
+                {
+                    derr('unsupported class');
+                }
+
+            }
+            if( $context->isAPI )
+                $object->owner->API_remove($object);
+            else
+                $object->owner->remove($object);
+        }
+    },
 );
 
 
 $supportedActions['displayreferences'] = Array(
     'name' => 'displayReferences',
-    'file' =>  "\$object->display_references(7);",
-    'api' =>   "\$object->display_references(7);",
-    'args' => false
+    'MainFunction' => function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        $object->display_references(7);
+    },
 );
 
 $supportedActions['display'] = Array(
     'name' => 'display',
-    'file' =>  "print \"     * \".get_class(\$object).\" '{\$object->name()}' \n\";
-                if( \$object->isGroup() ) foreach(\$object->members() as \$member) print \"          - {\$member->name()}\n\";
-                print \"\n\n\";",
-    'api' =>  "print \"     * \".get_class(\$object).\" '{\$object->name()}' \n\";
-                if( \$object->isGroup() ) foreach(\$object->members() as \$member) print \"          - {\$member->name()}\n\";
-                print \"\n\n\";",
-    'args' => false
+    'MainFunction' => function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+        print "     * ".get_class($object)." '{$object->name()}' \n";
+        if( $object->isGroup() ) foreach($object->members() as $member) print "          - {$member->name()}\n";
+                print "\n\n";
+    },
 );
 // </editor-fold>
 
@@ -235,33 +293,44 @@ if( isset(PH::$args['listactions']) )
     print "Listing of supported actions:\n\n";
 
     print str_pad('', 100, '-')."\n";
-    print str_pad('       Action name', 50, ' ')."| OFF | API |     comment\n";
+    print str_pad('Action name', 28, ' ', STR_PAD_BOTH)."|".str_pad("Argument:Type",24, ' ', STR_PAD_BOTH)." |".
+        str_pad("Def. Values",12, ' ', STR_PAD_BOTH)."|   Choices\n";
     print str_pad('', 100, '-')."\n";
 
     foreach($supportedActions as &$action )
     {
-        if( isset($action['api']) && $action['api'] != 'unsupported' )
-            $apiSupport = 'yes';
-        else
-            $apiSupport = 'no ';
 
-        if( isset($action['file']) && $action['file'] != 'unsupported' )
-            $offlineSupport = 'yes';
-        else
-            $offlineSupport = 'no ';
+        $output = "* ".$action['name'];
 
-        if( $action['args'] )
-            $output = "* ".$action['name'].":value1[,value2...]"; //--- OFF:$offlineSupport  API:$apiSupport \n";
-        else
-            $output = "* ".$action['name'];//."   --- OFF:$offlineSupport  API:$apiSupport \n";
+        $output = str_pad($output, 28).'|';
 
-        $output = str_pad($output, 50);
+        if( isset($action['args']) )
+        {
+            $first = true;
+            $count=1;
+            foreach($action['args'] as $argName => &$arg)
+            {
+                if( !$first )
+                    $output .= "\n".str_pad('',28).'|';
 
-        $output2 = "| $offlineSupport | $apiSupport |";
+                $output .= " ".str_pad("#$count $argName:{$arg['type']}", 24)."| ".str_pad("{$arg['default']}",12)."| ";
+                if( isset($arg['choices']) )
+                {
+                    foreach ($arg['choices'] as $choice => $value )
+                    {
+                        $output .= "$choice,";
+                    }
+                }
 
-        print $output.$output2."\n";
+                $count++;
+                $first = false;
+            }
+        }
 
-        print str_pad('', 100, '-')."\n";
+
+        print $output."\n";
+
+        print str_pad('', 100, '=')."\n";
 
         //print "\n";
     }
@@ -431,30 +500,29 @@ else
 // Extracting actions
 //
 $explodedActions = explode('/', $doActions);
+/** @var ServiceCallContext[] $doActions */
 $doActions = Array();
 foreach( $explodedActions as &$exAction )
 {
-    $newAction = Array();
     $explodedAction = explode(':', $exAction);
     if( count($explodedAction) > 2 )
         display_error_usage_exit('"actions" argument has illegal syntax: '.PH::$args['actions']);
-    $newAction['name'] = strtolower($explodedAction[0]);
 
-    if( !isset($supportedActions[$newAction['name']]) )
+    $actionName = strtolower($explodedAction[0]);
+
+    if( !isset($supportedActions[$actionName]) )
     {
-        display_error_usage_exit('unsupported Action: "'.$newAction['name'].'"');
+        display_error_usage_exit('unsupported Action: "'.$actionName.'"');
     }
 
-    if( count($explodedAction) > 1 )
-    {
-        if( $supportedActions[$newAction['name']]['args'] === false )
-            display_error_usage_exit('action "'.$newAction['name'].'" does not accept arguments');
-        $newAction['arguments'] = explode(',', $explodedAction[1]);
-    }
-    else if( $supportedActions[$newAction['name']]['args'] !== false )
-        display_error_usage_exit('action "'.$newAction['name'].'" requires arguments');
+    if( count($explodedAction) == 1 )
+        $explodedAction[1] = '';
 
-    $doActions[] = $newAction;
+    $context = new ServiceCallContext($supportedActions[$actionName], $explodedAction[1]);
+    if( $configInput['type'] == 'api' )
+        $context->isAPI = true;
+
+    $doActions[] = $context;
 }
 //
 // ---------
@@ -477,9 +545,7 @@ if( $objectsFilter !== null )
         exit(1);
     }
 
-    print " - Parsing Rule filter and output it after sanitization: ";
-    $objectFilterRQuery->display();
-    print "\n";
+    print " - filter after sanitization : ".$objectFilterRQuery->sanitizedString()."\n";
 }
 // --------------------
 
@@ -612,57 +678,11 @@ foreach( $objectsToProcess as &$objectsRecord )
 
         //mwarning($object->name());
 
-        foreach( $doActions as &$doAction )
+        foreach( $doActions as $doAction )
         {
-            print "\n   - object '" . PH::boldText($object->name()) . "' passing through Action='" . PH::boldText($doAction['name']) . "'\n";
-            if ($supportedActions[$doAction['name']]['args'] !== false)
-            {
-                foreach($doAction['arguments'] as $arg)
-                {
-                    $objectFind = null;
+            $doAction->executeAction($object);
 
-
-                    if ($configInput['type'] == 'file')
-                    {
-                        $toEval = $supportedActions[$doAction['name']]['file'];
-                        $inputIsAPI = false;
-                    } else
-                    {
-                        $toEval = $supportedActions[$doAction['name']]['api'];
-                        $inputIsAPI = true;
-                    }
-
-                    if (isset($supportedActions[$doAction['name']]['argObjectFinder']))
-                    {
-                        $findObjectEval = $supportedActions[$doAction['name']]['argObjectFinder'];
-                        $findObjectEval = str_replace('!value!', $arg, $findObjectEval);
-                        if (eval($findObjectEval) === false)
-                            derr("\neval code was : $findObjectEval\n");
-                        if ($objectFind === null)
-                            display_error_usage_exit("object named '$arg' not found' with eval code=" . $findObjectEval);
-                        $toEval = str_replace('!value!', '$objectFind', $toEval);
-                    } else
-                        $toEval = str_replace('!value!', $arg, $toEval);
-
-                    if (eval($toEval) === false)
-                        derr("\neval code was : $toEval\n");
-
-                    //print $toEval;
-                    print "\n";
-                }
-            } else
-            {
-                if ($configInput['type'] == 'file')
-                    $toEval = $supportedActions[$doAction['name']]['file'];
-                else if ($configInput['type'] == 'api')
-                    $toEval = $supportedActions[$doAction['name']]['api'];
-                else
-                    derr('unsupported input type');
-
-                if (eval($toEval) === false)
-                    derr("\neval code was : $toEval\n");
-
-            }
+            print "\n";
         }
     }
 

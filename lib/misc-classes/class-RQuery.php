@@ -1322,6 +1322,14 @@ RQuery::$defaultFilters['service']['name']['operators']['eq.nocase'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['service']['name']['operators']['contains'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Service|ServiceGroup */
+        return strpos($object->name(), $value) !== false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['service']['members.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
     'arg' => true

@@ -24,6 +24,7 @@ Utilities:
 * util rule-edit : new filters for services : 'name is.in.file'
 * util rule-edit : new listActions menu
 * util service-edit and address-edit new actions: replaceByMembersAndDelete, showIP4Mapping
+* util service-edit : new action 'addObjectWhereUsed'
 * util upload-config : now supports inject xml parts direct in candidate config (see 'toXpath' option)
 * util upload-config : you can now preserve target firewall config (like its mgmt ip for example, look for 'help' to see options available).
 * util upload-config : now supports api://x.x.x.x/running-config candidate-config to choose between running and candidate or already saved file

@@ -141,10 +141,7 @@ class ZoneRuleContainer extends ObjRuleContainer
 
     public function setAny()
     {
-        foreach( $this->o as $o )
-        {
-            $this->removeZone($o, false, true);
-        }
+        $this->removeAll();
 
         $this->rewriteXML();
     }

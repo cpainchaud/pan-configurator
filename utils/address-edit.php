@@ -67,9 +67,6 @@ function display_error_usage_exit($msg)
     display_usage_and_exit(true);
 }
 
-/**
- * Class AddressCallContext
- */
 class AddressCallContext extends CallContext
 {
     /** @var  Address|AddressGroup */

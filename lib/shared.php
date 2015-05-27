@@ -460,7 +460,7 @@ function removeReference($o, $ref)
 	
 	$serial = spl_object_hash($ref);
 	
-	if( isset($o->refrules[$serial]) )
+	if( array_key_exists($serial, $o->refrules) )
 	{
 		unset($o->refrules[$serial]);
 	}

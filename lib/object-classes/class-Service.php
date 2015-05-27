@@ -25,7 +25,7 @@ class Service
 	use XmlConvertible;
     use ObjectWithDescription;
 
-	public $protocol = 'tcp';
+	protected $_protocol = 'tcp';
 	protected $_dport = '';
 	protected $_sport = '';
 
@@ -105,7 +105,7 @@ class Service
 
 		if( $this->tcpOrUdpRoot === FALSE )
 		{
-			$this->protocol = 'udp';
+			$this->_protocol = 'udp';
 			$this->tcpOrUdpRoot = DH::findFirstElement('udp', $this->protocolRoot );
 		}
 		if( $this->tcpOrUdpRoot === FALSE )
@@ -177,20 +177,29 @@ class Service
         if( $newProtocol != 'tcp' || $newProtocol != 'udp' )
             derr("unsupported protocol '{$newProtocol}'");
 
-        if( $newProtocol == $this->protocol )
+        if( $newProtocol == $this->_protocol )
             return;
 
-		$this->protocol = $newProtocol;
+		$this->_protocol = $newProtocol;
 
         DH::clearDomNodeChilds($this->protocolRoot);
 
-        $this->tcpOrUdpRoot = DH::createElement($this->protocolRoot, $this->protocol);
+        $this->tcpOrUdpRoot = DH::createElement($this->protocolRoot, $this->_protocol);
 
         DH::createElement($this->tcpOrUdpRoot, 'port' ,$this->_dport);
 
         if( strlen($this->_sport) > 0 )
             DH::createElement($this->tcpOrUdpRoot, 'source-port' ,$this->_dport);
 	}
+
+    public function protocol()
+    {
+        if( $this->isTmpSrv() )
+            return 'tmp';
+
+        else
+            return $this->_protocol;
+    }
 	
 	public function getDestPort()
 	{
@@ -261,7 +270,7 @@ class Service
 		if( $otherObject->isTmpSrv() && !$this->isTmpSrv() )
 			return false;
 
-		if( $otherObject->protocol !== $this->protocol )
+		if( $otherObject->_protocol !== $this->_protocol )
 			return false;
 
 		if( $otherObject->_dport !== $this->_dport )
@@ -282,7 +291,7 @@ class Service
         if( $this->isTmpSrv() )
             derr("unsupported with tmp services");
 
-        if( $this->protocol == 'tcp' )
+        if( $this->_protocol == 'tcp' )
             $tcp = true;
         else
             $tcp = false;
