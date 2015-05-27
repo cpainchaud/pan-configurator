@@ -120,7 +120,10 @@ class Zone
         if( strlen($this->name) < 1  )
             derr("Zone name '".$this->name."' is not valid", $xml);
 
-        $networkNode = DH::findFirstElementOrDie('network', $xml);
+        $networkNode = DH::findFirstElement('network', $xml);
+
+        if( $networkNode === false )
+            return;
 
         foreach( $networkNode->childNodes as $node )
         {

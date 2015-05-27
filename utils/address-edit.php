@@ -200,6 +200,159 @@ $supportedActions['replacebymembersanddelete'] = Array(
 );
 
 
+$supportedActions['move'] = Array(
+    'name' => 'move',
+    'MainFunction' =>  function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+
+        $localLocation = 'shared';
+
+        if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isPanOS() )
+            $localLocation = $object->owner->owner->name();
+
+        $targetLocation = $context->arguments['location'];
+        $targetStore = null;
+
+        if( $localLocation == $targetLocation )
+        {
+            print $context->padding."   * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            return;
+        }
+
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $targetLocation == 'shared' )
+        {
+            $targetStore = $rootObject->addressStore;
+        }
+        else
+        {
+            $findSubSystem = $rootObject->findSubSystemByName($targetLocation);
+            if( $findSubSystem === null )
+                derr("cannot find VSYS/DG named '$targetLocation'");
+
+            $targetStore = $findSubSystem->addressStore;
+        }
+
+        if( $localLocation == 'shared' )
+        {
+            print $context->padding."   * SKIPPED : moving from SHARED to sub-level is not yet supported\n";
+            return;
+        }
+
+        if( $localLocation != 'shared' && $targetLocation != 'shared' )
+        {
+            print $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
+            return;
+        }
+
+        $conflictObject = $targetStore->find($object->name() ,null, false);
+        if( $conflictObject === null )
+        {
+            print $context->padding."   * moved, no conflict\n";
+            if( $context->isAPI )
+            {
+                derr("unsupported with API yet");
+            }
+            else
+                $targetStore->add($object);
+            return;
+        }
+
+        if( $context->arguments['mode'] == 'skipIfConflict' )
+        {
+            print $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
+            return;
+        }
+
+        print $context->padding."   - there is a conflict with type ";
+        if( $conflictObject->isGroup() )
+            print "Group\n";
+        else
+            print $conflictObject->type()."\n";
+
+        if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
+        {
+            print $context->padding."   * SKIPPED because conflict has mismatching types\n";
+            return;
+        }
+
+        if( $conflictObject->isTmpAddr() )
+        {
+            derr("unsupported situation with a temporary object");
+            return;
+        }
+
+        if( $object->isTmpAddr() )
+        {
+            print $context->padding."   * SKIPPED because this object is Tmp\n";
+            return;
+        }
+
+        if( $object->isGroup() )
+        {
+            if( $object->equals($conflictObject) )
+            {
+                $object->replaceMeGlobally($conflictObject);
+
+                if($context->isAPI)
+                    $object->owner->API_remove($object);
+                else
+                    $object->owner->remove($object);
+
+                print "    * Removed because target has same content\n";
+            }
+            else
+            {
+                if( $context->arguments['mode'] == 'removeifmatch')
+                {
+                    print $context->padding."    * SKIPPED because of mismatching group content\n";
+                    $object->displayValueDiff($conflictObject, 9);
+                    return;
+                }
+            }
+            return;
+        }
+
+        if( $object->equals($conflictObject) )
+        {
+            $object->replaceMeGlobally($conflictObject);
+            if($context->isAPI)
+                $object->owner->API_remove($object);
+            else
+                $object->owner->remove($object);
+
+            print "    * Removed because target has same content\n";
+            return;
+        }
+
+        if( $context->arguments['mode'] == 'removeifmatch' )
+            return;
+
+        $localMap = $object->getIP4Mapping();
+        $targetMap = $conflictObject->getIP4Mapping();
+
+        if( !IP4Mapping::mapsAreEqual($localMap, $targetMap) )
+        {
+            print $context->padding."    * SKIPPED because of mismatching content and numerical values\n";
+            return;
+        }
+
+        $object->replaceMeGlobally($conflictObject);
+        if($context->isAPI)
+            $object->owner->API_remove($object);
+        else
+            $object->owner->remove($object);
+        print "    * Removed because target has same numerical value\n";
+
+    },
+    'args' => Array( 'location' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+                     'mode' => Array( 'type' => 'string', 'default' => 'skipIfConflict', 'choices' => Array( 'skipIfConflict', 'removeIfMatch', 'removeIfNumericalMatch') )
+    ),
+);
+
+
 $supportedActions['showip4mapping'] = Array(
     'name' => 'showIP4Mapping',
     'MainFunction' => function ( AddressCallContext $context )
@@ -236,7 +389,7 @@ $supportedActions['showip4mapping'] = Array(
 
 $supportedActions['displayreferences'] = Array(
     'name' => 'displayReferences',
-    'file' =>  function ( AddressCallContext $context )
+    'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
         $object->display_references(7);

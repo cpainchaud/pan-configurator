@@ -466,7 +466,7 @@ $supportedActions['from-calculate-zones'] = Array(
 
         $commonActionFunctions['calculate-zones']($context, 'from');
     },
-    'args' => Array(    'mode' => Array( 'type' => 'string', 'default' => 'append', 'choices' => array_flip(Array('replace', 'append', 'show')) ),
+    'args' => Array(    'mode' => Array( 'type' => 'string', 'default' => 'append', 'choices' => Array('replace', 'append', 'show') ),
                         'virtualRouter' => Array('type' => 'string', 'default' => '*autodetermine*'),
                         'template' => Array('type' => 'string', 'default' => '*notPanorama*'),
                         'vsys' => Array('type' => 'string', 'default' => '*autodetermine*'),
@@ -481,7 +481,7 @@ $supportedActions['to-calculate-zones'] = Array(
 
         $commonActionFunctions['calculate-zones']($context, 'to');
     },
-    'args' => Array(    'mode' => Array( 'type' => 'string', 'default' => 'append', 'choices' => array_flip(Array('replace', 'append', 'show')) ),
+    'args' => Array(    'mode' => Array( 'type' => 'string', 'default' => 'append', 'choices' => Array('replace', 'append', 'show') ),
         'virtualRouter' => Array('type' => 'string', 'default' => '*autodetermine*'),
         'template' => Array('type' => 'string', 'default' => '*notPanorama*'),
         'vsys' => Array('type' => 'string', 'default' => '*autodetermine*'),
@@ -1024,7 +1024,7 @@ $supportedActions['copy'] = Array(
                         $ruleStore->cloneRule($rule, null, $preORpost);
                 },
     'args' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
-                            'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => array_flip(Array('pre','post')) ) )
+                            'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
 );
 
 $supportedActions['cloneforappoverride'] = Array(

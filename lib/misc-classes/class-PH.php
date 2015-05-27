@@ -222,6 +222,29 @@ class PH
         return $msg;
     }
 
+    /**
+     * @param $panConfObject
+     * @return PANConf|PanoramaConf
+     * @throws Exception
+     */
+    public static function findRootObjectOrDie($panConfObject)
+    {
+        while(true)
+        {
+            $class = get_class($panConfObject);
+            if( $class == 'PANConf' || $class == 'PanoramaConf' )
+                return $panConfObject;
+
+            if( isset($panConfObject->owner) && is_object($panConfObject->owner) )
+                $panConfObject = $panConfObject->owner;
+            else
+                break;
+
+        }
+
+        derr("cannot find PanoramaConf or PANConf object");
+    }
+
 }
 
 foreach( $argv as $argIndex => &$arg )

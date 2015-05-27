@@ -23,6 +23,7 @@ Utilities:
 * util rule-edit : new filters for zones : 'has.regex' and 'from.count' 'to.count'
 * util rule-edit : new filters for services : 'name is.in.file'
 * util rule-edit : new listActions menu
+* util address-edit:  new action 'move'
 * util service-edit and address-edit new actions: replaceByMembersAndDelete, showIP4Mapping
 * util service-edit : new action 'addObjectWhereUsed'
 * util upload-config : now supports inject xml parts direct in candidate config (see 'toXpath' option)

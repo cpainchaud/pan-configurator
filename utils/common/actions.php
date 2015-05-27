@@ -91,8 +91,12 @@ class CallContext
             {
                 if( isset( $properties['choices']) )
                 {
+                    foreach($properties['choices'] as $choice )
+                    {
+                        $tmpChoice[strtolower($choice)] = true;
+                    }
                     $argValue = strtolower($argValue);
-                    if( !isset($properties['choices'][$argValue]) )
+                    if( !isset($tmpChoice[$argValue]) )
                         derr("unsupported value '{$argValue}' for action '{$this->actionRef['name']}' arg#{$count} '{$argName}'");
                 }
             }
