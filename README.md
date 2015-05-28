@@ -63,19 +63,19 @@ Do you hate scripting ? Utility script 'rules-edit.php' is a swiss knife to edit
 
 Do you want to enable log at start for rule going to DMZ zone and that has only object group 'Webfarms' as a destination ?
 
-    rules-edit.php –in=api://fw1.mycompany.com –type=panos –actions=enableLogStart 'filter=(to has dmz) and (dst has.only Webfarms)'
+    rules-edit.php in=api://fw1.mycompany.com actions=enableLogStart 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 You are not sure about your filter and want to see rules before making changes ? Use action 'display' :
 
-    rules-edit.php  –in=api://fw1.mycompany.com –type=panos –actions=display 'filter=(to has dmz) and (dst has.only Webfarms)'
+    rules-edit.php  in=api://fw1.mycompany.com actions=display 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 Change all rules using Application + Any service to application default ?
 
-    rules-edit.php –in=api://fw1.mycompany.com –type=panos –actions=service-Set-AppDefault 'filter=!(app is.any) and (service is.any)'
+    rules-edit.php in=api://fw1.mycompany.com actions=service-Set-AppDefault 'filter=!(app is.any) and (service is.any)'
 
 Move post-SecurityRules with source zone 'dmz' or source object 'Admin-networks' to pre-Security rule ?
 
-    rules-edit.php  –in=api://panorama.mycompany.com –type=panorama –actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
+    rules-edit.php  in=api://panorama.mycompany.com actions=invertPreAndPost 'filter=((from has dmz) or (source has Admin-networks) and (rule is.postrule))'
 
 Want to know what actions are supported ?
 
