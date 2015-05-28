@@ -20,7 +20,10 @@ class ServiceStore
 {
 	use PathableName;
     use XmlConvertible;
-	
+
+    /**
+     * @var PanoramaConf|PANConf|VirtualSystem|DeviceGroup
+     */
 	public $owner;
 
 	/**

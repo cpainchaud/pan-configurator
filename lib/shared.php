@@ -1451,6 +1451,56 @@ class ServiceDstPortMapping
     }
 
     /**
+     * @param ServiceDstPortMapping $other
+     * @return bool
+     */
+    public function equals( ServiceDstPortMapping $other )
+    {
+        if( !$this->tcpMappingIsSame($other) )
+            return false;
+
+        return $this->udpMappingIsSame($other);
+    }
+
+    static private function _mapsAreSame(&$map1, &$map2)
+    {
+        if(count($map1) != count($map2) )
+            return false;
+
+        $keys1 = array_keys($map1);
+        $keys2 = array_keys($map2);
+
+        for($i=0; $i<count($keys1); $i++)
+        {
+            if( $map1[$keys1[$i]]['start'] != $map2[$keys2[$i]]['start'] )
+                return false;
+            if( $map1[$keys1[$i]]['end'] != $map2[$keys2[$i]]['end'] )
+                return false;
+        }
+
+        return true;
+    }
+
+
+    /**
+     * @param ServiceDstPortMapping $other
+     * @return bool
+     */
+    public function tcpMappingIsSame(ServiceDstPortMapping $other)
+    {
+        return ServiceDstPortMapping::_mapsAreSame($this->tcpPortMap, $other->tcpPortMap);
+    }
+
+    /**
+     * @param ServiceDstPortMapping $other
+     * @return bool
+     */
+    public function udpMappingIsSame(ServiceDstPortMapping $other)
+    {
+        return ServiceDstPortMapping::_mapsAreSame($this->udpPortMap, $other->udpPortMap);
+    }
+
+    /**
      * @return string
      */
     public function & mappingToText()

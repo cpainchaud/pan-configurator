@@ -289,7 +289,7 @@ class Service
     public function dstPortMapping()
     {
         if( $this->isTmpSrv() )
-            derr("unsupported with tmp services");
+            return new ServiceDstPortMapping();
 
         if( $this->_protocol == 'tcp' )
             $tcp = true;

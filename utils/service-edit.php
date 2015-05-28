@@ -102,10 +102,11 @@ $supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "fi
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 
+//
+// Supported Actions
+//
 $supportedActions = Array();
 // <editor-fold desc="  ****  Supported Actions Array  ****" defaultstate="collapsed" >
-
-
 
 
 $supportedActions['delete'] = Array(
@@ -181,6 +182,165 @@ $supportedActions['addobjectwhereused'] = Array(
     },
     'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
+
+$supportedActions['move'] = Array(
+    'name' => 'move',
+    'MainFunction' =>  function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        $localLocation = 'shared';
+
+        if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isPanOS() )
+            $localLocation = $object->owner->owner->name();
+
+        $targetLocation = $context->arguments['location'];
+        $targetStore = null;
+
+        if( $localLocation == $targetLocation )
+        {
+            print $context->padding."   * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            return;
+        }
+
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $targetLocation == 'shared' )
+        {
+            $targetStore = $rootObject->serviceStore;
+        }
+        else
+        {
+            $findSubSystem = $rootObject->findSubSystemByName($targetLocation);
+            if( $findSubSystem === null )
+                derr("cannot find VSYS/DG named '$targetLocation'");
+
+            $targetStore = $findSubSystem->serviceStore;
+        }
+
+        if( $localLocation == 'shared' )
+        {
+            print $context->padding."   * SKIPPED : moving from SHARED to sub-level is not yet supported\n";
+            return;
+        }
+
+        if( $localLocation != 'shared' && $targetLocation != 'shared' )
+        {
+            print $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
+            return;
+        }
+
+        $conflictObject = $targetStore->find($object->name() ,null, false);
+        if( $conflictObject === null )
+        {
+            print $context->padding."   * moved, no conflict\n";
+            if( $context->isAPI )
+            {
+                derr("unsupported with API yet");
+            }
+            else
+                $targetStore->add($object);
+            return;
+        }
+
+        if( $context->arguments['mode'] == 'skipIfConflict' )
+        {
+            print $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
+            return;
+        }
+
+        print $context->padding."   - there is a conflict with type ";
+        if( $conflictObject->isGroup() )
+            print "Group\n";
+        else
+            print "Service\n";
+
+        if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
+        {
+            print $context->padding."   * SKIPPED because conflict has mismatching types\n";
+            return;
+        }
+
+        if( $conflictObject->isTmpSrv() && !$object->isTmpSrv() )
+        {
+            derr("unsupported situation with a temporary object");
+            return;
+        }
+
+        if( $object->isTmpSrv() )
+        {
+            print $context->padding."   * SKIPPED because this object is Tmp\n";
+            return;
+        }
+
+        if( $object->isGroup() )
+        {
+            if( $object->equals($conflictObject) )
+            {
+                print "    * Removed because target has same content\n";
+                goto do_replace;
+            }
+            else
+            {
+                $object->displayValueDiff($conflictObject, 9);
+                if( $context->arguments['mode'] == 'removeifmatch')
+                {
+                    print $context->padding."    * SKIPPED because of mismatching group content\n";
+                    return;
+                }
+
+                $localMap = $object->dstPortMapping();
+                $targetMap = $conflictObject->dstPortMapping();
+
+                if( ! $localMap->equals($targetMap) )
+                {
+                    print $context->padding."    * SKIPPED because of mismatching group content and numerical values\n";
+                    return;
+                }
+
+                print "    * Removed because it has same numerical value\n";
+
+                goto do_replace;
+
+            }
+            return;
+        }
+
+        if( $object->equals($conflictObject) )
+        {
+            print "    * Removed because target has same content\n";
+            goto do_replace;
+        }
+
+        if( $context->arguments['mode'] == 'removeifmatch' )
+            return;
+
+        $localMap = $object->dstPortMapping();
+        $targetMap = $conflictObject->dstPortMapping();
+
+        if( ! $localMap->equals($targetMap) )
+        {
+            print $context->padding."    * SKIPPED because of mismatching content and numerical values\n";
+            return;
+        }
+
+        print "    * Removed because target has same numerical value\n";
+
+        do_replace:
+
+        $object->replaceMeGlobally($conflictObject);
+        if($context->isAPI)
+            $object->owner->API_remove($object);
+        else
+            $object->owner->remove($object);
+
+
+    },
+    'args' => Array( 'location' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+        'mode' => Array( 'type' => 'string', 'default' => 'skipIfConflict', 'choices' => Array( 'skipIfConflict', 'removeIfMatch', 'removeIfNumericalMatch') )
+    ),
+);
+
 
 $supportedActions['replacebymembersanddelete'] = Array(
     'name' => 'replaceByMembersAndDelete',
