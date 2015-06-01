@@ -250,7 +250,10 @@ class TagRuleContainer extends ObjRuleContainer
         else
         {
             if( $this->xmlroot !== null )
+            {
                 $this->owner->xmlroot->removeChild($this->xmlroot);
+                $this->xmlroot = null;
+            }
         }
     }
 
