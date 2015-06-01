@@ -528,11 +528,11 @@ class RuleStore
 		$newRule->owner = null;
 
         // if no name was provided then we need to look for one
-        if( $newName === null )
+        if( $newName === null || !$this->isRuleNameAvailable($newRule->name()) )
+        {
             $newName = $this->findAvailableName($newRule->name(), '');
-
-        // rename the templated rule in XML
-		$newRule->setName($newName);
+		    $newRule->setName($newName);
+        }
 
         // finally add it to the store
 		$this->addRule($newRule, $inPostRuleBase);
