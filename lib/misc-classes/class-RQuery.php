@@ -633,6 +633,24 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.recursive'] = Array(
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->source->parentCentralStore->find('!value!');"
 );
+RQuery::$defaultFilters['rule']['src']['operators']['has.recursive.regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+
+        $members = $object->source->membersExpanded(true);
+
+        foreach( $members as $member)
+        {
+            $matching = preg_match($value, $member->name());
+            if( $matching === FALSE )
+                derr("regular expression error on '$value'");
+            if( $matching === 1 )
+                return true;
+        }
+        return false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['rule']['dst']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
@@ -656,6 +674,24 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive'] = Array(
     'eval' => '$object->destination->hasObjectRecursive(!value!, false) === true',
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->destination->parentCentralStore->find('!value!');"
+);
+RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+
+        $members = $object->destination->membersExpanded(true);
+
+        foreach( $members as $member)
+        {
+            $matching = preg_match($value, $member->name());
+            if( $matching === FALSE )
+                derr("regular expression error on '$value'");
+            if( $matching === 1 )
+                return true;
+        }
+        return false;
+    },
+    'arg' => true
 );
 RQuery::$defaultFilters['rule']['src']['operators']['is.any'] = Array(
     'eval' => function($object, &$nestedQueries, $value)

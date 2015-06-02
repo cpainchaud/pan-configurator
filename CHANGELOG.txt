@@ -19,6 +19,7 @@ Utilities:
 * util rule-edit : service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
 * util rule-edit : new filters : 'rule is.unused.fast' will check if a rule was not used since reboot (use cli 'show running rule-use rule-base security type unused vsys vsys1')
 * util rule-edit : new filters : src/dst 'included-in.full included-in.partial included-in.full.or.partial' and 'includes.full includes-full.or.partial includes.partial'
+* util rule-edit : new filters : src/dst 'has.recursive.regex'
 * util rule-edit : new filters for app 'has' and 'has.nocase' and log profile : 'logprof is.set' 'logprof is xxx'
 * util rule-edit : new filters for zones : 'has.regex' and 'from.count' 'to.count'
 * util rule-edit : new filters for services : 'name is.in.file'

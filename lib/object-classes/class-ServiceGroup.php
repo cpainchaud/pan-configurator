@@ -446,7 +446,7 @@ class ServiceGroup
 	/**
 	* @return Array list of all member objects, if some of them are groups, they are exploded and their members inserted
 	*/
-	public function & expand()
+	public function & expand($keepGroupsInList=false)
 	{
 		$ret = Array();
 
@@ -455,6 +455,8 @@ class ServiceGroup
 			if( $object->isGroup() )
 			{
 				$ret = array_merge( $ret, $object->expand() );
+                if( $keepGroupsInList )
+                    $ret[] = $object;
 			}
 			else
 				$ret[] = $object;

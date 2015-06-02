@@ -487,20 +487,26 @@ class ServiceRuleContainer extends ObjRuleContainer
     /**
      * @return Service[]|ServiceGroup[]
      */
-    public function & membersExpanded()
+    public function & membersExpanded($keepGroupsInList=false)
     {
         $localA = Array();
 
-        foreach( $this->o as $object )
+        if( count($this->o) == 0 )
+            return $localA;
+
+        foreach( $this->o as $member )
         {
-            if( $object->isGroup() )
+            if( $member->isGroup() )
             {
-                $flat = $object->expand();
+                $flat = $member->expand();
                 $localA = array_merge($localA, $flat);
+                if( $keepGroupsInList )
+                    $localA[] = $member;
             }
             else
-                $localA[] = $object;
+                $localA[] = $member;
         }
+
         $localA = array_unique_no_cast($localA);
 
         return $localA;

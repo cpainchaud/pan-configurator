@@ -662,6 +662,34 @@ class AddressRuleContainer extends ObjRuleContainer
         return $zones;
     }
 
+    /**
+     * @return Address[]|AddressGroup[]
+     */
+    public function & membersExpanded($keepGroupsInList=false)
+    {
+        $localA = Array();
+
+        if( count($this->o) == 0 )
+            return $localA;
+
+        foreach( $this->o as $member )
+        {
+            if( $member->isGroup() )
+            {
+                $flat = $member->expand($keepGroupsInList);
+                $localA = array_merge($localA, $flat);
+                if( $keepGroupsInList )
+                    $localA[] = $member;
+            }
+            else
+                $localA[] = $member;
+        }
+
+        $localA = array_unique_no_cast($localA);
+
+        return $localA;
+    }
+
 }
 
 
