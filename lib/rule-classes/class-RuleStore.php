@@ -564,71 +564,90 @@ class RuleStore
 	 * this function will move $ruleToBeMoved after $ruleRef.
 	 * @param Rule $ruleToBeMoved
 	 * @param Rule $ruleRef
-	 * @param bool $rewritexml
+	 * @param bool $rewriteXml
 	 */
-	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
+	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
 	{
 		// TODO fix after pre/post suppression
 		if( is_string($ruleToBeMoved) )
 		{
-			if( !isset($this->fastNameToIndex[$ruleToBeMoved]) )
-				derr('Cannot move a rule that is not part of this Store');
-			 $rtbv = $this->rules[$this->fastNameToIndex[$ruleToBeMoved]];
-			 $rtbvs = spl_object_hash($rtbv);
+			$tmpRule = $this->find($ruleToBeMoved);
+            if( $tmpRule === null )
+                derr("cannot find rule named '$ruleToBeMoved'");
+            return $this->moveRuleAfter( $tmpRule, $ruleRef, $rewriteXml );
 		}
-		else
-		{
-			$rtbvs = spl_object_hash($ruleToBeMoved);
-			if( !isset($this->fastMemToIndex[$rtbvs]) )
-				derr('Cannot move a rule that is not part of this Store');
-				
-			$rtbv = $ruleToBeMoved;
-		}
-		
-		if( is_string($ruleRef) )
-		{
-			if( !isset($this->fastNameToIndex[$ruleRef]) )
-				derr('Cannot move after a rule that is not part of this Store');
-			
-			 $rtref = $this->rules[$this->fastNameToIndex[$ruleRef]];
-			 $rtrefs = spl_object_hash( $rtref );
-		}
-		else
-		{
-			$rtrefs = spl_object_hash($ruleRef);
-			if( !isset($this->fastMemToIndex[$rtrefs]) )
-				derr('Cannot move after a rule that is not part of this Store');
-				
-			$rtref = $ruleRef;
-		}
+
+        if( is_string($ruleRef) )
+        {
+            $tmpRule = $this->find($ruleRef);
+            if( $tmpRule === null )
+                derr("cannot find rule named '$tmpRule'");
+            return $this->moveRuleAfter( $ruleToBeMoved, $tmpRule, $rewriteXml );
+        }
+
+        $rtbmSerial = spl_object_hash($ruleToBeMoved);
+        $refSerial = spl_object_hash($ruleRef);
+
+        if( !$this->isPreOrPost )
+        {
+            if (!isset($this->fastMemToIndex[$rtbmSerial]))
+                derr('Cannot move a rule that is not part of this Store');
+
+            if (!isset($this->fastMemToIndex[$refSerial]))
+                derr('Cannot move after a rule that is not part of this Store');
+        }
+        else
+        {
+            $refIsPost = null;
+            $moveIsPost = null;
+
+            if( isset($this->fastMemToIndex[$rtbmSerial]) )
+                $moveIsPost = false;
+            elseif( isset($this->fastMemToIndex_forPost[$rtbmSerial]) )
+                $moveIsPost = true;
+            else
+                derr("Rule '{$ruleToBeMoved->name()}' is not part of this store");
+
+            if( isset($this->fastMemToIndex[$refSerial]) )
+                $refIsPost = false;
+            elseif( isset($this->fastMemToIndex_forPost[$refSerial]) )
+                $refIsPost = true;
+            else
+                derr("Rule '{$ruleRef->name()}' is not part of this store");
+
+            if( $refIsPost != $moveIsPost )
+            {
+                $this->remove($ruleToBeMoved);
+                $this->addRule($ruleToBeMoved, $refIsPost);
+            }
+        }
 		
 		$i = 0;
-		$newarr = Array();
-		
-		
+		$newArray = Array();
+
 		foreach($this->rules as $rule)
 		{
-			if( $rule === $rtbv )
+			if( $rule === $ruleToBeMoved )
 			{
 				continue;
 			}
 			
-			$newarr[$i] = $rule;
+			$newArray[$i] = $rule;
 			
 			$i++;
 			
-			if( $rule === $rtref )
+			if( $rule === $ruleRef )
 			{
-				$newarr[$i] = $rtbv;
+				$newArray[$i] = $ruleToBeMoved;
 				$i++;
 			}
 		}
 		
-		$this->rules = &$newarr;
+		$this->rules = &$newArray;
 		
 		$this->regen_Indexes();
 		
-		if( $rewritexml )
+		if( $rewriteXml )
 			$this->rewriteXML();
 	}
 
@@ -639,14 +658,13 @@ class RuleStore
 	 */
 	public function API_moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
-		$this->moveRuleAfter($ruleToBeMoved , $ruleRef, $rewritexml);
+        $this->moveRuleAfter($ruleToBeMoved , $ruleRef, $rewritexml);
 
 		$xpath = $ruleToBeMoved->getXPath();
 		$con = findConnectorOrDie($this);
 
 		$url = 'type=config&action=move&xpath='.$xpath.'&where=after&dst='.$ruleRef->name();
 		$con->sendRequest($url);
-
 	}
 
 
@@ -654,76 +672,91 @@ class RuleStore
 	 * this function will move $ruleToBeMoved before $ruleRef.
 	 * @param Rule $ruleToBeMoved
 	 * @param Rule $ruleRef
-	 * @param bool $rewritexml
+	 * @param bool $rewriteXml
 	 */
-	public function moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewritexml=true )
-	{
-		// TODO fix after pre/post suppression
-		
-		if( is_string($ruleToBeMoved) )
-		{
-			if( !isset($this->fastNameToIndex[$ruleToBeMoved]) )
-				derr('Cannot move a rule that is not part of this Store');
-			 $rtbv = $this->rules[$this->fastNameToIndex[$ruleToBeMoved]];
-			 $rtbvs = spl_object_hash($rtbv);
-		}
-		else
-		{
-			$rtbvs = spl_object_hash($ruleToBeMoved);
-			if( !isset($this->fastMemToIndex[$rtbvs]) )
-				derr('Cannot move a rule that is not part of this Store');
-				
-			$rtbv = $ruleToBeMoved;
-		}
-		
-		if( is_string($ruleRef) )
-		{
-			if( !isset($this->fastNameToIndex[$ruleRef]) )
-				derr('Cannot move after a rule that is not part of this Store');
-			
-			 $rtref = $this->rules[$this->fastNameToIndex[$ruleRef]];
-			 $rtrefs = spl_object_hash( $rtref );
-		}
-		else
-		{
-			$rtrefs = spl_object_hash($ruleRef);
-			if( !isset($this->fastMemToIndex[$rtrefs]) )
-				derr('Cannot move after a rule that is not part of this Store');
-				
-			$rtref = $ruleRef;
-		}
-		
-		$i = 0;
-		$newarr = Array();
-		
-		
-		foreach($this->rules as $rule)
-		{
-			if( $rule === $rtbv )
-			{
-				continue;
-			}
-			
-			
-			if( $rule === $rtref )
-			{
-				$newarr[$i] = $rtbv;
-				$i++;
-			}
-			
-			$newarr[$i] = $rule;
-			
-			$i++;
-			
-		}
-		
-		$this->rules = &$newarr;
-		
-		$this->regen_Indexes();
-		
-		if( $rewritexml )
-			$this->rewriteXML();
-	}
+    public function moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
+    {
+        // TODO fix after pre/post suppression
+        if( is_string($ruleToBeMoved) )
+        {
+            $tmpRule = $this->find($ruleToBeMoved);
+            if( $tmpRule === null )
+                derr("cannot find rule named '$ruleToBeMoved'");
+            return $this->moveRuleAfter( $tmpRule, $ruleRef, $rewriteXml );
+        }
+
+        if( is_string($ruleRef) )
+        {
+            $tmpRule = $this->find($ruleRef);
+            if( $tmpRule === null )
+                derr("cannot find rule named '$tmpRule'");
+            return $this->moveRuleAfter( $ruleToBeMoved, $tmpRule, $rewriteXml );
+        }
+
+        $rtbmSerial = spl_object_hash($ruleToBeMoved);
+        $refSerial = spl_object_hash($ruleRef);
+
+        if( !$this->isPreOrPost )
+        {
+            if (!isset($this->fastMemToIndex[$rtbmSerial]))
+                derr('Cannot move a rule that is not part of this Store');
+
+            if (!isset($this->fastMemToIndex[$refSerial]))
+                derr('Cannot move after a rule that is not part of this Store');
+        }
+        else
+        {
+            $refIsPost = null;
+            $moveIsPost = null;
+
+            if( isset($this->fastMemToIndex[$rtbmSerial]) )
+                $moveIsPost = false;
+            elseif( isset($this->fastMemToIndex_forPost[$rtbmSerial]) )
+                $moveIsPost = true;
+            else
+                derr("Rule '{$ruleToBeMoved->name()}' is not part of this store");
+
+            if( isset($this->fastMemToIndex[$refSerial]) )
+                $refIsPost = false;
+            elseif( isset($this->fastMemToIndex_forPost[$refSerial]) )
+                $refIsPost = true;
+            else
+                derr("Rule '{$ruleRef->name()}' is not part of this store");
+
+            if( $refIsPost != $moveIsPost )
+            {
+                $this->remove($ruleToBeMoved);
+                $this->addRule($ruleToBeMoved, $refIsPost);
+            }
+        }
+
+        $i = 0;
+        $newArray = Array();
+
+        foreach($this->rules as $rule)
+        {
+            if( $rule === $ruleToBeMoved )
+            {
+                continue;
+            }
+
+            if( $rule === $ruleRef )
+            {
+                $newArray[$i] = $ruleToBeMoved;
+                $i++;
+            }
+
+            $newArray[$i] = $rule;
+            $i++;
+        }
+
+        $this->rules = &$newArray;
+
+        $this->regen_Indexes();
+
+        if( $rewriteXml )
+            $this->rewriteXML();
+    }
 
 	/**
 	 * @param Rule $ruleToBeMoved
