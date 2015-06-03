@@ -498,7 +498,7 @@ class ServiceRuleContainer extends ObjRuleContainer
         {
             if( $member->isGroup() )
             {
-                $flat = $member->expand();
+                $flat = $member->expand($keepGroupsInList);
                 $localA = array_merge($localA, $flat);
                 if( $keepGroupsInList )
                     $localA[] = $member;

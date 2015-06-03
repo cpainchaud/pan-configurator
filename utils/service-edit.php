@@ -476,10 +476,7 @@ if( isset(PH::$args['listactions']) )
                 $output .= " ".str_pad("#$count $argName:{$arg['type']}", 24)."| ".str_pad("{$arg['default']}",12)."| ";
                 if( isset($arg['choices']) )
                 {
-                    foreach ($arg['choices'] as $choice => $value )
-                    {
-                        $output .= "$choice,";
-                    }
+                    $output .= PH::list_to_string($arg['choices']);
                 }
 
                 $count++;
