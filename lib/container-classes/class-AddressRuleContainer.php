@@ -307,15 +307,15 @@ class AddressRuleContainer extends ObjRuleContainer
 
     /**
      * return 0 if not match, 1 if $network is fully included in this object, 2 if $network is partially matched by this object.
-     * @param $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @param $network string|IP4Map ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
      * @return int
      */
     public function  includesIP4Network($network)
     {
-        if( is_array($network) )
-            $netStartEnd = &$network;
+        if( is_object($network) )
+            $netStartEnd = $network;
         else
-            $netStartEnd = cidr::stringToStartEnd($network);
+            $netStartEnd = IP4map::mapFromText($network);
 
         if( count($this->o) == 0 )
             return 0;
@@ -555,61 +555,36 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @return array  result['map'][] will contain all mapping in form of an array['start'] and ['end]. result['unresolved'][] will provide a list unresolved objects
+     * @return IP4Map
      */
     public function & getIP4Mapping()
     {
         $result = Array( 'unresolved' => Array() );
-        $map = Array();
+        $mapObject = new IP4Map();
 
         foreach( $this->o as $member )
         {
             if( $member->isTmpAddr() )
             {
-                if( filter_var($member->name(), FILTER_VALIDATE_IP) === false  )
-                {
-                    $result['unresolved'][] = $member;
-                    continue;
-                }
-                else
-                {
-                    $map[] = cidr::stringToStartEnd($member->name());
-                }
+                $result['unresolved'][] = $member;
+                continue;
             }
             elseif( $member->isAddress() )
             {
-                $type = $member->type();
-
-                if ($type != 'ip-netmask' && $type != 'ip-range')
-                {
-                    $result['unresolved'][] = $member;
-                    continue;
-                }
-                $map[] = $member->resolveIP_Start_End();
+                $localMap = $member->getIP4Mapping();
+                $mapObject->addMap($localMap, true);
             }
             elseif( $member->isGroup() )
             {
-                $subMap = $member->getIP4Mapping();
-                foreach( $subMap['map'] as &$subMapRecord )
-                {
-                    $map[] = &$subMapRecord;
-                }
-                unset($subMapRecord);
-                foreach( $subMap['unresolved'] as $subMapRecord )
-                {
-                    $result['unresolved'][] = $subMapRecord;
-                }
-
+                $localMap = $member->getIP4Mapping();
+                $mapObject->addMap($localMap, true);
             }
             else
                 derr('unsupported type of objects '.$member->toString());
         }
+        $mapObject->sortAndRecalculate();
 
-        $map = mergeOverlappingIP4Mapping($map);
-
-        $result['map'] = &$map;
-
-        return $result;
+        return $mapObject;
     }
 
     public function copy(AddressRuleContainer $other)
@@ -633,28 +608,25 @@ class AddressRuleContainer extends ObjRuleContainer
     {
         $zones = Array();
 
-        $objectsMapping = &$this->getIP4Mapping();
+        $objectsMapping = $this->getIP4Mapping();
 
         if( $objectIsNegated )
         {
-            $fakeMapping= Array();
-            $fakeMapping['map'][] = Array( 'start' => 0 , 'end' => ip2long('255.255.255.255')) ;
-            foreach( $objectsMapping['map'] as &$entry )
-                removeNetworkFromIP4Mapping($fakeMapping['map'], $entry);
-            $objectsMapping = &$fakeMapping;
+            $fakeMapping= IP4Map::mapFromText('0.0.0.0-255.255.255.255');
+            $objectsMapping->substract($fakeMapping);
         }
 
 
         foreach( $zoneIP4Mapping as &$zoneMapping )
         {
-            $result = removeNetworkFromIP4Mapping($objectsMapping['map'], $zoneMapping);
+            $result = $objectsMapping->substractSingleIP4Entry($zoneMapping);
 
             if( $result != 0 )
             {
                 $zones[$zoneMapping['zone']] = $zoneMapping['zone'];
             }
 
-            if( count($objectsMapping) == 0 )
+            if( $objectsMapping->count() == 0 )
                 break;
 
         }

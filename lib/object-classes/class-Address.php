@@ -53,7 +53,7 @@ class Address
 	protected $type = self::TypeTmp;
 
     /**
-     * @property $_ipStartEnd  cached ip start and end value for fast optimization
+     * @property $_ip4Map IP4Map cached ip start and end value for fast optimization
      */
 
 	
@@ -179,8 +179,8 @@ class Address
      */
 	public function setValue( $newValue, $rewriteXml = true )
 	{
-        if( isset($this->_ipStartEnd) )
-            unset($this->_ipStartEnd);
+        if( isset($this->_ip4Map) )
+            unset($this->_ip4Map);
 
 		if( !is_string($newValue) )
 			derr('value can be text only');
@@ -211,8 +211,8 @@ class Address
      */
 	public function setType( $newType, $rewritexml = true )
 	{
-        if( isset($this->_ipStartEnd) )
-            unset($this->_ipStartEnd);
+        if( isset($this->_ip4Map) )
+            unset($this->_ip4Map);
 
 		$tmp = array_search( $newType, self::$AddressTypes );
 		if( $tmp=== FALSE )
@@ -349,6 +349,10 @@ class Address
 		return false;
 	}
 
+    /**
+     * @param $otherObject Address|AddressGroup
+     * @return bool
+     */
 	public function equals( $otherObject )
 	{
 		if( ! $otherObject->isAddress() )
@@ -377,61 +381,60 @@ class Address
 		return true;
 	}
 
-	/**
-	* Return an array['start']= startip and ['end']= endip
-	* @return array 
-	*/
-	public function & resolveIP_Start_End()
-	{
-        if( isset($this->_ipStartEnd) )
+
+    /**
+     * Return an array['start']= startip and ['end']= endip
+     * @return IP4Map
+     */
+    public function getIP4Mapping()
+    {
+        if( isset($this->_ip4Map) )
         {
-            $res = $this->_ipStartEnd;
-            return $res;
+            return $this->_ip4Map;
         }
 
-		$res = Array();
-
-		if( $this->isTmpAddr() )
+        if( $this->isTmpAddr() )
         {
             if( filter_var($this->name, FILTER_VALIDATE_IP) === false  )
             {
                 derr('cannot resolve a Temporary object !');
             }
-            $this->_ipStartEnd = cidr::stringToStartEnd($this->name);
-            $res = $this->_ipStartEnd;
-
+            $this->_ip4Map = IP4Map::mapFromText($this->name);
         }
-		elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
-			derr('cannot resolve an object of type '.$this->type());
+        elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
+            derr('cannot resolve an object of type '.$this->type());
         elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
-		{
-			$this->_ipStartEnd = cidr::stringToStartEnd($this->value);
-            $res = $this->_ipStartEnd;
-		}
-		else
-		{
-			derr("unexpected type");
-		}
+        {
+            $this->_ip4Map = IP4Map::mapFromText($this->value);
+        }
+        else
+        {
+            derr("unexpected type");
+        }
 
-		return $res;
-	}
+        return $this->_ip4Map;
+    }
+
+
 
     /**
      * return 0 if not match, 1 if this object is fully included in $network, 2 if this object is partially matched by $ref.
-     * @param $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @param $network string|IP4Map ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
      * @return int
      */
     public function  includedInIP4Network($network)
     {
-        if( is_array($network) )
-            $netStartEnd = &$network;
+        if( is_object($network) )
+        {
+            $networkMap = $network;
+        }
         else
-            $netStartEnd = cidr::stringToStartEnd($network);
+            $networkMap = IP4Map::mapFromText($network);
 
         if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
             return 0;
 
-        return cidr::netMatch($this->resolveIP_Start_End(), $netStartEnd);
+        return cidr::netMatch($this->getIP4Mapping()->getMapArray(), $networkMap->getMapArray());
     }
 
     /**
@@ -441,15 +444,17 @@ class Address
      */
     public function  includesIP4Network($network)
     {
-        if( is_array($network) )
-            $netStartEnd = &$network;
+        if( is_object($network) )
+        {
+            $networkMap = $network;
+        }
         else
-            $netStartEnd = cidr::stringToStartEnd($network);
+            $networkMap = IP4Map::mapFromText($network);
 
         if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
             return 0;
 
-        return cidr::netMatch($netStartEnd, $this->resolveIP_Start_End());
+        return cidr::netMatch($networkMap->getMapArray(), $this->getIP4Mapping()->getMapArray());
     }
 
 

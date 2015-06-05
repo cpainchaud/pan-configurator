@@ -148,7 +148,7 @@ class IP4Map
         }
     }
 
-    private function sortAndRecalculate()
+    public function sortAndRecalculate()
     {
         $newMapping = sortArrayByStartValue($this->_map);
 
@@ -172,6 +172,11 @@ class IP4Map
         }
 
         $this->_map = &$newMapping;
+    }
+
+    public function count()
+    {
+        return count($this->_map);
     }
 
 }
