@@ -434,7 +434,9 @@ class Address
         if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
             return 0;
 
-        return cidr::netMatch($this->getIP4Mapping()->getMapArray(), $networkMap->getMapArray());
+        //var_dump($this->getIP4Mapping());
+
+        return cidr::netMatch($this->getIP4Mapping()->getFirstMapEntry(), $networkMap->getFirstMapEntry());
     }
 
     /**
@@ -454,7 +456,7 @@ class Address
         if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
             return 0;
 
-        return cidr::netMatch($networkMap->getMapArray(), $this->getIP4Mapping()->getMapArray());
+        return cidr::netMatch($networkMap->getFirstMapEntry(), $this->getIP4Mapping()->getFirstMapEntry());
     }
 
 

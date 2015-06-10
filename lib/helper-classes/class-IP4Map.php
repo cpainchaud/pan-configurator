@@ -25,6 +25,11 @@ class IP4Map
         return $this->_map;
     }
 
+    public function & getMapArrayPointer()
+    {
+        return $this->_map;
+    }
+
     static public function mapFromText($text)
     {
         $map = new IP4Map();
@@ -177,6 +182,14 @@ class IP4Map
     public function count()
     {
         return count($this->_map);
+    }
+
+    public function getFirstMapEntry()
+    {
+        if( count($this->_map) == 0 )
+            return null;
+
+        return reset($this->_map);
     }
 
 }
