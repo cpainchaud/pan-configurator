@@ -85,7 +85,7 @@ $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this m
 $supportedArguments['preservemgmtconfig'] = Array('niceName' => 'preserveMgmtConfig', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtusers'] = Array('niceName' => 'preserveMgmtUsers', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtsystem'] = Array('niceName' => 'preserveMgmtSystem', 'shortHelp' => 'preserves what is in /config/devices/entry/deviceconfig/system');
-$supportedArguments['injectuseradmin2'] = Array('niceName' => 'preserveMgmtSystem', 'shortHelp' => 'adds user "admin2" with password "admin" in administrators');
+$supportedArguments['injectuseradmin2'] = Array('niceName' => 'injectUserAdmin2', 'shortHelp' => 'adds user "admin2" with password "admin" in administrators');
 
 
 
