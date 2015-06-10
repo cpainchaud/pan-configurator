@@ -1236,6 +1236,19 @@ RQuery::$defaultFilters['address']['name']['operators']['contains'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Address|AddressGroup */
+        $matching = preg_match($value, $object->name());
+        if( $matching === FALSE )
+            derr("regular expression error on '$value'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true
+);
+
 RQuery::$defaultFilters['address']['members.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
     'arg' => true
@@ -1375,6 +1388,18 @@ RQuery::$defaultFilters['service']['name']['operators']['contains'] = Array(
     {
         /** @var $object Service|ServiceGroup */
         return strpos($object->name(), $value) !== false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['service']['name']['operators']['regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Service|ServiceGroup */
+        $matching = preg_match($value, $object->name());
+        if( $matching === FALSE )
+            derr("regular expression error on '$value'");
+        if( $matching === 1 )
+            return true;
+        return false;
     },
     'arg' => true
 );
