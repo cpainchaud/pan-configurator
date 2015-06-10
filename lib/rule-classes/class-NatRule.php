@@ -110,7 +110,6 @@ class NatRule extends Rule
 					$f = $this->parentAddressStore->findOrCreate($this->subdnatTAroot->textContent, $this);
 
 					$this->dnathost = $f;
-					//$f->addReference($this);
 					
 					$this->subdnatTProot = DH::findFirstElement('translated-port', $this->dnatroot);
 					if( $this->subdnatTProot !== FALSE  )
