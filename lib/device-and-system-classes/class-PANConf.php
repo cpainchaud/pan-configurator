@@ -167,11 +167,16 @@ class PANConf
         }
 
 
-		$this->devicesroot = DH::findFirstElementOrDie('devices', $this->configroot);
+		$this->devicesroot = DH::findFirstElementOrCreate('devices', $this->configroot);
 
-		$this->localhostroot = DH::findFirstElementByNameAttrOrDie('entry', 'localhost.localdomain',$this->devicesroot);
+		$this->localhostroot = DH::findFirstElement('entry', $this->devicesroot);
+        if( $this->localhostroot === false )
+        {
+            $this->localhostroot = DH::createElement($this->devicesroot, 'entry');
+            $this->localhostroot->setAttribute('name', 'localhost.localdomain');
+        }
 
-		$this->vsyssroot = DH::findFirstElementOrDie('vsys', $this->localhostroot);
+		$this->vsyssroot = DH::findFirstElementOrCreate('vsys', $this->localhostroot);
 
 
 
