@@ -310,7 +310,7 @@ $supportedActions['move'] = Array(
                 $localMap = $object->getIP4Mapping();
                 $targetMap = $conflictObject->getIP4Mapping();
 
-                if( !IP4Mapping::mapsAreEqual($localMap, $targetMap) )
+                if( !$localMap->equals($targetMap) )
                 {
                     print $context->padding."    * SKIPPED because of mismatching group content and numerical values\n";
                     return;
@@ -336,7 +336,7 @@ $supportedActions['move'] = Array(
         $localMap = $object->getIP4Mapping();
         $targetMap = $conflictObject->getIP4Mapping();
 
-        if( !IP4Mapping::mapsAreEqual($localMap, $targetMap) )
+        if( !$localMap->equals($targetMap) )
         {
             print $context->padding."    * SKIPPED because of mismatching content and numerical values\n";
             return;
