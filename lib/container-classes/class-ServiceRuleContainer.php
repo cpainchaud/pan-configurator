@@ -553,7 +553,7 @@ class ServiceRuleContainer extends ObjRuleContainer
 
     public function generateFastHashComp($force=false )
     {
-        if( !is_null($this->fasthashcomp) && !$force )
+        if( isset($this->fasthashcomp) && $this->fasthashcomp !== null && !$force )
             return;
 
         $class = get_class($this);
