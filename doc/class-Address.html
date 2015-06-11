@@ -7,7 +7,7 @@
 	<title>Class Address | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3675473479"></script>
+	<script type="text/javascript" src="elementlist.js?1029159885"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -52,7 +52,7 @@
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
-				<li><a href="class-IP4Mapping.html">IP4Mapping</a></li>
+				<li><a href="class-IP4Map.html">IP4Map</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -770,7 +770,7 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			boolean
 			
 			</code>
 		</td>
@@ -787,7 +787,16 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$otherObject</var></dt>
+					<dd><code>mixed</code><br>$otherObject Address|AddressGroup</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
 
 
@@ -824,18 +833,18 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="resolveIP_Start_End" id="_resolveIP_Start_End">
+	<tr data-order="getIP4Mapping" id="_getIP4Mapping">
 
 		<td class="attributes"><code>
 			 public 
-			array
-			&amp;
+			<code><a href="class-IP4Map.html">IP4Map</a></code>
+			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_resolveIP_Start_End">#</a>
-		<code><b>resolveIP_Start_End</b>( )</code>
+		<a class="anchor" href="#_getIP4Mapping">#</a>
+		<code><b>getIP4Mapping</b>( )</code>
 
 		<div class="description short">
 			
@@ -852,7 +861,7 @@
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>array</code><br />
+					<code><code><a href="class-IP4Map.html">IP4Map</a></code></code><br />
 				</div>
 
 
@@ -891,7 +900,7 @@ this object is partially matched by $ref.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$network</var></dt>
-					<dd><code>mixed</code><br>$network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4</dd>
+					<dd><code>mixed</code><br>$network string|IP4Map ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4</dd>
 				</dl></div>
 
 				<h4>Returns</h4>

@@ -4,10 +4,10 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class IP4Mapping | PAN-Configurator</title>
+	<title>Class IP4Map | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3675473479"></script>
+	<script type="text/javascript" src="elementlist.js?1029159885"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -52,7 +52,7 @@
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
-				<li class="active"><a href="class-IP4Mapping.html">IP4Mapping</a></li>
+				<li class="active"><a href="class-IP4Map.html">IP4Map</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -170,7 +170,7 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class IP4Mapping</h1>
+	<h1>Class IP4Map</h1>
 
 
 
@@ -188,65 +188,25 @@
 		
 		
 
-		<b>Located at</b> shared.php<br />
+		<b>Located at</b> helper-classes/class-IP4Map.php<br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="mapsAreEqual" id="_mapsAreEqual">
+	<tr data-order="getMapArray" id="_getMapArray">
 
 		<td class="attributes"><code>
-			 public static
-			boolean
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_mapsAreEqual">#</a>
-		<code><b>mapsAreEqual</b>( <span>mixed <var>&amp; $mapping1</var></span>, <span>mixed <var>&amp; $mapping2</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$mapping1</var></dt>
-					<dd><code>mixed</code><br>$mapping1</dd>
-					<dt><var>$mapping2</var></dt>
-					<dd><code>mixed</code><br>$mapping2</dd>
-				</dl></div>
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="IP4mapSubstraction" id="_IP4mapSubstraction">
-
-		<td class="attributes"><code>
-			 public static
+			 public 
 			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_IP4mapSubstraction">#</a>
-		<code><b>IP4mapSubstraction</b>( <span>mixed <var>$referenceMap</var></span>, <span>mixed <var>&amp; $substractedMap</var></span> )</code>
+		<a class="anchor" href="#_getMapArray">#</a>
+		<code><b>getMapArray</b>( )</code>
 
 		<div class="description short">
 			
@@ -264,18 +224,279 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="IP4mapDiff" id="_IP4mapDiff">
+	<tr data-order="getMapArrayPointer" id="_getMapArrayPointer">
 
 		<td class="attributes"><code>
-			 public static
+			 public 
 			
 			&amp;
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_IP4mapDiff">#</a>
-		<code><b>IP4mapDiff</b>( <span>mixed <var>$referenceMap</var></span>, <span>mixed <var>$substractedMap</var></span> )</code>
+		<a class="anchor" href="#_getMapArrayPointer">#</a>
+		<code><b>getMapArrayPointer</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="mapFromText" id="_mapFromText">
+
+		<td class="attributes"><code>
+			 public static
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_mapFromText">#</a>
+		<code><b>mapFromText</b>( <span>mixed <var>$text</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="equals" id="_equals">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_equals">#</a>
+		<code><b>equals</b>( <span><code><a href="class-IP4Map.html">IP4Map</a></code> <var>$other</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="substract" id="_substract">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_substract">#</a>
+		<code><b>substract</b>( <span><code><a href="class-IP4Map.html">IP4Map</a></code> <var>$substractedMap</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="substractSingleIP4Entry" id="_substractSingleIP4Entry">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_substractSingleIP4Entry">#</a>
+		<code><b>substractSingleIP4Entry</b>( <span>mixed <var>&amp; $subEntry</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="mapDiff" id="_mapDiff">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_mapDiff">#</a>
+		<code><b>mapDiff</b>( <span><code><a href="class-IP4Map.html">IP4Map</a></code> <var>$other</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addMap" id="_addMap">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addMap">#</a>
+		<code><b>addMap</b>( <span><code><a href="class-IP4Map.html">IP4Map</a></code> <var>$other</var></span>, <span>mixed <var>$skipRecalculation</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sortAndRecalculate" id="_sortAndRecalculate">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sortAndRecalculate">#</a>
+		<code><b>sortAndRecalculate</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="count" id="_count">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_count">#</a>
+		<code><b>count</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getFirstMapEntry" id="_getFirstMapEntry">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getFirstMapEntry">#</a>
+		<code><b>getFirstMapEntry</b>( )</code>
 
 		<div class="description short">
 			
@@ -306,6 +527,31 @@
 
 
 
+	<table class="summary" id="properties">
+	<caption>Properties summary</caption>
+	<tr data-order="_map" id="$_map">
+		<td class="attributes"><code>
+			protected  
+			array
+		</code></td>
+
+		<td class="name">
+<var>$_map</var>		</td>
+		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+		<td class="description"><div>
+			<a href="#$_map" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 

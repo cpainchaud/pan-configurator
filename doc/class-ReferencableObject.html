@@ -7,7 +7,7 @@
 	<title>Trait ReferencableObject | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3675473479"></script>
+	<script type="text/javascript" src="elementlist.js?1029159885"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -52,7 +52,7 @@
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
-				<li><a href="class-IP4Mapping.html">IP4Mapping</a></li>
+				<li><a href="class-IP4Map.html">IP4Map</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -222,14 +222,14 @@
 
 		<td class="attributes"><code>
 			 protected 
-			
+			boolean
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_setRefName">#</a>
-		<code><b>setRefName</b>( <span>mixed <var>$newName</var></span>, <span>mixed <var>$skip_name_unicity_check</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>setRefName</b>( <span>string <var>$newName</var></span>, <span>boolean <var>$skip_name_unicity_check</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -239,8 +239,23 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$newName</var></dt>
+					<dd><code>string</code><br>$newName</dd>
+					<dt><var>$skip_name_unicity_check</var></dt>
+					<dd><code>boolean</code><br>$skip_name_unicity_check</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
 
 
 

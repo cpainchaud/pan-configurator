@@ -7,7 +7,7 @@
 	<title>Class AddressRuleContainer | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3675473479"></script>
+	<script type="text/javascript" src="elementlist.js?1029159885"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -52,7 +52,7 @@
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
-				<li><a href="class-IP4Mapping.html">IP4Mapping</a></li>
+				<li><a href="class-IP4Map.html">IP4Map</a></li>
 				<li><a href="class-IPsecTunnel.html">IPsecTunnel</a></li>
 				<li><a href="class-IPsecTunnelStore.html">IPsecTunnelStore</a></li>
 				<li><a href="class-LoopbackIfStore.html">LoopbackIfStore</a></li>
@@ -762,7 +762,7 @@ $network is partially matched by this object.</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$network</var></dt>
-					<dd><code>mixed</code><br>$network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4</dd>
+					<dd><code>mixed</code><br>$network string|IP4Map ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -1044,7 +1044,7 @@ looking to compare similar rules.</p>
 
 		<td class="attributes"><code>
 			 public 
-			array
+			<code><a href="class-IP4Map.html">IP4Map</a></code>
 			&amp;
 			</code>
 		</td>
@@ -1064,8 +1064,7 @@ looking to compare similar rules.</p>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>array</code><br>result['map'][] will contain all mapping in form of an array['start'] and
-['end]. result['unresolved'][] will provide a list unresolved objects<br />
+					<code><code><a href="class-IP4Map.html">IP4Map</a></code></code><br />
 				</div>
 
 
@@ -1137,6 +1136,39 @@ resolution</dd>
 				<h4>Returns</h4>
 				<div class="list">
 					<code>string[]</code><br>containing zones matched<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="membersExpanded" id="_membersExpanded">
+
+		<td class="attributes"><code>
+			 public 
+			<code><a href="class-Address.html">Address</a>[]</code>|<code><a href="class-AddressGroup.html">AddressGroup</a>[]</code>
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_membersExpanded">#</a>
+		<code><b>membersExpanded</b>( <span>mixed <var>$keepGroupsInList</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code><code><a href="class-Address.html">Address</a>[]</code>|<code><a href="class-AddressGroup.html">AddressGroup</a>[]</code></code><br />
 				</div>
 
 
