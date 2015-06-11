@@ -239,11 +239,6 @@ class ServiceGroup
 		if( in_array($h, $this->members, true) )
 			$this->rewriteXML();
 	}
-	
-	public function name()
-	{
-		return $this->name;
-	}
 
 	public function isService()
 	{

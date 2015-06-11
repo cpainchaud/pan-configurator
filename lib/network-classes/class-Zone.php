@@ -55,6 +55,9 @@ class Zone
      */
  	public function Zone($name, $owner, $fromXmlTemplate = false)
  	{
+        if( !is_string($name) )
+            derr('$name must be a string');
+
  		$this->owner = $owner;
 
         if( $this->owner->owner->isVirtualSystem() )
@@ -84,6 +87,7 @@ class Zone
 
     /**
      * @param string $newName
+     * @return bool
      */
  	public function setName($newName)
  	{
@@ -92,7 +96,7 @@ class Zone
         if( $this->xmlroot === null )
             return $ret;
 
-        $this->xmlroot->getAttributeNode('name')->nodeValue = $newName;
+        $this->xmlroot->setAttribute('name', $newName);
 
         return $ret;
     }

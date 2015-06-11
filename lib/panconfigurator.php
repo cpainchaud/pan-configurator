@@ -594,7 +594,7 @@ trait PathableName
         else
             $ret = get_class($this);
 
-        if( isset($this->owner) && !is_null($this->owner) )
+        if( isset($this->owner) && $this->owner !== null )
             $ret = $this->owner->toString().' / '.$ret;
 
         return $ret;
@@ -658,7 +658,7 @@ function derr($msg, $object=null)
         if( $skip >= 0 )
         {
             print "$count ****\n";
-            if( isset($l['object']) )
+            if( isset($l['object']) && method_exists($l['object'], 'toString'))
             {
                 fwrite(STDERR,'   '.$l['object']->toString()."\n");
             }

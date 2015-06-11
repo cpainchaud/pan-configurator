@@ -230,19 +230,23 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
         return;
     }
 
-    $plus = $resolvedZones;
+
+    $plus = Array();
+    foreach( $zoneContainer->zones() as $zone )
+        $plus[$zone->name()] = $zone->name();
+
     $minus = Array();
     $common = Array();
 
-    foreach( $zoneContainer->zones() as $ruleZone )
+    foreach( $resolvedZones as $zoneName => $zone )
     {
-        if( isset($plus[$ruleZone->name()]) )
+        if( isset($plus[$zoneName]) )
         {
-            unset($plus[$ruleZone->name()]);
-            $common[] = $ruleZone->name();
+            unset($plus[$zoneName]);
+            $common[] = $zoneName;
             continue;
         }
-        $minus[] = $ruleZone->name();
+        $minus[] = $zoneName;
     }
 
     if( count($common) > 0 )
@@ -250,7 +254,7 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
     if( count($minus) > 0 )
         print $context->padding." - missing zones: ".PH::list_to_string($minus)."\n";
     if( count($plus) > 0 )
-        print $context->padding." - superfluous zones: ".PH::list_to_string($plus)."\n";
+        print $context->padding." - uneeded zones: ".PH::list_to_string($plus)."\n";
 
     if( $mode == 'replace' )
     {
@@ -271,15 +275,15 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
     }
     elseif( $mode == 'append' )
     {
-        print $context->padding." - APPEND MODE: adding missing (".count($plus).") zones only.";
+        print $context->padding." - APPEND MODE: adding missing (".count($minus).") zones only.";
         if( $addrContainer->isAny() )
             print " *** IGNORED because value is 'ANY' ***\n";
-        elseif(count($plus) == 0)
+        elseif(count($minus) == 0)
             print " *** IGNORED because no missing zones were found ***\n";
         else
         {
             print "\n";
-            foreach( $plus as $zone )
+            foreach( $minus as $zone )
                 $zoneContainer->addZone($zoneContainer->parentCentralStore->findOrCreate($zone));
             if( $context->isAPI )
                 $zoneContainer->API_sync();

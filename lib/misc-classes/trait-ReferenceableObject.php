@@ -22,14 +22,27 @@ trait ReferencableObject
 	protected $name;
 	public $refrules = Array();
 	protected $refcomphash = null;
-	
+
+    /**
+     * @param string $newName
+     * @param bool $skip_name_unicity_check
+     * @throws Exception
+     * @return bool
+     */
 	protected function setRefName($newName, $skip_name_unicity_check = false)
 	{
+        if( !is_string($newName) )
+            derr('$newName must be a string');
+
+        if( $this->name == $newName )
+            return false;
+
 		$oldName = $this->name;
 		$this->name = $newName;
 		
 		$this->broadcastMyNameChange($oldName);
-		
+
+        return true;
 	}
 	
 	public function addReference($ref)

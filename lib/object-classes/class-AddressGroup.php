@@ -172,14 +172,6 @@ class AddressGroup
 	}
 
     /**
-     * @return string
-     */
-	public function name()
-	{
-		return $this->name;
-	}
-
-    /**
      * @param string $newName
      */
 	public function setName($newName)
