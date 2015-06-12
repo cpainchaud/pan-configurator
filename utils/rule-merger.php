@@ -17,8 +17,8 @@
 */
 
 
-print "\n***********************************************\n";
-print "************ RULE-MERGER UTILITY ****************\n\n";
+print "\n*************************************************\n";
+print   "************ RULE-MERGER UTILITY ****************\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
@@ -108,7 +108,8 @@ foreach( $supportedMethods_tmp as $methodName => $method )
 {
     $supportedMethods[strtolower($methodName)] = $method;
 }
-$supportedArguments['method']['shortHelp'] .= PH::list_to_string(array_flip($supportedMethods_tmp));
+$methodsNameList = array_flip($supportedMethods_tmp);
+$supportedArguments['method']['shortHelp'] .= PH::list_to_string($methodsNameList);
 
 
 
