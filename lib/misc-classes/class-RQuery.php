@@ -872,8 +872,8 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.any.from.query'] = Arra
 );
 
 
-//                                              //
-//                Tag Based filters         //
+//                                                //
+//                Tag Based filters              //
 //                                              //
 RQuery::$defaultFilters['rule']['tag']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
@@ -892,6 +892,23 @@ RQuery::$defaultFilters['rule']['tag']['operators']['has.nocase'] = Array(
     },
     'arg' => true
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+);
+RQuery::$defaultFilters['rule']['tag']['operators']['has.regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        foreach($object->tags->tags() as $tag )
+        {
+            $matching = preg_match( $value, $tag->name() );
+            if( $matching === FALSE )
+                derr("regular expression error on '$value'");
+            if( $matching === 1 )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
 );
 RQuery::$defaultFilters['rule']['tag.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->tags->count() !operator! !value!",
@@ -1391,7 +1408,7 @@ RQuery::$defaultFilters['service']['name']['operators']['contains'] = Array(
     },
     'arg' => true
 );
-RQuery::$defaultFilters['service']['name']['operators']['regex'] = Array(
+RQuery::$defaultFilters['']['name']['operators']['regex'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var $object Service|ServiceGroup */
         $matching = preg_match($value, $object->name());

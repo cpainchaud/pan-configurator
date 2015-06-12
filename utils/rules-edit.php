@@ -222,7 +222,10 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
 
     $ipMapping = &$context->cachedIPmapping[$serial];
 
-    $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4'], $rule->sourceIsNegated());
+    if( $rule->isSecurityRule() )
+        $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4'], $rule->sourceIsNegated());
+    else
+        $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4']);
 
     if( count($resolvedZones) == 0 )
     {
@@ -685,6 +688,30 @@ $supportedActions['tag-remove'] = Array(
             $rule->tags->removeTag($objectFind);
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+$supportedActions['tag-remove-regex'] = Array(
+    'name' => 'tag-Remove-Regex',
+    'section' => 'tag',
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $pattern = '/'.$context->arguments['regex'].'/';
+        foreach($rule->tags->tags() as $tag )
+        {
+            $result = preg_match($pattern, $tag->name());
+            if( $result === false )
+                derr("'$pattern' is not a valid regex");
+            if( $result == 1 )
+            {
+                print $context->padding."  - removed tag {$tag->name()}\n";
+                if( $context->isAPI )
+                    $rule->tags->API_removeTag($tag);
+                else
+                    $rule->tags->removeTag($tag);
+            }
+        }
+    },
+    'args' => Array( 'regex' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 
 

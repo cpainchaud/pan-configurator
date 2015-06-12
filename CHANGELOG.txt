@@ -15,6 +15,7 @@ Utilities:
 * new utility : rule-merger.php to find similar rules and merge them
 * util rule-edit : new action 'resolve-zones' to do a rule resolution
 * util rule-edit : new action 'copy' to copy rules into another vsys/device-group
+* util rule-edit : new action 'tag-remove-regex'
 * util rule-edit : new action 'cloneForAppOverride' to clone a security rule and make it an AppOverride
 * util rule-edit : service-edit and address-edit will auto-detect PANOS vs Panorama, no need to use argument 'type' anymore
 * util rule-edit : new filters : 'rule is.unused.fast' will check if a rule was not used since reboot (use cli 'show running rule-use rule-base security type unused vsys vsys1')
