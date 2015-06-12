@@ -604,7 +604,7 @@ class AddressRuleContainer extends ObjRuleContainer
      * @param $objectIsNegated bool  IP4Mapping of this object will be inverted before doing resolution
      * @return string[] containing zones matched
      */
-    public function &calculateZonesFromIP4Mapping( &$zoneIP4Mapping, $objectIsNegated )
+    public function &calculateZonesFromIP4Mapping( &$zoneIP4Mapping, $objectIsNegated = false)
     {
         $zones = Array();
 

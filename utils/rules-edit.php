@@ -308,7 +308,7 @@ $supportedActions['from-add'] = Array(
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null)
-            derr("zone named '{$context->arguments['objName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found");
 
         if ($context->isAPI)
             $rule->from->API_addZone($objectFind);
@@ -325,7 +325,7 @@ $supportedActions['from-add-force'] = Array(
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->findOrCreate($context->arguments['zoneName']);
         if ($objectFind === null)
-            derr("zone named '{$context->arguments['objName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found");
 
         if ($context->isAPI)
             $rule->from->API_addZone($objectFind);
@@ -342,7 +342,7 @@ $supportedActions['from-remove'] = Array(
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null)
-            derr("zone named '{$context->arguments['objName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found");
 
         if ($context->isAPI)
             $rule->from->API_removeZone($objectFind);
@@ -359,7 +359,7 @@ $supportedActions['from-remove-force-any'] = Array(
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null)
-            derr("zone named '{$context->arguments['objName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found");
 
         if ($context->isAPI)
             $rule->from->API_removeZone($objectFind, true, true);
@@ -390,7 +390,7 @@ $supportedActions['to-add'] = Array(
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null)
-            derr("zone named '{$context->arguments['objName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found");
 
         if ($context->isAPI)
             $rule->to->API_addZone($objectFind);
@@ -407,7 +407,7 @@ $supportedActions['to-add-force'] = Array(
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->findOrCreate($context->arguments['zoneName']);
         if ($objectFind === null)
-            derr("zone named '{$context->arguments['objName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found");
 
         if ($context->isAPI)
             $rule->to->API_addZone($objectFind);
@@ -424,7 +424,7 @@ $supportedActions['to-remove'] = Array(
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null)
-            derr("zone named '{$context->arguments['objName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found");
 
         if ($context->isAPI)
             $rule->to->API_removeZone($objectFind);
@@ -441,7 +441,7 @@ $supportedActions['to-remove-force-any'] = Array(
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if( $objectFind === null )
-            derr("zone named '{$context->arguments['objName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found");
 
         if ($context->isAPI)
             $rule->to->API_removeZone($objectFind, true, true);
