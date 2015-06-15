@@ -364,9 +364,35 @@ class PanAPIConnector
         $params['vsys'] = $vsys;
         $params['cmd'] = &$cmd;
 
-        return $this->sendRequest($cmd, true);
+        return $this->sendRequest($params, true);
 
     }
+
+
+    public function registerIPsWithTags( $ips, $tags, $vsys = 'vsys1', $timeout = 3600 )
+    {
+        $cmd = '<uid-message><version>1.0</version><type>update</type><payload><register>';
+
+        foreach($ips as $ip)
+        {
+            $cmd .= "<entry ip=\"$ip\"><tag>";
+            foreach($tags as $tag)
+            {
+                $cmd .= "<member>$tag</member>";
+            }
+            $cmd .= '</tag></entry>';
+        }
+        $cmd .= '</register></payload></uid-message>';
+
+        $params = Array();
+        $params['type'] = 'user-id';
+        $params['action'] = 'set';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
+
+        return $this->sendRequest($params, true);
+    }
+
 
     /**
      * @param string $parameters
