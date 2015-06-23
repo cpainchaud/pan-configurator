@@ -256,13 +256,13 @@ else
 $panoramaPreRuleSelected = true;
 if( $pan->isPanorama() )
 {
-    if( !isset(PH::$args['panoramaPreRules']) && !isset(PH::$args['panoramaPostRules']) )
+    if( !isset(PH::$args[strtolower('panoramaPreRules')]) && !isset(PH::$args[strtolower('panoramaPostRules')]) )
         display_error_usage_exit("Panorama was detected but no Pre or Post rules were selected, use CLI argument 'panoramaPreRules' or 'panoramaPostRules'" );
 
-    if( isset(PH::$args['panoramaPreRules']) && isset(PH::$args['panoramaPostRules']) )
+    if( isset(PH::$args[strtolower('panoramaPreRules')]) && isset(PH::$args[strtolower('panoramaPostRules')]) )
         display_error_usage_exit("both panoramaPreRules and panoramaPostRules were selected, please choose one of them");
 
-    if( isset(PH::$args['panoramaPostRules']) )
+    if( isset(PH::$args[strtolower('panoramaPostRules')]) )
         $panoramaPreRuleSelected = false;
 
 }
@@ -548,7 +548,7 @@ foreach( array_keys($rulesToProcess) as $index)
 
     updateRuleHash($rule, $method);
 
-    if( $stopMergingIfDenySeen )
+    if( $stopMergingIfDenySeen && $rule->actionIsNegative())
     {
         $denyRules[] = $rule;
     }
