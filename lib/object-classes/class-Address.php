@@ -424,15 +424,17 @@ class Address
      */
     public function  includedInIP4Network($network)
     {
+        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
+            return 0;
+
         if( is_object($network) )
         {
             $networkMap = $network;
         }
         else
-            $networkMap = IP4Map::mapFromText($network);
+            $networkMap = IP4Map::mapFromText($this->value);
 
-        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
-            return 0;
+
 
         //var_dump($this->getIP4Mapping());
 
