@@ -573,10 +573,10 @@ class AddressGroup
      */
     public function  includedInIP4Network($network)
     {
-        if( is_array($network) )
-            $netStartEnd = &$network;
+        if( is_object($network) )
+            $netStartEnd = $network;
         else
-            $netStartEnd = cidr::stringToStartEnd($network);
+            $netStartEnd = IP4Map::mapFromText($network);
 
         if( count($this->members) == 0 )
             return 1;

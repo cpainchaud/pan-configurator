@@ -432,11 +432,8 @@ class Address
             $networkMap = $network;
         }
         else
-            $networkMap = IP4Map::mapFromText($this->value);
+            $networkMap = IP4Map::mapFromText($network);
 
-
-
-        //var_dump($this->getIP4Mapping());
 
         return cidr::netMatch($this->getIP4Mapping()->getFirstMapEntry(), $networkMap->getFirstMapEntry());
     }
@@ -448,6 +445,9 @@ class Address
      */
     public function  includesIP4Network($network)
     {
+        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
+            return 0;
+
         if( is_object($network) )
         {
             $networkMap = $network;
@@ -455,8 +455,6 @@ class Address
         else
             $networkMap = IP4Map::mapFromText($network);
 
-        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
-            return 0;
 
         return cidr::netMatch($networkMap->getFirstMapEntry(), $this->getIP4Mapping()->getFirstMapEntry());
     }
