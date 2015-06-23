@@ -568,7 +568,7 @@ class AddressGroup
 
     /**
      * return 0 if not match, 1 if this object is fully included in $network, 2 if this object is partially matched by $ref.
-     * @param string $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @param string|IP4Map $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
      * @return int
      */
     public function  includedInIP4Network($network)

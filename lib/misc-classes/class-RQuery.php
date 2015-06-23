@@ -82,12 +82,12 @@ class RQuery
         }
         else
         {
-            /** @var SecurityRule|Address|AddressGroup|service|ServiceGroup $nestedQueries */
+            /** @var string[] $nestedQueries */
             $nestedQueries = Array();
             /** @var SecurityRule|Address|AddressGroup|service|ServiceGroup $object */
             $object = $queryContext;
+            $queryContext = Array('object' => $object, 'nestedQueries' => $nestedQueries);
         }
-
 
         if( count($this->subQueries) == 0 )
         {
@@ -187,15 +187,15 @@ class RQuery
         if( count($queries) == 1 )
         {
             if( $this->inverted )
-                return !$queries[0]->matchSingleObject($object);
-            return $queries[0]->matchSingleObject($object);
+                return !$queries[0]->matchSingleObject($queryContext);
+            return $queries[0]->matchSingleObject($queryContext);
         }
 
         $results = Array();
 
         foreach( $queries as $query )
         {
-            $results[] = $query->matchSingleObject($object);
+            $results[] = $query->matchSingleObject($queryContext);
         }
         //print_r($results);
 
@@ -820,7 +820,7 @@ RQuery::$defaultFilters['rule']['dst']['operators']['includes.full.or.partial'] 
     },
     'arg' => true
 );
-RQuery::$defaultFilters['rule']['src']['operators']['has.any.from.query'] = Array(
+RQuery::$defaultFilters['rule']['src']['operators']['has.from.query'] = Array(
     'eval' => function( $object, &$nestedQueries, $argument)
     {
         /** @var $object Rule|SecurityRule */
@@ -845,7 +845,7 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.any.from.query'] = Arra
     },
     'arg' => true
 );
-RQuery::$defaultFilters['rule']['dst']['operators']['has.any.from.query'] = Array(
+RQuery::$defaultFilters['rule']['dst']['operators']['has.from.query'] = Array(
     'eval' => function( $object, &$nestedQueries, $argument)
                 {
                     /** @var $object Rule|SecurityRule */
@@ -868,6 +868,56 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.any.from.query'] = Arra
 
                     return false;
                 },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['src']['operators']['has.recursive.from.query'] = Array(
+    'eval' => function( $object, &$nestedQueries, $argument)
+    {
+        /** @var $object Rule|SecurityRule */
+        if( $object->source->count() == 0 )
+            return false;
+
+        if( $argument === null || !isset($nestedQueries[$argument]) )
+            derr("cannot find nested query called '$argument'");
+
+        $errorMessage = '';
+        $rQuery = new RQuery('address');
+        if( $rQuery->parseFromString($nestedQueries[$argument], $errorMessage) === false )
+            derr('nested query execution error : '.$errorMessage);
+
+        foreach( $object->source->membersExpanded() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.from.query'] = Array(
+    'eval' => function( $object, &$nestedQueries, $argument)
+    {
+        /** @var $object Rule|SecurityRule */
+        if( $object->destination->count() == 0 )
+            return false;
+
+        if( $argument === null || !isset($nestedQueries[$argument]) )
+            derr("cannot find nested query called '$argument'");
+
+        $errorMessage = '';
+        $rQuery = new RQuery('address');
+        if( $rQuery->parseFromString($nestedQueries[$argument], $errorMessage) === false )
+            derr('nested query execution error : '.$errorMessage);
+
+        foreach( $object->destination->all() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
     'arg' => true
 );
 
@@ -1311,6 +1361,28 @@ RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
 
                     return false;
                 },
+    'arg' => true
+);
+RQuery::$defaultFilters['address']['value']['operators']['eq'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        /** @var $value string */
+
+        if( $object->isGroup() )
+            return false;
+
+        if( $object->isAddress() )
+        {
+            if( $object->type() == 'ip-address' || $object->type() == 'ip-netmask' )
+            {
+                if( $object->value() == $value )
+                    return true;
+            }
+        }
+
+        return false;
+    },
     'arg' => true
 );
 // </editor-fold>
