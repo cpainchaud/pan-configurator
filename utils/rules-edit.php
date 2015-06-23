@@ -1023,7 +1023,7 @@ $supportedActions['copy'] = Array(
                     $rule = $context->object;
                     $args = &$context->arguments;
                     $location = $args['location'];
-                    $pan = $context->baseObject;
+                    $pan = PH::findRootObjectOrDie($rule);;
 
                     if( $args['preORpost'] == "post" )
                         $preORpost = true;

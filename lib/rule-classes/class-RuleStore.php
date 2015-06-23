@@ -60,7 +60,7 @@ class RuleStore
 
         'SecurityRule' => Array( 'name' => 'Security', 'varName' => 'securityRules', 'xpathRoot' => 'security' ),
         'NatRule' => Array( 'name' => 'NAT', 'varName' => 'natRules', 'xpathRoot' => 'nat' ),
-        'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'decryptRules', 'xpathRoot' => 'decryption' ),
+        'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'decryptionRules', 'xpathRoot' => 'decryption' ),
         'AppOverrideRule' => Array( 'name' => 'AppOverride', 'varName' => 'appOverrideRules', 'xpathRoot' => 'application-override' )
 
     );
