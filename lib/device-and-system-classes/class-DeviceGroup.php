@@ -23,28 +23,18 @@ class DeviceGroup
 	use PathableName;
 	use PanSubHelperTrait;
 
-	/**
-	 * String
-	 */
+	/** String */
 	protected $name;
 
-    /**
-     * @var PanoramaConf
-     */
+    /** @var PanoramaConf */
 	public $owner = null;
 
-	/**
-	 * @var DOMElement
-	 */
+	/** @var DOMElement */
 	public $xmlroot;
 
-    /**
-     * @var AddressStore
-     */
+    /** @var AddressStore */
     public $addressStore=null;
-    /**
-     * @var ServiceStore
-     */
+    /** @var ServiceStore */
     public $serviceStore=null;
 
 	public static $templatexml = '<entry name="**Need a Name**"><address></address><post-rulebase><security><rules></rules></security><nat><rules></rules></nat></post-rulebase>
@@ -52,29 +42,19 @@ class DeviceGroup
 									</entry>';
 
 	
-	/**
-	* @var TagStore
-	*/
+	/** @var TagStore */
 	public $tagStore=null;
 	
-	/**
-	* @var ZoneStore
-	*/
+	/** @var ZoneStore */
 	public $zoneStore=null;
 
-	/**
-	* @var RuleStore
-	*/
+	/** @var RuleStore */
 	public $securityRules=null;
 
-	/**
-	* @var RuleStore
-	*/
+	/** @var RuleStore */
 	public $natRules=null;
 
-    /**
-     * @var RuleStore
-     */
+    /** @var RuleStore */
     public $decryptionRules=null;
 
     /** @var RuleStore */
@@ -85,16 +65,11 @@ class DeviceGroup
      */
     public $parentDeviceGroup = null;
 
-    /**
-     * @var DeviceGroup[]
-     */
+    /** @var DeviceGroup[] */
     public $childDeviceGroups = Array();
 
 
-
-	/**
-	* @var Array
-	*/
+	/** @var Array */
 	private $devices = Array();
 
 	
