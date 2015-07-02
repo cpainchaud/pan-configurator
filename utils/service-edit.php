@@ -246,7 +246,7 @@ $supportedActions['move'] = Array(
             return;
         }
 
-        if( $context->arguments['mode'] == 'skipIfConflict' )
+        if( $context->arguments['mode'] == 'skipifconflict' )
         {
             print $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
             return;
