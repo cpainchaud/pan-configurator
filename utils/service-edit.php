@@ -239,7 +239,10 @@ $supportedActions['move'] = Array(
                 derr("unsupported with API yet");
             }
             else
+            {
+                $object->owner->remove($object);
                 $targetStore->add($object);
+            }
             return;
         }
 
