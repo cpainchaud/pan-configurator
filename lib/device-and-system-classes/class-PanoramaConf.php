@@ -126,13 +126,25 @@ class PanoramaConf
 		$this->load_from_domxml($this->xmldoc);
 	}
 
+    /**
+     * @param $xml DOMNode
+     * @throws Exception
+     */
 	public function load_from_domxml($xml)
 	{
 
-		$this->xmldoc = $xml;
-
-		$this->configroot = DH::findFirstElementOrDie('config', $this->xmldoc);
-        $this->xmlroot = $this->configroot;
+        if( $xml->nodeType == XML_DOCUMENT_NODE )
+        {
+            $this->xmldoc = $xml;
+            $this->configroot = DH::findFirstElementOrDie('config', $this->xmldoc);
+            $this->xmlroot = $this->configroot;
+        }
+        else
+        {
+            $this->xmldoc = $xml->ownerDocument;
+            $this->configroot = $xml;
+            $this->xmlroot = $xml;
+        }
 
 		$versionAttr = DH::findAttribute('version', $this->configroot);
 		if( $versionAttr !== false )

@@ -537,6 +537,15 @@ class SecurityRule extends Rule
 		else
             derr("'$newAction' is not supported action type\n");
 	}
+
+    public function API_setAction($newAction)
+    {
+        $this->setAction($newAction);
+
+        $domNode = DH::findFirstElementOrDie('action', $this->xmlroot);
+        $connector = findConnectorOrDie($this);
+        $connector->sendSetRequest($this->getXPath(), $domNode);
+    }
 	
 	
 	/**

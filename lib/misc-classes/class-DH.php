@@ -470,6 +470,47 @@ class DH
     }
 
 
+    /**
+     * @param DOMElement $source
+     * @param DOMElement $target
+     * @return int
+     * @throws Exception
+     */
+    static public function copyChildElementsToNewParentNode( DOMElement $source, DOMElement $target)
+    {
+        $sourceOwner = $source->ownerDocument;
+        $targetOwner = $target->ownerDocument;
+
+        if( ! $sourceOwner->isSameNode($targetOwner) )
+        {
+            $source = $targetOwner->importNode($source, true);
+        }
+
+        if( $source->nodeType != XML_ELEMENT_NODE )
+            derr('source is not an Element type node');
+
+        if( $target->nodeType != XML_ELEMENT_NODE )
+            derr('target is not an Element type node');
+
+        $toMove = Array();
+
+        foreach( $source->childNodes as $child )
+        {
+            if( $child->nodeType != XML_ELEMENT_NODE )
+                continue;
+            $toMove[] = $child;
+        }
+
+        foreach( $toMove as $child )
+        {
+            $target->appendChild($child);
+        }
+
+        return count($toMove);
+
+    }
+
+
 
 }
 
