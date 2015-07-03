@@ -710,13 +710,15 @@ if( $objectsFilter !== null )
 // --------------------
 
 
-
-
 //
 // load the config
 //
+print " - Loading configuration through PAN-Configurator library... ";
+$loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc);
-print "\n*** config loaded ***\n";
+$loadEndTime = microtime(true);
+$loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
+print "OK! ($loadElapsedTime seconds)\n";
 // --------------------
 
 
