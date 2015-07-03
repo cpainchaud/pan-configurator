@@ -716,11 +716,14 @@ if( $objectsFilter !== null )
 // load the config
 //
 print " - Loading configuration through PAN-Configurator library... ";
+$loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc);
 $loadEndTime = microtime(true);
+$loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
-print "OK! ($loadElapsedTime seconds)\n";
+$loadUsedMem = convert($loadEndMem - $loadStartMem);
+print "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 
