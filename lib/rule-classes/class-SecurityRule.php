@@ -892,7 +892,7 @@ class SecurityRule extends Rule
 		return $ret;
 	}
 
-	public function &API_getAppContainerStats($timePeriod = 'last-30-days', $fastMode = true, $excludedApps = Array())
+	public function &API_getAppContainerStats($timePeriod = 'last-30-days', $fastMode = true, $limit = 50, $excludedApps = Array())
 	{
 		$con = findConnectorOrDie($this);
 
@@ -941,11 +941,16 @@ class SecurityRule extends Rule
 
 		}
 
+        $repeatOrCount = 'sessions';
+
+        if( !$fastMode )
+            $repeatOrCount = 'repeatcnt';
+
 		$query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&cmd=<type>'
-		         .'<'.$type.'><aggregate-by><member>container-of-app</member></aggregate-by>'
-		         .'<values><member>sessions</member></values></'.$type.'></type><period>'.$timePeriod.'</period>'
-		         .'<topn>500</topn><topm>10</topm><caption>untitled</caption>'
-		         .'<query>'."(rule eq '".$this->name."') $dvq $excludedAppsString</query>";
+		         ."<{$type}><aggregate-by><member>container-of-app</member></aggregate-by>"
+		         ."<values><member>{$repeatOrCount}</member></values></{$type}></type><period>{$timePeriod}</period>"
+		         ."<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
+		         ."<query>(rule eq '{$this->name}') {$dvq} {$excludedAppsString}</query>";
 
 		//print "Query: $query\n";
 
