@@ -141,7 +141,7 @@ class PanAPIConnector
 
                 if( count($host) > 1 )
                 {
-                    self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1], null, $host[1] );
+                    self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1], 'panos', null, $host[1] );
                 }
                 else
                     self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1] );
@@ -180,10 +180,18 @@ class PanAPIConnector
         self::loadConnectorsFromUserHome();
 
         $host = strtolower($host);
+        $port = null;
+
+        $hostExplode = explode(':', $host);
+        if( count($hostExplode) > 1 )
+        {
+            $port = $hostExplode[1];
+            $host = $hostExplode[0];
+        }
 
         foreach( self::$savedConnectors as $connector )
         {
-            if( $connector->apihost == $host )
+            if( $connector->apihost == $host && ($port === null && $connector->port == 443 || $port !== null && $connector->port == $port) )
             {
                 return $connector;
             }
