@@ -892,52 +892,52 @@ class SecurityRule extends Rule
 		return $ret;
 	}
 
-	public function &API_getAppContainerStats($timePeriod = 'last-30-days', $excludedApps = Array())
+	public function &API_getAppContainerStats($timePeriod = 'last-30-days', $fastMode = true, $excludedApps = Array())
 	{
 		$con = findConnectorOrDie($this);
 
 		$parentClass = get_class($this->owner->owner); 
 
-		$type = 'panorama-trsum';
+		if( $fastMode )
+            $type = 'panorama-trsum';
+        else
+            $type = 'panorama-traffic';
+
 		if( $parentClass == 'VirtualSystem' )
 		{
-			$type = 'trsum';
+            if( $fastMode )
+                $type = 'trsum';
+            else
+                $type = 'traffic';
 		}
 
 		$excludedAppsString = '';
 
-		$first = true;
-
+        $first = true;
 		foreach( $excludedApps as &$e )
 		{
-			if( !$first )
-				$excludedAppsString .= ' and ';
+            if( !$first )
+                $excludedAppsString .= ' and ';
 
-			$excludedAppsString .= "(app neq $e)";
-
-			$first = false; 
+            $excludedAppsString .= "(app neq $e)";
+            $first = false;
 		}
-		if( !$first )
-			$excludedAppsString .= ' and ';
 
 		$dvq = '';
 
 		if( $parentClass == 'VirtualSystem' )
 		{
-			$dvq = '(vsys eq '.$this->owner->owner->name().')';
+			$dvq = ' and (vsys eq '.$this->owner->owner->name().')';
 
 		}
 		else
 		{
 			$devices = $this->owner->owner->getDevicesInGroup();
-			//print_r($devices);
-
-			$first = true;
 
 			if( count($devices) == 0 )
 				derr('cannot request rule stats for a device group that has no member');
 
-			$dvq = '('.array_to_devicequery($devices).')';
+			$dvq = ' and ('.array_to_devicequery($devices).')';
 
 		}
 
@@ -945,7 +945,7 @@ class SecurityRule extends Rule
 		         .'<'.$type.'><aggregate-by><member>container-of-app</member></aggregate-by>'
 		         .'<values><member>sessions</member></values></'.$type.'></type><period>'.$timePeriod.'</period>'
 		         .'<topn>500</topn><topm>10</topm><caption>untitled</caption>'
-		         .'<query>'."$dvq and $excludedAppsString (rule eq '".$this->name."')</query>";
+		         .'<query>'."(rule eq '".$this->name."') $dvq $excludedAppsString</query>";
 
 		//print "Query: $query\n";
 

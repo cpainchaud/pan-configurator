@@ -579,6 +579,7 @@ class PanAPIConnector
                 sleep(1);
                 $query = '&type=report&action=get&job-id='.$jobid;
                 $ret = $this->sendRequest($query);
+                //print DH::dom_to_xml($ret, 0, true, 5);
 
                 $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
                 
