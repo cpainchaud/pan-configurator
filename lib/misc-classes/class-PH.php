@@ -254,9 +254,8 @@ foreach( $argv as $argIndex => &$arg )
         PH::disableOutputFormatting();
         unset($argv[$argIndex]);
         $argc--;
-        break;
+        continue;
     }
-
-    unset($argIndex);
-    unset($arg);
 }
+unset($argIndex);
+unset($arg);
