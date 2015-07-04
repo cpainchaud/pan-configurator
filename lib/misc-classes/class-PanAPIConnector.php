@@ -547,31 +547,32 @@ class PanAPIConnector
     {
         $ret = $this->sendRequest($req);
 
-        $cursor = &searchForName('name', 'result', $ret);
+        //print DH::dom_to_xml($ret, 0, true, 4);
 
-        if( is_null($cursor) )
+        $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
+        $cursor = DH::findFirstElement('result', $cursor);
+
+        if( $cursor === false )
         {
-            $cursor = &searchForName('name', 'report', $ret);
-            if( is_null($cursor) )
+            $cursor = DH::findFirstElement('report', DH::findXPathSingleEntryOrDie('/response', $ret));
+            if( $cursor === false )
                 derr("unsupported API answer");
 
-            $report = &searchForName('name', 'result', $cursor['children']);
-            if( is_null($report) )
+            $report = DH::findFirstElement('result', $cursor);
+            if( $report === false )
                 derr("unsupported API answer");
 
         }
 
         if( !isset($report) )
         {
-            if( !isset($cursor['children']) )
-                derr("unsupported API answer");
 
-            $cursor = &searchForName('name', 'job', $cursor['children']);
+            $cursor = DH::findFirstElement('job', $cursor);
 
-            if( is_null($cursor) )
-                derr("unsupported API answer");
+            if( $cursor === false )
+                derr("unsupported API answer, no JOB ID found");
 
-            $jobid = $cursor['content'];
+            $jobid = $cursor->textContent;
 
             while( true )
             {
@@ -579,34 +580,33 @@ class PanAPIConnector
                 $query = '&type=report&action=get&job-id='.$jobid;
                 $ret = $this->sendRequest($query);
 
-                $cursor = &searchForName('name', 'result', $ret);
+                $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
                 
-                if( is_null($cursor) )
-                    derr("unsupported API answer");
+                if( $cursor === false )
+                    derr("unsupported API answer", $ret);
 
-                if( !isset($cursor['children']) )
-                    derr("unsupported API answer");
+                $jobcur = DH::findFirstElement('job', $cursor);
 
-                $jobcur = &searchForName('name', 'job', $cursor['children']);
+                if( $jobcur === false )
+                    derr("unsupported API answer", $ret);
 
-                if( is_null($jobcur) )
-                    derr("unsupported API answer"); 
+                $percent = DH::findFirstElement('percent', $jobcur);
 
-                $percent = &searchForName('name', 'percent', $jobcur['children']);
-                if( is_null($percent) )
-                    derr("unsupported API answer");
+                if( $percent == false )
+                    derr("unsupported API answer", $cursor);
 
-                if( $percent['content'] != '100')
+                if( $percent->textContent != '100')
                 {
                     sleep(9);
                     continue;
                 }
 
-                $cursor = &searchForName('name', 'report', $cursor['children']);
-                if( is_null($cursor) )
-                    derr("unsupported API answer");
+                $cursor = DH::findFirstElement('report', $cursor);
 
-                $report = &$cursor;
+                if( $cursor === false )
+                    derr("unsupported API answer", $ret);
+
+                $report = $cursor;
 
                 break;
 
@@ -614,19 +614,23 @@ class PanAPIConnector
         }
         $ret = Array();
 
-        if( isset($report['children']) )
+        foreach( $report->childNodes as $line )
         {
-            foreach( $report['children'] as &$line )
+            if( $line->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $newline = Array();
+
+            foreach( $line->childNodes as $item )
             {
-                $newline = Array();
+                if( $item->nodeType != XML_ELEMENT_NODE )
+                    continue;
+                /** @var $item DOMElement */
 
-                foreach( $line['children'] as &$item )
-                {
-                    $newline[$item['name']] = $item['content'];
-                }
-
-                $ret[] = $newline;
+                $newline[$item->nodeName] = $item->textContent;
             }
+
+            $ret[] = $newline;
         }
 
         //print_r($ret);

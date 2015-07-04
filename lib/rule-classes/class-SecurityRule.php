@@ -892,7 +892,7 @@ class SecurityRule extends Rule
 		return $ret;
 	}
 
-	public function &API_getAppContainerStats($timePeriod, $excludedApps)
+	public function &API_getAppContainerStats($timePeriod = 'last-30-days', $excludedApps = Array())
 	{
 		$con = findConnectorOrDie($this);
 
@@ -904,7 +904,6 @@ class SecurityRule extends Rule
 			$type = 'trsum';
 		}
 
-		$excludedApps = explode(',', $excludedApps);
 		$excludedAppsString = '';
 
 		$first = true;
