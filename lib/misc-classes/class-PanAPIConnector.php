@@ -121,7 +121,12 @@ class PanAPIConnector
         self::$keyStoreInitialized = true;
 
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-            $file = getenv('HOMEPATH')."\\\\".getenv('HOMEPATH')."\\".self::$keyStoreFileName;
+        {
+            if( strlen(getenv('HOMEDRIVE')) > 0)
+                $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
+            else
+                $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
+        }
         else
             $file = getenv('HOME').'/'.self::$keyStoreFileName;
 
@@ -161,7 +166,12 @@ class PanAPIConnector
         }
 
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
-            $file = getenv('HOMEPATH')."\\\\".getenv('HOMEPATH')."\\".self::$keyStoreFileName;
+        {
+            if( strlen(getenv('HOMEDRIVE')) > 0)
+                $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
+            else
+                $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
+        }
         else
             $file = getenv('HOME').'/'.self::$keyStoreFileName;
 
