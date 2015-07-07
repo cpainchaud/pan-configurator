@@ -701,9 +701,10 @@ class PanAPIConnector
      * @param $useChildNodes bool if $element is an object then don't use its root but its childNodes to generate xml
      * @return DomDocument
      */
-    public function sendSetRequest($xpath, $element, $useChildNodes=false)
+    public function sendSetRequest($xpath, $element, $useChildNodes=false, $timeout = 30)
     {
         $params = Array();
+        $moreOptions = Array( 'timeout' => $timeout, 'lowSpeedTime' => -0);
 
         if( is_string($element) )
         {
@@ -722,7 +723,14 @@ class PanAPIConnector
         $params['xpath']  = &$xpath;
         $params['element']  = &$element;
 
-        return $this->sendRequest($params);
+        return $this->sendSimpleRequest($params, $moreOptions);
+    }
+
+
+    public function sendSimpleRequest(&$request, $options=Array())
+    {
+        $file = null;
+        return $this->sendRequest($request, false, $file, '', $options);
     }
 
     public function sendEditRequest($xpath, $element)

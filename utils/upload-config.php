@@ -79,9 +79,11 @@ $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
+$supportedArguments['fromxpath'] = Array('niceName' => 'fromXpath', 'shortHelp' => 'select which part of the config to inject in destination');
 $supportedArguments['toxpath'] = Array('niceName' => 'toXpath', 'shortHelp' => 'inject xml directly in some parts of the candidate config');
 $supportedArguments['loadafterupload'] = Array('niceName' => 'loadAfterUpload', 'shortHelp' => 'load configuration after upload happened');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
+$supportedArguments['apitimeout'] = Array('niceName' => 'apiTimeout', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtconfig'] = Array('niceName' => 'preserveMgmtConfig', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtusers'] = Array('niceName' => 'preserveMgmtUsers', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtsystem'] = Array('niceName' => 'preserveMgmtSystem', 'shortHelp' => 'preserves what is in /config/devices/entry/deviceconfig/system');
@@ -130,11 +132,25 @@ if( isset(PH::$args['loadafterupload']) )
     $loadConfigAfterUpload = true;
 }
 
+if( isset(PH::$args['fromxpath']) )
+{
+   if( !isset(PH::$args['toxpath']) )
+   {
+       display_error_usage_exit("'fromXpath' option must be used with 'toXpath'");
+   }
+}
+
+if( !isset(PH::$args['apiTimeout']) )
+{
+    $apiTimeoutValue = 30;
+}
+else
+    $apiTimeoutValue = PH::$args['apiTimeout'];
 
 
 $doc = new DOMDocument();
 
-print "Opening/downloading original configuration ";
+print "Opening/downloading original configuration...";
 
 //
 // What kind of config input do we have.
@@ -171,8 +187,30 @@ elseif ( $configInput['type'] == 'api'  )
 else
     derr('not supported yet');
 
-
 print " OK!!\n\n";
+
+if( isset(PH::$args['fromxpath']) )
+{
+    print " * fromXPath is specified with value '".PH::$args['fromxpath']."'\n";
+    $foundInputXpathList = DH::findXPath(PH::$args['fromxpath'], $doc);
+
+    if( $foundInputXpathList === FALSE )
+        derr("invalid xpath syntax");
+
+    if( $foundInputXpathList->length == 0 )
+        derr("xpath returned empty results");
+
+    print "    * found ".$foundInputXpathList->length." results from Xpath:\n";
+
+    foreach($foundInputXpathList as $xpath)
+    {
+        print "       - ".DH::elementToPanXPath($xpath)."\n";
+    }
+
+    print "\n";
+
+}
+
 
 
 
@@ -194,7 +232,7 @@ if( $configOutput['type'] == 'file' )
 {
     if( isset(PH::$args['toxpath']) )
     {
-        derr("toXpath options was used, it's incompatible with a file output");
+        derr("toXpath options was used, it's incompatible with a file output. Make a feature request !!!  ;)");
     }
     print "{$configOutput['filename']} ... ";
     $doc->save($configOutput['filename']);
@@ -206,7 +244,20 @@ elseif ( $configOutput['type'] == 'api'  )
 
     if( isset(PH::$args['toxpath']) )
     {
-        $configOutput['connector']->sendSetRequest(PH::$args['toxpath'], DH::dom_to_xml(DH::firstChildElement($doc),-1,false) );
+        print "Sending SET command to API...";
+        if( isset(PH::$args['toxpath']) )
+        {
+            $stringToSend = '';
+            foreach($foundInputXpathList as $xpath)
+            {
+                $stringToSend .= DH::dom_to_xml($xpath,-1, false);
+            }
+        }
+        else
+            $stringToSend = DH::dom_to_xml(DH::firstChildElement($doc),-1,false);
+
+        $configOutput['connector']->sendSetRequest(PH::$args['toxpath'], $stringToSend);
+        print "OK!";
     }
     else
     {
