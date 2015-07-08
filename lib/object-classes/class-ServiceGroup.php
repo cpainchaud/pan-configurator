@@ -101,14 +101,14 @@ class ServiceGroup
 		}
 	
 	}
-	
 
- 
-	public function setName($newname)
+    /**
+     * @param $newName string
+     */
+	public function setName($newName)
 	{
-		$this->xmlroot['attributes']['name'] = $newname;
-		$this->setRefName($newname);
-		
+		$this->setRefName($newName);
+        $this->xmlroot->setAttribute('name', $newName);
 	}
 
 	/**

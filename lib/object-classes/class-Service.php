@@ -169,6 +169,22 @@ class Service
         return true;
     }
 
+    public function isTcp()
+    {
+        if( $this->_protocol == 'tcp' )
+            return true;
+
+        return false;
+    }
+
+    public function isUdp()
+    {
+        if( $this->_protocol == 'udp' )
+            return true;
+
+        return false;
+    }
+
     /**
      * @param string $newProtocol
      */
