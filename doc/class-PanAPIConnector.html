@@ -752,7 +752,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_sendSetRequest">#</a>
-		<code><b>sendSetRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$element</var></span>, <span>mixed <var>$useChildNodes</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>sendSetRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$element</var></span>, <span>mixed <var>$useChildNodes</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$timeout</var> = <span class="php-num">30</span></span> )</code>
 
 		<div class="description short">
 			
@@ -771,12 +771,43 @@
 					<dt><var>$useChildNodes</var></dt>
 					<dd><code>mixed</code><br>$useChildNodes bool if $element is an object then don't use its root but its
 childNodes to generate xml</dd>
+					<dt><var>$timeout</var></dt>
+					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
 					<code>DomDocument</code><br />
 				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="sendSimpleRequest" id="_sendSimpleRequest">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_sendSimpleRequest">#</a>
+		<code><b>sendSimpleRequest</b>( <span>mixed <var>&amp; $request</var></span>, <span>mixed <var>$options</var> = <span class="php-keyword1">Array</span>()</span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
 
 
 
