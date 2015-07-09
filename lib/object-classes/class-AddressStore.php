@@ -680,8 +680,11 @@ class AddressStore
 
 	public function referencedObjectRenamed($h, $oldName)
 	{
-		if( ! $this->inStore($h) )
-			return false;
+		if( $this->all[$oldName] !== $h)
+        {
+            mwarning("Unexpected : object is not part of this library");
+            return false;
+        }
 
         $newName = $h->name();
 
@@ -702,7 +705,6 @@ class AddressStore
 		}
 		else
 			derr('unsupported class');
-
 
 		return true;
 		

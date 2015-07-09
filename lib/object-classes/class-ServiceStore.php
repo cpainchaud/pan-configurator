@@ -597,8 +597,11 @@ class ServiceStore
 	public function referencedObjectRenamed($h,$oldname)
 	{
 
-		if( ! $this->inStore($h) )
-			return false;
+        if( $this->fast[$oldname] !== $h)
+        {
+            mwarning("Unexpected : object is not part of this library");
+            return false;
+        }
 
 		unset($this->fast[$oldname]);
 		$this->fast[$h->name()] = $h;
