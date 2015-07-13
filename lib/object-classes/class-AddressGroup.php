@@ -72,7 +72,8 @@ class AddressGroup
 			$this->xmlroot = $rootDoc->importNode($node, true);
 			$this->load_from_domxml($this->xmlroot);
 
-			$this->setName($name);
+            $this->name = $name;
+            $this->xmlroot->setAttribute('name', $name);
 		}
 		
 		$this->name = $name;
@@ -176,8 +177,7 @@ class AddressGroup
      */
 	public function setName($newName)
 	{
-		$this->setRefName($newName);
-
+        $this->setRefName($newName);
 		$this->xmlroot->setAttribute('name', $newName);
 	}
 

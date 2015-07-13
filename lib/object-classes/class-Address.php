@@ -72,13 +72,14 @@ class Address
 			$doc = new DOMDocument();
 			$doc->loadXML(self::$templatexml);
 
-			$node = DH::findFirstElementOrDie('entry',$doc);
+			$node = DH::findFirstElementOrDie('entry', $doc);
 
 			$rootDoc = $this->owner->addrroot->ownerDocument;
 			$this->xmlroot = $rootDoc->importNode($node, true);
 			$this->load_from_domxml($this->xmlroot);
 
-            $this->setName($name);
+            $this->name = $name;
+            $this->xmlroot->setAttribute('name', $name);
         }
 
         $this->name = $name;
