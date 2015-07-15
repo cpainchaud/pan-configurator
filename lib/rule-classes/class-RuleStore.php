@@ -778,7 +778,7 @@ class RuleStore
 	/**
 	* Returns an Array with all Rules inside this store
      * @param null|string $withFilter
-	* @return SecurityRule[]|NatRule[]
+	* @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
 	*/
 	public function & rules( $withFilter=null )
 	{
