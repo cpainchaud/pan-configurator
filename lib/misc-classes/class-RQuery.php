@@ -1073,6 +1073,14 @@ RQuery::$defaultFilters['rule']['action']['operators']['is.deny'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['action']['operators']['is.negative'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->actionIsNegative();
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['rule']['action']['operators']['is.allow'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
