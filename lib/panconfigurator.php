@@ -73,6 +73,7 @@ register_shutdown_function('my_shutdown');
 function my_shutdown()
 {
     PH::$ignoreDestructors = true;
+    gc_disable();
 }
 
 require_once dirname(__FILE__).'/helper-classes/'."class-IP4Map.php";
