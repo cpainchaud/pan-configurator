@@ -159,7 +159,7 @@ class ZoneRuleContainer extends ObjRuleContainer
 
     /**
      * return an array with all Zones in this store
-     * @return array
+     * @return Zone[]
      */
     public function zones()
     {
