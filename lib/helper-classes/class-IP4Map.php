@@ -142,6 +142,70 @@ class IP4Map
         return $diff;
     }
 
+    /**
+     * @param IP4Map $other
+     * @return int 1 if full match, 0 if not match, 2 if partial match
+     */
+    public function includesOtherMap( IP4Map $other )
+    {
+        if( $this->count() == 0 )
+            return 0;
+
+        $otherCopy = clone $other;
+
+        $affectedRowsOther = $otherCopy->substract($this);
+
+        if( $otherCopy->count() == 0 )
+            return 1;
+
+        if( $affectedRowsOther == 0 )
+            return 0;
+
+        return 2;
+    }
+
+    /**
+     * @param IP4Map $other
+     * @return int 1 if full match, 0 if not match, 2 if partial match
+     */
+    public function includedInOtherMap(IP4Map $other)
+    {
+        if( $other->count() == 0 )
+            return 0;
+
+        $thisCopy = clone $this;
+
+        $affectedRowsThis = $thisCopy->substract($other);
+
+        if( $this->count() == 0 )
+            return 1;
+
+        if( $affectedRowsThis == 0 )
+            return 0;
+
+        return 2;
+    }
+
+    /**
+     * @return string
+     */
+    public function & dumpToString()
+    {
+
+        $ret = Array();
+
+        foreach( $this->_map as &$entry )
+        {
+            $ret[] = long2ip($entry['start']).'-'.long2ip($entry['end']);
+        }
+
+        $ret = & PH::list_to_string($ret);
+
+        return $ret;
+
+    }
+
+
     public function addMap(IP4Map $other, $skipRecalculation=false)
     {
         foreach( $other->_map as $mapEntry)

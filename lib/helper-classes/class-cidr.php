@@ -102,7 +102,6 @@ class cidr
             $refBroadcast = $res['end'];
         }
 
-
         if( $subNetwork >= $refNetwork && $subBroadcast <= $refBroadcast )
         {
             //print "sub $sub is included in $ref\n";
@@ -112,12 +111,9 @@ class cidr
             $subBroadcast >= $refNetwork && $subBroadcast <= $refBroadcast ||
             $subNetwork <= $refNetwork && $subBroadcast >= $refBroadcast )
         {
-            //print "sub $sub is partially included in $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
-            //print "sub $sub is partially included in $ref :  ".$refNetwork."/".$subBroadcast."/".$refBroadcast."\n";
             return 2;
         }
 
-        //print "sub $sub is not matching $ref :  ".long2ip($subNetwork)."/".long2ip($subBroadcast)." vs ".long2ip($refNetwork)."/".long2ip($refBroadcast)."\n";
         return 0;
     }
 

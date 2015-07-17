@@ -17,7 +17,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-
+/**
+ * @property $_ip4Map IP4Map cached ip start and end value for fast optimization
+ */
 class Address
 {
 	use ReferencableObject {removeReference as super_removeReference;}
@@ -51,10 +53,6 @@ class Address
 										self::TypeDynamic => 'dynamic'  );
 
 	protected $type = self::TypeTmp;
-
-    /**
-     * @property $_ip4Map IP4Map cached ip start and end value for fast optimization
-     */
 
 	
 	/**
@@ -295,6 +293,9 @@ class Address
 	{
 		$this->setRefName($newName);
 		$this->xmlroot->setAttribute('name', $newName);
+
+		if( $this->isTmpAddr() )
+			unset($this->_ip4Map);
 	}
 
     /**
@@ -396,9 +397,9 @@ class Address
 
         if( $this->isTmpAddr() )
         {
-            if( filter_var($this->name, FILTER_VALIDATE_IP) === false  )
+            if( ! $this->nameIsValidRuleIPEntry()  )
             {
-                derr('cannot resolve a Temporary object !');
+                derr('cannot resolve this Temporary object !');
             }
             $this->_ip4Map = IP4Map::mapFromText($this->name);
         }
@@ -424,8 +425,8 @@ class Address
      * @return int
      */
     public function  includedInIP4Network($network)
-    {
-        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
+	{
+        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange && !$this->isTmpAddr() )
             return 0;
 
         if( is_object($network) )
@@ -434,7 +435,6 @@ class Address
         }
         else
             $networkMap = IP4Map::mapFromText($network);
-
 
         return cidr::netMatch($this->getIP4Mapping()->getFirstMapEntry(), $networkMap->getFirstMapEntry());
     }
@@ -446,7 +446,7 @@ class Address
      */
     public function  includesIP4Network($network)
     {
-        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange )
+        if( $this->type != self::TypeIpNetmask && $this->type != self::TypeIpRange && !$this->isTmpAddr() )
             return 0;
 
         if( is_object($network) )
@@ -470,6 +470,30 @@ class Address
 		{
 			$this->owner->remove($this);
 		}
+
+	}
+
+	public function nameIsValidRuleIPEntry()
+	{
+		if( filter_var($this->name, FILTER_VALIDATE_IP) !== false  )
+			return true;
+
+		$ex = explode('/', $this->name);
+
+		if( count($ex) != 2 )
+			return false;
+
+		$mask = &$ex[1];
+		if( !is_numeric($mask) )
+			return false;
+
+		if( (int) $mask > 32 || (int) $mask < 0 )
+			return false;
+
+		if( filter_var($ex[0], FILTER_VALIDATE_IP) !== false  )
+			return true;
+
+		return false;
 
 	}
 

@@ -660,7 +660,7 @@ class AddressGroup
 
         foreach( $this->members as $member )
         {
-            if( $member->isTmpAddr() )
+            if( $member->isTmpAddr() && !$member->nameIsValidRuleIPEntry() )
             {
                 $result['unresolved'][] = $member;
                 continue;

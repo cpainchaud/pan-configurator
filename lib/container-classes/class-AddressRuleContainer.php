@@ -564,7 +564,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
         foreach( $this->o as $member )
         {
-            if( $member->isTmpAddr() )
+            if( $member->isTmpAddr() && !$member->nameIsValidRuleIPEntry() )
             {
                 $result['unresolved'][] = $member;
                 continue;
