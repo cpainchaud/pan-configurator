@@ -1368,7 +1368,7 @@ elseif ( $configInput['type'] == 'api'  )
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
     print " - Downloading config from API... ";
-    $xmlDoc = $configInput['connector']->getCandidateConfigAlt();
+    $xmlDoc = $configInput['connector']->getCandidateConfig($apiTimeoutValue);
     print "OK!\n";
 }
 else
