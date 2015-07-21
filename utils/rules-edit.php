@@ -1289,13 +1289,12 @@ if( !is_string($configInput) || strlen($configInput) < 1 )
     display_error_usage_exit('"in" argument is not a valid string');
 
 
-if( !isset(PH::$args['apiTimeout']) )
+if( !isset(PH::$args['apitimeout']) )
 {
     $apiTimeoutValue = 60;
 }
 else
-    $apiTimeoutValue = PH::$args['apiTimeout'];
-
+    $apiTimeoutValue = PH::$args['apitimeout'];
 
 
 if( ! isset(PH::$args['actions']) )
