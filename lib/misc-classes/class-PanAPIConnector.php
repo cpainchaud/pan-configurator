@@ -552,6 +552,82 @@ class PanAPIConnector
         return $xmlDoc;
 	}
 
+    public function & sendExportRequest($category)
+    {
+        $sendThroughPost = false;
+
+        $host = $this->apihost;
+        if( $this->port != 443 )
+            $host .= ':'.$this->port;
+
+        if( isset($this->serial) && !is_null($this->serial) )
+        {
+            $finalUrl = 'https://'.$host.'/api/';
+            if( !$sendThroughPost )
+                $finalUrl .= '?key='.$this->apikey.'&target='.$this->serial;
+        }
+        else
+        {
+            $finalUrl = 'https://' . $host . '/api/';
+            if( !$sendThroughPost )
+                $finalUrl .= '?key=' . $this->apikey;
+        }
+
+        if( !$sendThroughPost )
+        {
+            $finalUrl .= '&type=export&category='.$category;
+        }
+
+
+        $c = new mycurl($finalUrl, false);
+
+
+        if( $sendThroughPost )
+        {
+            if( isset($this->serial) && !is_null($this->serial) )
+            {
+                $parameters['target'] = $this->serial;
+            }
+            $parameters['key'] = $this->apikey;
+            $parameters['category'] = $category;
+            $parameters['type'] = 'export';
+            $properParams = http_build_query($parameters);
+            $c->setPost($properParams);
+        }
+
+        if( $this->showApiCalls )
+        {
+            if( $sendThroughPost)
+            {
+                $paramURl = '?';
+                foreach( $parameters as $paramIndex => &$param )
+                {
+                    $paramURl .= '&'.$paramIndex.'='.str_replace('#', '%23',$param);
+                }
+
+                print("API call through POST: \"".$finalUrl.'?'.$paramURl."\"\r\n");
+            }
+            else
+                print("API call: \"".$finalUrl."\"\r\n");
+        }
+
+
+        if( ! $c->createCurl() )
+        {
+            derr('Could not retrieve URL: '.$finalUrl.' because of the following error: '.$c->last_error);
+        }
+
+
+        if( $c->getHttpStatus() != 200 )
+        {
+            derr('HTTP API ret: '.$c->__tostring());
+        }
+
+        $string = $c->__tostring();
+
+        return $string;
+    }
+
 
     public function & getReport($req)
     {
@@ -672,6 +748,13 @@ class PanAPIConnector
     public function getCandidateConfig($apiTimeOut=60)
     {
         return $this->getSavedConfig('candidate-config', $apiTimeOut);
+    }
+
+    public function getCandidateConfigAlt()
+    {
+        $doc = new DOMDocument();
+        $doc->loadXML($this->sendExportRequest('configuration'), LIBXML_PARSEHUGE);
+        return $doc;
     }
 
     public function getSavedConfig($configurationName, $apiTimeOut=60)

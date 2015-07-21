@@ -97,7 +97,7 @@ class DH
 	{
 		foreach( $node->childNodes as $child )
 		{
-			if( $child->nodeType == 1 )
+			if( $child->nodeType == XML_ELEMENT_NODE )
 				return $child;
 		}
 
