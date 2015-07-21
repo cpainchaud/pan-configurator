@@ -83,7 +83,7 @@ $supportedArguments['fromxpath'] = Array('niceName' => 'fromXpath', 'shortHelp' 
 $supportedArguments['toxpath'] = Array('niceName' => 'toXpath', 'shortHelp' => 'inject xml directly in some parts of the candidate config');
 $supportedArguments['loadafterupload'] = Array('niceName' => 'loadAfterUpload', 'shortHelp' => 'load configuration after upload happened');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
-$supportedArguments['apitimeout'] = Array('niceName' => 'apiTimeout', 'shortHelp' => 'this message');
+$supportedArguments['apitimeout'] = Array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
 $supportedArguments['preservemgmtconfig'] = Array('niceName' => 'preserveMgmtConfig', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtusers'] = Array('niceName' => 'preserveMgmtUsers', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtsystem'] = Array('niceName' => 'preserveMgmtSystem', 'shortHelp' => 'preserves what is in /config/devices/entry/deviceconfig/system');

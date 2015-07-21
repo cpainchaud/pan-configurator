@@ -94,6 +94,8 @@ $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' =>
 $supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "filters rules based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator value)');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['stats'] = Array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
+$supportedArguments['apitimeout'] = Array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
+
 
 
 /***************************************
@@ -1287,6 +1289,14 @@ if( !is_string($configInput) || strlen($configInput) < 1 )
     display_error_usage_exit('"in" argument is not a valid string');
 
 
+if( !isset(PH::$args['apiTimeout']) )
+{
+    $apiTimeoutValue = 60;
+}
+else
+    $apiTimeoutValue = PH::$args['apiTimeout'];
+
+
 
 if( ! isset(PH::$args['actions']) )
     display_error_usage_exit('"actions" is missing from arguments');
@@ -1359,7 +1369,7 @@ elseif ( $configInput['type'] == 'api'  )
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
     print " - Downloading config from API... ";
-    $xmlDoc = $configInput['connector']->getCandidateConfig();
+    $xmlDoc = $configInput['connector']->getCandidateConfig($apiTimeoutValue);
     print "OK!\n";
 }
 else

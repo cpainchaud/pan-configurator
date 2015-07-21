@@ -669,17 +669,17 @@ class PanAPIConnector
         return $r;
 	}
 
-    public function getCandidateConfig()
+    public function getCandidateConfig($apiTimeOut=60)
     {
-        return $this->getSavedConfig('candidate-config');
+        return $this->getSavedConfig('candidate-config', $apiTimeOut);
     }
 
-    public function getSavedConfig($configurationName)
+    public function getSavedConfig($configurationName, $apiTimeOut=60)
     {
         //$url = 'action=get&type=config&xpath=/config';
-        $url = "type=op&cmd=<show><config><saved>$configurationName</saved></config></show>";
+        $url = "<show><config><saved>$configurationName</saved></config></show>";
 
-        $r = $this->sendRequest($url, true);
+        $r = $this->sendCmdRequest($url, true, $apiTimeOut);
 
         $configRoot = DH::findFirstElement('result', $r);
         if( $configRoot === false )
