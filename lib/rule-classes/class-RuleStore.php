@@ -515,6 +515,8 @@ class RuleStore
             if (!$this->isRuleNameAvailable($newName))
                 derr('this rule name is not available: ' . $newName);
         }
+		else
+			$newName = $this->findAvailableName($newRule->name(), '-');
 
         if( $inPostRuleBase === null )
             $inPostRuleBase = $rule->isPostRule();
@@ -527,12 +529,7 @@ class RuleStore
         //trick to avoid name change propagation and errors
 		$newRule->owner = null;
 
-        // if no name was provided then we need to look for one
-        if( $newName === null || !$this->isRuleNameAvailable($newRule->name()) )
-        {
-            $newName = $this->findAvailableName($newRule->name(), '');
-		    $newRule->setName($newName);
-        }
+		$newRule->setName($newName);
 
         // finally add it to the store
 		$this->addRule($newRule, $inPostRuleBase);
