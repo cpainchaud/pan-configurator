@@ -142,6 +142,39 @@ class App
 
  		return false;
  	}
+
+	/**
+	 * @return App[]
+	 */
+	public function & calculateDependencies()
+	{
+		$ret = Array();
+
+		if( isset($this->explicitUse) )
+			$plus = $this->explicitUse;
+		else
+			$plus = Array();
+
+		if( !isset($this->implicitUse) )
+			return $plus;
+
+		foreach( $plus as $plusApp )
+		{
+			$found = false;
+			foreach( $this->explicitUse as $explApp )
+			{
+				if( $explApp === $plusApp )
+				{
+					$found = true;
+					break;
+				}
+			}
+			if( !$found )
+				$ret[] = $plusApp;
+		}
+
+		return $ret;
+	}
  	
 	
 }

@@ -55,6 +55,11 @@ class AppStore extends ObjStore
 		$this->findParentCentralStore();
 	}
 
+    /**
+     * @param $name string
+     * @param $ref
+     * @return null|App
+     */
 	public function find($name, $ref=null)
 	{
 		return $this->findByName($name,$ref);
@@ -221,6 +226,44 @@ class AppStore extends ObjStore
 
             }
 
+            $cursor = DH::findFirstElement('use-applications', $appx);
+            if( $cursor !== false )
+            {
+                foreach($cursor->childNodes as $depNode)
+                {
+                    $depName = $depNode->textContent;
+                    if( strlen($depName) < 1 )
+                        derr("dependency name length is < 0");
+                    $depApp = $this->findOrCreate($depName);
+                    $app->explicitUse[] = $depApp;
+                }
+            }
+
+            $cursor = DH::findFirstElement('use-applications', $appx);
+            if( $cursor !== false )
+            {
+                foreach($cursor->childNodes as $depNode)
+                {
+                    $depName = $depNode->textContent;
+                    if( strlen($depName) < 1 )
+                        derr("dependency name length is < 0");
+                    $depApp = $this->findOrCreate($depName);
+                    $app->explicitUse[] = $depApp;
+                }
+            }
+
+            $cursor = DH::findFirstElement('implicit-use-applications', $appx);
+            if( $cursor !== false )
+            {
+                foreach($cursor->childNodes as $depNode)
+                {
+                    $depName = $depNode->textContent;
+                    if( strlen($depName) < 1 )
+                        derr("dependency name length is < 0");
+                    $depApp = $this->findOrCreate($depName);
+                    $app->implicitUse[] = $depApp;
+                }
+            }
         }
 
     }
