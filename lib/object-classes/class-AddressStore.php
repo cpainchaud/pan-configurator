@@ -152,10 +152,29 @@ class AddressStore
 	
 	/**
 	* Returns an Array with all Address , AddressGroups, TmpAddress objects in this store
-	*
+	* @param $withFilter string|null
+	 * @return Address[]|AddressGroup[]
 	*/
-	public function all()
+	public function all($withFilter=null)
 	{
+		$query = null;
+
+		if( $withFilter !== null  && $withFilter != '' )
+		{
+			$errMesg = '';
+			$query = new RQuery('address');
+			if( $query->parseFromString($withFilter, $errMsg) === false )
+				derr("error while parsing query: {$errMesg}");
+
+			$res = Array();
+			foreach( $this->all as $obj )
+			{
+				if( $query->matchSingleObject($obj) )
+					$res[] = $obj;
+			}
+			return $res;
+		}
+
 		return $this->all;
 	}
 

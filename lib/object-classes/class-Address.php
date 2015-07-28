@@ -131,7 +131,7 @@ class Address
 		}
 
 		if( !$typeFound )
-			derr('object type not found or not supported');
+			derr('object type not found or not supported', $xml);
 
 		if( $this->owner->owner->version >= 60 )
 		{
