@@ -135,6 +135,125 @@ $supportedActions['delete-force'] = Array(
     },
 );
 
+$supportedActions['replace-ip-by-mt-like-object'] = Array(
+    'name' => 'replace-IP-by-MT-like-Object',
+    'MainFunction' => function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+
+        if( !$object->isTmpAddr() || !$object->nameIsValidRuleIPEntry() )
+        {
+            print $context->padding."     *  SKIPPED because object is not temporary or not an IP address/netmask\n";
+            return;
+        }
+
+        $objectRefs = $object->getReferences();
+        $clearForAction = true;
+        foreach( $objectRefs as $objectRef )
+        {
+            $class = get_class($objectRef);
+            if( $class != 'AddressRuleContainer' )
+            {
+                $clearForAction = false;
+                print $context->padding."     *  SKIPPED because its used in unsupported class $class\n";
+                return;
+            }
+        }
+
+        $pan = PH::findRootObjectOrDie($object->owner);
+
+        $explode = explode('/',$object->name());
+
+        if( count($explode) > 1 )
+        {
+            $name = $explode[0];
+            $mask = $explode[1];
+        }
+        else
+        {
+            $name = $object->name();
+            $mask = 32;
+        }
+
+        if( $mask > 32 || $mask < 0 )
+        {
+            print $context->padding."    * SKIPPED because of invalid mask detected : '$mask'\n";
+            return;
+        }
+
+        if( filter_var($name, FILTER_VALIDATE_IP) === FALSE )
+        {
+            print $context->padding."    * SKIPPED because of invalid IP detected : '$name'\n";
+            return;
+        }
+
+        if( $mask == 32 )
+        {
+            $newName = 'H-'.$name;
+        }
+        else
+        {
+            $newName = 'N-'.$name.'-'.$mask;
+        }
+
+        print $context->padding."    * new object name will be $newName\n";
+
+        $objToReplace = $pan->addressStore->find($newName);
+        if( $objToReplace === null )
+        {
+            if( $context->isAPI )
+            {
+                $objToReplace = $pan->addressStore->API_newAddress($newName, 'ip-netmask', $name.'/'.$mask);
+            }
+            else
+            {
+                $objToReplace = $pan->addressStore->newAddress($newName, 'ip-netmask', $name.'/'.$mask);
+            }
+        }
+        else
+        {
+            $objMap = IP4Map::mapFromText($name.'/'.$mask);
+            if( !$objMap->equals($objToReplace->getIP4Mapping()) )
+            {
+                print "    * SKIPPED because an object with same name exists but has different value\n";
+                return;
+            }
+        }
+
+
+
+        if( $clearForAction )
+        {
+            foreach( $objectRefs as $objectRef )
+            {
+                $class = get_class($objectRef);
+                /** @var $objectRef AddressRuleContainer|AddressGroup */
+
+                if( $class == 'AddressRuleContainer' )
+                {
+
+                    print $context->padding."     - replacing in {$objectRef->toString()}\n";
+
+                    if( $context->isAPI )
+                        $objectRef->API_add($objToReplace);
+                    else
+                        $objectRef->addObject($objToReplace);
+
+                    if( $context->isAPI )
+                        $objectRef->API_remove($object);
+                    else
+                        $objectRef->remove($object);
+                }
+                else
+                {
+                    derr("unsupported class '$class'");
+                }
+
+            }
+        }
+    },
+);
+
 
 $supportedActions['replacebymembersanddelete'] = Array(
     'name' => 'replaceByMembersAndDelete',
