@@ -206,7 +206,7 @@ class NatRule extends Rule
 								$this->snathosts->addObject($translad);
 							}
 							else
-								derr("Cannot understand dynmaic NAT for rule '".$this->name."'\n");
+								derr("Cannot understand dynamic NAT for rule '".$this->name."'\n");
 						}
 					}
 					else
