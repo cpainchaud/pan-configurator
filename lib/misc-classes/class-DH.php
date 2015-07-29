@@ -157,6 +157,27 @@ class DH
 		return $ret;
 	}
 
+
+	/**
+	 * @param DOMElement $parent
+	 * @param string $tagName
+	 * @param null $withText
+	 * @return DOMElement|DOMNode
+	 */
+	static function createOrResetElement(DOMElement $parent,$tagName, $withText = null)
+	{
+		$ret = DH::findFirstElement($tagName, $parent);
+
+		if( $ret === false )
+			return DH::createElement($parent, $tagName, $withText);
+
+		DH::clearDomNodeChilds($ret);
+
+		return $ret;
+	}
+
+
+
     /**
      * @param string $tagName
      * @param DOMNode $node

@@ -516,7 +516,7 @@ class RuleStore
                 derr('this rule name is not available: ' . $newName);
         }
 		else
-			$newName = $this->findAvailableName($newRule->name(), '-');
+			$newName = $this->findAvailableName($rule->name(), '');
 
         if( $inPostRuleBase === null )
             $inPostRuleBase = $rule->isPostRule();

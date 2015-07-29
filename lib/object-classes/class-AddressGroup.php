@@ -210,28 +210,13 @@ class AddressGroup
 		if( !is_object($newObject) )
 			derr("Only objects can be passed to this function");
 
-		if( ! in_array($newObject, $this->members, true) )
+		if( in_array($newObject, $this->members, true) !== false )
 		{
 			$this->members[] = $newObject;
 			$newObject->addReference($this);
 			if( $rewriteXml )
 			{
-				if( $this->owner->owner->version >= 60 )
-				{
-					$membersRoot = DH::findFirstElement('static', $this->xmlroot);
-					if( $membersRoot === false )
-					{
-						derr('<static> not found');
-					}
-
-					$tmpElement = $membersRoot->appendChild($this->xmlroot->ownerDocument->createElement('member'));
-					$tmpElement->nodeValue = $newObject->name();
-				}
-				else
-				{
-					$tmpElement = $this->xmlroot->appendChild($this->xmlroot->ownerDocument->createElement('member'));
-					$tmpElement->nodeValue = $newObject->name();
-				}
+				$this->rewriteXML();
 			}
 
 			return true;
@@ -306,27 +291,42 @@ class AddressGroup
 		
 		$pos = array_search($old, $this->members, true);
 
+
 		if( $pos !== FALSE )
 		{
-			if( !is_null($new)  )
+			while( $pos !== false)
 			{
-				$this->members[$pos] = $new;
+				unset($this->members[$pos]);
+				$pos = array_search($old, $this->members, true);
+			}
+
+			if( !is_null($new) && !$this->has($new) )
+			{
+				$this->members[] = $new;
 				$new->addReference($this);
 			}
-			else
-				unset($this->members[$pos]);
-
 			$old->removeReference($this);
-
 
 			if( $new === null || $new->name() != $old->name() )
 				$this->rewriteXML();
 			
 			return true;
 		}
+		else
+			mwarning("object is not part of this group: ".$old->toString());
+
 		
 		return false;		
 
+	}
+
+	/**
+	 * @param $obj Address|AddressGroup
+	 * @return bool
+	 */
+	public function has($obj)
+	{
+		return ! array_search($obj, $this->members, true) === false;
 	}
 	
 	/**

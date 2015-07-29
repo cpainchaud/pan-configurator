@@ -729,11 +729,17 @@ function mwarning($msg, $object = null)
         $class = get_class($object);
         if( $class == 'DOMNode' || $class == 'DOMElement' || is_subclass_of($object, 'DOMNode') )
         {
-            $msg .="\nXML line #".$object->getLineNo().", XPATH: ".DH::elementToPanXPath($object)."\nRaw xml:".DH::dom_to_xml($object,0,true,3);
+            $msg .="\nXML line #".$object->getLineNo().", XPATH: ".DH::elementToPanXPath($object)."\n".DH::dom_to_xml($object,0,true,3);
         }
     }
 
-    fwrite(STDERR,"\n*WARNING* ".$msg."\n");
+    if( PH::$useExceptions )
+    {
+        $ex = new Exception($msg);
+        throw $ex;
+    }
+
+    fwrite(STDERR,PH::boldText("\n* ** WARNING ** * ").$msg."\n\n");
 
     //debug_print_backtrace();
 
@@ -741,23 +747,27 @@ function mwarning($msg, $object = null)
 
     $skip = 0;
 
-    print " *** Backtrace ***\n";
+    fwrite(STDERR, " *** Backtrace ***\n");
+
+    $count = 0;
 
     foreach( $d as $l )
     {
         if( $skip >= 0 )
         {
-            if( $skip == 0 && isset($l['object']) )
+            print "$count ****\n";
+            if( isset($l['object']) && method_exists($l['object'], 'toString'))
             {
-                fwrite(STDERR,$l['object']->toString()."\n");
+                fwrite(STDERR,'   '.$l['object']->toString()."\n");
             }
-            fwrite(STDERR,$l['function']."()\n");
+            //print $l['function']."()\n";
             if( isset($l['object']) )
-                fwrite(STDERR,'       '.$l['class'].'::'.$l['file']." line ".$l['line']."\n");
+                fwrite(STDERR,'       '.PH::boldText($l['class'].'::'.$l['function']."()")." @\n           ".$l['file']." line ".$l['line']."\n");
             else
                 fwrite(STDERR,'       ::'.$l['file']." line ".$l['line']."\n");
         }
         $skip++;
+        $count++;
     }
 
     fwrite(STDERR,"\n\n");

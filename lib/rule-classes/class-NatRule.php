@@ -257,8 +257,6 @@ class NatRule extends Rule
 	
 	public function referencedObjectRenamed($h)
 	{
-
-		
 		if( $this->service === $h )
 			$this->rewriteService_XML();
 	}
@@ -272,13 +270,33 @@ class NatRule extends Rule
 			$found = true;
 			$this->service = $new;
 			$this->rewriteService_XML();
-			
+			$old->removeReference($this);
 		}
-		
-		$old->removeReference($this);
+		if( $this->dnathost === $old )
+		{
+			$found = true;
+			$this->setDNAT($new, $this->dnatports);
+			if( ! $this->snathosts->has($old) )
+				$old->removeReference($this);
+
+		}
+		if( $this->snathosts->has($old) )
+		{
+			$found = true;
+			$this->snathosts->addObject($new);
+			$this->snathosts->remove($old);
+			if( $this->dnathost !== $old )
+				$old->removeReference($this);
+			$this->rewriteSNAT_XML();
+		}
+
 		
 		if($found)
 			$new->addReference($this);
+		else
+		{
+			mwarning("object is not part of this nat rule : {$old->toString()}");
+		}
 		
 	}
 
@@ -293,35 +311,32 @@ class NatRule extends Rule
 			return;
 		}
 		
-		if( !isset($this->snatroot) || is_null($this->snatroot) )
+		if( !isset($this->snatroot) || $this->snatroot === null )
 		{
+			$this->snatroot = DH::createOrResetElement($this->xmlroot, 'source-translation');
 			$this->snatroot = Array( 'name' => 'source-translation', 'children' => Array());
-			$this->xmlroot['children'][] = &$this->snatroot;
 		}
-		else
-			$this->snatroot['children'] = Array();
+
 			
 		if( $this->snattype == 'dynamic-ip-and-port' )
 		{
-			$subroot = Array( 'name' => 'dynamic-ip-and-port' );
-			$this->snatroot['children'][] = &$subroot;
+			$subroot = DH::createOrResetElement($this->snatroot, 'dynamic-ip-and-port');
 			
-			if( is_null($this->snatinterface) )
+			if( $this->snatinterface === null )
 			{
-				$subsubroot = Array( 'name' => 'translated-address2' , 'children' => Array() );
-				$subroot['children'] = Array( 0 => &$subsubroot);
-				
-				
-				$this->snathosts->xmlroot = &$subsubroot;
+				$subsubroot = DH::createOrResetElement($subroot, 'translated-address');
+
+				$this->snathosts->xmlroot = $subsubroot;
 				$this->snathosts->rewriteXML();
 				
 			}
 			else
 			{
-				$subsubroot = Array( 'name' => 'interface-address', 'children' => Array() );
-				$subroot['children'] = Array( 0 => &$subsubroot);
-				
-				$subsubroot['children'][] = Array('name' => 'interface', 'content' => $this->snatinterface);
+				$subsubroot = DH::createOrResetElement($subroot, 'interface-address');
+
+				derr("not supported yet");
+
+				/*$subsubroot['children'][] = Array('name' => 'interface', 'content' => $this->snatinterface);
 				
 				if( count($this->snathosts) > 0 )
 				{
@@ -331,24 +346,20 @@ class NatRule extends Rule
 					$tmpAk = array_keys($tmpA);
 					
 					$subsubroot['children'][] = &$tmpA[$tmpAk[0]]; 
-				}
+				}*/
 				
 			}
 		}
 		else if( $this->snattype == 'static-ip' )
 		{
-			$subroot = Array( 'name' => 'static-ip' , 'children' => Array() );
-			$this->snatroot['children'][] = &$subroot;
+			$subroot = DH::createOrResetElement($this->snatroot, 'static-ip');
+
+			foreach( $this->snathosts->all() as $obj )
+			{
+				DH::createOrResetElement($subroot, 'translated-address', $obj->name());
+			}
 			
-			$tmpA = Array();
-			Hosts_to_xmlA($tmpA, $this->snathosts, 'translated-address');
-			//print_r($tmpA);
-			
-			$tmpAk = array_keys($tmpA);
-			
-			$subroot['children'][] = $tmpA[$tmpAk[0]];
-			$subroot['children'][] = Array('name' => 'bi-directional', 'content' => $this->snatbidir);
-			//print_r($this->snathosts);
+			DH::createOrResetElement($subroot, 'bi-directional', $this->snatbidir);
 			
 		}
 		else
@@ -424,28 +435,16 @@ class NatRule extends Rule
 			derr(" Host cannot be NULL");
 
 		if( !is_null($this->dnathost) )
-			$this->dnathost->removeReference($this);
-
-		if( !isset($this->dnatroot) || $this->dnatroot === FALSE )
 		{
-			$this->dnatroot = $this->xmlroot->ownerDocument->createElement('destination-translation');
+			if( ! $this->snathosts->has($host) )
+				$this->dnathost->removeReference($this);
 		}
-        if( !isset($this->dnatrootTAroot) || $this->dnatrootTAroot === FALSE)
-        {
-            $this->subdnatTAroot = $this->xmlroot->ownerDocument->createElement('translated-address');
-        }
-        if( !isset($this->dnatrootTAroot) || $this->dnatrootTAroot === FALSE)
-        {
-            $this->subdnatTProot = $this->xmlroot->ownerDocument->createElement('translated-port');
-        }
 
-		
-		if( !is_null($host) )
-		{
-			$this->dnatroot = $this->xmlroot->appendChild($this->dnatroot);
-			$this->subdnatTAroot = $this->dnatroot->appendChild($this->subdnatTAroot);
-			DH::setDomNodeText($this->subdnatTAroot, $host->name());
-		}
+		$this->dnatroot = DH::createOrResetElement($this->xmlroot, 'destination-translation');
+		$this->subdnatTAroot = DH::createOrResetElement($this->dnatroot, 'translated-address', $host->name());
+
+		$this->subdnatTProot =  DH::createOrResetElement($this->dnatroot, 'translated-port');
+
 
 		$this->dnathost = $host;
 		$this->dnathost->addReference($this);
@@ -458,10 +457,8 @@ class NatRule extends Rule
 		}
 		else
 		{
-			$this->subdnatTProot = $this->dnatroot->appendChild($this->subdnatTProot);
-			setDomNodeText($this->subdnatTProot, $ports);
+			DH::setDomNodeText($this->subdnatTProot, $ports);
 		}
-		
 		
 	}
 	
