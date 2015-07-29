@@ -152,7 +152,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
         foreach( $objectRefs as $objectRef )
         {
             $class = get_class($objectRef);
-            if( $class != 'AddressRuleContainer' )
+            if( $class != 'AddressRuleContainer' && $class != 'NatRule' )
             {
                 $clearForAction = false;
                 print $context->padding."     *  SKIPPED because its used in unsupported class $class\n";
@@ -243,6 +243,16 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
                         $objectRef->API_remove($object);
                     else
                         $objectRef->remove($object);
+                }
+                elseif( $class == 'NatRule' )
+                {
+
+                    print $context->padding."     - replacing in {$objectRef->toString()}\n";
+
+                    if( $context->isAPI )
+                        derr("not supported in API mode yet");
+                    else
+                        $objectRef->replaceReferencedObject($object, $objToReplace);
                 }
                 else
                 {

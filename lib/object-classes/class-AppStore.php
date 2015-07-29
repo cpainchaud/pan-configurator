@@ -231,19 +231,9 @@ class AppStore extends ObjStore
             {
                 foreach($cursor->childNodes as $depNode)
                 {
-                    $depName = $depNode->textContent;
-                    if( strlen($depName) < 1 )
-                        derr("dependency name length is < 0");
-                    $depApp = $this->findOrCreate($depName);
-                    $app->explicitUse[] = $depApp;
-                }
-            }
+                    if( $depNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
 
-            $cursor = DH::findFirstElement('use-applications', $appx);
-            if( $cursor !== false )
-            {
-                foreach($cursor->childNodes as $depNode)
-                {
                     $depName = $depNode->textContent;
                     if( strlen($depName) < 1 )
                         derr("dependency name length is < 0");
@@ -257,6 +247,9 @@ class AppStore extends ObjStore
             {
                 foreach($cursor->childNodes as $depNode)
                 {
+                    if( $depNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
                     $depName = $depNode->textContent;
                     if( strlen($depName) < 1 )
                         derr("dependency name length is < 0");

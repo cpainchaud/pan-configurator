@@ -438,14 +438,15 @@ class RuleStore
 	/**
 	 * @param string $base
 	 * @param string $suffix
+	 * @param integer $startCount
 	 * @return string
 	 */
-	public function findAvailableName($base, $suffix= '')
+	public function findAvailableName($base, $suffix= '', $startCount = '')
 	{
 		$maxl = 31;
 		$basel = strlen($base);
 		$suffixl = strlen($suffix);
-		$inc = 1;
+		$inc = $startCount;
 		$basePlusSuffixL = $basel + $suffixl;
 
 		while(true)
@@ -462,6 +463,9 @@ class RuleStore
 
 			if( $this->isRuleNameAvailable($newname) )
 				return $newname;
+
+			if( $startCount == '' )
+				$startCount = 0;
 
 			$inc++;
 		}

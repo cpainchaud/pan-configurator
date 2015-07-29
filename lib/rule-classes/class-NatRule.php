@@ -276,9 +276,6 @@ class NatRule extends Rule
 		{
 			$found = true;
 			$this->setDNAT($new, $this->dnatports);
-			if( ! $this->snathosts->has($old) )
-				$old->removeReference($this);
-
 		}
 		if( $this->snathosts->has($old) )
 		{
@@ -306,16 +303,14 @@ class NatRule extends Rule
 		
 		if( $this->snattype == 'none' )
 		{
-			$this->xmlroot->removeChild($this->snatroot);
+			if( $this->snatroot !== null )
+				$this->xmlroot->removeChild($this->snatroot);
 			$this->snatroot = null;
 			return;
 		}
-		
-		if( !isset($this->snatroot) || $this->snatroot === null )
-		{
-			$this->snatroot = DH::createOrResetElement($this->xmlroot, 'source-translation');
-			$this->snatroot = Array( 'name' => 'source-translation', 'children' => Array());
-		}
+
+		$this->snatroot = DH::createOrResetElement($this->xmlroot, 'source-translation');
+
 
 			
 		if( $this->snattype == 'dynamic-ip-and-port' )
@@ -328,7 +323,6 @@ class NatRule extends Rule
 
 				$this->snathosts->xmlroot = $subsubroot;
 				$this->snathosts->rewriteXML();
-				
 			}
 			else
 			{

@@ -88,12 +88,12 @@ class TagStore extends ObjStore
 	/**
 	*
 	*/
-	public function findAvailableTagName($base, $suffix)
+	public function findAvailableTagName($base, $suffix, $startCount = '')
 	{
 		$maxl = 31;
 		$basel = strlen($base);
 		$suffixl = strlen($suffix);
-		$inc = 1;
+		$inc = $startCount;
 		$basePlusSuffixL = $basel + $suffixl;
 
 		while(true)
@@ -111,6 +111,8 @@ class TagStore extends ObjStore
 			if( is_null($this->find($newname)) )
 				return $newname;
 
+            if( $startCount == '' )
+                $startCount = 0;
 			$inc++;
 		}
 	}
