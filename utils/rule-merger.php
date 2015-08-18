@@ -688,13 +688,34 @@ foreach( $rulesToProcess as $index => $rule )
 
             if( $adjacencyPositionDiff > 1 )
             {
-                print "    - ignored because of option 'mergeAdjacentOnly'\n";
+                print "    - ignored '{$ruleToCompare->name()}' because of option 'mergeAdjacentOnly'\n";
                 break;
             }
             //print "    - adjacencyDiff={$adjacencyPositionDiff}\n";
 
             $adjacencyPositionReference = $ruleToComparePosition;
         }
+        if( $method == 1 )
+        {
+            // merging on services requires extra checks for application-default vs non app default
+            if( $rule->services->isApplicationDefault() )
+            {
+                if( ! $ruleToCompare->services->isApplicationDefault() )
+                {
+                    print "    - ignored '{$ruleToCompare->name()}' because it is not Application-Default\n";
+                    break;
+                }
+            }
+            else
+            {
+                if( $ruleToCompare->services->isApplicationDefault() )
+                {
+                    print "    - ignored '{$ruleToCompare->name()}' because it is Application-Default\n";
+                    break;
+                }
+            }
+        }
+
         $ruleToCompare->display(9);
         mergeRules($rule, $ruleToCompare, $method);
         $mergedRulesCount++;
