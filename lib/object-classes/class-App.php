@@ -76,6 +76,10 @@ class App
  		return $this->subapps;
  	}
 
+	/**
+	 * returns true if application is using dynamic ports
+	 * @return bool
+	 */
  	public function useDynamicPorts()
  	{
 
@@ -144,6 +148,7 @@ class App
  	}
 
 	/**
+	 * will return a list of dependencies and remove the 'implicit' ones
 	 * @return App[]
 	 */
 	public function & calculateDependencies()

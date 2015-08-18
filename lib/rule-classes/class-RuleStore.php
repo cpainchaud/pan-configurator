@@ -1031,13 +1031,21 @@ class RuleStore
 			$this->fastNameToIndex_forPost[$rule->name()] = $i ;
 		}
 	}
-	
+
+	/**
+	 * @return string
+	 */
 	public function name()
 	{
 		return $this->name;
 	}
 
-	public function &getXPath(Rule $contextRule)
+	/**
+	 * @param Rule $contextRule
+	 * @return string
+	 * @throws Exception
+	 */
+	public function & getXPath(Rule $contextRule)
 	{
 
 			$class = get_class($this->owner);
