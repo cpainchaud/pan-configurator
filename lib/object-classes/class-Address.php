@@ -150,25 +150,6 @@ class Address
 		return $this->value;
 	}
 
-	/**
-	 * @param string|null $newDesc
-	 * @return bool
-	 */
-	public function API_setDescription($newDesc)
-	{
-		$ret = $this->setDescription($newDesc);
-
-		if( $ret )
-		{
-			$con = findConnectorOrDie($this);
-			if( $this->_description === null )
-				$con->sendDeleteRequest($this->getXPath().'/description');
-			else
-				$con->sendSetRequest($this->getXPath(), '<description>'.$this->_description.'</description>');
-		}
-
-		return $ret;
-	}
 
     /**
      * @param string $newValue

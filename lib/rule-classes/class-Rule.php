@@ -317,29 +317,6 @@ class Rule
 	}
 
 
-	/**
-	 * @param string $newDescription
-	 * @return bool true if value was changed
-	 */
-	public function API_setDescription($newDescription)
-	{
-		$ret = $this->setDescription($newDescription);
-		if( $ret )
-		{
-			$xpath = $this->getXPath().'/description';
-			$con = findConnectorOrDie($this);
-
-			if( strlen($this->_description) < 1 )
-				$con->sendDeleteRequest($xpath);
-			else
-				$con->sendSetRequest($xpath, $this->_description);
-
-		}
-
-		return $ret;
-	}
-
-
     public function &getXPath()
     {
         $str = $this->owner->getXPath($this)."/entry[@name='".$this->name."']";

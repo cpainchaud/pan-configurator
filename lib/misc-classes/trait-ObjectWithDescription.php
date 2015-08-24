@@ -63,6 +63,30 @@ trait ObjectWithDescription
         return true;
     }
 
+
+    /**
+     * @param string $newDescription
+     * @return bool true if value was changed
+     */
+    public function API_setDescription($newDescription)
+    {
+        $ret = $this->setDescription($newDescription);
+        if( $ret )
+        {
+            $xpath = $this->getXPath().'/description';
+            $con = findConnectorOrDie($this);
+
+            if( strlen($this->_description) < 1 )
+                $con->sendDeleteRequest($xpath);
+            else
+                $con->sendSetRequest($this->getXPath(), '<description>'.$this->_description.'</description>');
+
+        }
+
+        return $ret;
+    }
+
+
     protected function _load_description_from_domxml()
     {
         $descroot = DH::findFirstElement('description', $this->xmlroot );
