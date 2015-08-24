@@ -1250,6 +1250,36 @@ RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
     'arg' => true
 );
 
+RQuery::$defaultFilters['rule']['description']['operators']['is.empty'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+
+        $desc = $object->description();
+
+        if( $desc === null || strlen($desc) == 0 )
+            return true;
+
+        return false;
+    },
+    'arg' => false,
+);
+
+
+RQuery::$defaultFilters['rule']['description']['operators']['regex'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        $matching = preg_match($value, $object->name());
+        if( $matching === FALSE )
+            derr("regular expression error on '$value'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true,
+);
+
 // </editor-fold>
 
 

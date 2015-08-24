@@ -1,7 +1,7 @@
 CHANGELOG
 
 
-1.5.0-beta7
+1.5.0
 Library:
 * 6.1 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
 * support for 7.0 new Security rules actions : drop, reset-client, reset-server, reset-both
@@ -21,13 +21,14 @@ Utilities:
 * util rule-edit : new filters : 'rule is.unused.fast' will check if a rule was not used since reboot (use cli 'show running rule-use rule-base security type unused vsys vsys1')
 * util rule-edit : new filters : src/dst 'included-in.full included-in.partial included-in.full.or.partial' and 'includes.full includes-full.or.partial includes.partial'
 * util rule-edit : new filters : src/dst 'has.recursive.regex'
+* util rule-edit : new filters : description 'regex' , 'is.empty'
 * util rule-edit : new filters for app 'has' and 'has.nocase' and log profile : 'logprof is.set' 'logprof is xxx'
 * util rule-edit : new filters for zones : 'has.regex' and 'from.count' 'to.count'
-* util rule-edit : new filters for services : 'name is.in.file'
 * util rule-edit : new listActions menu
 * util address-edit:  new action 'move'
 * util service-edit and address-edit new actions: replaceByMembersAndDelete, showIP4Mapping
 * util service-edit : new action 'addObjectWhereUsed'
+* util service-edit : new filters for services : 'name is.in.file'
 * util upload-config : now supports inject xml parts direct in candidate config (see 'toXpath' and 'fromXpath' option)
 * util upload-config : you can now preserve target firewall config (like its mgmt ip for example, look for 'help' to see options available).
 * util upload-config : now supports api://x.x.x.x/running-config candidate-config to choose between running and candidate or already saved file
