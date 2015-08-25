@@ -55,7 +55,7 @@ class PanAPIConnector
     /**
      * @var bool
      */
-    protected $showApiCalls=false;
+    public $showApiCalls=false;
 
     /**
      * @var PanAPIConnector[]

@@ -1213,6 +1213,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
                 foreach($devices as $device)
                 {
                     $newConnector = new PanAPIConnector($connector->apihost, $connector->apikey, 'panos', $device['serial']);
+                    $newConnector->setShowApiCalls($connector->showApiCalls);
                     $tmpCache = Array();
 
                     foreach($device['vsyslist'] as $vsys)
