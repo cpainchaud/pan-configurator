@@ -48,6 +48,11 @@ class PanAPIConnector
 	public $isPANOS = 1;
 
     /**
+     * @var null
+     */
+    public $serial = null;
+
+    /**
      * @var integer
      */
     public $port = 443;
@@ -291,7 +296,12 @@ class PanAPIConnector
 	
 	public function toString()
 	{
-		return get_class($this).':'.$this->apihost;
+        if( $this->serial !== null )
+            $ret = get_class($this).':'.$this->apihost.'@'.$this->serial;
+        else
+            $ret = get_class($this).':'.$this->apihost;
+
+		return $ret;
 	}
 
     public function setShowApiCalls($yes)
@@ -324,7 +334,7 @@ class PanAPIConnector
     /**
      * @param string $host
      * @param string $key
-     * @param string $type
+     * @param string $type can be 'panos' 'panorama' or 'panos-via-panorama'
      * @param integer $port
      * @param string|null $serial
      */
@@ -432,7 +442,7 @@ class PanAPIConnector
         if( $this->port != 443 )
             $host .= ':'.$this->port;
 
-        if( isset($this->serial) && !is_null($this->serial) )
+        if( isset($this->serial) && $this->serial !== null )
         {
             $finalUrl = 'https://'.$host.'/api/';
             if( !$sendThroughPost )
