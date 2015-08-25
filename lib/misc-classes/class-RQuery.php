@@ -1270,7 +1270,7 @@ RQuery::$defaultFilters['rule']['description']['operators']['regex'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
-        $matching = preg_match($value, $object->name());
+        $matching = preg_match($value, $object->description());
         if( $matching === FALSE )
             derr("regular expression error on '$value'");
         if( $matching === 1 )
