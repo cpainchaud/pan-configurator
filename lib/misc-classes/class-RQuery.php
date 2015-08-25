@@ -1175,38 +1175,80 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
         if( !$object->isSecurityRule() )
             derr("unsupported filter : this is not a security rule.".$object->toString());
 
-        $vsys = $object->owner->owner;
-        if( !$vsys->isVirtualSystem() )
-            derr("this is filter is only supported on firewall/vsys based, Panorama is not allowed.".$object->toString());
+        $sub = $object->owner->owner;
+        if( !$sub->isVirtualSystem() && !$sub->isDeviceGroup() )
+            derr("this is filter is only supported on non Shared rules".$object->toString());
 
-        $connector = findConnector($vsys);
+        $connector = findConnector($sub);
 
         if( $connector === null )
             derr("this filter is available only from API enabled PANConf objects");
 
-        if( !isset($vsys->apiCache) )
-            $vsys->apiCache = Array();
+        if( !isset($sub->apiCache) )
+            $sub->apiCache = Array();
 
         // caching results for speed improvements
-        if( !isset($vsys->apiCache['unusedSecurity']) )
+        if( !isset($sub->apiCache['unusedSecurity']) )
         {
-            $vsys->apiCache['unusedSecurity'] = Array();
+            $sub->apiCache['unusedSecurity'] = Array();
 
-            $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $vsys->name() . '</vsys></rule-use></running></show>';
-            $apiResult = $connector->sendCmdRequest($apiCmd);
+            $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
 
-            DH::dom_to_xml($apiResult);
-
-            $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
-
-            for ($i = 0; $i < $rulesXml->length; $i++)
+            if( $sub->isVirtualSystem() )
             {
-                $ruleName = $rulesXml->item($i)->textContent;
-                $vsys->apiCache['unusedSecurity'][$ruleName] = $ruleName;
+                $apiResult = $connector->sendCmdRequest($apiCmd);
+
+                $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
+                for ($i = 0; $i < $rulesXml->length; $i++)
+                {
+                    $ruleName = $rulesXml->item($i)->textContent;
+                    $sub->apiCache['unusedSecurity'][$ruleName] = $ruleName;
+                }
+            }
+            else
+            {
+                $devices = $sub->getDevicesInGroup();
+                $firstLoop = true;
+
+                foreach($devices as $device)
+                {
+                    $newConnector = new PanAPIConnector($connector->apihost, $connector->apikey, 'panos', $device['serial']);
+                    $tmpCache = Array();
+
+                    foreach($device['vsyslist'] as $vsys)
+                    {
+                        $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
+                        $apiResult = $newConnector->sendCmdRequest($apiCmd);
+
+                        $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
+
+                        for ($i = 0; $i < $rulesXml->length; $i++)
+                        {
+                            $ruleName = $rulesXml->item($i)->textContent;
+                            if( $firstLoop )
+                                $sub->apiCache['unusedSecurity'][$ruleName] = $ruleName;
+                            else
+                            {
+                                $tmpCache[$ruleName] = $ruleName;
+                            }
+                        }
+
+                        if( !$firstLoop )
+                        {
+                            foreach( $sub->apiCache['unusedSecurity'] as $unusedEntry )
+                            {
+                                if( !isset($tmpCache[$unusedEntry]) )
+                                    unset($sub->apiCache['unusedSecurity'][$unusedEntry]);
+                            }
+                        }
+
+                        $firstLoop = false;
+                    }
+                }
             }
         }
 
-        if( isset($vsys->apiCache['unusedSecurity'][$object->name()]) )
+        if( isset($sub->apiCache['unusedSecurity'][$object->name()]) )
             return true;
 
         return false;

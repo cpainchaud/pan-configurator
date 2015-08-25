@@ -226,16 +226,16 @@ class DeviceGroup
 				{
 					if( $vsysentry->nodeType != 1) continue;
 					$vname = DH::findAttribute('name', $vsysentry);
-					$vsyslist[] = $vname;
+					$vsyslist[$vname] = $vname;
 				}
 			}
 			else
 			{
 				//print "No vsys for device '$devname'\n";
-				$vsyslist[] = 'vsys1';
+				$vsyslist['vsys1'] = 'vsys1';
 			}
 
-			$this->devices[] = Array('serial' => $devname, 'vsyslist' => $vsyslist );
+			$this->devices[$devname] = Array('serial' => $devname, 'vsyslist' => $vsyslist );
 		}
 	}
 
