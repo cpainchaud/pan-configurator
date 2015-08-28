@@ -126,7 +126,8 @@ class ServiceDstPortMapping
                 if( $compare['start'] > $current['end'] + 1 )
                     break;
 
-                $current['end'] = $compare['end'];
+                if( $current['end'] < $compare['end'] )
+                    $current['end'] = $compare['end'];
 
                 unset($newMapping[$mapKeys[$j]]);
 
