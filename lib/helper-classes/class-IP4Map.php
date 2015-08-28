@@ -217,23 +217,37 @@ class IP4Map
         }
     }
 
+    /**
+     * Usually called after addMap(..., false) for speed enhancements
+     */
     public function sortAndRecalculate()
     {
         $newMapping = sortArrayByStartValue($this->_map);
+
+        //print "\nafter sorting\n";
+        //foreach($this->_map as $map)
+        //    print long2ip($map['start']).'-'.long2ip($map['end'])."\n";
 
         $mapKeys = array_keys($newMapping);
         $mapCount = count($newMapping);
         for( $i=0; $i<$mapCount; $i++)
         {
             $current = &$newMapping[$mapKeys[$i]];
+            //print "\nhandling row ".long2ip($current['start']).'-'.long2ip($current['end'])."\n";
             for( $j=$i+1; $j<$mapCount; $j++)
             {
+                //$i++;
                 $compare = &$newMapping[$mapKeys[$j]];
+
+                //print "   vs ".long2ip($compare['start']).'-'.long2ip($compare['end'])."\n";
 
                 if( $compare['start'] > $current['end'] + 1 )
                     break;
 
-                $current['end'] = $compare['end'];
+                if( $current['end'] < $compare['end'] )
+                    $current['end'] = $compare['end'];
+
+                //print "     upgraded to ".long2ip($current['start']).'-'.long2ip($current['end'])."\n";
                 unset($newMapping[$mapKeys[$j]]);
 
                 $i++;
