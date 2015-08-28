@@ -1561,7 +1561,7 @@ RQuery::$defaultFilters['service']['name']['operators']['contains'] = Array(
     },
     'arg' => true
 );
-RQuery::$defaultFilters['']['name']['operators']['regex'] = Array(
+RQuery::$defaultFilters['service']['name']['operators']['regex'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var $object Service|ServiceGroup */
         $matching = preg_match($value, $object->name());

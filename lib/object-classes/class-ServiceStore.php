@@ -270,7 +270,7 @@ class ServiceStore
      * @param null $ref
      * @param bool $nested
      * @param string $type
-     * @return null|Service|ServiceStore
+     * @return null|Service|ServiceGroup
      */
 	public function find( $fn , $ref=null, $nested=true, $type = '')
 	{

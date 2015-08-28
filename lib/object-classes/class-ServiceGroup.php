@@ -122,7 +122,7 @@ class ServiceGroup
 		if( !is_object($newObject) )
 			derr("Only objects can be passed to this function");
 		
-		if( in_array($newObject, $this->members, true) !== false )
+		if( ! in_array($newObject, $this->members, true) )
 		{
 			$this->members[] = $newObject;
 			$newObject->addReference($this);
@@ -190,13 +190,13 @@ class ServiceGroup
 	
 	public function replaceReferencedObject($old, $new)
 	{
-		if( is_null($old) )
+		if( $old === null )
 			derr("\$old cannot be null");
 		
 
-		if( in_array($old, $this->members, true) !== FALSE )
+		if( in_array($old, $this->members, true) )
 		{
-			if( !is_null($new) )
+			if( $new !== null )
 			{
 				$this->add($new, false);
 				if( $old->name() == $new->name() )

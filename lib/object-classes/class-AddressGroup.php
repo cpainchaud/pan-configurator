@@ -210,7 +210,7 @@ class AddressGroup
 		if( !is_object($newObject) )
 			derr("Only objects can be passed to this function");
 
-		if( in_array($newObject, $this->members, true) !== false )
+		if( ! in_array($newObject, $this->members, true) )
 		{
 			$this->members[] = $newObject;
 			$newObject->addReference($this);
