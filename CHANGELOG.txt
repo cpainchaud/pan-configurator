@@ -5,6 +5,7 @@ CHANGELOG
 Library:
 * 6.1 'rule-type' support (universal,intrazone,interzone) implemented. See SecurityRule->type() for details.
 * support for 7.0 new Security rules actions : drop, reset-client, reset-server, reset-both
+* support for 7.0 Device Group hierarchy
 * basic support of Panorama templates
 * moved preRules and postRules into one single store (see getPreRules and getPostRules)
 * VirtualRouter and Static route implemented
