@@ -29,7 +29,7 @@ class NatRule extends Rule
 	public $snathosts = null;
 	public $snatinterface = null;
 	
-	public $snatbidir = 'no';
+	private $_snatbidir = 'no';
 
     /** @var null|Address|AddressGroup */
 	public $dnathost = null;
@@ -149,7 +149,7 @@ class NatRule extends Rule
 				$isbidrx = DH::findFirstElement('bi-directional', $firstE);
 				if( $isbidrx !== FALSE )
 				{
-					$this->snatbidir = $isbidrx->textContent; 
+					$this->_snatbidir = $isbidrx->textContent;
 				}
 				$transladx = DH::findFirstElement('translated-address', $firstE);
 				
@@ -353,7 +353,7 @@ class NatRule extends Rule
 				DH::createOrResetElement($subroot, 'translated-address', $obj->name());
 			}
 			
-			DH::createOrResetElement($subroot, 'bi-directional', $this->snatbidir);
+			DH::createOrResetElement($subroot, 'bi-directional', $this->_snatbidir);
 			
 		}
 		else
@@ -373,7 +373,7 @@ class NatRule extends Rule
 		{
 			if( $yes == 'yes' || $yes == 'no' )
 			{
-				$this->bidir = $yes;
+				$this->_snatbidir = $yes;
 			}
 			else
 			{
@@ -384,7 +384,7 @@ class NatRule extends Rule
 		{
 			if( $yes === true || $yes === false )
 			{
-				$this->bidir = boolYesNo($yes);
+				$this->_snatbidir = boolYesNo($yes);
 			}
 			else
 			{
@@ -398,6 +398,13 @@ class NatRule extends Rule
 		$this->rewriteSNAT_XML();
 	}
 
+	/**
+	 * @return bool
+	 */
+	public function isBiDirectional()
+	{
+		return yesNoBool($this->_snatbidir);
+	}
 	
 	public function changeSourceNAT($newtype, $interface=null, $bidirectional=false)
 	{
