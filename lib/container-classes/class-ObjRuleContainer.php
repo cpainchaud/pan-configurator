@@ -295,6 +295,22 @@ class ObjRuleContainer
         $this->o = null;
     }
 
+    /**
+     * @param int $position
+     * @throws Exception
+     */
+    public function getItemAtPosition($position)
+    {
+        if( $position < 0 )
+            derr("cannot request an item with negative position ($position)");
+
+        if( $position > count($this->o)  )
+            derr("requesting item position #$poisiton but this container has only ".count($this->o)."objects");
+
+        return $this->o[array_keys($this->o)[$position]];
+
+    }
+
 
 
     /*public function rewriteXML()

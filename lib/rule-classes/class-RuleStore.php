@@ -99,7 +99,7 @@ class RuleStore
 		
 		foreach($this->rules as $rule)
 		{
-			if( $rule->SNat_Type() == 'dynamic-ip-and-port' )
+			if( $rule->SourceNat_Type() == 'dynamic-ip-and-port' )
 			{
 				if( $rule->isDisabled() && $countDisabledRules ||  !$rule->isDisabled() )
 				{

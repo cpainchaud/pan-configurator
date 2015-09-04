@@ -521,13 +521,7 @@ class NatRule extends Rule
 		if( $this->service )
 			$this->service->addReference($this);
 	}
-	
 
-	
-	
-	
-	
-	
 	
 	/**
 	*
@@ -571,8 +565,11 @@ class NatRule extends Rule
 	{
 		return $this->nattype;
 	}
-	
-	public function SNat_Type()
+
+	/**
+	 * @return string options are : 'none' , 'dynamic', 'dynamic-ip-and-port', 'static'
+	 */
+	public function SourceNat_Type()
 	{
 		return $this->snattype;
 	}
