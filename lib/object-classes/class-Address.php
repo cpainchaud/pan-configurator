@@ -147,6 +147,12 @@ class Address
      */
 	public function value()
 	{
+		if( $this->isTmpAddr() )
+		{
+			if( $this->nameIsValidRuleIPEntry() )
+				return $this->name();
+		}
+
 		return $this->value;
 	}
 
