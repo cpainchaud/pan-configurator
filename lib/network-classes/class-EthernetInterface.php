@@ -56,7 +56,7 @@ class EthernetInterface
      * @param string $name
      * @param EthernetIfStore $owner
      */
-    function EthernetInterface($name, $owner)
+    function __construct($name, $owner)
     {
         $this->name = $name;
         $this->owner = $owner;

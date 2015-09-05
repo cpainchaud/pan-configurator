@@ -61,7 +61,7 @@ class Address
      * @param AddressStore $owner
      * @param bool $fromXmlTemplate
 	*/
-	function Address( $name, $owner, $fromXmlTemplate = false)
+	function __construct( $name, $owner, $fromXmlTemplate = false)
 	{
         $this->owner = $owner;
 

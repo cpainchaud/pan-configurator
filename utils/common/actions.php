@@ -23,7 +23,7 @@ class CallContext
 
     public $nestedQueries;
 
-    public function CallContext($actionProperties, $arguments, $nestedQueries = null)
+    public function __construct($actionProperties, $arguments, $nestedQueries = null)
     {
         $this->actionRef = $actionProperties;
         $this->prepareArgumentsForAction($arguments);

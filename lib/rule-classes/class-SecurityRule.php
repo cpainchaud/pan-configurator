@@ -88,7 +88,7 @@ class SecurityRule extends Rule
 	 * @param RuleStore $owner
 	 * @param bool $fromTemplateXML
 	 */
-	public function SecurityRule($owner,$fromTemplateXML=false)
+	public function __construct($owner,$fromTemplateXML=false)
 	{
 		$this->owner = $owner;
 

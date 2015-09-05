@@ -65,7 +65,7 @@ class RuleStore
 
     );
  
-	public function RuleStore($owner, $ruleType, $isPreOrPost = false)
+	public function __construct($owner, $ruleType, $isPreOrPost = false)
 	{
 		$this->owner = $owner;
         $this->version = &$owner->version;

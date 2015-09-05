@@ -92,7 +92,7 @@ class PanoramaConf
 		return $this->name;
 	}
 	
-	public function PanoramaConf()
+	public function __construct()
 	{
 		$this->tagStore = new TagStore($this);
 		$this->tagStore->setName('tagStore');

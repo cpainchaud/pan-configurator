@@ -35,7 +35,7 @@ class App
 	
 	//public $type = 'notfound';
 
- 	public function App($name, $owner)
+ 	public function __construct($name, $owner)
  	{
  		$this->owner = $owner;
 		$this->name = $name;

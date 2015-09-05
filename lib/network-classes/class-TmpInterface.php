@@ -25,7 +25,7 @@ class TmpInterface
 
     /** @property $owner TmpInterfaceStore */
 
-    public function TmpInterface($name, $owner)
+    public function __construct($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;

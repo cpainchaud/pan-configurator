@@ -24,7 +24,7 @@ class ManagedDevice
     /** @var  PanoramaConf */
     public $owner;
 
-    function ManagedDevice($name, $owner)
+    function __construct($name, $owner)
     {
         $this->$owner = $owner;
         $this->name = $name;

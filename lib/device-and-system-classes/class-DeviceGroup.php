@@ -74,7 +74,7 @@ class DeviceGroup
 
 	
 	
-	public function DeviceGroup($owner)
+	public function __construct($owner)
 	{
 		$this->owner = $owner;
         $this->version = &$owner->version;

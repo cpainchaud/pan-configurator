@@ -51,7 +51,7 @@ class NatRule extends Rule
 	 * @param RuleStore $owner
 	 * @param bool $fromTemplateXML
 	 */
-	public function NatRule($owner, $fromTemplateXML=false)
+	public function __construct($owner, $fromTemplateXML=false)
 	{
 		$this->owner = $owner;
 		

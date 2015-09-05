@@ -26,7 +26,7 @@ class IPsecTunnelStore extends ObjStore
 {
     public static $childn = 'IPsecTunnel';
 
-    public function IPsecTunnelStore($name, $owner)
+    public function __construct($name, $owner)
     {
         $this->name = $name;
         $this->owner = $owner;

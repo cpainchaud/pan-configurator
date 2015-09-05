@@ -35,7 +35,7 @@ class ServiceGroup
 
 	
 	
-	public function ServiceGroup($name,$owner=null)
+	public function __construct($name,$owner=null)
 	{
 		$this->owner = $owner;
 		$this->name = $name;

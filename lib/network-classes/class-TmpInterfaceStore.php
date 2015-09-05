@@ -27,7 +27,7 @@ class TmpInterfaceStore extends ObjStore
     /**
      * @param PANConf $owner
      */
-    function TmpInterfaceStore($name, $owner)
+    function __construct($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;

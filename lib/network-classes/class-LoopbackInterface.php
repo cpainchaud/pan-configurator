@@ -25,7 +25,7 @@ class LoopbackInterface
 
     protected $_ipv4Addresses = Array();
 
-    function LoopbackInterface($name, $owner)
+    function __construct($name, $owner)
     {
         $this->name = $name;
         $this->owner = $owner;

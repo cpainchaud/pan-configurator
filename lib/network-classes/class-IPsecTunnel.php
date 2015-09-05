@@ -40,7 +40,7 @@ class IPsecTunnel
     public $proxys = Array();
 
 
-    public function IPsecTunnel($name, $owner)
+    public function __construct($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;

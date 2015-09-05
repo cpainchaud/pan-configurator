@@ -27,7 +27,7 @@ class TagStore extends ObjStore
 	
 	public static $childn = 'Tag';
 	
-	public function TagStore($owner)
+	public function __construct($owner)
 	{
 		$this->classn = &self::$childn;
 		

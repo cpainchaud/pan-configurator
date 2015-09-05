@@ -33,7 +33,7 @@ class ZoneStore extends ObjStore
     /**
      * @param VirtualSystem|DeviceGroup|PanoramaConf $owner
      */
-	public function ZoneStore($owner)
+	public function __construct($owner)
 	{
 		$this->classn = &self::$childn;
 		

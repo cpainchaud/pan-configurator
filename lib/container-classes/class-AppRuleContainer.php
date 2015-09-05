@@ -31,7 +31,7 @@ class AppRuleContainer extends ObjRuleContainer
 
 
 
-    public function AppRuleContainer($owner)
+    public function __construct($owner)
     {
         $this->classn = &self::$childn;
 

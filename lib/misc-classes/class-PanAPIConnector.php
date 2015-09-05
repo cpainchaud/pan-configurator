@@ -338,7 +338,7 @@ class PanAPIConnector
      * @param integer $port
      * @param string|null $serial
      */
-	public function PanAPIConnector( $host, $key, $type = 'panos', $serial = null, $port = 443)
+	public function __construct( $host, $key, $type = 'panos', $serial = null, $port = 443)
 	{
 		$this->setType($type, $serial);
 		

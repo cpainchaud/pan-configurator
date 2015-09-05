@@ -39,7 +39,7 @@ class VirtualRouter
      * @param $name string
      * @param $owner VirtualRouterStore
      */
-    public function VirtualRouter($name, $owner)
+    public function __construct($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;

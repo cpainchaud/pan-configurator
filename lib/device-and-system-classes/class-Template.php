@@ -29,7 +29,7 @@ class Template
     public $deviceConfiguration;
 
 
-    public function Template($name, $owner)
+    public function __construct($name, $owner)
     {
         $this->name = $name;
         $this->owner = $owner;

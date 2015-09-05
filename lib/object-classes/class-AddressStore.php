@@ -73,7 +73,7 @@ class AddressStore
     /**
      * @param VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null $owner
      */
-	public function AddressStore($owner)
+	public function __construct($owner)
 	{
 		$this->owner = $owner;
 

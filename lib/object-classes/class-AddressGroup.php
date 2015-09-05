@@ -53,7 +53,7 @@ class AddressGroup
      * @param bool $fromTemplateXml
 	*
 	*/
-	function AddressGroup($name,$owner, $fromTemplateXml = false)
+	function __construct($name,$owner, $fromTemplateXml = false)
 	{
         $this->owner = $owner;
 

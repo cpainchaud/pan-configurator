@@ -45,7 +45,7 @@ class AppStore extends ObjStore
         return self::$predefinedStore;
     }
 	
-	public function AppStore($owner)
+	public function __construct($owner)
 	{
 		$this->classn = &self::$childn;
 		

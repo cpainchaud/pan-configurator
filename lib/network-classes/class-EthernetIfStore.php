@@ -34,7 +34,7 @@ class EthernetIfStore extends ObjStore
     /**
      * @param PANConf $owner
      */
-    function EthernetIfStore($name, $owner)
+    function __construct($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;

@@ -43,7 +43,7 @@ class StaticRoute
     protected $_interface = null;
 
 
-    function StaticRoute($name, $owner)
+    function __construct($name, $owner)
     {
         $this->owner = $owner;
         $this->name = $name;

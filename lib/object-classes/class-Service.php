@@ -58,7 +58,7 @@ class Service
      * @param ServiceStore $owner
      * @param bool $fromtemplatexml
      */
-	function Service($name, $owner=null, $fromtemplatexml=false)
+	function __construct($name, $owner=null, $fromtemplatexml=false)
 	{
 		
 		if( $fromtemplatexml )

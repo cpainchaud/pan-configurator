@@ -48,7 +48,7 @@ class RQuery
     public $level = 0;
 
 
-    public function RQuery($objectType, $level = 0)
+    public function __construct($objectType, $level = 0)
     {
         $this->level = $level;
         $this->padded = str_pad('', ($this->level+1)*2, ' ');

@@ -53,7 +53,7 @@ class Zone
      * @param string $name
      * @param ZoneStore|null $owner
      */
- 	public function Zone($name, $owner, $fromXmlTemplate = false)
+ 	public function __construct($name, $owner, $fromXmlTemplate = false)
  	{
         if( !is_string($name) )
             derr('$name must be a string');

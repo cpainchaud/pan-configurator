@@ -28,7 +28,7 @@ class LoopbackIfStore extends ObjStore
      * @param $name string
      * @param $owner PANConf
      */
-    public function LoopbackIfStore($name, $owner)
+    public function __construct($name, $owner)
     {
         $this->name = $name;
         $this->owner = $owner;

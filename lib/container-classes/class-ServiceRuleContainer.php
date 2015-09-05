@@ -31,7 +31,7 @@ class ServiceRuleContainer extends ObjRuleContainer
 
 
 
-    public function ServiceRuleContainer($owner)
+    public function __construct($owner)
     {
         $this->owner = $owner;
         $this->o = Array();

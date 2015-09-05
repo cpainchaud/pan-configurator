@@ -32,7 +32,7 @@ class Tag
      * @param string $name
      * @param TagStore|null $owner
      */
-	public function Tag($name, $owner, $fromXmlTemplate=false)
+	public function __construct($name, $owner, $fromXmlTemplate=false)
 	{
         $this->name = $name;
 

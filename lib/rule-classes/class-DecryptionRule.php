@@ -20,7 +20,7 @@
 class DecryptionRule extends Rule
 {
 
-    public function DecryptionRule($owner, $fromTemplateXML=false)
+    public function __construct($owner, $fromTemplateXML=false)
     {
         $this->owner = $owner;
 

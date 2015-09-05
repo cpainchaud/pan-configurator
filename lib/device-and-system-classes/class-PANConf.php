@@ -87,7 +87,7 @@ class PANConf
      * @param string|null $serial
      * @param Template|null $fromTemplate
 	 */
-	public function PANConf($withPanorama = null, $serial = null, $fromTemplate = null)
+	public function __construct($withPanorama = null, $serial = null, $fromTemplate = null)
 	{
 		if( !is_null($withPanorama) )
 			$this->panorama = $withPanorama;

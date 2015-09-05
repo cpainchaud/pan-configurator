@@ -68,7 +68,7 @@ class VirtualSystem
 
 	
 	
-	public function VirtualSystem(PANConf $owner)
+	public function __construct(PANConf $owner)
 	{
 		$this->owner = $owner;
 

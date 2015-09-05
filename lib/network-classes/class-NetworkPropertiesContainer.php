@@ -47,7 +47,7 @@ class NetworkPropertiesContainer
     public $xmlroot = null;
 
 
-    function NetworkPropertiesContainer(PANConf $owner)
+    function __construct(PANConf $owner)
     {
         $this->owner = $owner;
         $this->ethernetIfStore = new EthernetIfStore('EthernetIfaces', $owner);

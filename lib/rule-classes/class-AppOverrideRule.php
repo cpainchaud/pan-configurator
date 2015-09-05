@@ -36,7 +36,7 @@ class AppOverrideRule extends Rule
     /** @var  App|null */
     protected $_app;
 
-    public function AppOverrideRule($owner, $fromTemplateXML=false)
+    public function __construct($owner, $fromTemplateXML=false)
     {
         $this->owner = $owner;
 

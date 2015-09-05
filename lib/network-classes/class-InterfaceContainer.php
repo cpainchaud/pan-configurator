@@ -31,7 +31,7 @@ class InterfaceContainer extends ObjRuleContainer
      * @param VirtualSystem|Zone|VirtualRouter $owner
      * @param NetworkPropertiesContainer $centralStore
      */
-    public function InterfaceContainer($owner, $centralStore)
+    public function __construct($owner, $centralStore)
     {
         $this->owner = $owner;
         $this->parentCentralStore = $centralStore;

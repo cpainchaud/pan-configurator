@@ -58,7 +58,7 @@ class ServiceStore
 	public $servgroot;
 	
 	
-	public function ServiceStore($owner)
+	public function __construct($owner)
 	{
 		$this->owner = $owner;
 
