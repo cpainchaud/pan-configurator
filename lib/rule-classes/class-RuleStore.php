@@ -778,34 +778,47 @@ class RuleStore
 	
 	/**
 	* Returns an Array with all Rules inside this store
-     * @param null|string $withFilter
+     * @param null|string|string[] $withFilter
 	* @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
 	*/
 	public function & rules( $withFilter=null )
 	{
         $query = null;
 
-        if( $withFilter !== null  && $withFilter != '' )
+        if( $withFilter !== null  && $withFilter !== '' )
         {
+			$queryContext = Array();
+
+			if( is_array($withFilter) )
+			{
+				$filter = &$withFilter['query'];
+				$queryContext['nestedQueries'] = &$withFilter;
+			}
+			else
+				$filter = &$withFilter;
+
             $errMesg = '';
             $query = new RQuery('rule');
-            if( $query->parseFromString($withFilter, $errMsg) === false )
+            if( $query->parseFromString($filter, $errMsg) === false )
                 derr("error while parsing query: {$errMesg}");
 
             $res = Array();
-            foreach( $this->rules as $rule )
-            {
-                if( $query->matchSingleObject($rule) )
-                    $res[] = $rule;
-            }
-            if( $this->isPreOrPost )
-            {
-                foreach( $this->postRules as $rule )
-                {
-                    if( $query->matchSingleObject($rule) )
-                        $res[] = $rule;
-                }
-            }
+
+			foreach( $this->rules as $rule )
+			{
+				$queryContext['object'] = $rule;
+				if( $query->matchSingleObject($queryContext) )
+					$res[] = $rule;
+			}
+			if( $this->isPreOrPost )
+			{
+				foreach( $this->postRules as $rule )
+				{
+					$queryContext['object'] = $rule;
+					if( $query->matchSingleObject($queryContext) )
+						$res[] = $rule;
+				}
+			}
             return $res;
         }
 

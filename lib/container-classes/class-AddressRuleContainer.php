@@ -36,7 +36,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
         $this->findParentCentralStore();
     }
-    
+
 
     /**
      * @param Address|AddressGroup $Obj

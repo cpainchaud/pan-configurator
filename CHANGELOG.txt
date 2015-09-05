@@ -1,5 +1,13 @@
 CHANGELOG
 
+1.5.2
+* switched classes constructors to __construct() which is mainstream for PHP5.4+ and 7.0
+* renamed address query filter "value eq" to "value string.eq" for string comparison
+* new address query filters "value ip4.match.exact"
+
+bugfixes:
+* NatRule source nat hosts and types were incorrectly implemented
+
 
 1.5.0
 Library:

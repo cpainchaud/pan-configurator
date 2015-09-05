@@ -1444,7 +1444,7 @@ RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
                 },
     'arg' => true
 );
-RQuery::$defaultFilters['address']['value']['operators']['eq'] = Array(
+RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var $object Address|AddressGroup */
@@ -1455,7 +1455,7 @@ RQuery::$defaultFilters['address']['value']['operators']['eq'] = Array(
 
         if( $object->isAddress() )
         {
-            if( $object->type() == 'ip-address' || $object->type() == 'ip-netmask' )
+            if( $object->type() == 'ip-range' || $object->type() == 'ip-netmask' )
             {
                 if( $object->value() == $value )
                     return true;
@@ -1463,6 +1463,29 @@ RQuery::$defaultFilters['address']['value']['operators']['eq'] = Array(
         }
 
         return false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var $object Address|AddressGroup */
+        /** @var $value string */
+
+        $values = explode(',', $value);
+        $mapping = new IP4Map();
+
+        $count = 0;
+        foreach( $values as $net )
+        {
+            $net = trim($net);
+            if( strlen($net) < 1 )
+                derr("empty network/IP name provided for argument #$count");
+            $mapping->addMap(IP4Map::mapFromText($net));
+            $count++;
+        }
+
+        return $object->getIP4Mapping()->equals($mapping);
     },
     'arg' => true
 );
