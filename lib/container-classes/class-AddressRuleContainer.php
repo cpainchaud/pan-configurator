@@ -29,7 +29,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
     // TODO implement 'multicast' support
 
-    public function AddressRuleContainer($owner)
+    public function __construct($owner)
     {
         $this->owner = $owner;
         $this->o = Array();

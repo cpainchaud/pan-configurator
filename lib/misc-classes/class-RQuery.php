@@ -1640,7 +1640,7 @@ class ServiceRQueryContext extends RQueryContext
 
     public $nestedQueries;
 
-    function ServiceRQueryContext(RQuery $r, $value = null, $nestedQueries = null)
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
     {
         $this->rQueryObject = $r;
         $this->value = $value;
