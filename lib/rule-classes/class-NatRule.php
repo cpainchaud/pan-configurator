@@ -542,8 +542,10 @@ class NatRule extends Rule
 	}
 	
 	
-	public function display()
+	public function display( $padding = 0)
 	{
+		$padding = str_pad('', $padding);
+
 		$dis = '';
 		if( $this->disabled )
 			$dis = '<disabled>';
@@ -552,12 +554,12 @@ class NatRule extends Rule
 		if( $this->service )
 			$s = $this->service->name();
 		
-		print "*Rule named '".$this->name."  $dis\n";
-		print "  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
-		print "  Source: ".$this->source->toString_inline()."\n";
-		print "  Destination: ".$this->destination->toString_inline()."\n";
-		print "  Service:  ".$s."\n";
-		print "    Tags:  ".$this->tags->toString_inline()."\n";
+		print $padding."*Rule named '".$this->name."  $dis\n";
+		print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
+		print $padding."  Source: ".$this->source->toString_inline()."\n";
+		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
+		print $padding."  Service:  ".$s."\n";
+		print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
 		print "\n";
 	}
 	
