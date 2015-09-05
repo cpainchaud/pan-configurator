@@ -357,7 +357,7 @@ class NatRule extends Rule
 			
 		}
 		else
-			derr("NAT type not supported for rule '".$this->NAT."'\n");
+			derr("NAT type not supported for rule '".$this->snattype."'\n");
 			
 		//print_r($this->snatroot);
 	
