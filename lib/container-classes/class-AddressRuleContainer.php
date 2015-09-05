@@ -36,25 +36,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
         $this->findParentCentralStore();
     }
-
-    /**
-     * @param Address|AddressGroup $Obj
-     * @param bool $rewriteXml
-     * @return bool
-     * @obsolete
-     */
-    public function add( $Obj, $rewriteXml = true )
-    {
-        mwarning("this function is obsolete, please use addObject() instead");
-        $this->fasthashcomp = null;
-
-        $ret = parent::add($Obj);
-        if( $ret && $rewriteXml )
-        {
-            $this->rewriteXML();
-        }
-        return $ret;
-    }
+    
 
     /**
      * @param Address|AddressGroup $Obj
