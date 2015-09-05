@@ -20,7 +20,7 @@
 class NatRule extends Rule
 {
 
-	/** Destination port associated to this NatRule. Null means 'any' */
+	/** @var $service null|Service|ServiceGroup Destination port associated to this NatRule. Null means 'any' */
 	public $service = null;
 	
 	protected $snattype = 'none';
