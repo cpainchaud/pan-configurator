@@ -29,16 +29,15 @@ class TagRuleContainer extends ObjRuleContainer
 
     public static $childn = 'Tag';
 
-    public function __construct($name, $owner)
+    public function __construct($owner)
     {
-        $this->name = $name;
         $this->classn = &self::$childn;
 
         $this->owner = $owner;
         $this->o = Array();
+        $this->name = 'tag';
 
         $this->findParentCentralStore();
-
     }
 
 

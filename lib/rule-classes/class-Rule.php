@@ -104,7 +104,7 @@ class Rule
 	protected function init_from_with_store()
 	{
 		$this->from = new ZoneRuleContainer($this);
-		$this->from->setName('from');	
+		$this->from->setName('from');
 	}
 
     /**
@@ -155,67 +155,6 @@ class Rule
         $tmp = DH::findFirstElementOrCreate('destination', $this->xmlroot);
         $this->destination->load_from_domxml($tmp);
     }
-
-
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function init_to_with_store()
-	{
-		$this->to = new ZoneRuleContainer($this);
-		$this->to->setName('to');
-	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function init_source_with_store()
-	{
-		$this->source = new AddressRuleContainer($this);
-		$this->source->name = 'source';
-	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function init_destination_with_store()
-	{
-		$this->destination = new AddressRuleContainer($this);
-		$this->destination->name = 'destination';
-	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function init_services_with_store()
-	{
-		$this->services = new ServiceRuleContainer($this);
-		$this->services->name = 'service';
-	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function init_tags_with_store()
-	{
-		$this->tags = new TagRuleContainer('tag', $this);
-	}
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function init_apps_with_store()
-	{
-		$this->apps = new AppRuleContainer($this);
-		$this->apps->setName('apps');
-	}
 
 	/**
 	* For developper use only

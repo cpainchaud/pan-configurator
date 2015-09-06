@@ -33,8 +33,6 @@ class AddressRuleContainer extends ObjRuleContainer
     {
         $this->owner = $owner;
         $this->o = Array();
-
-        $this->findParentCentralStore();
     }
 
 

@@ -92,17 +92,30 @@ class SecurityRule extends Rule
 	{
 		$this->owner = $owner;
 
-		$this->findParentAddressStore();
-		$this->findParentServiceStore();
-		
-		
-		$this->init_tags_with_store();
-		$this->init_from_with_store();
-		$this->init_to_with_store();
-		$this->init_source_with_store();
-		$this->init_destination_with_store();
-		$this->init_services_with_store();
-		$this->init_apps_with_store();
+		$this->parentAddressStore = $this->owner->owner->addressStore;
+		$this->parentServiceStore = $this->owner->owner->serviceStore;
+
+		$this->tags = new TagRuleContainer($this);
+
+		$this->from = new ZoneRuleContainer($this);
+		$this->from->name = 'from';
+
+		$this->to = new ZoneRuleContainer($this);
+		$this->to->name = 'to';
+
+		$this->source = new AddressRuleContainer($this);
+		$this->source->name = 'source';
+		$this->source->parentCentralStore = $this->parentAddressStore;
+
+		$this->destination = new AddressRuleContainer($this);
+		$this->destination->name = 'destination';
+		$this->destination->parentCentralStore = $this->parentAddressStore;
+
+		$this->services = new ServiceRuleContainer($this);
+		$this->services->name = 'service';
+
+		$this->apps = new AppRuleContainer($this);
+		$this->apps->name = 'apps';
 		
 		if( $fromTemplateXML )
 		{

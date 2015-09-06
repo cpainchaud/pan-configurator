@@ -30,7 +30,7 @@ class ObjRuleContainer
     public $owner = null;
     public $name = '';
 
-    public $o = null;
+    public $o = Array();
     protected $classn=null;
 
 

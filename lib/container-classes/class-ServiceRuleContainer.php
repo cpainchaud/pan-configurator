@@ -30,7 +30,6 @@ class ServiceRuleContainer extends ObjRuleContainer
     private $appDef = false;
 
 
-
     public function __construct($owner)
     {
         $this->owner = $owner;

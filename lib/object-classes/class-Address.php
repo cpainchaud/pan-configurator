@@ -82,7 +82,7 @@ class Address
 
         $this->name = $name;
 
-		$this->tags = new TagRuleContainer('tag', $this);
+		$this->tags = new TagRuleContainer($this);
 		
 	}
 

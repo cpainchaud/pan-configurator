@@ -34,9 +34,7 @@ class ZoneRuleContainer extends ObjRuleContainer
     public function __construct($owner)
     {
         $this->classn = &self::$childn;
-
         $this->owner = $owner;
-        $this->o = Array();
 
         $this->findParentCentralStore();
     }

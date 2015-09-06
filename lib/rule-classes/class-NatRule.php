@@ -54,25 +54,35 @@ class NatRule extends Rule
 	public function __construct($owner, $fromTemplateXML=false)
 	{
 		$this->owner = $owner;
-		
-		$this->findParentAddressStore();
-		$this->findParentServiceStore();
-		
-		$this->init_tags_with_store();
-		$this->init_from_with_store();
-		$this->init_to_with_store();
-		$this->init_source_with_store();
-		$this->init_destination_with_store();
+
+		$this->parentAddressStore = $this->owner->owner->addressStore;
+		$this->parentServiceStore = $this->owner->owner->serviceStore;
+
+		$this->tags = new TagRuleContainer($this);
+
+		$this->from = new ZoneRuleContainer($this);
+		$this->from->name = 'from';
+
+		$this->to = new ZoneRuleContainer($this);
+		$this->to->name = 'to';
+
+		$this->source = new AddressRuleContainer($this);
+		$this->source->name = 'source';
+		$this->source->parentCentralStore = $this->parentAddressStore;
+
+		$this->destination = new AddressRuleContainer($this);
+		$this->destination->name = 'destination';
+		$this->destination->parentCentralStore = $this->parentAddressStore;
 		
 		$this->snathosts = new AddressRuleContainer($this);
 		$this->snathosts->name = 'snathosts';
+		$this->snathosts->parentCentralStore = $this->parentAddressStore;
 
         if( $fromTemplateXML )
         {
             $xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
             $this->load_from_domxml($xmlElement);
         }
-		
 	}
 
 
