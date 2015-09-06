@@ -2,6 +2,7 @@ CHANGELOG
 
 1.5.2
 * switched classes constructors to __construct() which is mainstream for PHP5.4+ and 7.0
+* major performance improvment when loading a configuration (added 'name to objects' indexes for fast searches)
 * renamed address query filter "value eq" to "value string.eq" for string comparison
 * new address query filters "value ip4.match.exact"
 
