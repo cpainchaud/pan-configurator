@@ -424,52 +424,6 @@ function reLinkObjs(&$arr, &$ref)
     }
 }
 
-/**
- *
- * @ignore
- */
-function addReference($o, $ref)
-{
-    if( $ref === null )
-        return;
-
-    $serial = spl_object_hash($ref);
-
-    /*if( in_array($ref, $o->refrules, TRUE) )
-    {
-        //print "rule already referenced\n";
-    }*/
-    if( isset($o->refrules[$serial]) )
-    {
-        //print "rule already referenced\n";
-    }
-    else
-    {
-        $o->refrules[$serial] = $ref;
-    }
-}
-
-
-/**
- *
- * @ignore
- */
-function removeReference($o, $ref)
-{
-    if( $ref === null )
-        return;
-
-    $serial = spl_object_hash($ref);
-
-    if( array_key_exists($serial, $o->refrules) )
-    {
-        unset($o->refrules[$serial]);
-    }
-    else
-    {
-        mwarning('tried to unreference an object from a store that does not reference it:'.$o->toString().'  against  '.$ref->toString());
-    }
-}
 
 
 /**

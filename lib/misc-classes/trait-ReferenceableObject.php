@@ -47,14 +47,33 @@ trait ReferencableObject
 	
 	public function addReference($ref)
 	{
-		addReference($this,$ref);
+		if( $ref === null )
+			return;
+
+		$serial = spl_object_hash($ref);
+
+		if( isset($this->refrules[$serial]) )
+			return;
+
+		$this->refrules[$serial] = $ref;
 		$this->refcomphash = null;
 	}
 	
 	public function removeReference($ref)
 	{
-		removeReference($this,$ref);
-		$this->refcomphash = null;
+		if( $ref === null )
+			return;
+
+		$serial = spl_object_hash($ref);
+
+		if( isset($this->refrules[$serial]) )
+		{
+			unset($this->refrules[$serial]);
+			$this->refcomphash = null;
+			return;
+		}
+
+		mwarning('tried to unreference an object from a store that does not reference it:'.$this->toString().'  against  '.$ref->toString());
 	}
 	
 	public function broadcastMyNameChange($oldname)
