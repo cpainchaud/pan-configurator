@@ -71,7 +71,7 @@ class EthernetIfStore extends ObjStore
         {
             foreach( $o->subInterfaces() as $sub )
             {
-                $this->o[] = $sub;
+                $this->add($sub);
             }
         }
     }

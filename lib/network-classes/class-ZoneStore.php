@@ -38,7 +38,6 @@ class ZoneStore extends ObjStore
 		$this->classn = &self::$childn;
 		
 		$this->owner = $owner;
-		$this->o = Array();
 		
 		$this->findParentCentralStore();
 	}

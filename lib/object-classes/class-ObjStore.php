@@ -31,6 +31,8 @@ class ObjStore
      */
 	public $o = Array();
 
+	protected $nameIndex = Array();
+
 	protected $classn=null;
 
     protected $skipEmptyXmlObjects = false;
@@ -60,15 +62,12 @@ class ObjStore
 	
 	protected function findByName($name, $ref=null)
 	{
-		foreach($this->o as $o)
+		if( array_key_exists($name, $this->nameIndex) )
 		{
-			if( $o->name() === $name )
-			{
-				if( $ref !== null )
-					$o->addReference($ref);
-				return $o;
-			}
-		
+			$o = $this->nameIndex[$name];
+			if( $ref !== null )
+				$o->addReference($ref);
+			return $o;
 		}
 
 		return null;
@@ -112,6 +111,7 @@ class ObjStore
 
 		$f = new $this->classn($name,$this);
 		$this->o[] = $f;
+		$this->nameIndex[$name] = $f;
 		$f->type = 'tmp';
 		$f->addReference($ref);
 		
@@ -143,14 +143,27 @@ class ObjStore
 			print $indent.$this->o[$k[$i]]->name."\n";
 		}
 	}
-	
-	
+
 	public function referencedObjectRenamed($h, $oldName)
 	{
-		/**if( in_array($h,$this->o, true) )
+		if(array_key_exists($h->name(), $this->nameIndex))
 		{
-			$this->rewriteXML();
-		}*/
+			derr("an object with this name already exists in this store");
+		}
+
+		if( array_key_exists($oldName, $this->nameIndex) )
+		{
+			$o = $this->nameIndex[$oldName];
+			if($o === $h)
+			{
+				unset($this->nameIndex[$oldName]);
+				$this->nameIndex[$h->name()] = $h;
+			}
+			else
+				mwarning("tried to broadcast name change to a Store that doesnt own this object");
+		}
+		else
+			mwarning("object with name '{$oldName}' was not part of this store/index");
 	}
 	
 
@@ -164,6 +177,7 @@ class ObjStore
 		if( !in_array($Obj,$this->o,true) )
 		{
 			$this->o[] = $Obj;
+			$this->nameIndex[$Obj->name()] = $Obj;
 			$Obj->owner = $this;
 
 			return true;
@@ -180,7 +194,7 @@ class ObjStore
 		}
 
 		$this->o = Array();
-
+		$this->nameIndex = Array();
 	}
 	
 	protected function remove($Obj)
@@ -189,6 +203,7 @@ class ObjStore
 		if( $pos !== FALSE )
 		{
 			unset($this->o[$pos]);
+			unset($this->nameIndex[$Obj->name()]);
 			$Obj->owner = null;
 
 			return true;
@@ -245,6 +260,7 @@ class ObjStore
 			//print $this->toString()." : new Tag '".$newTag->name()."' found\n";
 
 			$this->o[] = $newObj;
+			$this->nameIndex[$newObj->name()] = $newObj;
 		}
 	}
 
