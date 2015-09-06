@@ -966,7 +966,7 @@ class SecurityRule extends Rule
 
 		$query_appfilter = '';
 
-		if( !is_null($specificApps) )
+		if( $specificApps !== null )
 		{
 			if( !is_array($specificApps) )
 			{

@@ -54,7 +54,7 @@ class App
  			return false;
  		}
 
- 		if( is_null($this->proto) && is_null($this->icmp) && is_null($this->icmpsub) )
+ 		if( $this->proto === null && $this->icmp === null && $this->icmpsub === null )
  			return false;
 
  		return true;
@@ -93,7 +93,7 @@ class App
  			return false;
  		}
 
- 		if( !is_null($this->tcp) )
+ 		if( $this->tcp !== null )
  		{
  			foreach( $this->tcp as &$port )
  			{
@@ -102,7 +102,7 @@ class App
  			}
  		}
 
-		if( !is_null($this->udp) )
+		if( $this->udp !== null )
  		{
  			foreach( $this->udp as &$port )
  			{
@@ -127,13 +127,13 @@ class App
  			return false;
  		}
 
- 		if( is_null($proto) || is_null($port) )
+ 		if( $proto === null || $port === null )
  			derr('cannot be called with null arguments');
 
  		if( $proto != 'tcp' && $proto != 'udp' )
  			derr('unsupported procotol : '.$proto);
 
- 		if( !is_null($this->$proto) )
+ 		if( $this->$proto !== null )
  		{
  			foreach( $this->$proto as &$lport )
  			{

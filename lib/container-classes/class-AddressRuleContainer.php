@@ -337,11 +337,11 @@ class AddressRuleContainer extends ObjRuleContainer
         if( $this->owner )
         {
             $currentObject = $this;
-            while( isset($currentObject->owner) && !is_null($currentObject->owner) )
+            while( isset($currentObject->owner) && $currentObject->owner !== null )
             {
 
                 if( isset($currentObject->owner->addressStore) &&
-                    !is_null($currentObject->owner->addressStore)				)
+                    $currentObject->owner->addressStore !== null				)
                 {
                     $this->parentCentralStore = $currentObject->owner->addressStore;
                     //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";

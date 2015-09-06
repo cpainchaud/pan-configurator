@@ -178,7 +178,7 @@ function &searchForName($fname, $id, &$array)
     // $id : the value you are looking for
     $null = null;
 
-    if( is_null($array) )
+    if( $array === null )
         derr('Array cannot be null');
 
     $c = count($array);
@@ -430,7 +430,7 @@ function reLinkObjs(&$arr, &$ref)
  */
 function addReference($o, $ref)
 {
-    if( is_null($ref) )
+    if( $ref === null )
         return;
 
     $serial = spl_object_hash($ref);
@@ -456,7 +456,7 @@ function addReference($o, $ref)
  */
 function removeReference($o, $ref)
 {
-    if( is_null($ref) )
+    if( $ref === null )
         return;
 
     $serial = spl_object_hash($ref);
@@ -812,7 +812,7 @@ function findConnector( $object )
     if( !isset($object->owner) )
         return null;
 
-    if( is_null($object->owner) )
+    if( $object->owner === null )
         return null;
 
     return findConnector($object->owner);
@@ -826,7 +826,7 @@ function findConnectorOrDie( $object )
     if( !isset($object->owner) )
         derr("cannot find API connector");
 
-    if( is_null($object->owner) )
+    if( $object->owner === null )
         derr("cannot find API connector");
 
     return findConnector($object->owner);

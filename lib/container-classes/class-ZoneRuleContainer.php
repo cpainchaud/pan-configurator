@@ -227,11 +227,11 @@ class ZoneRuleContainer extends ObjRuleContainer
         if( $this->owner )
         {
             $curo = $this;
-            while( isset($curo->owner) && !is_null($curo->owner) )
+            while( isset($curo->owner) && $curo->owner !== null )
             {
 
                 if( isset($curo->owner->zoneStore) &&
-                    !is_null($curo->owner->zoneStore)				)
+                    $curo->owner->zoneStore !== null				)
                 {
                     $this->parentCentralStore = $curo->owner->zoneStore;
                     //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";

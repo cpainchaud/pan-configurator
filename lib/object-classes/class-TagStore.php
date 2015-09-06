@@ -108,7 +108,7 @@ class TagStore extends ObjStore
 			else
 				$newname = $base.$suffix.$inc;
 
-			if( is_null($this->find($newname)) )
+			if( $this->find($newname) === null )
 				return $newname;
 
             if( $startCount == '' )
@@ -216,11 +216,11 @@ class TagStore extends ObjStore
 		$this->parentCentralStore = null;
 		
 			$cur = $this->owner;
-			while( isset($cur->owner) && !is_null($cur->owner) )
+			while( isset($cur->owner) && $cur->owner !== null )
 			{
 				$ref = $cur->owner;
 				if( isset($ref->tagStore) &&
-					!is_null($ref->tagStore)				)
+					$ref->tagStore !== null			)
 				{
 					$this->parentCentralStore = $ref->tagStore;
 					//print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";

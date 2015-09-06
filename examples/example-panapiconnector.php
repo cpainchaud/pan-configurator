@@ -23,7 +23,7 @@ $panc->API_load_from_candidate($con);
 
 // Did we find VSYS1 ?
 $vsys1 = $panc->findVirtualSystem('vsys1');
-if( is_null($vsys1) )
+if( $vsys1 === null )
 {
 	derr("vsys1 was not found ? Exit\n");
 }
@@ -35,7 +35,7 @@ $vsys1->securityRules->display();
 
 // look for an object named 'User-Networks'
 $object = $vsys1->addressStore->find('User-Networks');
-if( is_null($object) )
+if( $object === null )
 	derr("Error: object not found\n");
 
 // want to know xpath of an object ?
@@ -45,7 +45,7 @@ print "displaying XPATH of object named ".$object->name()." : ".$object->getXPat
 $object->API_setName('another-name');
 
 $rule = $vsys1->securityRules->find('Mail Server');
-if( is_null($rule) )
+if( $rule === null )
 	derr("Error: rule nor found\n");
 
 // add an object to this rule Source through API
@@ -56,7 +56,7 @@ $rule->destination->API_setAny();
 
 // remove object from another rule Source
 $rule = $vsys1->securityRules->find('Exception SSH for Dev');
-if( is_null($rule) )
+if( $rule === null )
 	derr("Error: rule nor found\n");
 $rule->source->API_remove($object);
 

@@ -419,7 +419,7 @@ class NatRule extends Rule
 	*/
 	public function setNoDNAT()
 	{
-		if( is_null($this->dnathost) )
+		if( $this->dnathost === null )
 			return;
 		
 		$this->dnathost->removeReference($this);
@@ -432,10 +432,10 @@ class NatRule extends Rule
 	
 	public function setDNAT( $host , $ports = null)
 	{
-		if( is_null($host) )
+		if( $host === null )
 			derr(" Host cannot be NULL");
 
-		if( !is_null($this->dnathost) )
+		if( $this->dnathost !== null )
 		{
 			if( ! $this->snathosts->has($host) )
 				$this->dnathost->removeReference($this);
@@ -452,7 +452,7 @@ class NatRule extends Rule
 		$this->dnatports = $ports;
 
 		
-		if( is_null($ports) )
+		if( $ports === null )
 		{
 			DH::removeChild($this->dnatroot, $this->subdnatTProot);
 		}
@@ -531,7 +531,7 @@ class NatRule extends Rule
 	{
 		DH::clearDomNodeChilds($this->serviceroot);
 
-		if( is_null($this->service) )
+		if( $this->service === null )
 		{
 				DH::setDomNodeText($this->serviceroot, 'any');
 

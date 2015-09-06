@@ -247,11 +247,11 @@ class ServiceStore
 		if( $this->owner )
 		{
 			$curo = $this;
-			while( isset($curo->owner) && !is_null($curo->owner) )
+			while( isset($curo->owner) && $curo->owner !== null )
 			{
 				
 				if( isset($curo->owner->serviceStore) &&
-					!is_null($curo->owner->serviceStore)				)
+					$curo->owner->serviceStore !== null				)
 				{
 					$this->parentCentralStore = $curo->owner->serviceStore;
 					//print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
@@ -301,13 +301,13 @@ class ServiceStore
         {
             $f = $this->panoramaShared->find( $fn , $ref, false, $type);
 
-            if( !is_null($f) )
+            if( $f !== null )
                 return $f;
         }
         else if( $nested && isset($this->panoramaDG) )
         {
             $f = $this->panoramaDG->find( $fn , $ref, false, $type);
-            if( !is_null($f) )
+            if( $f !== null )
                 return $f;
         }
 
@@ -490,7 +490,7 @@ class ServiceStore
 	{
 		//print "Service->add was called\n";
 
-		if( is_null($s) )
+		if( $s === null )
 			derr('attempt to add null object?');
 
 		$class = get_class($s);
@@ -616,7 +616,7 @@ class ServiceStore
 	*/
 	public function inStore($object)
 	{
-		if( is_null($object) )
+		if( $object === null )
 			derr('a NULL object, really ?');
 
 		if( isset($this->fastMemToIndex[spl_object_hash($object)]) )
@@ -743,11 +743,11 @@ trait centralServiceStoreUser
 		if( $this->owner )
 		{
 			$curo = $this;
-			while( isset($curo->owner) && !is_null($curo->owner) )
+			while( isset($curo->owner) && $curo->owner !== null )
 			{
 				
 				if( isset($curo->owner->serviceStore) &&
-					!is_null($curo->owner->serviceStore)				)
+					$curo->owner->serviceStore !== null				)
 				{
 					$this->parentServiceStore = $curo->owner->serviceStore;
 					//print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";

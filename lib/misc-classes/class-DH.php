@@ -148,7 +148,7 @@ class DH
 	{
 		$ret = $parent->ownerDocument->createElement($tagName);
 		$ret = $parent->appendChild($ret);
-		if( !is_null($withText) )
+		if( $withText !== null )
 		{
 			$tmp = $parent->ownerDocument->createTextNode($withText);
 			$ret->appendChild($tmp);
@@ -209,7 +209,7 @@ class DH
 			if( $lnode->nodeName == $tagName )
 			{
 				$attr = $lnode->attributes->getNamedItem('name');
-				if( !is_null($attr) )
+				if( $attr !== null )
 				{
 					if( $attr->nodeValue == $value )
 					return $lnode;
@@ -310,7 +310,7 @@ class DH
 		if( $wroteChildren == false )
 		{
 
-			if( DH::firstChildElement($node) !== FALSE || is_null($node->textContent) || strlen($node->textContent) < 1 )
+			if( DH::firstChildElement($node) !== FALSE || $node->textContent === null || strlen($node->textContent) < 1 )
 			{
 				if( $lineReturn )
 					$out .= $firstTag."/>\n";

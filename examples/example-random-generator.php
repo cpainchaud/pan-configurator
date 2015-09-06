@@ -22,7 +22,7 @@ $panc->load_from_file($origfile);
 
 // Did we find VSYS1 ?
 $v = &$panc->findVirtualSystem('vsys1');
-if( is_null($v) )
+if( $v === null )
 {
 	derr("vsys1 was not found ? Exit\n");
 }

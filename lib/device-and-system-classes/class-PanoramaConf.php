@@ -631,10 +631,10 @@ class PanoramaConf
      */
 	public function findApplicableDGForVsys($deviceSerial , $vsysName)
 	{
-		if( is_null($deviceSerial) || strlen($deviceSerial) < 1 )
+		if( $deviceSerial === null || strlen($deviceSerial) < 1 )
 			derr('invalid serial provided!');
-		if( is_null($vsysName) || strlen($vsysName) < 1 )
-			derr('invalid serial provided!');
+		if( $vsysName === null || strlen($vsysName) < 1 )
+			derr('invalid vsys provided!');
 
 		//print "looking for serial $deviceSerial  and vsys $vsysName\n";
 

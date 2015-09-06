@@ -26,7 +26,7 @@ $panc->load_from_file($origfile);
 
 // Did we find VSYS1 ?
 $dg = $panc->findDeviceGroup($targetDG);
-if( is_null($dg) )
+if( $dg === null )
 {
 	derr("DeviceGroup $targetDV was not found ? Exit\n");
 }

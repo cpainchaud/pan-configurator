@@ -87,11 +87,11 @@ class AppStore extends ObjStore
 		if( $this->owner )
 		{
 			$curo = $this;
-			while( isset($curo->owner) && !is_null($curo->owner) )
+			while( isset($curo->owner) && $curo->owner !== null )
 			{
 
 				if( isset($curo->owner->appStore) &&
-					!is_null($curo->owner->appStore)				)
+					$curo->owner->appStore !== null			)
 				{
 					$this->parentCentralStore = $curo->owner->appStore;
 					//print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
@@ -179,7 +179,7 @@ class AppStore extends ObjStore
                     }
                     //print_r($ports);
 
-                    if( is_null($app->tcp) )
+                    if( $app->tcp === null )
                         $app->tcp = $ports;
                     else
                         $app->tcp = array_merge($app->tcp, $ports);
@@ -211,7 +211,7 @@ class AppStore extends ObjStore
                     }
                     //print_r($ports);
 
-                    if( is_null($app->udp) )
+                    if( $app->udp === null )
                         $app->udp = $ports;
                     else
                         $app->udp = array_merge($app->udp, $ports);
@@ -291,7 +291,7 @@ class AppStore extends ObjStore
 
 	public function load_from_predefinedfile( $filename = null )
 	{
-		if( is_null($filename) )
+		if( $filename === null )
 		{
 			$filename = dirname(__FILE__).'/predefined.xml';
 		}

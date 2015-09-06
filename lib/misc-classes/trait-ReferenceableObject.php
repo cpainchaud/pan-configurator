@@ -114,7 +114,7 @@ trait ReferencableObject
 
 		foreach( $this->refrules as $cur)
 		{
-			if( isset($cur->owner) && !is_null($cur->owner) )
+			if( isset($cur->owner) && $cur->owner !== null )
 			{
 				$class = get_class($cur->owner);
 				//print $cur->owner->toString()."\n";
@@ -135,7 +135,7 @@ trait ReferencableObject
 	
 	public function generateRefHashComp($force=false)
 	{
-		if( !is_null($this->refcomphash) && !$force )
+		if( $this->refcomphash !== null && !$force )
 			return;
 		
 		$fasthashcomp = 'ReferenceableObject';

@@ -89,9 +89,9 @@ class PANConf
 	 */
 	public function __construct($withPanorama = null, $serial = null, $fromTemplate = null)
 	{
-		if( !is_null($withPanorama) )
+		if( $withPanorama !== null )
 			$this->panorama = $withPanorama;
-		if( !is_null($serial) )
+		if( $serial !== null )
 			$this->serial = $serial;
 
         $this->owner = $fromTemplate;
@@ -103,12 +103,12 @@ class PANConf
 
 		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
-		if( !is_null($withPanorama) )
+		if( $withPanorama !== null )
 			$this->serviceStore->panoramaShared = $this->panorama->serviceStore;
 
 		$this->addressStore = new AddressStore($this);
 		$this->addressStore->name = 'addresses';
-		if( !is_null($withPanorama) )
+		if( $withPanorama !== null )
 			$this->addressStore->panoramaShared = $this->panorama->addressStore;
 
 		$this->network = new NetworkPropertiesContainer($this);

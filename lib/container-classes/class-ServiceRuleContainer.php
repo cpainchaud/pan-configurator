@@ -243,11 +243,11 @@ class ServiceRuleContainer extends ObjRuleContainer
         if( $this->owner )
         {
             $currentObject = $this;
-            while( isset($currentObject->owner) && !is_null($currentObject->owner) )
+            while( isset($currentObject->owner) && $currentObject->owner !== null )
             {
 
                 if( isset($currentObject->owner->serviceStore) &&
-                    !is_null($currentObject->owner->serviceStore)				)
+                    $currentObject->owner->serviceStore !== null				)
                 {
                     $this->parentCentralStore = $currentObject->owner->serviceStore;
                     //print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";

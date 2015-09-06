@@ -300,7 +300,7 @@ class AddressGroup
 				$pos = array_search($old, $this->members, true);
 			}
 
-			if( !is_null($new) && !$this->has($new) )
+			if( $new !== null && !$this->has($new) )
 			{
 				$this->members[] = $new;
 				$new->addReference($this);

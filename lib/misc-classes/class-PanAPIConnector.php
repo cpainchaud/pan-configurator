@@ -475,14 +475,14 @@ class PanAPIConnector
         }
 
 
-        if( !is_null($filecontent) )
+        if( $filecontent !== null )
         {
             $c->setInfile($filecontent, $filename);
         }
 
         if( $sendThroughPost )
         {
-            if( isset($this->serial) && !is_null($this->serial) )
+            if( isset($this->serial) && $this->serial !== null )
             {
                 $parameters['target'] = $this->serial;
             }
@@ -541,7 +541,7 @@ class PanAPIConnector
             derr('API reported a failure: "'.$statusAttr."\"with the following addition infos: ". $firstElement->nodeValue);
         }
 
-        if (!is_null($filecontent))
+        if ( $filecontent !== null )
         {
             return $xmlDoc;
         }
@@ -570,7 +570,7 @@ class PanAPIConnector
         if( $this->port != 443 )
             $host .= ':'.$this->port;
 
-        if( isset($this->serial) && !is_null($this->serial) )
+        if( isset($this->serial) && $this->serial !== null )
         {
             $finalUrl = 'https://'.$host.'/api/';
             if( !$sendThroughPost )
@@ -594,7 +594,7 @@ class PanAPIConnector
 
         if( $sendThroughPost )
         {
-            if( isset($this->serial) && !is_null($this->serial) )
+            if( isset($this->serial) && $this->serial !== null )
             {
                 $parameters['target'] = $this->serial;
             }
@@ -903,21 +903,21 @@ class PanAPIConnector
 
         $found = &searchForName('name', 'result', $ret);
 
-        if( is_null($found) )
+        if( $found === null )
         {
             derr('unsupported API answer');
         }
 
         $found = &searchForName('name', 'job', $found['children']);
 
-        if( is_null($found) )
+        if( $found === null )
         {
             derr('no job id found!');
         }
 
         $found = &searchForName('name', 'result', $found['children']);
 
-        if( is_null($found) )
+        if( $found === null )
         {
             derr('unsupported API answer');
         }
@@ -933,14 +933,14 @@ class PanAPIConnector
 
         $found = &searchForName('name', 'result', $ret);
 
-        if( is_null($found) )
+        if( $found === null )
         {
             derr('unsupported API answer');
         }
 
         $found = &searchForName('name', 'job', $found['children']);
 
-        if( is_null($found) )
+        if( $found === null )
         {
             derr('no job id found!');
         }
@@ -1110,7 +1110,7 @@ class mycurl
          //curl_setopt($s,CURLOPT_VERBOSE, 1); 
 
 
-         if( !is_null($this->_infilecontent) )
+         if( $this->_infilecontent !== null )
          {
 
             $content =  "----ABC1234\r\n"

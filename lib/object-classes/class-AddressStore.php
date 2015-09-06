@@ -213,7 +213,7 @@ class AddressStore
 	*/
 	public function inStore($object)
 	{
-		if( is_null($object) )
+		if( $object === null )
 			derr('a NULL object? really ?');
 
 		$objectName = $object->name();
@@ -272,11 +272,11 @@ class AddressStore
 		if( $this->owner )
 		{
 			$curo = $this;
-			while( isset($curo->owner) && !is_null($curo->owner) )
+			while( isset($curo->owner) && $curo->owner !== null )
 			{
 				
 				if( isset($curo->owner->addressStore) &&
-					!is_null($curo->owner->addressStore)				)
+					$curo->owner->addressStore !== null			)
 				{
 					$this->parentCentralStore = $curo->owner->addressStore;
 					//print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
@@ -319,13 +319,13 @@ class AddressStore
         {
             $f = $this->panoramaShared->find( $objectName , $ref, false, $type);
 
-            if( !is_null($f) )
+            if( $f !== null )
                 return $f;
         }
         else if( $nested && isset($this->panoramaDG) )
         {
             $f = $this->panoramaDG->find( $objectName , $ref, false, $type);
-            if( !is_null($f) )
+            if( $f !== null )
                 return $f;
         }
 
@@ -803,11 +803,11 @@ trait centralAddressStoreUser
 		if( $this->owner )
 		{
 			$currentOwner = $this;
-			while( isset($currentOwner->owner) && !is_null($currentOwner->owner) )
+			while( isset($currentOwner->owner) && $currentOwner->owner !== null )
 			{
 				
 				if( isset($currentOwner->owner->addressStore) &&
-					!is_null($currentOwner->owner->addressStore)				)
+					$currentOwner->owner->addressStore !== null			)
 				{
 					$this->parentAddressStore = $currentOwner->owner->addressStore;
 					//print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
