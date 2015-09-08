@@ -133,6 +133,7 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
         $context->cachedIPmapping = Array();
 
     $serial = spl_object_hash($rule->owner);
+    $configIsOnLocalFirewall = false;
 
     if( !isset($context->cachedIPmapping[$serial]) )
     {
@@ -148,21 +149,51 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
             if( $context->arguments['virtualRouter'] == $context->actionRef['args']['virtualRouter']['default'] )
                 derr('with Panorama configs, you need to specify virtualRouter argument');
 
+            $_tmp_explTemplateName = explode('@', $context->arguments['template']);
+            if( count($_tmp_explTemplateName) > 1 )
+            {
+                if( $_tmp_explTemplateName[0] == 'api' )
+                {
+                    $configIsOnLocalFirewall = true;
+                    $panoramaConnector = findConnector($system);
+                    $connector = new PanAPIConnector($panoramaConnector->apihost, $panoramaConnector->apikey, 'panos-via-panorama', $_tmp_explTemplateName[1]);
+                    $panconf = new PANConf();
+                    $panconf->connector = $connector;
+                    $panconf->load_from_domxml($connector->getCandidateConfig());
+                }
+            }
+
 
             /** @var Template $template */
-            $template = $panorama->findTemplate($context->arguments['template']);
-            if( $template === null )
-                derr("cannot find Template named '{$context->arguments['template']}'. Available template list:".PH::list_to_string($panorama->templates));
+            if( !$configIsOnLocalFirewall )
+            {
+                $template = $panorama->findTemplate($context->arguments['template']);
+                if ($template === null)
+                    derr("cannot find Template named '{$context->arguments['template']}'. Available template list:" . PH::list_to_string($panorama->templates));
+            }
 
-            $virtualRouterToProcess = $template->deviceConfiguration->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+            if( $configIsOnLocalFirewall )
+                $virtualRouterToProcess = $panconf->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+            else
+                $virtualRouterToProcess = $template->deviceConfiguration->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+
             if( $virtualRouterToProcess === null )
             {
-                $tmpVar = $template->deviceConfiguration->network->virtualRouterStore->virtualRouters();
+                if( $configIsOnLocalFirewall )
+                    $tmpVar = $panconf->network->virtualRouterStore->virtualRouters();
+                else
+                    $tmpVar = $template->deviceConfiguration->network->virtualRouterStore->virtualRouters();
+
                 derr("cannot find VirtualRouter named '{$context->arguments['virtualRouter']}' in Template '{$context->arguments['template']}'. Available VR list: " . PH::list_to_string($tmpVar));
             }
 
-            if( count($template->deviceConfiguration->virtualSystems) == 1)
+            if( ( !$configIsOnLocalFirewall && count($template->deviceConfiguration->virtualSystems) == 1) || ($configIsOnLocalFirewall && count($panconf->virtualSystems) == 1))
+            {
+                if( $configIsOnLocalFirewall )
+                    $system = $panconf->virtualSystems[0];
+                    else
                 $system = $template->deviceConfiguration->virtualSystems[0];
+            }
             else
             {
                 $vsysConcernedByVR = $virtualRouterToProcess->findConcernedVsys();
@@ -176,7 +207,10 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
                 }
                 else
                 {
-                    $vsys = $template->deviceConfiguration->findVirtualSystem($context->arguments['vsys']);
+                    if( $configIsOnLocalFirewall )
+                        $vsys = $panconf->findVirtualSystem($context->arguments['vsys']);
+                    else
+                        $vsys = $template->deviceConfiguration->findVirtualSystem($context->arguments['vsys']);
                     if( $vsys === null )
                         derr("cannot find VSYS '{$context->arguments['vsys']}' in Template '{$context->arguments['template']}'");
                     $system = $vsys;
