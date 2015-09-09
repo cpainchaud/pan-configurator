@@ -1539,8 +1539,6 @@ RQuery::$defaultFilters['service']['name']['operators']['is.in.file'] = Array(
             return isset($list[$object->name()]);
 
         return isset($list[$object->name()]);
-
-        return false;
     },
     'arg' => true
 );

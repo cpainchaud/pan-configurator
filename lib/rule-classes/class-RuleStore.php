@@ -171,7 +171,7 @@ class RuleStore
 
 
 	/**
-	 * @param Rule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
 	 * @param bool $inPost
 	 * @return bool
 	 */
@@ -228,7 +228,7 @@ class RuleStore
 
 
 	/**
-	 * @param Rule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
 	 * @param bool $inPost
 	 * @return bool
 	 */
@@ -246,7 +246,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param Rule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
 	 * @return bool
 	 */
 	function inStore($rule)
@@ -262,7 +262,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param Rule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
 	 * @return bool
 	 */
 	public function moveRuleToPostRulebase( $rule )
@@ -285,7 +285,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param Rule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
 	 * @return bool
 	 */
 	public function API_moveRuleToPostRulebase( $rule )
@@ -309,7 +309,7 @@ class RuleStore
 
 
 	/**
-	 * @param Rule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
 	 * @return bool
 	 */
 	public function moveRuleToPreRulebase( $rule )
@@ -332,7 +332,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param Rule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
 	 * @return bool
 	 */
 	public function API_moveRuleToPreRulebase( $rule )
@@ -473,8 +473,8 @@ class RuleStore
 	
 	/**
 	* Only used internally when a rule is renamed to check for it unicity and accurate indexing
-	* @param SecurityRule|NatRule $rule
-     * @param string $oldName
+	* @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param string $oldName
 	*/
 	public function ruleWasRenamed($rule, $oldName)
 	{
@@ -497,7 +497,6 @@ class RuleStore
 			}
 			else
 				derr('unsupported');
-
 		}
 		else
 		{
@@ -508,8 +507,9 @@ class RuleStore
 
 
     /**
-     * @param SecurityRule|NatRule $rule
+     * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
      * @param string $newName
+	 * @param string $inPostRuleBase null|bool
      * @return SecurityRule|NatRule
      */
 	public function cloneRule($rule, $newName = null, $inPostRuleBase=null)
@@ -542,13 +542,14 @@ class RuleStore
 	}
 
 	/**
-	 * @param Rule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
 	 * @param string $newName
+	 * @param $inPostRuleBase null|bool
 	 * @return NatRule|SecurityRule
 	 */
-	public function API_cloneRule($rule, $newName)
+	public function API_cloneRule($rule, $newName, $inPostRuleBase=null)
 	{
-		$nr = $this->cloneRule($rule, $newName);
+		$nr = $this->cloneRule($rule, $newName, $inPostRuleBase);
 
 		$con = findConnectorOrDie($this);
 
@@ -563,8 +564,8 @@ class RuleStore
 
 	/**
 	 * this function will move $ruleToBeMoved after $ruleRef.
-	 * @param Rule $ruleToBeMoved
-	 * @param Rule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleRef
 	 * @param bool $rewriteXml
 	 */
 	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
@@ -653,8 +654,8 @@ class RuleStore
 	}
 
 	/**
-	 * @param Rule $ruleToBeMoved
-	 * @param Rule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleRef
 	 * @param bool $rewritexml
 	 */
 	public function API_moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
@@ -671,8 +672,8 @@ class RuleStore
 
 	/**
 	 * this function will move $ruleToBeMoved before $ruleRef.
-	 * @param Rule $ruleToBeMoved
-	 * @param Rule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleRef
 	 * @param bool $rewriteXml
 	 */
     public function moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
@@ -760,8 +761,8 @@ class RuleStore
     }
 
 	/**
-	 * @param Rule $ruleToBeMoved
-	 * @param Rule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleRef
 	 * @param bool $rewritexml
 	 */
 	public function API_moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewritexml=true )
@@ -880,7 +881,7 @@ class RuleStore
 	
 	/**
 	* Creates a new SecurityRule in this store. It will be placed at the end of the list.
-	* @param String $name name of the new Rule
+	* @param string $name name of the new Rule
 	 * @param bool $inPost  create it in post or pre (if applicable)
 	* @return SecurityRule
 	*/
@@ -932,7 +933,7 @@ class RuleStore
 
     /**
      * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-     * @param Rule|SecurityRule $rule
+     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule
      * @param bool $deleteForever
      * @return bool
      */
@@ -980,7 +981,7 @@ class RuleStore
 
     /**
      * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-     * @param Rule $rule
+     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule
      * @return bool
      */
 	public function API_remove($rule)
@@ -1054,11 +1055,11 @@ class RuleStore
 	}
 
 	/**
-	 * @param Rule $contextRule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $contextRule
 	 * @return string
 	 * @throws Exception
 	 */
-	public function & getXPath(Rule $contextRule)
+	public function & getXPath($contextRule)
 	{
 
 			$class = get_class($this->owner);
@@ -1140,7 +1141,12 @@ class RuleStore
 		return false;
 	}
 
-	public function ruleIsPostRule(Rule $rule)
+	/**
+	 * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule
+	 * @return bool
+	 * @throws Exception
+	 */
+	public function ruleIsPostRule($rule)
 	{
 		if( !$this->isPreOrPost )
 			return false;
@@ -1156,6 +1162,10 @@ class RuleStore
 		return false;
 	}
 
+	/**
+	 * @return int
+	 * @throws Exception
+	 */
 	public function countPreRules()
 	{
 		if(!$this->isPreOrPost )
@@ -1164,6 +1174,10 @@ class RuleStore
 		return count($this->rules);
 	}
 
+	/**
+	 * @return int
+	 * @throws Exception
+	 */
 	public function countPostRules()
 	{
 		if(!$this->isPreOrPost )

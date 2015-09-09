@@ -351,7 +351,7 @@ class PANConf
 
 		$url = "&type=import&category=configuration";
 
-		$answer = &$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
+		$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
 
 		print "OK!\n";
 

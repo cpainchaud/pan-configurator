@@ -125,7 +125,7 @@ class AppOverrideRule extends Rule
         // <port> extraction
         //
         $portRoot = DH::findFirstElementOrCreate('port', $xml);
-        $this->_port = $protocolRoot->textContent;
+        $this->port = $portRoot->textContent;
         //
 
 

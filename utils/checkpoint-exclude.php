@@ -517,7 +517,7 @@ foreach( $groupsToProcess as $group )
     				}
     				else
     				{
-    					$newO = $store->newAddress($newOName, 'ip-range', $oValue, '', false);
+    					$newO = $store->newAddress($newOName, 'ip-range', $oValue, '');
     					if( $newO === null )
     						derr('object creation error ???');
     				}

@@ -50,10 +50,10 @@ class LoopbackInterface
         {
             foreach( $ipNode->childNodes as $l3ipNode )
             {
-                if( $ipNode->nodeType != XML_ELEMENT_NODE )
+                if( $l3ipNode->nodeType != XML_ELEMENT_NODE )
                     continue;
 
-                $this->_ipv4Addresses[] = $ipNode->getAttribute('name');
+                $this->_ipv4Addresses[] = $l3ipNode->getAttribute('name');
             }
         }
 

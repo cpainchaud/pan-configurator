@@ -871,7 +871,6 @@ class SecurityRule extends Rule
 		if( !$first )
 			$excludedAppsString .= ' and ';
 
-		$dvq = '';
 
 		if( $parentClass == 'VirtualSystem' )
 		{
@@ -889,7 +888,6 @@ class SecurityRule extends Rule
 				derr('cannot request rule stats for a device group that has no member');
 
 			$dvq = '('.array_to_devicequery($devices).')';
-
 		}
 
 		$query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&cmd=<type>'

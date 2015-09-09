@@ -123,11 +123,11 @@ class ObjStore
 	*
 	*
 	*/
-	public function display($indent = 0)
+	public function display($indentSpace = 0)
 	{
 		$indent = '';
 		
-		for( $i=0; $i<$indent; $i++ )
+		for( $i=0; $i<$indentSpace; $i++ )
 		{
 			$indent .= ' ';
 		}
