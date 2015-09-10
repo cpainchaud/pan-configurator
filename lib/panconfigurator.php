@@ -76,70 +76,74 @@ function my_shutdown()
     gc_disable();
 }
 
-require_once dirname(__FILE__).'/helper-classes/'."class-IP4Map.php";
-require_once dirname(__FILE__).'/helper-classes/'."class-ServiceDstPortMapping.php";
-require_once dirname(__FILE__).'/helper-classes/'."class-cidr.php";
+$basedir = dirname(__FILE__);
 
-require_once dirname(__FILE__).'/misc-classes/'."trait-ReferenceableObject.php";
-require_once dirname(__FILE__).'/misc-classes/'."trait-XmlConvertible.php";
-require_once dirname(__FILE__).'/misc-classes/'."trait-ObjectWithDescription.php";
-require_once dirname(__FILE__).'/misc-classes/'."class-DH.php";
-require_once dirname(__FILE__).'/misc-classes/'."class-PH.php";
-require_once dirname(__FILE__).'/misc-classes/'."class-RQuery.php";
-require_once dirname(__FILE__).'/misc-classes/'."class-CsvParser.php";
-require_once dirname(__FILE__).'/misc-classes/'."trait-PanSubHelperTrait.php";
-require_once dirname(__FILE__).'/misc-classes/'."class-PanAPIConnector.php";
+require_once $basedir.'/helper-classes/class-IP4Map.php';
+require_once $basedir.'/helper-classes/class-ServiceDstPortMapping.php';
+require_once $basedir.'/helper-classes/class-cidr.php';
 
-require_once dirname(__FILE__).'/container-classes/'."class-ObjRuleContainer.php";
-require_once dirname(__FILE__).'/container-classes/'."class-ZoneRuleContainer.php";
-require_once dirname(__FILE__).'/container-classes/'."class-TagRuleContainer.php";
-require_once dirname(__FILE__).'/container-classes/'."class-AppRuleContainer.php";
-require_once dirname(__FILE__).'/container-classes/'."class-AddressRuleContainer.php";
-require_once dirname(__FILE__).'/container-classes/'."class-ServiceRuleContainer.php";
+require_once $basedir.'/misc-classes/trait-ReferenceableObject.php';
+require_once $basedir.'/misc-classes/trait-XmlConvertible.php';
+require_once $basedir.'/misc-classes/trait-ObjectWithDescription.php';
+require_once $basedir.'/misc-classes/class-DH.php';
+require_once $basedir.'/misc-classes/class-PH.php';
+require_once $basedir.'/misc-classes/class-RQuery.php';
+require_once $basedir.'/misc-classes/class-CsvParser.php';
+require_once $basedir.'/misc-classes/trait-PanSubHelperTrait.php';
+require_once $basedir.'/misc-classes/class-PanAPIConnector.php';
 
-require_once dirname(__FILE__).'/object-classes/'."class-ObjStore.php";
-require_once dirname(__FILE__).'/object-classes/'."class-TagStore.php";
-require_once dirname(__FILE__).'/object-classes/'."class-AppStore.php";
-require_once dirname(__FILE__).'/object-classes/'."class-AddressStore.php";
-require_once dirname(__FILE__).'/object-classes/'."class-ServiceStore.php";
-require_once dirname(__FILE__).'/object-classes/'."class-Tag.php";
-require_once dirname(__FILE__).'/object-classes/'."class-App.php";
-require_once dirname(__FILE__).'/object-classes/'."class-Address.php";
-require_once dirname(__FILE__).'/object-classes/'."class-AddressGroup.php";
-require_once dirname(__FILE__).'/object-classes/'."class-Service.php";
-require_once dirname(__FILE__).'/object-classes/'."class-ServiceGroup.php";
+require_once $basedir.'/container-classes/class-ObjRuleContainer.php';
+require_once $basedir.'/container-classes/class-ZoneRuleContainer.php';
+require_once $basedir.'/container-classes/class-TagRuleContainer.php';
+require_once $basedir.'/container-classes/class-AppRuleContainer.php';
+require_once $basedir.'/container-classes/class-AddressRuleContainer.php';
+require_once $basedir.'/container-classes/class-ServiceRuleContainer.php';
 
-require_once dirname(__FILE__).'/device-and-system-classes/'."class-VirtualSystem.php";
-require_once dirname(__FILE__).'/device-and-system-classes/'."class-PANConf.php";
-require_once dirname(__FILE__).'/device-and-system-classes/'."class-PanoramaConf.php";
-require_once dirname(__FILE__).'/device-and-system-classes/'."class-DeviceGroup.php";
-require_once dirname(__FILE__).'/device-and-system-classes/'."class-Template.php";
-require_once dirname(__FILE__).'/device-and-system-classes/'."class-ManagedDevice.php";
+require_once $basedir.'/object-classes/class-ObjStore.php';
+require_once $basedir.'/object-classes/class-TagStore.php';
+require_once $basedir.'/object-classes/class-AppStore.php';
+require_once $basedir.'/object-classes/class-AddressStore.php';
+require_once $basedir.'/object-classes/class-ServiceStore.php';
+require_once $basedir.'/object-classes/class-Tag.php';
+require_once $basedir.'/object-classes/class-App.php';
+require_once $basedir.'/object-classes/class-Address.php';
+require_once $basedir.'/object-classes/class-AddressGroup.php';
+require_once $basedir.'/object-classes/class-Service.php';
+require_once $basedir.'/object-classes/class-ServiceGroup.php';
 
-require_once dirname(__FILE__).'/network-classes/'."class-Zone.php";
-require_once dirname(__FILE__).'/network-classes/'."class-ZoneStore.php";
-require_once dirname(__FILE__).'/network-classes/'."class-InterfaceContainer.php";
-require_once dirname(__FILE__).'/network-classes/'."class-StaticRoute.php";
-require_once dirname(__FILE__).'/network-classes/'."class-VirtualRouter.php";
-require_once dirname(__FILE__).'/network-classes/'."class-VirtualRouterStore.php";
-require_once dirname(__FILE__).'/network-classes/'."class-NetworkPropertiesContainer.php";
-require_once dirname(__FILE__).'/network-classes/'."class-IPsecTunnelStore.php";
-require_once dirname(__FILE__).'/network-classes/'."class-IPsecTunnel.php";
-require_once dirname(__FILE__).'/network-classes/'."class-LoopbackIfStore.php";
-require_once dirname(__FILE__).'/network-classes/'."class-LoopbackInterface.php";
-require_once dirname(__FILE__).'/network-classes/'."class-EthernetInterface.php";
-require_once dirname(__FILE__).'/network-classes/'."class-EthernetIfStore.php";
-require_once dirname(__FILE__).'/network-classes/'."class-TmpInterface.php";
-require_once dirname(__FILE__).'/network-classes/'."class-TmpInterfaceStore.php";
-require_once dirname(__FILE__).'/network-classes/'."class-AggregateEthernetInterface.php";
-require_once dirname(__FILE__).'/network-classes/'."class-AggregateEthernetIfStore.php";
+require_once $basedir.'/device-and-system-classes/class-VirtualSystem.php';
+require_once $basedir.'/device-and-system-classes/class-PANConf.php';
+require_once $basedir.'/device-and-system-classes/class-PanoramaConf.php';
+require_once $basedir.'/device-and-system-classes/class-DeviceGroup.php';
+require_once $basedir.'/device-and-system-classes/class-Template.php';
+require_once $basedir.'/device-and-system-classes/class-ManagedDevice.php';
 
-require_once dirname(__FILE__).'/rule-classes/class-RuleStore.php';
-require_once dirname(__FILE__).'/rule-classes/class-Rule.php';
-require_once dirname(__FILE__).'/rule-classes/class-SecurityRule.php';
-require_once dirname(__FILE__).'/rule-classes/class-NatRule.php';
-require_once dirname(__FILE__).'/rule-classes/class-DecryptionRule.php';
-require_once dirname(__FILE__).'/rule-classes/class-AppOverrideRule.php';
+require_once $basedir.'/network-classes/class-Zone.php';
+require_once $basedir.'/network-classes/class-ZoneStore.php';
+require_once $basedir.'/network-classes/class-InterfaceContainer.php';
+require_once $basedir.'/network-classes/class-StaticRoute.php';
+require_once $basedir.'/network-classes/class-VirtualRouter.php';
+require_once $basedir.'/network-classes/class-VirtualRouterStore.php';
+require_once $basedir.'/network-classes/class-NetworkPropertiesContainer.php';
+require_once $basedir.'/network-classes/class-IPsecTunnelStore.php';
+require_once $basedir.'/network-classes/class-IPsecTunnel.php';
+require_once $basedir.'/network-classes/class-LoopbackIfStore.php';
+require_once $basedir.'/network-classes/class-LoopbackInterface.php';
+require_once $basedir.'/network-classes/class-EthernetInterface.php';
+require_once $basedir.'/network-classes/class-EthernetIfStore.php';
+require_once $basedir.'/network-classes/class-TmpInterface.php';
+require_once $basedir.'/network-classes/class-TmpInterfaceStore.php';
+require_once $basedir.'/network-classes/class-AggregateEthernetInterface.php';
+require_once $basedir.'/network-classes/class-AggregateEthernetIfStore.php';
+
+require_once $basedir.'/rule-classes/class-RuleStore.php';
+require_once $basedir.'/rule-classes/class-Rule.php';
+require_once $basedir.'/rule-classes/class-SecurityRule.php';
+require_once $basedir.'/rule-classes/class-NatRule.php';
+require_once $basedir.'/rule-classes/class-DecryptionRule.php';
+require_once $basedir.'/rule-classes/class-AppOverrideRule.php';
+
+unset($basedir);
 
 
 function & array_diff_no_cast(&$ar1, &$ar2)
