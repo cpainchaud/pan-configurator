@@ -62,7 +62,7 @@ class ObjStore
 	
 	protected function findByName($name, $ref=null)
 	{
-		if( array_key_exists($name, $this->nameIndex) )
+		if( isset($this->nameIndex[$name]) )
 		{
 			$o = $this->nameIndex[$name];
 			if( $ref !== null )
@@ -146,12 +146,12 @@ class ObjStore
 
 	public function referencedObjectRenamed($h, $oldName)
 	{
-		if(array_key_exists($h->name(), $this->nameIndex))
+		if(isset($this->nameIndex[$h->name()]))
 		{
 			derr("an object with this name already exists in this store");
 		}
 
-		if( array_key_exists($oldName, $this->nameIndex) )
+		if( isset($this->nameIndex[$oldName]) )
 		{
 			$o = $this->nameIndex[$oldName];
 			if($o === $h)
