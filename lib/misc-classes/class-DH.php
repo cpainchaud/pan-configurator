@@ -104,6 +104,12 @@ class DH
 		return FALSE;
 	}
 
+    /**
+     * @param string $tagName
+     * @param DOMNode $node
+     * @return bool|DOMNode
+     * @throws Exception
+     */
 	static function findFirstElementOrDie($tagName, DOMNode $node)
 	{
 		$ret = DH::findFirstElement($tagName, $node);
@@ -177,7 +183,6 @@ class DH
 	}
 
 
-
     /**
      * @param string $tagName
      * @param DOMNode $node
@@ -222,7 +227,7 @@ class DH
 	}
 
     /**
-     * @param $attrName
+     * @param string $attrName
      * @param DOMElement|DOMNode $node
      * @return bool|string
      */
@@ -366,7 +371,7 @@ class DH
 	 * @param DOMNode $element
 	 * @return string
 	 */
-	static public function & elementToPanXPath($element)
+	static public function elementToPanXPath($element)
 	{
 		$xpath = '';
 
