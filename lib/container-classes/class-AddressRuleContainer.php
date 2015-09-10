@@ -540,7 +540,7 @@ class AddressRuleContainer extends ObjRuleContainer
     /**
      * @return IP4Map
      */
-    public function & getIP4Mapping()
+    public function getIP4Mapping()
     {
         $result = Array( 'unresolved' => Array() );
         $mapObject = new IP4Map();

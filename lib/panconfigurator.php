@@ -738,13 +738,10 @@ function mwarning($msg, $object = null)
  */
 function boolYesNo($bool)
 {
-    static $yes = 'yes';
-    static $no = 'no';
-
     if( $bool )
-        return $yes;
+        return 'yes';
 
-    return $no;
+    return 'no';
 }
 
 function yesNoBool($yes)
