@@ -189,16 +189,15 @@ class AddressStore
 
 			$ns = new AddressGroup('',$this);
 			$ns->load_from_domxml($node);
-			
-			$f = $this->findTmpAddress($ns->name(), null,false);
-			if( $f )
-			{
-				$f->replaceMeGlobally($ns);
-				$this->remove($f, false);
-				
-			}
 
-			$objectName = $ns->name();
+            $objectName = $ns->name();
+
+			if( isset($this->tmpaddr[$objectName]) )
+			{
+                $this->tmpaddr[$objectName]->replaceMeGlobally($ns);
+                if( isset($this->tmpaddr[$objectName]) )
+				    $this->remove($this->tmpaddr[$objectName], false);
+			}
 
 			$this->addrg[$objectName] = $ns;
 			$this->all[$objectName] = $ns;
@@ -298,40 +297,34 @@ class AddressStore
 	 * @param string $type
      * @return Address|AddressGroup|null
 	*/
-	public function find( $objectName , $ref=null, $nested=true, $type = '')
+	public function find( $objectName , $ref=null, $nested=true)
 	{
 		$f = null;
 
         if( isset($this->all[$objectName]) )
         {
-            $this->all[$objectName]->addReference($ref);
-            if( $type == 'tmp' )
-            {
-                if ( $this->all[$objectName]->isTmpAddr() )
-                    return $this->all[$objectName];
-                return null;
-            }
-
-            return $this->all[$objectName];
+            $foundObject = $this->all[$objectName];
+            $foundObject->addReference($ref);
+            return $foundObject;
         }
 
         if( $nested && isset($this->panoramaShared) )
         {
-            $f = $this->panoramaShared->find( $objectName , $ref, false, $type);
+            $f = $this->panoramaShared->find( $objectName , $ref, false);
 
             if( $f !== null )
                 return $f;
         }
         else if( $nested && isset($this->panoramaDG) )
         {
-            $f = $this->panoramaDG->find( $objectName , $ref, false, $type);
+            $f = $this->panoramaDG->find( $objectName , $ref, false);
             if( $f !== null )
                 return $f;
         }
 
         if( $nested && $this->parentCentralStore)
         {
-            $f = $this->parentCentralStore->find( $objectName , $ref, $nested, $type);
+            $f = $this->parentCentralStore->find( $objectName , $ref, $nested);
         }
 
         return $f;
@@ -353,9 +346,15 @@ class AddressStore
      * @param string $name
      * @return Address|null
      */
-	public function findTmpAddress($name)
+	public function findTmpAddress($name, $ref=null, $nested = true)
 	{
-		return $this->find($name , null, false, 'tmp');
+        if( $nested )
+            derr("nested is not supported yet");
+
+        if( !isset($this->tmpaddr[$name]) )
+            return null;
+
+        return $this->tmpaddr[$name];
 	}
 	
 	public function displayTmpAddresss()

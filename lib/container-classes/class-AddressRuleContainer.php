@@ -197,19 +197,22 @@ class AddressRuleContainer extends ObjRuleContainer
         $i=0;
         foreach( $xml->childNodes as $node )
         {
-            if( $node->nodeType != 1 ) continue;
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
 
-            if( $i == 0 && strtolower($node->textContent) == 'any' )
+            $content = $node->textContent;
+
+            if( $i == 0 && strtolower($content) == 'any' )
             {
                 return;
             }
 
-            if( strlen($node->textContent) < 1 )
+            if( strlen($content) < 1 )
             {
                 derr('this container has members with empty name!', $node);
             }
 
-            $f = $this->parentCentralStore->findOrCreate( $node->textContent, $this);
+            $f = $this->parentCentralStore->findOrCreate( $content, $this);
             $this->o[] = $f;
             $i++;
         }
