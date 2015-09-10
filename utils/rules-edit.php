@@ -139,6 +139,7 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
     {
         if( $system->isDeviceGroup() || $system->isPanorama() )
         {
+            $panconf = null;
             $panorama = $system;
             if( $system->isDeviceGroup() )
                 $panorama = $system->owner;
