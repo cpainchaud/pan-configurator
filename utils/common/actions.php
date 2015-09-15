@@ -54,6 +54,17 @@ class CallContext
         $this->actionRef['MainFunction']($this);
     }
 
+    public function hasGlobalFinishAction()
+    {
+        return isset($this->actionRef['GlobalFinishFunction']);
+    }
+
+    public function executeGlobalFinishAction()
+    {
+        print "   - action '{$this->actionRef['name']} has tasks to process before shutdown.'\n";
+        $this->actionRef['GlobalFinishFunction']($this);
+    }
+
     public function prepareArgumentsForAction($arguments)
     {
         $this->arguments = Array();

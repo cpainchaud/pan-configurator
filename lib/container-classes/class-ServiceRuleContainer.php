@@ -512,7 +512,7 @@ class ServiceRuleContainer extends ObjRuleContainer
     }
 
 
-    public function &toString_inline()
+    public function toString_inline()
     {
         $arr = &$this->o;
         $c = count($arr);

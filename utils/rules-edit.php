@@ -1094,7 +1094,164 @@ $supportedActions['copy'] = Array(
     'args' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
                             'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
 );
+$supportedActions['exporttoexcel'] = Array(
+    'name' => 'exportToExcel',
+    'MainFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $args = &$context->arguments;
+        $context->ruleList[] = $rule;
+    },
+    'GlobalInitFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $args = &$context->arguments;
 
+        $context->ruleList = Array();
+    },
+    'GlobalFinishFunction' => function(CallContext $context)
+    {
+        $rule = $context->object;
+        $args = &$context->arguments;
+        $filename = $args['filename'];
+
+        $template = '<html xmlns:v="urn:schemas-microsoft-com:vml"
+            xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:x="urn:schemas-microsoft-com:office:excel"
+            xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+        <style>
+               #br {mso-data-placement:same-cell;}
+            table th, td {
+                            #background-color: #ccc;
+                            border: 1px solid #999;
+                            padding: 5px;
+                            vertical-align: middle;
+                        }
+        </style>
+        </head>
+        <body>
+        <table>
+            <tr>
+                <th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>
+                <th>action</th><th>log start</th><th>log end</th><th>disabled</th>
+            </tr>
+            %lines%
+        </table>
+        </body>
+        </html>';
+
+        $lines = '';
+        $encloseFunction  = function($value) { return '<td>'.$value.'</td>'; };
+
+        $count = 0;
+        foreach( $context->ruleList as $rule )
+        {
+            $count++;
+
+            /** @var SecurityRule|NatRule $rule */
+            if( $count % 2 == 1 )
+                $lines .= "<tr>\n";
+            else
+                $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+            if( $rule->owner->owner->isPanorama() || $rule->owner->owner->isPanOS() )
+                $lines .= $encloseFunction('shared');
+            else
+                $lines .= $encloseFunction($rule->owner->owner->name());
+
+
+            if( $rule->isSecurityRule() )
+                $lines .= $encloseFunction('security');
+            else $lines .= $encloseFunction('unknown');
+
+            $lines .= $encloseFunction($rule->name());
+
+            if( $rule->from->isAny() )
+                $lines .= $encloseFunction('any');
+            else
+            {
+                $tmpArray = $rule->from->getAll();
+                $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+            }
+
+            if( $rule->source->isAny() )
+                $lines .= $encloseFunction('any');
+            else
+            {
+                $tmpArray = $rule->source->getAll();
+                $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+            }
+
+            if( $rule->to->isAny() )
+                $lines .= $encloseFunction('any');
+            else
+            {
+                $tmpArray = $rule->to->getAll();
+                $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+            }
+
+            if( $rule->destination->isAny() )
+                $lines .= $encloseFunction('any');
+            else
+            {
+                $tmpArray = $rule->destination->getAll();
+                $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+            }
+
+            if( $rule->isSecurityRule() )
+            {
+                if( $rule->services->isAny() )
+                    $lines .= $encloseFunction('any');
+                elseif( $rule->services->isApplicationDefault() )
+                    $lines .= $encloseFunction('application-default');
+                else
+                {
+                    $tmpArray = $rule->services->getAll();
+                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                }
+            }
+            else
+                $lines .= $encloseFunction('');
+
+            if( $rule->isSecurityRule() )
+            {
+                if( $rule->apps->isAny() )
+                    $lines .= $encloseFunction('any');
+                else
+                {
+                    $tmpArray = $rule->apps->getAll();
+                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                }
+            }
+            else
+                $lines .= $encloseFunction('');
+
+            if( $rule->isSecurityRule() )
+            {
+                $lines .= $encloseFunction($rule->action());
+                $lines .= $encloseFunction(boolYesNo($rule->logStart()));
+                $lines .= $encloseFunction(boolYesNo($rule->logEnd()));
+            }
+            else
+            {
+                $lines .= $encloseFunction('');
+                $lines .= $encloseFunction('');
+                $lines .= $encloseFunction('');
+            }
+
+            $lines .= $encloseFunction(boolYesNo($rule->isDisabled()));
+
+
+            $lines .= "</tr>\n";
+
+        }
+
+        $content = str_replace('%lines%', $lines, $template);
+        file_put_contents($filename, $content);
+    },
+    'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
+);
 $supportedActions['cloneforappoverride'] = Array(
     'name' => 'cloneForAppOverride',
     'MainFunction' => function(CallContext $context)
@@ -1726,6 +1883,16 @@ foreach( $rulesToProcess as &$rulesRecord )
 print "\n";
 // </editor-fold>
 
+
+$first  = true;
+foreach( $doActions as $doAction )
+{
+    if( $doAction->hasGlobalFinishAction() )
+    {
+        $first = false;
+        $doAction->executeGlobalFinishAction();
+    }
+}
 
 if( isset(PH::$args['stats']) )
 {

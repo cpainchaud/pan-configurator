@@ -174,7 +174,7 @@ class ObjRuleContainer
         }
     }
 
-    public function &toString_inline()
+    public function toString_inline()
     {
         return PH::list_to_string($this->o);
     }

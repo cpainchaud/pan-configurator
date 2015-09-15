@@ -200,7 +200,7 @@ class ZoneRuleContainer extends ObjRuleContainer
         DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
     }
 
-    public function &toString_inline()
+    public function toString_inline()
     {
         if( count($this->o) == 0 )
         {

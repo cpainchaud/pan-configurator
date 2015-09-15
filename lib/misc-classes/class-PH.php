@@ -178,7 +178,7 @@ class PH
      * @param string|ReferenceableObject[] $array
      * @return string
      */
-    static public function &list_to_string(&$array)
+    static public function list_to_string(&$array, $separator = ',')
     {
         $ret = '';
         $first = true;
@@ -196,9 +196,9 @@ class PH
             else
             {
                 if( is_string($el) )
-                    $ret .= ','.$el;
+                    $ret .= $separator.$el;
                 else
-                    $ret .= ','.$el->name();
+                    $ret .= $separator.$el->name();
             }
 
         }
