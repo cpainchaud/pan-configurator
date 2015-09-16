@@ -1360,7 +1360,7 @@ RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
     },
     'arg' => false
 );
-RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
+RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var $object Address|AddressGroup */
@@ -1368,7 +1368,7 @@ RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
     },
     'arg' => true
 );
-RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
+RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var $object Address|AddressGroup */
