@@ -1134,7 +1134,8 @@ $supportedActions['exporttoexcel'] = Array(
         <table>
             <tr>
                 <th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>
-                <th>action</th><th>log start</th><th>log end</th><th>disabled</th>
+                <th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>
+                <th>SNAT type</th><th>SNAT hosts</th><th>DNAT host</th><th>DNAT port</th>
             </tr>
             %lines%
         </table>
@@ -1142,109 +1143,155 @@ $supportedActions['exporttoexcel'] = Array(
         </html>';
 
         $lines = '';
-        $encloseFunction  = function($value) { return '<td>'.$value.'</td>'; };
+        $encloseFunction  = function($value)
+                            {
+                                return '<td>'.$value.'</td>';
+                            };
 
         $count = 0;
-        foreach( $context->ruleList as $rule )
+        if( isset($context->ruleList) )
         {
-            $count++;
-
-            /** @var SecurityRule|NatRule $rule */
-            if( $count % 2 == 1 )
-                $lines .= "<tr>\n";
-            else
-                $lines .= "<tr bgcolor=\"#DDDDDD\">";
-
-            if( $rule->owner->owner->isPanorama() || $rule->owner->owner->isPanOS() )
-                $lines .= $encloseFunction('shared');
-            else
-                $lines .= $encloseFunction($rule->owner->owner->name());
-
-
-            if( $rule->isSecurityRule() )
-                $lines .= $encloseFunction('security');
-            else $lines .= $encloseFunction('unknown');
-
-            $lines .= $encloseFunction($rule->name());
-
-            if( $rule->from->isAny() )
-                $lines .= $encloseFunction('any');
-            else
+            foreach ($context->ruleList as $rule)
             {
-                $tmpArray = $rule->from->getAll();
-                $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
-            }
+                $count++;
 
-            if( $rule->source->isAny() )
-                $lines .= $encloseFunction('any');
-            else
-            {
-                $tmpArray = $rule->source->getAll();
-                $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
-            }
-
-            if( $rule->to->isAny() )
-                $lines .= $encloseFunction('any');
-            else
-            {
-                $tmpArray = $rule->to->getAll();
-                $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
-            }
-
-            if( $rule->destination->isAny() )
-                $lines .= $encloseFunction('any');
-            else
-            {
-                $tmpArray = $rule->destination->getAll();
-                $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
-            }
-
-            if( $rule->isSecurityRule() )
-            {
-                if( $rule->services->isAny() )
-                    $lines .= $encloseFunction('any');
-                elseif( $rule->services->isApplicationDefault() )
-                    $lines .= $encloseFunction('application-default');
+                /** @var SecurityRule|NatRule $rule */
+                if ($count % 2 == 1)
+                    $lines .= "<tr>\n";
                 else
-                {
-                    $tmpArray = $rule->services->getAll();
-                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
-                }
-            }
-            else
-                $lines .= $encloseFunction('');
+                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-            if( $rule->isSecurityRule() )
-            {
-                if( $rule->apps->isAny() )
+                if ($rule->owner->owner->isPanorama() || $rule->owner->owner->isPanOS())
+                    $lines .= $encloseFunction('shared');
+                else
+                    $lines .= $encloseFunction($rule->owner->owner->name());
+
+
+                if ($rule->isSecurityRule())
+                    $lines .= $encloseFunction('security');
+                elseif ($rule->isNatRule())
+                    $lines .= $encloseFunction('nat');
+                else $lines .= $encloseFunction('unknown');
+
+                $lines .= $encloseFunction($rule->name());
+
+                if ($rule->from->isAny())
                     $lines .= $encloseFunction('any');
                 else
                 {
-                    $tmpArray = $rule->apps->getAll();
+                    $tmpArray = $rule->from->getAll();
                     $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
                 }
+
+                if ($rule->source->isAny())
+                    $lines .= $encloseFunction('any');
+                else
+                {
+                    $tmpArray = $rule->source->getAll();
+                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                }
+
+                if ($rule->to->isAny())
+                    $lines .= $encloseFunction('any');
+                else
+                {
+                    $tmpArray = $rule->to->getAll();
+                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                }
+
+                if ($rule->destination->isAny())
+                    $lines .= $encloseFunction('any');
+                else
+                {
+                    $tmpArray = $rule->destination->getAll();
+                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                }
+
+                if ($rule->isSecurityRule())
+                {
+                    if ($rule->services->isAny())
+                        $lines .= $encloseFunction('any');
+                    elseif ($rule->services->isApplicationDefault())
+                        $lines .= $encloseFunction('application-default');
+                    else
+                    {
+                        $tmpArray = $rule->services->getAll();
+                        $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                    }
+                } elseif ($rule->isNatRule())
+                {
+                    if ($rule->service !== null)
+                        $lines .= $encloseFunction($rule->service->name());
+                    else
+                        $lines .= $encloseFunction('any');
+                } else
+                    $lines .= $encloseFunction('');
+
+                if ($rule->isSecurityRule())
+                {
+                    if ($rule->apps->isAny())
+                        $lines .= $encloseFunction('any');
+                    else
+                    {
+                        $tmpArray = $rule->apps->getAll();
+                        $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                    }
+                } else
+                    $lines .= $encloseFunction('');
+
+                if ($rule->isSecurityRule())
+                {
+                    $lines .= $encloseFunction($rule->action());
+                    $lines .= $encloseFunction(boolYesNo($rule->logStart()));
+                    $lines .= $encloseFunction(boolYesNo($rule->logEnd()));
+                } else
+                {
+                    $lines .= $encloseFunction('');
+                    $lines .= $encloseFunction('');
+                    $lines .= $encloseFunction('');
+                }
+
+                $lines .= $encloseFunction(boolYesNo($rule->isDisabled()));
+                $lines .= $encloseFunction(htmlspecialchars($rule->description()));
+
+                if ($rule->isNatRule())
+                {
+                    $natType = $rule->natType();
+                    $lines .= $encloseFunction($natType);
+                    if ($natType == 'none')
+                        $lines .= $encloseFunction('');
+                    elseif($natType == 'static-ip' || $natType == 'dynamic-ip' || $natType == 'dynamic-ip-and-port')
+                    {
+                        $tmpArray = $rule->snathosts->all();
+                        $lines .= $encloseFunction(PH::list_to_string($tmpArray));
+                    } else
+                        $lines .= $encloseFunction('unsupported');
+
+                    if( $rule->dnathost !== null )
+                    {
+                        $lines .= $encloseFunction($rule->dnathost->name());
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+
+                    if( $rule->dnatports !== null )
+                    {
+                        $lines .= $encloseFunction($rule->dnatports->name());
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+
+                } else
+                {
+                    $lines .= $encloseFunction('');
+                    $lines .= $encloseFunction('');
+                    $lines .= $encloseFunction('');
+                }
+
+
+                $lines .= "</tr>\n";
+
             }
-            else
-                $lines .= $encloseFunction('');
-
-            if( $rule->isSecurityRule() )
-            {
-                $lines .= $encloseFunction($rule->action());
-                $lines .= $encloseFunction(boolYesNo($rule->logStart()));
-                $lines .= $encloseFunction(boolYesNo($rule->logEnd()));
-            }
-            else
-            {
-                $lines .= $encloseFunction('');
-                $lines .= $encloseFunction('');
-                $lines .= $encloseFunction('');
-            }
-
-            $lines .= $encloseFunction(boolYesNo($rule->isDisabled()));
-
-
-            $lines .= "</tr>\n";
-
         }
 
         $content = str_replace('%lines%', $lines, $template);
