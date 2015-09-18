@@ -1143,8 +1143,11 @@ $supportedActions['exporttoexcel'] = Array(
         </html>';
 
         $lines = '';
-        $encloseFunction  = function($value)
+        $encloseFunction  = function($value, $nowrap = true)
                             {
+                                if( $nowrap )
+                                    return '<td style="white-space: nowrap">'.$value.'</td>';
+
                                 return '<td>'.$value.'</td>';
                             };
 
@@ -1252,7 +1255,7 @@ $supportedActions['exporttoexcel'] = Array(
                 }
 
                 $lines .= $encloseFunction(boolYesNo($rule->isDisabled()));
-                $lines .= $encloseFunction(htmlspecialchars($rule->description()));
+                $lines .= $encloseFunction(htmlspecialchars($rule->description()), false);
 
                 if ($rule->isNatRule())
                 {
