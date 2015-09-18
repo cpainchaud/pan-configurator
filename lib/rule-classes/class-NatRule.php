@@ -575,7 +575,7 @@ class NatRule extends Rule
 	
 	public function natType()
 	{
-		return $this->nattype;
+		return $this->snattype;
 	}
 
 	/**
