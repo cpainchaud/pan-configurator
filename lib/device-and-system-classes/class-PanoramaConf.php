@@ -177,14 +177,14 @@ class PanoramaConf
 			$this->managedFirewallsSerials[] = $s;
 		}
 
-		$this->sharedroot = DH::findFirstElementOrDie('shared', $this->configroot);
+		$this->sharedroot = DH::findFirstElementOrCreate('shared', $this->configroot);
 
 		$this->devicesroot = DH::findFirstElementOrDie('devices', $this->configroot);
 
 		$this->localhostroot = DH::findFirstElementByNameAttrOrDie('entry', 'localhost.localdomain',$this->devicesroot);
 
-		$this->devicegrouproot = DH::findFirstElementOrDie('device-group', $this->localhostroot);
-        $this->templateroot = DH::findFirstElementOrDie('template', $this->localhostroot);
+		$this->devicegrouproot = DH::findFirstElementOrCreate('device-group', $this->localhostroot);
+        $this->templateroot = DH::findFirstElementOrCreate('template', $this->localhostroot);
 
         //
         // Extract Tag objects
