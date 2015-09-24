@@ -958,8 +958,8 @@ class SecurityRule extends Rule
             $repeatOrCount = 'repeatcnt';
 
 		$query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&cmd=<type>'
-		         ."<{$type}><aggregate-by><member>container-of-app</member></aggregate-by>"
-		         ."<values><member>{$repeatOrCount}</member></values></{$type}></type><period>{$timePeriod}</period>"
+		         ."<{$type}><aggregate-by><member>application</member></aggregate-by>"
+		         ."<values><member>container-of-app</member><member>{$repeatOrCount}</member></values></{$type}></type><period>{$timePeriod}</period>"
 		         ."<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
 		         ."<query>(rule eq '{$this->name}') {$dvq} {$excludedAppsString}</query>";
 
