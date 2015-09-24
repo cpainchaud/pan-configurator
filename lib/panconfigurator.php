@@ -618,7 +618,7 @@ function derr($msg, $object=null)
     {
         if( $skip >= 0 )
         {
-            print "$count ****\n";
+            fwrite(STDERR,"$count ****\n");
             if( isset($l['object']) && method_exists($l['object'], 'toString'))
             {
                 fwrite(STDERR,'   '.$l['object']->toString()."\n");
