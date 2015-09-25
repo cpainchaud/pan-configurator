@@ -328,6 +328,62 @@ $supportedActions['replacebymembersanddelete'] = Array(
     },
 );
 
+$supportedActions['name-addprefix'] = Array(
+    'name' => 'name-addPrefix',
+    'MainFunction' =>  function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $newName = $context->arguments['prefix'].$object->name();
+        print $context->padding." - new name will be '{$newName}'\n";
+        if( strlen($newName) > 63 )
+        {
+            print " *** SKIPPED : resulting name is too long\n";
+            return;
+        }
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
+            $rootObject->isPanOS() && $object->owner->find($newName, null, true) !== null   )
+        {
+            print " *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+            $object->setName($newName);
+    },
+    'args' => Array( 'prefix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+                    ),
+);
+$supportedActions['name-addsuffix'] = Array(
+    'name' => 'name-addSuffix',
+    'MainFunction' =>  function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $newName = $object->name().$context->arguments['suffix'];
+        print $context->padding." - new name will be '{$newName}'\n";
+        if( strlen($newName) > 63 )
+        {
+            print " *** SKIPPED : resulting name is too long\n";
+            return;
+        }
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
+            $rootObject->isPanOS() && $object->owner->find($newName, null, true) !== null   )
+        {
+            print " *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+            $object->setName($newName);
+    },
+    'args' => Array( 'suffix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    ),
+);
 
 $supportedActions['move'] = Array(
     'name' => 'move',
@@ -345,7 +401,7 @@ $supportedActions['move'] = Array(
 
         if( $localLocation == $targetLocation )
         {
-            print $context->padding."   * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            print $context->padding." * SKIPPED because original and target destinations are the same: $targetLocation\n";
             return;
         }
 
@@ -546,7 +602,7 @@ $supportedActions['display'] = Array(
         if( $object->isGroup() )
             foreach($object->members() as $member)
                 print "          - {$member->name()}\n";
-        print "\n\n";
+        print "\n";
     },
 );
 // </editor-fold>
@@ -975,8 +1031,8 @@ foreach( $objectsToProcess as &$objectsRecord )
 
         foreach( $doActions as $doAction )
         {
+            $doAction->padding = '     ';
             $doAction->executeAction($object);
-
             print "\n";
         }
     }

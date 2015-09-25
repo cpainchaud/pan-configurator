@@ -6,7 +6,7 @@ CHANGELOG
 * renamed address query filter "value eq" to "value string.eq" for string comparison
 * new address query filters "value ip4.match.exact"
 * rules-edit.php : improved zone calculation feature by allowing to load an external firewall
-* rules-edit.php : new action 'exportCSV'
+* rules-edit.php : new action exportToExcel , name-addPrefix, name-addSuffix
 
 bugfixes:
 * NatRule source nat hosts and types were incorrectly implemented
