@@ -566,15 +566,15 @@ class ServiceStore
 	}
 
 	
-	public function newService($name, $proto, $dport)
+	public function newService($name, $protocol, $destinationPorts)
 	{
 		
 		if( isset($this->fast[$name]) )
 			derr("A Service named '$name' already exists");
 		
-		$s = new Service($name, null, true);
-		$s->setProtocol($proto);
-		$s->setDestPort($dport);
+		$s = new Service($name, $this, true);
+		$s->setProtocol($protocol);
+		$s->setDestPort($destinationPorts);
 		$this->add($s);
 		return $s;
 	

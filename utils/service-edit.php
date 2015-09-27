@@ -344,6 +344,57 @@ $supportedActions['move'] = Array(
     ),
 );
 
+$supportedActions['replacegroupbyservice'] = Array(
+    'name' => 'replaceGroupByService',
+    'MainFunction' => function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $context->isAPI )
+            derr("action 'replaceGroupByService' is not support in API/online mode yet");
+
+        if( $object->isService() )
+        {
+            print $context->padding." *** SKIPPED : this is not a group\n";
+            return;
+        }
+        if( !$object->isGroup() )
+        {
+            print $context->padding." *** SKIPPED : unsupported object type\n";
+            return;
+        }
+        if( $object->count() < 1 )
+        {
+            print $context->padding." *** SKIPPED : group has no member\n";
+            return;
+        }
+
+        $mapping = $object->dstPortMapping();
+        if( $mapping->hasTcpMappings() && $mapping->hasUdpMappings() )
+        {
+            print $context->padding." *** SKIPPED : group has a mix of UDP and TCP based mappings, they cannot be merged in a single object\n";
+            return;
+        }
+
+
+        $store = $object->owner;
+
+        $store->remove($object);
+
+        if( $mapping->hasUdpMappings() )
+            $newService = $store->newService($object->name(), 'udp', $mapping->udpMappingToText() );
+        else
+            $newService = $store->newService($object->name(), 'tcp', $mapping->tcpMappingToText() );
+
+        $object->replaceMeGlobally($newService);
+
+        if( $mapping->hasUdpMappings() )
+            print $context->padding." * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}\n";
+        else
+            print $context->padding." * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}\n";
+
+    },
+);
 
 $supportedActions['replacebymembersanddelete'] = Array(
     'name' => 'replaceByMembersAndDelete',
@@ -906,6 +957,7 @@ foreach( $objectsToProcess as &$objectsRecord )
 
         foreach( $doActions as $doAction )
         {
+            $doAction->padding = '     ';
             $doAction->executeAction($object);
 
             print "\n";

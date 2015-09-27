@@ -2,7 +2,7 @@ CHANGELOG
 
 1.5.3
 * address-edit.php : name-addPrefix, name-addSuffix
-* service-edit.php : name-addPrefix, name-addSuffix
+* service-edit.php : name-addPrefix, name-addSuffix, replaceGroupByService
 
 
 1.5.2

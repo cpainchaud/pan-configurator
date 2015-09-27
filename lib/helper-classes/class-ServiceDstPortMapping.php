@@ -303,7 +303,7 @@ class ServiceDstPortMapping
     /**
      * @return string
      */
-    public function & mappingToText()
+    public function mappingToText()
     {
         $returnText = '';
 
