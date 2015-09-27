@@ -4,6 +4,9 @@ CHANGELOG
 * address-edit.php : name-addPrefix, name-addSuffix
 * service-edit.php : name-addPrefix, name-addSuffix, replaceGroupByService
 
+bugfixes:
+* issue during creation of a new Service that failed to detect proper protocol
+
 
 1.5.2
 * switched classes constructors to __construct() which is mainstream for PHP5.4+ and 7.0

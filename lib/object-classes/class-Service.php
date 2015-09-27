@@ -68,7 +68,7 @@ class Service
 
             $node = DH::findFirstElementOrDie('entry',$doc);
 
-            $rootDoc = $this->owner->servroot->ownerDocument;
+            $rootDoc = $owner->servroot->ownerDocument;
             $this->xmlroot = $rootDoc->importNode($node, true);
             $this->load_from_domxml($this->xmlroot);
 
@@ -190,7 +190,7 @@ class Service
      */
 	public function setProtocol($newProtocol)
 	{
-        if( $newProtocol != 'tcp' || $newProtocol != 'udp' )
+        if( $newProtocol != 'tcp' && $newProtocol != 'udp' )
             derr("unsupported protocol '{$newProtocol}'");
 
         if( $newProtocol == $this->_protocol )
