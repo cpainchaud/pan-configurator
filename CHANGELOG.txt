@@ -3,6 +3,7 @@ CHANGELOG
 1.5.3
 * address-edit.php : name-addPrefix, name-addSuffix
 * service-edit.php : name-addPrefix, name-addSuffix, replaceGroupByService
+* added a template to kickstart your own scripts. look in examples\template-for-your-own-scripts.php
 
 bugfixes:
 * issue during creation of a new Service that failed to detect proper protocol
