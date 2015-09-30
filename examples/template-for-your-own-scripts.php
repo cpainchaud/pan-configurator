@@ -22,6 +22,8 @@ if( $configInput['status'] == 'fail' )
     derr($configInput['msg']);
 
 
+$apiMode = false;
+
 if( $configInput['type'] == 'file' )
 {
     if(isset(PH::$args['out']) )
@@ -43,6 +45,7 @@ if( $configInput['type'] == 'file' )
 }
 elseif ( $configInput['type'] == 'api'  )
 {
+    $apiMode = true;
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
     print " - Downloading config from API... ";
@@ -99,6 +102,7 @@ print "\n\n    **********     **********\n\n";
  * * $pan : PANConf or PanoramaConf object
  * * $location : string with location name or undefined if not provided on CLI
  * * $sub : DeviceGroup or VirtualSystem found after looking from cli 'location' argument
+ * * $apiMode : if config file was downloaded from API directly
  * * PH::$args : array with all CLI arguments processed by PAN-Configurator
  * *
  */
