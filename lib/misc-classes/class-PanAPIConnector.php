@@ -195,7 +195,7 @@ class PanAPIConnector
         self::loadConnectorsFromUserHome();
 
         $host = strtolower($host);
-        $port = null;
+        $port = 443;
 
         $hostExplode = explode(':', $host);
         if( count($hostExplode) > 1 )
@@ -203,6 +203,7 @@ class PanAPIConnector
             $port = $hostExplode[1];
             $host = $hostExplode[0];
         }
+
 
         foreach( self::$savedConnectors as $connector )
         {
@@ -218,7 +219,7 @@ class PanAPIConnector
 
         if( $apiKey !== null )
         {
-            $connection = new PanAPIConnector($host, $apiKey, 'panos');
+            $connection = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
         elseif( $promptForKey )
         {
@@ -236,9 +237,9 @@ class PanAPIConnector
                 $password = trim($line);
 
                 print "* Now generating an API key from '$host'...";
-                $con = new PanAPIConnector($host, '');
+                $con = new PanAPIConnector($host, '', 'panos', null, $port);
 
-                $url = "type=keygen&user=$user&password=$password";
+                $url = "type=keygen&user=".urlencode($user)."&password=".urlencode($password);
                 $res = $con->sendRequest($url);
 
                 $res = DH::findFirstElement('response', $res);
@@ -261,8 +262,9 @@ class PanAPIConnector
 
             fclose($handle);
 
-            $connection = new PanAPIConnector($host, $apiKey, 'panos');
+            $connection = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
+
 
         if( $checkConnectivity)
         {
@@ -276,10 +278,9 @@ class PanAPIConnector
 
     public function testConnectivity()
     {
-        $url = "type=op&cmd=<show><system><info></info></system></show>";
-        $res = $this->sendRequest($url);
-
         print " Testing API connectivity: ";
+
+        $res = $this->sendOpRequest("<show><system><info></info></system></show>");
 
         $res = DH::findFirstElement('response', $res);
         if ($res === false)
@@ -446,13 +447,13 @@ class PanAPIConnector
         {
             $finalUrl = 'https://'.$host.'/api/';
             if( !$sendThroughPost )
-             $finalUrl .= '?key='.$this->apikey.'&target='.$this->serial;
+             $finalUrl .= '?key='.urlencode($this->apikey).'&target='.$this->serial;
         }
         else
         {
             $finalUrl = 'https://' . $host . '/api/';
             if( !$sendThroughPost )
-                $finalUrl .= '?key=' . $this->apikey;
+                $finalUrl .= '?key=' . urlencode($this->apikey);
         }
 
         if( !$sendThroughPost )
@@ -490,6 +491,8 @@ class PanAPIConnector
             $properParams = http_build_query($parameters);
             $c->setPost($properParams);
         }
+
+        //$this->showApiCalls = true;
 
         if( $this->showApiCalls )
         {
@@ -857,6 +860,20 @@ class PanAPIConnector
         $params['action']  = 'rename';
         $params['xpath']  = &$xpath;
         $params['newname']  = &$newname;
+
+        return $this->sendRequest($params);
+    }
+
+    /**
+     * @param string $cmd
+     * @return DomDocument
+     */
+    public function sendOpRequest($cmd)
+    {
+        $params = Array();
+
+        $params['type']  = 'op';
+        $params['cmd']  = $cmd;
 
         return $this->sendRequest($params);
     }
