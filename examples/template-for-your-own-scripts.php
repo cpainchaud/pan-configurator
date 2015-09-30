@@ -7,9 +7,6 @@ require_once("lib/panconfigurator.php");
 
 PH::processCliArgs();
 
-if( !isset(PH::$args['location']) )
-    derr("missing 'location' argument, please specify a vsys or device-group name");
-
 if( !isset(PH::$args['in']) )
     derr("missing 'in' argument");
 if( !is_string(PH::$args['in']) || strlen(PH::$args['in']) < 1 )
@@ -76,12 +73,31 @@ print " - Detected platform type is '{$configType}'\n";
 if( $configInput['type'] == 'api' )
     $pan->connector = $configInput['connector'];
 
+if( isset(PH::$args['location']) )
+{
+    $location = PH::$args['location'];
+    $sub = $pan->findSubSystemByName($location);
+    if( $sub === null )
+    {
+        print " - specific location '{$location}' was not found. EXIT!!\n\n";
+        exit(1);
+    }
+}
+else
+{
+    $location = 'undefined';
+    print " - no 'location' provided so \$sub is not set\n";
+}
+
+print "\n\n    **********     **********\n\n";
+
 /*********************************
  * *
  * *  START WRITING YOUR CODE HERE
  * *
  * * List of available variables:
  * * $pan : PANConf or PanoramaConf object
+ * * $location : string with location name or undefined if not provided on CLI
  * * $sub : DeviceGroup or VirtualSystem found after looking from cli 'location' argument
  * * PH::$args : array with all CLI arguments processed by PAN-Configurator
  * *
