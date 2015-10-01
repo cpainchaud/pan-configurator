@@ -519,7 +519,7 @@ class PanAPIConnector
 
         if( $c->getHttpStatus() != 200 )
         {
-            derr('HTTP API ret: '.$c->__tostring());
+            derr("HTTP API ret (code : {$c->getHttpStatus()})".$c->__tostring());
         }
 
         $xmlDoc = new DOMDocument();
