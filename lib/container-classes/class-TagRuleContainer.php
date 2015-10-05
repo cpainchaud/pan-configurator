@@ -116,6 +116,15 @@ class TagRuleContainer extends ObjRuleContainer
         return $this->has($tag, $caseSensitive);
     }
 
+    /**
+     * @param Tag|string can be Tag object or tag name (string). this is case sensitive
+     * @return bool
+     */
+    public function hasTagRegex( $regex )
+    {
+        return $this->hasObjectRegex($regex);
+    }
+
 
     /**
      * add a Tag to this container

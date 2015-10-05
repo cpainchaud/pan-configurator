@@ -149,6 +149,23 @@ class ObjRuleContainer
 
     }
 
+    /**
+     * @param string $regex
+     * @return bool
+     */
+    protected function hasObjectRegex($regex)
+    {
+        foreach( $this->o as $o )
+        {
+            $matching = preg_match($regex, $o->name());
+            if( $matching === FALSE )
+                derr("regular expression error on '$regex'");
+            if( $matching === 1 )
+                return true;
+        }
+        return false;
+    }
+
 
     /**
      *
