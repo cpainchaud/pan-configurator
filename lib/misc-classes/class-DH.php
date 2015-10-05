@@ -138,7 +138,7 @@ class DH
 
 	static function removeChild(DOMNode $parent, DOMNode $child)
 	{
-		if( $child->parentNode === $parent )
+		if( $child->parentNode->isSameNode($parent) )
 		{
 			$parent->removeChild($child);
 		}
