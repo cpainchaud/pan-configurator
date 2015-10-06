@@ -295,6 +295,9 @@ class Rule
 		
 	}
 
+    /**
+     * @param string $newname
+     */
 	public function API_setName($newname)
 	{
 		$con = findConnectorOrDie($this);

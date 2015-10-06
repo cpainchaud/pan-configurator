@@ -852,6 +852,11 @@ class PanAPIConnector
         return $this->sendRequest($params);
     }
 
+    /**
+     * @param string $xpath
+     * @param string $newname
+     * @return DomDocument
+     */
     public function sendRenameRequest($xpath, $newname)
     {
         $params = Array();
