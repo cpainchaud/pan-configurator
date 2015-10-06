@@ -1188,8 +1188,9 @@ class RuleStore
 
     /**
      * @param $rule string|Rule|SecurityRule|NatRule|DecryptionRule
+     * @return int
      */
-    /* public function getRulePosition($rule)
+    public function getRulePosition($rule)
     {
         if( is_string($rule) )
         {
@@ -1203,17 +1204,30 @@ class RuleStore
 
         if( !$this->isPreOrPost || $this->ruleIsPreRule($rule) )
         {
-            $index = $this->fastNameToIndex[$rule->name()];
-            $indexToPost = $this->
+            $count = 0;
+            foreach($this->rules as $lrule)
+            {
+                if( $rule === $lrule )
+                    return $count;
+                $count++;
+            }
+            derr("rule '{$rule->name()}' not found");
         }
         elseif( $this->ruleIsPostRule($rule) )
         {
-            $index = $this->fastNameToIndex_forPost[$rule->name()];
+            $count = 0;
+            foreach($this->postRules as $lrule)
+            {
+                if( $rule === $lrule )
+                    return $count;
+                $count++;
+            }
+            derr("rule '{$rule->name()}' not found");
         }
         else
-            derr("rule '{$rule->name()}'");
+            derr("rule '{$rule->name()}' not found");
 
-    }*/
+    }
 
 
 }

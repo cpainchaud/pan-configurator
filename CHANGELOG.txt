@@ -1,6 +1,10 @@
 CHANGELOG
 
 1.5.3
+core:
+* RuleStore function to get rule position 'getRulePosition()'
+
+utils:
 * address-edit.php : name-addPrefix, name-addSuffix
 * service-edit.php : name-addPrefix, name-addSuffix, replaceGroupByService
 * added a template to kickstart your own scripts. look in examples\template-for-your-own-scripts.php
