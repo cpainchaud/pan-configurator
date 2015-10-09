@@ -32,7 +32,6 @@ class AddressRuleContainer extends ObjRuleContainer
     public function __construct($owner)
     {
         $this->owner = $owner;
-        $this->o = Array();
     }
 
 

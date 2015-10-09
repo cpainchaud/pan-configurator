@@ -31,8 +31,6 @@ class ObjRuleContainer
     public $name = '';
 
     public $o = Array();
-    protected $classn=null;
-
 
     public function count()
     {

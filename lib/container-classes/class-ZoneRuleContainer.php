@@ -22,8 +22,6 @@
  */
 class ZoneRuleContainer extends ObjRuleContainer
 {
-    public static $childn = 'Zone';
-
     /**
      * @var null|ZoneStore
      */
@@ -33,7 +31,6 @@ class ZoneRuleContainer extends ObjRuleContainer
 
     public function __construct($owner)
     {
-        $this->classn = &self::$childn;
         $this->owner = $owner;
 
         $this->findParentCentralStore();
