@@ -322,7 +322,7 @@ class ObjRuleContainer
             derr("cannot request an item with negative position ($position)");
 
         if( $position > count($this->o)  )
-            derr("requesting item position #$poisiton but this container has only ".count($this->o)."objects");
+            derr("requesting item position #$position but this container has only ".count($this->o)."objects");
 
         return $this->o[array_keys($this->o)[$position]];
 
