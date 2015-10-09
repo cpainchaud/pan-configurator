@@ -166,11 +166,9 @@ class Rule
 		
 		$this->disabledroot = DH::findFirstElementOrCreate('disabled', $xml, 'no');
 
-		//print "this rule has a <disabled>\n";
 		$lstate = strtolower($this->disabledroot->textContent);
 		if( $lstate == 'yes' )
 		{
-			//print "rule '".$this->name."' is <disabled>\n";
 			$this->disabled = true;
 		}
 	}
