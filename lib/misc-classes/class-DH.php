@@ -507,9 +507,12 @@ class DH
         $sourceOwner = $source->ownerDocument;
         $targetOwner = $target->ownerDocument;
 
+        $exoCopy = false;
+
         if( ! $sourceOwner->isSameNode($targetOwner) )
         {
             $source = $targetOwner->importNode($source, true);
+            $exoCopy= true;
         }
 
         if( $source->nodeType != XML_ELEMENT_NODE )
@@ -520,20 +523,19 @@ class DH
 
         $toMove = Array();
 
+        $count = 0;
+
         foreach( $source->childNodes as $child )
         {
             if( $child->nodeType != XML_ELEMENT_NODE )
                 continue;
-            $toMove[] = $child;
-        }
 
-        foreach( $toMove as $child )
-        {
-            $target->appendChild($child);
+            $count++;
+            /** @var $child DOMElement*/
+            $target->appendChild($child->cloneNode(true));
         }
 
         return count($toMove);
-
     }
 
 
