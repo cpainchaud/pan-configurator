@@ -199,47 +199,6 @@ $supportedActions['exporttoexcel'] = Array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
-        $template = '<html xmlns:v="urn:schemas-microsoft-com:vml"
-            xmlns:o="urn:schemas-microsoft-com:office:office"
-            xmlns:x="urn:schemas-microsoft-com:office:excel"
-            xmlns="http://www.w3.org/TR/REC-html40">
-        <head>
-        <style>
-               #br {mso-data-placement:same-cell;}
-            table td {
-                            #background-color: #ccc;
-                            border: 1px solid #999;
-                            padding: 5px;
-                            vertical-align: middle;
-                        }
-            table th {
-                            background-color: #555;
-                            color: #fff;
-                            border: 1px solid #999;
-                            padding: 5px;
-                            vertical-align: middle;
-                        }
-        </style>
-        </head>
-        <body>
-        <table>
-            <thead>
-                <tr>
-                    <th>location</th><th>name</th><th>type</th><th>value</th><th>description</th>
-                </tr>
-            </thead>
-            <tbody>
-            %lines%
-            </tbody>
-        </table>
-        </body>
-        <footer>
-            <script type="text/javascript">
-            %JSCONTENT%
-            </script>
-        </footer>
-        </html>';
-
         $lines = '';
         $encloseFunction  = function($value, $nowrap = true)
         {
@@ -322,7 +281,12 @@ $supportedActions['exporttoexcel'] = Array(
             }
         }
 
-        $content = str_replace('%lines%', $lines, $template);
+        $content = file_get_contents(dirname(__FILE__).'/common/html-export-template.html');
+        $content = str_replace('%TableHeaders%',
+                                '<th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>members</th><th>description</th>',
+                                $content);
+
+        $content = str_replace('%lines%', $lines, $content);
 
         $jscontent =  file_get_contents(dirname(__FILE__).'/common/jquery-1.11.js');
         $jscontent .= "\n";

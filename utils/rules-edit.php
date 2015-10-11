@@ -1112,57 +1112,38 @@ $supportedActions['exporttoexcel'] = Array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
-        $template = '<html xmlns:v="urn:schemas-microsoft-com:vml"
-            xmlns:o="urn:schemas-microsoft-com:office:office"
-            xmlns:x="urn:schemas-microsoft-com:office:excel"
-            xmlns="http://www.w3.org/TR/REC-html40">
-        <head>
-        <style>
-               #br {mso-data-placement:same-cell;}
-            table td {
-                            #background-color: #ccc;
-                            border: 1px solid #999;
-                            padding: 5px;
-                            vertical-align: middle;
-                        }
-            table th {
-                            background-color: #555;
-                            color: #fff;
-                            border: 1px solid #999;
-                            padding: 5px;
-                            vertical-align: middle;
-                        }
-        </style>
-        </head>
-        <body>
-        <table>
-            <thead>
-                <tr>
-                    <th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>
-                    <th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>
-                    <th>SNAT type</th><th>SNAT hosts</th><th>DNAT host</th><th>DNAT port</th>
-                </tr>
-            </thead>
-            <tbody>
-            %lines%
-            </tbody>
-        </table>
-        </body>
-        <footer>
-            <script type="text/javascript">
-            %JSCONTENT%
-            </script>
-        </footer>
-        </html>';
-
         $lines = '';
         $encloseFunction  = function($value, $nowrap = true)
-                            {
-                                if( $nowrap )
-                                    return '<td style="white-space: nowrap">'.$value.'</td>';
+        {
+            if( is_string($value) )
+                $output = htmlspecialchars($value);
+            elseif( is_array($value) )
+            {
+                $output = '';
+                $first = true;
+                foreach( $value as $subValue )
+                {
+                    if( !$first )
+                    {
+                        $output .= '<br />';
+                    }
+                    else
+                        $first= false;
 
-                                return '<td>'.$value.'</td>';
-                            };
+                    if( is_string($subValue) )
+                        $output .= htmlspecialchars($subValue);
+                    else
+                        $output .= htmlspecialchars($subValue->name());
+                }
+            }
+            else
+                derr('unsupported');
+
+            if( $nowrap )
+                return '<td style="white-space: nowrap">'.$output.'</td>';
+
+            return '<td>'.$output.'</td>';
+        };
 
         $count = 0;
         if( isset($context->ruleList) )
@@ -1196,31 +1177,28 @@ $supportedActions['exporttoexcel'] = Array(
                 else
                 {
                     $tmpArray = $rule->from->getAll();
-                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                    $lines .= $encloseFunction($rule->from->getAll());
                 }
 
                 if ($rule->source->isAny())
                     $lines .= $encloseFunction('any');
                 else
                 {
-                    $tmpArray = $rule->source->getAll();
-                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                    $lines .= $encloseFunction($rule->source->getAll());
                 }
 
                 if ($rule->to->isAny())
                     $lines .= $encloseFunction('any');
                 else
                 {
-                    $tmpArray = $rule->to->getAll();
-                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                    $lines .= $encloseFunction($rule->to->getAll());
                 }
 
                 if ($rule->destination->isAny())
                     $lines .= $encloseFunction('any');
                 else
                 {
-                    $tmpArray = $rule->destination->getAll();
-                    $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                    $lines .= $encloseFunction($rule->destination->getAll());
                 }
 
                 if ($rule->isSecurityRule())
@@ -1231,8 +1209,7 @@ $supportedActions['exporttoexcel'] = Array(
                         $lines .= $encloseFunction('application-default');
                     else
                     {
-                        $tmpArray = $rule->services->getAll();
-                        $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                        $lines .= $encloseFunction($rule->services->getAll());
                     }
                 } elseif ($rule->isNatRule())
                 {
@@ -1249,8 +1226,7 @@ $supportedActions['exporttoexcel'] = Array(
                         $lines .= $encloseFunction('any');
                     else
                     {
-                        $tmpArray = $rule->apps->getAll();
-                        $lines .= $encloseFunction(PH::list_to_string($tmpArray, "<br />"));
+                        $lines .= $encloseFunction($rule->apps->getAll());
                     }
                 } else
                     $lines .= $encloseFunction('');
@@ -1278,8 +1254,7 @@ $supportedActions['exporttoexcel'] = Array(
                         $lines .= $encloseFunction('');
                     elseif($natType == 'static-ip' || $natType == 'dynamic-ip' || $natType == 'dynamic-ip-and-port')
                     {
-                        $tmpArray = $rule->snathosts->all();
-                        $lines .= $encloseFunction(PH::list_to_string($tmpArray));
+                        $lines .= $encloseFunction($rule->snathosts->all());
                     } else
                         $lines .= $encloseFunction('unsupported');
 
@@ -1310,7 +1285,14 @@ $supportedActions['exporttoexcel'] = Array(
             }
         }
 
-        $content = str_replace('%lines%', $lines, $template);
+        $content = file_get_contents(dirname(__FILE__).'/common/html-export-template.html');
+        $content = str_replace('%TableHeaders%',
+            '<th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>'.
+            '<th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>'.
+            '<th>SNAT type</th><th>SNAT hosts</th><th>DNAT host</th><th>DNAT port</th>',
+            $content);
+
+        $content = str_replace('%lines%', $lines, $content);
 
         $jscontent =  file_get_contents(dirname(__FILE__).'/common/jquery-1.11.js');
         $jscontent .= "\n";
