@@ -1094,19 +1094,16 @@ $supportedActions['copy'] = Array(
     'args' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
                             'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
 );
+
 $supportedActions['exporttoexcel'] = Array(
     'name' => 'exportToExcel',
     'MainFunction' => function(CallContext $context)
     {
         $rule = $context->object;
-        $args = &$context->arguments;
         $context->ruleList[] = $rule;
     },
     'GlobalInitFunction' => function(CallContext $context)
     {
-        $rule = $context->object;
-        $args = &$context->arguments;
-
         $context->ruleList = Array();
     },
     'GlobalFinishFunction' => function(CallContext $context)
@@ -1122,8 +1119,15 @@ $supportedActions['exporttoexcel'] = Array(
         <head>
         <style>
                #br {mso-data-placement:same-cell;}
-            table th, td {
+            table td {
                             #background-color: #ccc;
+                            border: 1px solid #999;
+                            padding: 5px;
+                            vertical-align: middle;
+                        }
+            table th {
+                            background-color: #555;
+                            color: #fff;
                             border: 1px solid #999;
                             padding: 5px;
                             vertical-align: middle;
@@ -1132,14 +1136,23 @@ $supportedActions['exporttoexcel'] = Array(
         </head>
         <body>
         <table>
-            <tr>
-                <th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>
-                <th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>
-                <th>SNAT type</th><th>SNAT hosts</th><th>DNAT host</th><th>DNAT port</th>
-            </tr>
+            <thead>
+                <tr>
+                    <th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>
+                    <th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>
+                    <th>SNAT type</th><th>SNAT hosts</th><th>DNAT host</th><th>DNAT port</th>
+                </tr>
+            </thead>
+            <tbody>
             %lines%
+            </tbody>
         </table>
         </body>
+        <footer>
+            <script type="text/javascript">
+            %JSCONTENT%
+            </script>
+        </footer>
         </html>';
 
         $lines = '';
@@ -1298,10 +1311,19 @@ $supportedActions['exporttoexcel'] = Array(
         }
 
         $content = str_replace('%lines%', $lines, $template);
+
+        $jscontent =  file_get_contents(dirname(__FILE__).'/common/jquery-1.11.js');
+        $jscontent .= "\n";
+        $jscontent .= file_get_contents(dirname(__FILE__).'/common/jquery.stickytableheaders.min.js');
+        $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+        $content = str_replace('%JSCONTENT%', $jscontent, $content);
+
         file_put_contents($filename, $content);
     },
     'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
 );
+
 $supportedActions['cloneforappoverride'] = Array(
     'name' => 'cloneForAppOverride',
     'MainFunction' => function(CallContext $context)

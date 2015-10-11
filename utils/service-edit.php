@@ -183,6 +183,160 @@ $supportedActions['addobjectwhereused'] = Array(
     'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 
+$supportedActions['exporttoexcel'] = Array(
+    'name' => 'exportToExcel',
+    'MainFunction' => function(ServiceCallContext $context)
+    {
+        $object = $context->object;
+        $context->objectList[] = $object;
+    },
+    'GlobalInitFunction' => function(ServiceCallContext $context)
+    {
+        $context->objectList = Array();
+    },
+    'GlobalFinishFunction' => function(ServiceCallContext $context)
+    {
+        $args = &$context->arguments;
+        $filename = $args['filename'];
+
+        $template = '<html xmlns:v="urn:schemas-microsoft-com:vml"
+            xmlns:o="urn:schemas-microsoft-com:office:office"
+            xmlns:x="urn:schemas-microsoft-com:office:excel"
+            xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+        <style>
+               #br {mso-data-placement:same-cell;}
+            table td {
+                            #background-color: #ccc;
+                            border: 1px solid #999;
+                            padding: 5px;
+                            vertical-align: middle;
+                        }
+            table th {
+                            background-color: #555;
+                            color: #fff;
+                            border: 1px solid #999;
+                            padding: 5px;
+                            vertical-align: middle;
+                        }
+        </style>
+        </head>
+        <body>
+        <table>
+            <thead>
+                <tr>
+                    <th>location</th><th>name</th><th>type</th><th>value</th><th>description</th>
+                </tr>
+            </thead>
+            <tbody>
+            %lines%
+            </tbody>
+        </table>
+        </body>
+        <footer>
+            <script type="text/javascript">
+            %JSCONTENT%
+            </script>
+        </footer>
+        </html>';
+
+        $lines = '';
+        $encloseFunction  = function($value, $nowrap = true)
+        {
+            if( is_string($value) )
+                $output = htmlspecialchars($value);
+            elseif( is_array($value) )
+            {
+                $output = '';
+                $first = true;
+                foreach( $value as $subValue )
+                {
+                    if( !$first )
+                    {
+                        $output .= '<br />';
+                    }
+                    else
+                        $first= false;
+
+                    if( is_string($subValue) )
+                        $output .= htmlspecialchars($subValue);
+                    else
+                        $output .= htmlspecialchars($subValue->name());
+                }
+            }
+            else
+                derr('unsupported');
+
+            if( $nowrap )
+                return '<td style="white-space: nowrap">'.$output.'</td>';
+
+            return '<td>'.$output.'</td>';
+        };
+
+        $count = 0;
+        if( isset($context->objectList) )
+        {
+            foreach ($context->objectList as $object)
+            {
+                $count++;
+
+                /** @var Service|ServiceGroup $object */
+                if ($count % 2 == 1)
+                    $lines .= "<tr>\n";
+                else
+                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
+
+                if ($object->owner->owner->isPanorama() || $object->owner->owner->isPanOS())
+                    $lines .= $encloseFunction('shared');
+                else
+                    $lines .= $encloseFunction($object->owner->owner->name());
+
+                $lines .= $encloseFunction($object->name());
+
+                if( $object->isGroup() )
+                {
+                        $lines .= $encloseFunction('group');
+                        $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction($object->members());
+                }
+                elseif ( $object->isService() )
+                {
+                    if( $object->isTmpSrv() )
+                        $lines .= $encloseFunction('unknown');
+                    else
+                    {
+                        if( $object->isTcp() )
+                            $lines .= $encloseFunction('service-tcp');
+                        else
+                            $lines .= $encloseFunction('service-udp');
+
+                        $lines .= $encloseFunction($object->getDestPort());
+                        $lines .= $encloseFunction($object->getSourcePort());
+                    }
+
+                    $lines .= $encloseFunction($object->description(), false);
+                }
+
+                $lines .= "</tr>\n";
+            }
+        }
+
+        $content = str_replace('%lines%', $lines, $template);
+
+        $jscontent =  file_get_contents(dirname(__FILE__).'/common/jquery-1.11.js');
+        $jscontent .= "\n";
+        $jscontent .= file_get_contents(dirname(__FILE__).'/common/jquery.stickytableheaders.min.js');
+        $jscontent .= "\n\$('table').stickyTableHeaders();\n";
+
+        $content = str_replace('%JSCONTENT%', $jscontent, $content);
+
+        file_put_contents($filename, $content);
+    },
+    'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
+);
+
+
 $supportedActions['move'] = Array(
     'name' => 'move',
     'MainFunction' =>  function ( ServiceCallContext $context )
@@ -968,6 +1122,15 @@ foreach( $objectsToProcess as &$objectsRecord )
 }
 // </editor-fold>
 
+$first  = true;
+foreach( $doActions as $doAction )
+{
+    if( $doAction->hasGlobalFinishAction() )
+    {
+        $first = false;
+        $doAction->executeGlobalFinishAction();
+    }
+}
 
 print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS DONE **** \n\n";
 

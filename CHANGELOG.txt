@@ -5,9 +5,9 @@ core:
 * RuleStore function to get rule position 'getRulePosition()'
 
 utils:
-* address-edit.php : name-addPrefix, name-addSuffix
-* service-edit.php : name-addPrefix, name-addSuffix, replaceGroupByService
-* added a template to kickstart your own scripts. look in examples\template-for-your-own-scripts.php
+* address-edit.php : exportToExcel, name-addPrefix, name-addSuffix
+* service-edit.php : exportToExcel, name-addPrefix, name-addSuffix, replaceGroupByService
+* added a template to quick start your own scripts. look in examples\template-for-your-own-scripts.php
 
 bugfixes:
 * issue during creation of a new Service that failed to detect proper protocol
