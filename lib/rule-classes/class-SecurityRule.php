@@ -970,6 +970,94 @@ class SecurityRule extends Rule
 		return $ret;
 	}
 
+    /**
+     * @param integer $startTimestamp
+     * @param null|integer $endTimestamp
+     * @param bool|true $fastMode
+     * @param int $limit
+     * @param array $excludedApps
+     * @return array|DomDocument
+     * @throws Exception
+     */
+    public function &API_getAppContainerStats2($startTimestamp, $endTimestamp = null, $fastMode = true, $limit = 50, $excludedApps = Array())
+    {
+        $con = findConnectorOrDie($this);
+
+        $parentClass = get_class($this->owner->owner);
+
+        if( $fastMode )
+            $type = 'panorama-trsum';
+        else
+            $type = 'panorama-traffic';
+
+        if( $parentClass == 'VirtualSystem' )
+        {
+            if( $fastMode )
+                $type = 'trsum';
+            else
+                $type = 'traffic';
+        }
+
+        $excludedAppsString = '';
+
+        $first = true;
+        foreach( $excludedApps as &$e )
+        {
+            if( !$first )
+                $excludedAppsString .= ' and ';
+
+            $excludedAppsString .= "(app neq $e)";
+            $first = false;
+        }
+
+        $dvq = '';
+
+        if( $parentClass == 'VirtualSystem' )
+        {
+            $dvq = ' and (vsys eq '.$this->owner->owner->name().')';
+
+        }
+        else
+        {
+            $devices = $this->owner->owner->getDevicesInGroup();
+
+            if( count($devices) == 0 )
+                derr('cannot request rule stats for a device group that has no member');
+
+            $dvq = ' and ('.array_to_devicequery($devices).')';
+
+        }
+
+        $repeatOrCount = 'sessions';
+
+        if( !$fastMode )
+            $repeatOrCount = 'repeatcnt';
+
+        $startString = date('Y/m/d H:i:00', $startTimestamp);
+
+        if( $endTimestamp === null )
+        {
+            $endString = date('Y/m/d H:00:00');
+        }
+        else
+            $endString = date('Y/m/d H:00:00', $endTimestamp);
+
+        $query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&cmd=<type>'
+            ."<{$type}><aggregate-by><member>container-of-app</member><member>app</member></aggregate-by>"
+            ."<values><member>{$repeatOrCount}</member></values></{$type}></type>"
+            ."<topn>{$limit}</topn><topm>50</topm><caption>rule app container usage</caption>"
+            ."<start-time>{$startString}</start-time>"
+            ."<end-time>{$endString}</end-time>"
+            ."<query>(rule eq '{$this->name}') {$dvq} {$excludedAppsString}</query>";
+
+
+        print "\nQuery: $query\n";
+
+        $ret = $con->getReport($query);
+
+        return $ret;
+    }
+
 
 	public function &API_getServiceStats($timePeriod, $specificApps=null)
 	{

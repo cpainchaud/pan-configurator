@@ -22,6 +22,8 @@ ini_set("memory_limit","14512M");
 error_reporting(E_ALL);
 gc_enable();
 
+date_default_timezone_set('UTC');
+
 if (!extension_loaded('curl')) {
     if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
         dl('php_curl.dll');
