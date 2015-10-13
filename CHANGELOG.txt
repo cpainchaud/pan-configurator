@@ -1,12 +1,20 @@
 CHANGELOG
 
+1.5.4
+core:
+* AddressGroup : new function API_add() and API_remove()
+
+utils:
+* rules-edit.php : new Actions 'description-append'
+
+
 1.5.3
 core:
 * RuleStore function to get rule position 'getRulePosition()'
 
 utils:
-* address-edit.php : exportToExcel, name-addPrefix, name-addSuffix
-* service-edit.php : exportToExcel, name-addPrefix, name-addSuffix, replaceGroupByService
+* address-edit.php : new Actions exportToExcel, name-addPrefix, name-addSuffix
+* service-edit.php : new Actions exportToExcel, name-addPrefix, name-addSuffix, replaceGroupByService
 * added a template to quick start your own scripts. look in examples\template-for-your-own-scripts.php
 
 bugfixes:

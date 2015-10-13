@@ -226,33 +226,82 @@ class AddressGroup
 	}
 
     /**
+     * Add a member to this group, it must be passed as an object
+     * @param Address|AddressGroup $newObject Object to be added
+     * @return bool
+     */
+    public function API_add($newObject)
+    {
+        $ret = $this->add($newObject);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            if( $this->owner->owner->version >= 60 )
+                $xpath .= '/static';
+
+            $con->sendSetRequest($xpath, "<member>{$newObject->name()}</member>");
+        }
+
+        return $ret;
+    }
+
+    /**
      * Removes a member from this group
-     * @param Address|AddressGroup $old Object to be removed
+     * @param Address|AddressGroup $objectToRemove Object to be removed
      * @param bool $rewriteXml
      * @return bool
      */
-	public function remove( $old, $rewriteXml = true )
+	public function remove( $objectToRemove, $rewriteXml = true )
 	{
 		if( $this->isDynamic )
 			derr('cannot be used on Dynamic Address Groups');
 
-		if( !is_object($old) )
+		if( !is_object($objectToRemove) )
 			derr("Only objects can be passed to this function");
 
-		$pos = array_search($old, $this->members, TRUE);
+		$pos = array_search($objectToRemove, $this->members, TRUE);
 		
 		if( $pos === FALSE )
 			return false;
 		else
 		{
 			unset($this->members[$pos]);
-			$old->removeReference($this);
+			$objectToRemove->removeReference($this);
 			if($rewriteXml)
 				$this->rewriteXML();
 		}
-		
 		return true;
 	}
+
+    /**
+     * Removes a member from this group
+     * @param Address|AddressGroup $objectToRemove Object to be removed
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function API_remove( $objectToRemove, $rewriteXml = true )
+    {
+        $ret = $this->remove($objectToRemove);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            if( $this->owner->owner->version >= 60 )
+                $xpath .= '/static';
+
+            $con->sendDeleteRequest($xpath."/member[text()='{$objectToRemove->name()}']");
+
+            return $ret;
+        }
+
+        return $ret;
+    }
+
 
 	/**
 	* Clear this Group from all its members
