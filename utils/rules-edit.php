@@ -987,6 +987,30 @@ $supportedActions['securityprofile-group-set'] = Array(
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 
+$supportedActions['description-append'] = Array(
+    'name' => 'description-Append',
+    'MainFunction' =>  function(CallContext $context)
+    {
+        $rule = $context->object;
+        $description = ''.$rule->description();
+
+        $textToAppend = $context->arguments['text'];
+
+        if( strlen($description) + strlen($textToAppend) > 253 )
+        {
+            print $context->padding." - SKIPPED : description is too long\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setDescription($description.$textToAppend);
+        else
+            $rule->setSecurityProfileGroup($description.$textToAppend);
+    },
+    'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+
+
 //                                                   //
 //                Other property Based Actions       //
 //                                                   //
