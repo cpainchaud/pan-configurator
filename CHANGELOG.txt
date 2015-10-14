@@ -5,7 +5,7 @@ core:
 * AddressGroup : new function API_add() and API_remove()
 
 utils:
-* rules-edit.php : new Actions 'description-append'
+* rules-edit.php : new Actions 'description-append', 'enabled-set-FastAPI'
 
 
 1.5.3

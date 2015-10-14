@@ -332,6 +332,7 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
 };
 
 
+
 // <editor-fold desc="Supported Actions Array" defaultstate="collapsed" >
 
   //                                              //
@@ -340,7 +341,7 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
 $supportedActions['from-add'] = Array(
     'name' => 'from-Add',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
@@ -357,7 +358,7 @@ $supportedActions['from-add'] = Array(
 $supportedActions['from-add-force'] = Array(
     'name' => 'from-Add-Force',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->findOrCreate($context->arguments['zoneName']);
@@ -374,7 +375,7 @@ $supportedActions['from-add-force'] = Array(
 $supportedActions['from-remove'] = Array(
     'name' => 'from-Remove',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
@@ -391,7 +392,7 @@ $supportedActions['from-remove'] = Array(
 $supportedActions['from-remove-force-any'] = Array(
     'name' => 'from-Remove-Force-Any',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
@@ -408,7 +409,7 @@ $supportedActions['from-remove-force-any'] = Array(
 $supportedActions['from-set-any'] = Array(
     'name' => 'from-Set-Any',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
 
@@ -422,7 +423,7 @@ $supportedActions['from-set-any'] = Array(
 $supportedActions['to-add'] = Array(
     'name' => 'to-Add',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
@@ -439,7 +440,7 @@ $supportedActions['to-add'] = Array(
 $supportedActions['to-add-force'] = Array(
     'name' => 'to-Add-Force',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->findOrCreate($context->arguments['zoneName']);
@@ -456,7 +457,7 @@ $supportedActions['to-add-force'] = Array(
 $supportedActions['to-remove'] = Array(
     'name' => 'to-Remove',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
@@ -473,7 +474,7 @@ $supportedActions['to-remove'] = Array(
 $supportedActions['to-remove-force-any'] = Array(
     'name' => 'to-Remove-Force-Any',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
@@ -490,7 +491,7 @@ $supportedActions['to-remove-force-any'] = Array(
 $supportedActions['to-set-any'] = Array(
     'name' => 'to-Set-Any',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
 
@@ -504,7 +505,7 @@ $supportedActions['to-set-any'] = Array(
 $supportedActions['from-calculate-zones'] = Array(
     'name' => 'from-calculate-zones',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         global $commonActionFunctions;
 
@@ -519,7 +520,7 @@ $supportedActions['from-calculate-zones'] = Array(
 $supportedActions['to-calculate-zones'] = Array(
     'name' => 'to-calculate-zones',
     'section' => 'zone',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         global $commonActionFunctions;
 
@@ -539,7 +540,7 @@ $supportedActions['to-calculate-zones'] = Array(
 $supportedActions['src-add'] = Array(
     'name' => 'src-Add',
     'section' => 'address',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
@@ -556,7 +557,7 @@ $supportedActions['src-add'] = Array(
 $supportedActions['src-remove'] = Array(
     'name' => 'src-Remove',
     'section' => 'address',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
@@ -573,7 +574,7 @@ $supportedActions['src-remove'] = Array(
 $supportedActions['src-remove-force-any'] = Array(
     'name' => 'src-Remove-Force-Any',
     'section' => 'address',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
@@ -590,7 +591,7 @@ $supportedActions['src-remove-force-any'] = Array(
 $supportedActions['dst-add'] = Array(
     'name' => 'dst-Add',
     'section' => 'address',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
@@ -607,7 +608,7 @@ $supportedActions['dst-add'] = Array(
 $supportedActions['dst-remove'] = Array(
     'name' => 'dst-Remove',
     'section' => 'address',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
@@ -624,7 +625,7 @@ $supportedActions['dst-remove'] = Array(
 $supportedActions['dst-remove-force-any'] = Array(
     'name' => 'dst-Remove-Force-Any',
     'section' => 'address',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->source->parentCentralStore->find($context->arguments['objName']);
@@ -641,7 +642,7 @@ $supportedActions['dst-remove-force-any'] = Array(
 $supportedActions['src-set-any'] = Array(
     'name' => 'src-set-Any',
     'section' => 'address',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -653,7 +654,7 @@ $supportedActions['src-set-any'] = Array(
 $supportedActions['dst-set-any'] = Array(
     'name' => 'dst-set-Any',
     'section' => 'address',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -670,7 +671,7 @@ $supportedActions['dst-set-any'] = Array(
 $supportedActions['tag-add'] = Array(
     'name' => 'tag-Add',
     'section' => 'tag',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->tags->parentCentralStore->find($context->arguments['tagName']);
@@ -687,7 +688,7 @@ $supportedActions['tag-add'] = Array(
 $supportedActions['tag-add-force'] = Array(
     'name' => 'tag-Add-Force',
     'section' => 'tag',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -712,7 +713,7 @@ $supportedActions['tag-add-force'] = Array(
 $supportedActions['tag-remove'] = Array(
     'name' => 'tag-Remove',
     'section' => 'tag',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->tags->parentCentralStore->find($context->arguments['tagName']);
@@ -729,7 +730,7 @@ $supportedActions['tag-remove'] = Array(
 $supportedActions['tag-remove-regex'] = Array(
     'name' => 'tag-Remove-Regex',
     'section' => 'tag',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $pattern = '/'.$context->arguments['regex'].'/';
@@ -758,7 +759,7 @@ $supportedActions['tag-remove-regex'] = Array(
 $supportedActions['service-set-appdefault'] = Array(
     'name' => 'service-Set-AppDefault',
     'section' => 'service',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
 
@@ -771,7 +772,7 @@ $supportedActions['service-set-appdefault'] = Array(
 $supportedActions['service-set-any'] = Array(
     'name' => 'service-Set-Any',
     'section' => 'service',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
 
@@ -784,7 +785,7 @@ $supportedActions['service-set-any'] = Array(
 $supportedActions['service-add'] = Array(
     'name' => 'service-Add',
     'section' => 'service',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
@@ -801,7 +802,7 @@ $supportedActions['service-add'] = Array(
 $supportedActions['service-remove'] = Array(
     'name' => 'service-Remove',
     'section' => 'service',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
@@ -818,7 +819,7 @@ $supportedActions['service-remove'] = Array(
 $supportedActions['service-remove-force-any'] = Array(
     'name' => 'service-Remove-Force-Any',
     'section' => 'service',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->services->parentCentralStore->find($context->arguments['svcName']);
@@ -840,7 +841,7 @@ $supportedActions['service-remove-force-any'] = Array(
 $supportedActions['app-set-any'] = Array(
     'name' => 'app-Set-Any',
     'section' => 'app',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -852,7 +853,7 @@ $supportedActions['app-set-any'] = Array(
 $supportedActions['app-add'] = Array(
     'name' => 'app-Add',
     'section' => 'app',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
@@ -869,7 +870,7 @@ $supportedActions['app-add'] = Array(
 $supportedActions['app-remove'] = Array(
     'name' => 'app-Remove',
     'section' => 'app',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
@@ -886,7 +887,7 @@ $supportedActions['app-remove'] = Array(
 $supportedActions['app-remove-force-any'] = Array(
     'name' => 'app-Remove-Force-Any',
     'section' => 'app',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
@@ -909,7 +910,7 @@ $supportedActions['app-remove-force-any'] = Array(
 $supportedActions['logstart-enable'] = Array(
     'name' => 'logStart-enable',
     'section' => 'log',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -921,7 +922,7 @@ $supportedActions['logstart-enable'] = Array(
 $supportedActions['logstart-disable'] = Array(
     'name' => 'logStart-disable',
     'section' => 'log',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -933,7 +934,7 @@ $supportedActions['logstart-disable'] = Array(
 $supportedActions['logend-enable'] = Array(
     'name' => 'logEnd-enable',
     'section' => 'log',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -946,7 +947,7 @@ $supportedActions['logend-enable'] = Array(
 $supportedActions['logend-disable'] = Array(
     'name' => 'logEnd-disable',
     'section' => 'log',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -958,7 +959,7 @@ $supportedActions['logend-disable'] = Array(
 $supportedActions['logsetting-set'] = Array(
     'name' => 'logSetting-set',
     'section' => 'log',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -976,7 +977,7 @@ $supportedActions['logsetting-set'] = Array(
 //                                                   //
 $supportedActions['securityprofile-group-set'] = Array(
     'name' => 'securityProfile-Group-Set',
-    'MainFunction' =>  function(CallContext $context)
+    'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -989,7 +990,7 @@ $supportedActions['securityprofile-group-set'] = Array(
 
 $supportedActions['description-append'] = Array(
     'name' => 'description-Append',
-    'MainFunction' =>  function(CallContext $context)
+    'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
         $description = ''.$rule->description();
@@ -1014,31 +1015,93 @@ $supportedActions['description-append'] = Array(
 //                                                   //
 //                Other property Based Actions       //
 //                                                   //
-$supportedActions['enable'] = Array(
-    'name' => 'enable',
-    'MainFunction' => function(CallContext $context)
+$supportedActions['enabled-set'] = Array(
+    'name' => 'enable-Set',
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
-            $rule->API_setEnabled(true);
+            $rule->API_setEnabled($context->arguments['trueOrFalse']);
         else
-            $rule->setEnabled(true);
-    }
+            $rule->setEnabled($context->arguments['trueOrFalse']);
+    },
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-$supportedActions['disable'] = Array(
-    'name' => 'disable',
-    'MainFunction' => function(CallContext $context)
+$supportedActions['enabled-set-fastapi'] = Array(
+    'name' => 'enabled-Set-FastAPI',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        if( !$context->isAPI )
+            derr('you cannot call this action without API mode');
+
+        $context->addRuleToMergedApiChange('<disabled>'.boolYesNo(!$context->arguments['trueOrFalse']).'</disabled>');
+        $rule->setEnabled($context->arguments['trueOrFalse']);
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $setString = $context->generateRuleMergedApuChangeString(true);
+        if( $setString !== null )
+        {
+            print $context->padding . ' - sending API call for SHARED... ';
+            $context->connector->sendSetRequest('/config/shared', $setString);
+            print "OK!\n";
+        }
+        $setString = $context->generateRuleMergedApuChangeString(false);
+        if( $setString !== null )
+        {
+            print $context->padding . ' - sending API call for Device-Groups... ';
+            $context->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
+            print "OK!\n";
+        }
+    },
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
+);
+$supportedActions['disabled-set'] = Array(
+    'name' => 'disable-Set',
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
-            $rule->API_setEnabled(false);
+            $rule->API_setDisabled($context->arguments['trueOrFalse']);
         else
-            $rule->setEnabled(false);
-    }
+            $rule->setDisabled($context->arguments['trueOrFalse']);
+    },
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
+);
+$supportedActions['disabled-set-fastapi'] = Array(
+    'name' => 'disable-Set-FastAPI',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        if( !$context->isAPI )
+            derr('you cannot call this action without API mode');
+
+        $context->addRuleToMergedApiChange('<disabled>'.boolYesNo($context->arguments['trueOrFalse']).'</disabled>');
+        $rule->setDisabled($context->arguments['trueOrFalse']);
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $setString = $context->generateRuleMergedApuChangeString(true);
+        if( $setString !== null )
+        {
+            print $context->padding . ' - sending API call for SHARED... ';
+            $context->connector->sendSetRequest('/config/shared', $setString);
+            print "OK!\n";
+        }
+        $setString = $context->generateRuleMergedApuChangeString(false);
+        if( $setString !== null )
+        {
+            print $context->padding . ' - sending API call for Device-Groups... ';
+            $context->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
+            print "OK!\n";
+        }
+    },
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
 $supportedActions['delete'] = Array(
     'name' => 'delete',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         if( $context->isAPI )
@@ -1049,11 +1112,11 @@ $supportedActions['delete'] = Array(
 );
 $supportedActions['display'] = Array(
     'name' => 'display',
-    'MainFunction' => function(CallContext $context) { $context->object->display(7); }
+    'MainFunction' => function(RuleCallContext $context) { $context->object->display(7); }
 );
 $supportedActions['invertpreandpost'] = Array(
     'name' => 'invertPreAndPost',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
                     {
                         if( !$context->isAPI )
                         {
@@ -1079,7 +1142,7 @@ $supportedActions['invertpreandpost'] = Array(
 
 $supportedActions['copy'] = Array(
     'name' => 'copy',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
                 {
                     $rule = $context->object;
                     $args = &$context->arguments;
@@ -1121,16 +1184,16 @@ $supportedActions['copy'] = Array(
 
 $supportedActions['exporttoexcel'] = Array(
     'name' => 'exportToExcel',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $context->ruleList[] = $rule;
     },
-    'GlobalInitFunction' => function(CallContext $context)
+    'GlobalInitFunction' => function(RuleCallContext $context)
     {
         $context->ruleList = Array();
     },
-    'GlobalFinishFunction' => function(CallContext $context)
+    'GlobalFinishFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $args = &$context->arguments;
@@ -1332,7 +1395,7 @@ $supportedActions['exporttoexcel'] = Array(
 
 $supportedActions['cloneforappoverride'] = Array(
     'name' => 'cloneForAppOverride',
-    'MainFunction' => function(CallContext $context)
+    'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
 
@@ -1724,7 +1787,7 @@ else
 // Extracting actions
 //
 $explodedActions = explode('/', $doActions);
-/** @var CallContext[] $doActions */
+/** @var RuleCallContext[] $doActions */
 $doActions = Array();
 foreach( $explodedActions as &$exAction )
 {
@@ -1742,10 +1805,13 @@ foreach( $explodedActions as &$exAction )
     if( count($explodedAction) == 1 )
         $explodedAction[1] = '';
 
-    $context = new CallContext($supportedActions[$actionName], $explodedAction[1], $nestedQueries);
+    $context = new RuleCallContext($supportedActions[$actionName], $explodedAction[1], $nestedQueries);
+    $context->baseObject = $pan;
+
     if( $configInput['type'] == 'api' )
     {
         $context->isAPI = true;
+        $context->connector = $pan->connector;
     }
 
     $doActions[] = $context;
@@ -1926,9 +1992,15 @@ foreach( $rulesLocation as $location )
 $totalObjectsProcessed = 0;
 foreach( $rulesToProcess as &$rulesRecord )
 {
+    /** @var RuleStore $store */
     $store = $rulesRecord['store'];
     $rules = &$rulesRecord['rules'];
     $subObjectsProcessed = 0;
+
+    foreach($doActions as $doAction )
+    {
+        $doAction->subSystem = $store->owner;
+    }
 
     print "\n* processing ruleset '".$store->toString()." that holds ".count($rules)." rules\n";
 

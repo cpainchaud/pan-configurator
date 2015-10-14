@@ -504,7 +504,8 @@ class PanAPIConnector
                     $paramURl .= '&'.$paramIndex.'='.str_replace('#', '%23',$param);
                 }
 
-                print("API call through POST: \"".$finalUrl.'?'.$paramURl."\"\r\n");
+                print("API call through POST: \"".$finalUrl.$paramURl."\"\r\n");
+                print "RAW HTTP POST Content: $properParams\n\n";
             }
             else
                 print("API call: \"".$finalUrl."\"\r\n");

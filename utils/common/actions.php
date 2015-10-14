@@ -17,6 +17,10 @@ class CallContext
     /** @var  $baseObject PANConf|PanoramaConf */
     public $baseObject;
 
+    /** @var  $subSystem VirtualSystem|PANConf|PanoramaConf|DeviceGroup */
+    public $subSystem;
+
+    /** @var PanAPIConnector */
     public $connector = null;
 
     public $padding = '';
@@ -45,7 +49,10 @@ class CallContext
             print " Args: ";
             foreach($this->arguments as $argName => $argValue)
             {
-                print "$argName=$argValue, ";
+                if( is_bool($argValue) )
+                    print "$argName=".boolYesNo($argValue).", ";
+                else
+                    print "$argName=$argValue, ";
             }
         }
 
@@ -61,7 +68,7 @@ class CallContext
 
     public function executeGlobalFinishAction()
     {
-        print "   - action '{$this->actionRef['name']} has tasks to process before shutdown.'\n";
+        print "   - action '{$this->actionRef['name']}' has tasks to process before shutdown.\n";
         $this->actionRef['GlobalFinishFunction']($this);
     }
 
@@ -111,7 +118,7 @@ class CallContext
                         derr("unsupported value '{$argValue}' for action '{$this->actionRef['name']}' arg#{$count} '{$argName}'");
                 }
             }
-            elseif( $properties['type'] == 'boolean' )
+            elseif( $properties['type'] == 'boolean' || $properties['type'] == 'bool' )
             {
                 if( $argValue == '1' || strtolower($argValue) == 'true' || strtolower($argValue) == 'yes' )
                     $argValue = true;
@@ -145,10 +152,145 @@ class CallContext
             $ret .= " / Args: ";
             foreach($this->arguments as $argName => $argValue)
             {
-                $ret .= "$argName=$argValue, ";
+                if( is_bool($argValue) )
+                    $ret .= "$argName=".boolYesNo($argValue).", ";
+                else
+                    $ret .= "$argName=$argValue, ";
             }
         }
 
         return $ret;
+    }
+}
+
+class RuleCallContext extends CallContext
+{
+    public function addRuleToMergedApiChange($setValue)
+    {
+        $rule = $this->object;
+
+        if( !isset($this->mergeArray) )
+            $this->mergeArray = Array();
+
+        $mergeArray = &$this->mergeArray;
+        $panoramaMode = $this->baseObject->isPanorama();
+        $subSystem = $this->subSystem;
+
+
+        $classToType = Array('SecurityRule' => 'security', 'NatRule' => 'nat', );
+        $type = $classToType[get_class($rule)];
+
+        if( !$panoramaMode )
+        {
+            $mergeArray[$subSystem->name()][$type][$rule->name()] = $setValue;
+            return;
+        }
+
+        $ruleLocation = 'pre-rulebase';
+        if( $rule->isPostRule() )
+            $ruleLocation = 'post-rulebase';
+
+        if( $rule->owner->owner->isPanorama() )
+            $mergeArray['shared'][$ruleLocation][$type][$rule->name()] = $setValue;
+        else
+            $mergeArray[$subSystem->name()][$ruleLocation][$type][$rule->name()] = $setValue;
+    }
+
+
+    public function generateRuleMergedApuChangeString($forSharedRules=false)
+    {
+
+        if( !isset($this->mergeArray) )
+            return '';
+
+        $mergeArray = &$this->mergeArray;
+
+        if( count($mergeArray) < 1 )
+            return '';
+
+        $panoramaMode = $this->baseObject->isPanorama();
+        $subSystem = $this->subSystem;
+
+
+        if( $panoramaMode )
+        {
+            $strPointer = '';
+
+            if( $forSharedRules && !isset($mergeArray['shared']) )
+                return null;
+
+            foreach($mergeArray as $subSystemName => &$locations)
+            {
+                if( $subSystemName == 'shared' )
+                {
+                    if( !$forSharedRules )
+                        continue;
+                }
+                else
+                {
+                    if( $forSharedRules )
+                        continue;
+                }
+
+                if( !$forSharedRules )
+                    $strPointer .= "<entry name=\"{$subSystemName}\">";
+
+                foreach($locations as $locationName => &$types)
+                {
+                    $strPointer .= "<{$locationName}>";
+
+                    foreach($types as $typeName => &$rules)
+                    {
+                        $strPointer .= "<{$typeName}><rules>\n";
+
+                        foreach($rules as $ruleName => $xmlValue )
+                        {
+                            $strPointer .= "<entry name=\"{$ruleName}\">{$xmlValue}</entry>\n";
+                        }
+
+                        $strPointer .= "</rules></{$typeName}>\n";
+                    }
+
+                    $strPointer .= "</{$locationName}>";
+                }
+
+                if( !$forSharedRules )
+                    $strPointer .= "</entry>";
+            }
+
+            if( $forSharedRules )
+                return $strPointer;
+
+            if( strlen($strPointer) < 1 )
+                return null;
+
+            return '<device-group>'.$strPointer.'</device-group>';
+        }
+        else
+        {
+            $xml = '<devices><entry name="localhost.localdomain">';
+            $xml .= '<vsys>';
+            foreach($mergeArray as $subSystemName => &$types)
+            {
+                $xml .= "<entry name=\"{$subSystemName}\"><rules>";
+
+                foreach($types as $typeName => &$rules)
+                {
+                    $xml .= "<{$typeName}><rules>\n";
+
+                    foreach($rules as $ruleName => $xmlValue )
+                    {
+                        $xml .= "<entry name=\"{$ruleName}\">{$xmlValue}</entry>\n";
+                    }
+
+                    $xml .= "</rules></{$typeName}>\n";
+                }
+
+                $xml .= "</rules></entry>";
+            }
+            $xml .= '</vsys></entry></devices>';
+
+            return $xml;
+        }
     }
 }

@@ -907,8 +907,12 @@ foreach( $explodedActions as &$exAction )
         $explodedAction[1] = '';
 
     $context = new ServiceCallContext($supportedActions[$actionName], $explodedAction[1]);
+    $context->baseObject->$pan;
     if( $configInput['type'] == 'api' )
+    {
         $context->isAPI = true;
+        $context->connector = $pan->connector;
+    }
 
     $doActions[] = $context;
 }
@@ -1055,6 +1059,10 @@ foreach( $objectsToProcess as &$objectsRecord )
 
     $store = $objectsRecord['store'];
     $objects = &$objectsRecord['objects'];
+    foreach( $doActions as $doAction )
+    {
+        $doAction->subSystem = $store->owner;
+    }
 
     print "\n* processing store '".PH::boldText($store->toString())." that holds ".PH::boldText(count($objects))." objects\n";
 
