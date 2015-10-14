@@ -388,6 +388,48 @@ that. Look at AddressStore if you want to create an AddressGroup</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="API_add" id="_API_add">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_add">#</a>
+		<code><b>API_add</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$newObject</var></span> )</code>
+
+		<div class="description short">
+			
+<p>Add a member to this group, it must be passed as an object</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Add a member to this group, it must be passed as an object</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$newObject</var></dt>
+					<dd><code><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code></code><br>$newObject Object to be added</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="remove" id="_remove">
 
 		<td class="attributes"><code>
@@ -399,7 +441,7 @@ that. Look at AddressStore if you want to create an AddressGroup</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove">#</a>
-		<code><b>remove</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$old</var></span>, <span>boolean <var>$rewriteXml</var> = <span class="php-keyword1">true</span> </span> )</code>
+		<code><b>remove</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$objectToRemove</var></span>, <span>boolean <var>$rewriteXml</var> = <span class="php-keyword1">true</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -415,8 +457,52 @@ that. Look at AddressStore if you want to create an AddressGroup</p>
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$old</var></dt>
-					<dd><code><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code></code><br>$old Object to be removed</dd>
+					<dt><var>$objectToRemove</var></dt>
+					<dd><code><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code></code><br>$objectToRemove Object to be removed</dd>
+					<dt><var>$rewriteXml</var></dt>
+					<dd><code>boolean</code><br>$rewriteXml</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_remove" id="_API_remove">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_remove">#</a>
+		<code><b>API_remove</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$objectToRemove</var></span>, <span>boolean <var>$rewriteXml</var> = <span class="php-keyword1">true</span> </span> )</code>
+
+		<div class="description short">
+			
+<p>Removes a member from this group</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Removes a member from this group</p>
+
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$objectToRemove</var></dt>
+					<dd><code><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code></code><br>$objectToRemove Object to be removed</dd>
 					<dt><var>$rewriteXml</var></dt>
 					<dd><code>boolean</code><br>$rewriteXml</dd>
 				</dl></div>
