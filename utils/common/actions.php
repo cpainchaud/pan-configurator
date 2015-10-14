@@ -208,11 +208,7 @@ class RuleCallContext extends CallContext
         if( count($mergeArray) < 1 )
             return '';
 
-        $panoramaMode = $this->baseObject->isPanorama();
-        $subSystem = $this->subSystem;
-
-
-        if( $panoramaMode )
+        if( $this->baseObject->isPanorama() )
         {
             $strPointer = '';
 
@@ -268,8 +264,10 @@ class RuleCallContext extends CallContext
         }
         else
         {
-            $xml = '<devices><entry name="localhost.localdomain">';
-            $xml .= '<vsys>';
+            if( count($mergeArray) < 1 )
+                return null;
+
+            $xml = '<vsys>';
             foreach($mergeArray as $subSystemName => &$types)
             {
                 $xml .= "<entry name=\"{$subSystemName}\"><rules>";
@@ -288,7 +286,7 @@ class RuleCallContext extends CallContext
 
                 $xml .= "</rules></entry>";
             }
-            $xml .= '</vsys></entry></devices>';
+            $xml .= '</vsys>';
 
             return $xml;
         }
