@@ -993,7 +993,7 @@ $supportedActions['description-append'] = Array(
     'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
-        $description = ''.$rule->description();
+        $description = ' '.$rule->description();
 
         $textToAppend = $context->arguments['text'];
 
