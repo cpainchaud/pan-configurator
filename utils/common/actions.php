@@ -201,12 +201,12 @@ class RuleCallContext extends CallContext
     {
 
         if( !isset($this->mergeArray) )
-            return '';
+            return null;
 
         $mergeArray = &$this->mergeArray;
 
         if( count($mergeArray) < 1 )
-            return '';
+            return null;
 
         if( $this->baseObject->isPanorama() )
         {

@@ -1035,8 +1035,11 @@ $supportedActions['enabled-set-fastapi'] = Array(
         if( !$context->isAPI )
             derr('you cannot call this action without API mode');
 
-        $context->addRuleToMergedApiChange('<disabled>'.boolYesNo(!$context->arguments['trueOrFalse']).'</disabled>');
-        $rule->setEnabled($context->arguments['trueOrFalse']);
+        if( $rule->setEnabled($context->arguments['trueOrFalse']) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<disabled>' . boolYesNo(!$context->arguments['trueOrFalse']) . '</disabled>');
+        }
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
     {
@@ -1077,8 +1080,11 @@ $supportedActions['disabled-set-fastapi'] = Array(
         if( !$context->isAPI )
             derr('you cannot call this action without API mode');
 
-        $context->addRuleToMergedApiChange('<disabled>'.boolYesNo($context->arguments['trueOrFalse']).'</disabled>');
-        $rule->setDisabled($context->arguments['trueOrFalse']);
+        if( $rule->setDisabled($context->arguments['trueOrFalse']) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<disabled>' . boolYesNo($context->arguments['trueOrFalse']) . '</disabled>');
+        }
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
     {
