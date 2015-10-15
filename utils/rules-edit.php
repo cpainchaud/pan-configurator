@@ -920,7 +920,7 @@ $supportedActions['logstart-enable'] = Array(
     },
 );
 $supportedActions['logstart-disable'] = Array(
-    'name' => 'logStart-disable',
+    'name' => 'logStart-Disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -929,6 +929,48 @@ $supportedActions['logstart-disable'] = Array(
             $rule->API_setLogStart(false);
         else
             $rule->setLogStart(false);
+    },
+);
+$supportedActions['logstart-enable-fastapi'] = Array(
+    'name' => 'logStart-Enable-FastAPI',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->setLogStart(true) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<log-start>yes</log-start>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
+);
+$supportedActions['logstart-disable-fastapi'] = Array(
+    'name' => 'logStart-Disable-FastAPI',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->setLogStart(false) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<log-start>no</log-start>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
     },
 );
 $supportedActions['logend-enable'] = Array(
@@ -1043,20 +1085,7 @@ $supportedActions['enabled-set-fastapi'] = Array(
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
     {
-        $setString = $context->generateRuleMergedApuChangeString(true);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for SHARED... ';
-            $context->connector->sendSetRequest('/config/shared', $setString);
-            print "OK!\n";
-        }
-        $setString = $context->generateRuleMergedApuChangeString(false);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for Device-Groups... ';
-            $context->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
-            print "OK!\n";
-        }
+        $context->doBundled_API_Call();
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );

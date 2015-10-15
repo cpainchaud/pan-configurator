@@ -291,4 +291,22 @@ class RuleCallContext extends CallContext
             return $xml;
         }
     }
+
+    public function doBundled_API_Call()
+    {
+        $setString = $this->generateRuleMergedApuChangeString(true);
+        if( $setString !== null )
+        {
+            print $this->padding . ' - sending API call for SHARED... ';
+            $this->connector->sendSetRequest('/config/shared', $setString);
+            print "OK!\n";
+        }
+        $setString = $this->generateRuleMergedApuChangeString(false);
+        if( $setString !== null )
+        {
+            print $this->padding . ' - sending API call for Device-Groups/VSYS... ';
+            $this->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
+            print "OK!\n";
+        }
+    }
 }
