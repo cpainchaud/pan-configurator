@@ -79,7 +79,7 @@ trait ObjectWithDescription
             if( strlen($this->_description) < 1 )
                 $con->sendDeleteRequest($xpath);
             else
-                $con->sendSetRequest($this->getXPath(), '<description>'.$this->_description.'</description>');
+                $con->sendSetRequest($this->getXPath(), '<description>'.htmlspecialchars($this->_description).'</description>');
 
         }
 
