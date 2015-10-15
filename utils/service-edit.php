@@ -907,7 +907,7 @@ foreach( $explodedActions as &$exAction )
         $explodedAction[1] = '';
 
     $context = new ServiceCallContext($supportedActions[$actionName], $explodedAction[1]);
-    $context->baseObject->$pan;
+    $context->baseObject = $pan;
     if( $configInput['type'] == 'api' )
     {
         $context->isAPI = true;
@@ -1124,7 +1124,10 @@ if( isset(PH::$args['stats']) )
 // save our work !!!
 if( $configOutput !== null )
 {
-    $pan->save_to_file($configOutput);
+    if( $configOutput != '/dev/null' )
+    {
+        $pan->save_to_file($configOutput);
+    }
 }
 
 
