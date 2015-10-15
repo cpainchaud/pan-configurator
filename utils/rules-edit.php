@@ -110,15 +110,21 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
 {
     $rule = $context->object;
 
+    $addrContainerIsNegated = false;
+
     if( $fromOrTo == 'from' )
     {
         $zoneContainer  = $rule->from;
         $addrContainer = $rule->source;
+        if( $rule->isSecurityRule() && $rule->sourceIsNegated() )
+            $addrContainerIsNegated = true;
     }
     elseif( $fromOrTo == 'to' )
     {
         $zoneContainer  = $rule->to;
         $addrContainer = $rule->destination;
+        if( $rule->isSecurityRule() && $rule->destinationIsNegated() )
+            $addrContainerIsNegated = true;
     }
     else
         derr('unsupported');
@@ -260,7 +266,7 @@ $commonActionFunctions['calculate-zones'] = function (CallContext $context, $fro
     $ipMapping = &$context->cachedIPmapping[$serial];
 
     if( $rule->isSecurityRule() )
-        $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4'], $rule->sourceIsNegated());
+        $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4'], $addrContainerIsNegated );
     else
         $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4']);
 
