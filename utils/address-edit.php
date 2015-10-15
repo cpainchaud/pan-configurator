@@ -141,10 +141,29 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
     {
         $object = $context->object;
 
-        if( !$object->isTmpAddr() || !$object->nameIsValidRuleIPEntry() )
+        if( !$object->isTmpAddr() )
         {
             print $context->padding."     *  SKIPPED because object is not temporary or not an IP address/netmask\n";
             return;
+        }
+
+        $rangeDetected = false;
+
+        if( !$object->nameIsValidRuleIPEntry() )
+        {
+            $explode = explode( '-', $object->name() );
+            if( count($explode) != 2 )
+            {
+                print $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
+                return;
+            }
+            if( filter_var($explode[0], FILTER_VALIDATE_IP) === FALSE || filter_var($explode[1], FILTER_VALIDATE_IP) === FALSE )
+            {
+                print $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
+                return;
+            }
+
+            $rangeDetected = true;
         }
 
         $objectRefs = $object->getReferences();
@@ -162,52 +181,65 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
 
         $pan = PH::findRootObjectOrDie($object->owner);
 
-        $explode = explode('/',$object->name());
-
-        if( count($explode) > 1 )
+        if( !$rangeDetected )
         {
-            $name = $explode[0];
-            $mask = $explode[1];
+            $explode = explode('/',$object->name());
+
+            if( count($explode) > 1 )
+            {
+                $name = $explode[0];
+                $mask = $explode[1];
+            }
+            else
+            {
+                $name = $object->name();
+                $mask = 32;
+            }
+
+            if( $mask > 32 || $mask < 0 )
+            {
+                print $context->padding."    * SKIPPED because of invalid mask detected : '$mask'\n";
+                return;
+            }
+
+            if( filter_var($name, FILTER_VALIDATE_IP) === FALSE )
+            {
+                print $context->padding."    * SKIPPED because of invalid IP detected : '$name'\n";
+                return;
+            }
+
+            if( $mask == 32 )
+            {
+                $newName = 'H-'.$name;
+            }
+            else
+            {
+                $newName = 'N-'.$name.'-'.$mask;
+            }
         }
         else
         {
-            $name = $object->name();
-            $mask = 32;
-        }
-
-        if( $mask > 32 || $mask < 0 )
-        {
-            print $context->padding."    * SKIPPED because of invalid mask detected : '$mask'\n";
-            return;
-        }
-
-        if( filter_var($name, FILTER_VALIDATE_IP) === FALSE )
-        {
-            print $context->padding."    * SKIPPED because of invalid IP detected : '$name'\n";
-            return;
-        }
-
-        if( $mask == 32 )
-        {
-            $newName = 'H-'.$name;
-        }
-        else
-        {
-            $newName = 'N-'.$name.'-'.$mask;
+            $newName = "R-".$explode[0].'-'.$explode[1];
         }
 
         print $context->padding."    * new object name will be $newName\n";
 
-        $objToReplace = $pan->addressStore->find($newName);
+        $objToReplace = $object->owner->find($newName);
         if( $objToReplace === null )
         {
             if( $context->isAPI )
             {
-                $objToReplace = $pan->addressStore->API_newAddress($newName, 'ip-netmask', $name.'/'.$mask);
+                if( $rangeDetected)
+                    $objToReplace = $object->owner->API_newAddress($newName, 'ip-range', $explode[0].'-'.$explode[1] );
+                else
+                    $objToReplace = $object->owner->API_newAddress($newName, 'ip-netmask', $name.'/'.$mask);
             }
             else
             {
-                $objToReplace = $pan->addressStore->newAddress($newName, 'ip-netmask', $name.'/'.$mask);
+                if( $rangeDetected)
+                    $objToReplace = $object->owner->newAddress($newName, 'ip-range', $explode[0].'-'.$explode[1] );
+                else
+                    $objToReplace = $object->owner->newAddress($newName, 'ip-netmask', $name.'/'.$mask);
             }
         }
         else
@@ -219,7 +251,6 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
                 return;
             }
         }
-
 
 
         if( $clearForAction )
@@ -1203,7 +1234,10 @@ if( isset(PH::$args['stats']) )
 // save our work !!!
 if( $configOutput !== null )
 {
-    $pan->save_to_file($configOutput);
+    if( $configOutput != '/dev/null' )
+    {
+        $pan->save_to_file($configOutput);
+    }
 }
 
 print "\n\n********** END OF ADDRESS-EDIT UTILITY ***********\n";

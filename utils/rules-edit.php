@@ -2072,7 +2072,10 @@ print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS PROCESSED over {$tot
 // save our work !!!
 if( $configOutput !== null )
 {
-    $pan->save_to_file($configOutput);
+    if( $configOutput != '/dev/null' )
+    {
+        $pan->save_to_file($configOutput);
+    }
 }
 
 print "\n\n************ END OF RULE-EDIT UTILITY ************\n";
