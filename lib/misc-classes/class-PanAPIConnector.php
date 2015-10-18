@@ -23,15 +23,13 @@
  *
  * Code :
  *
- * $con = PanAPIConnector::findOrCreateConnectorFromHost( 'fw1.company.com' );
+ *  $con = PanAPIConnector::findOrCreateConnectorFromHost( 'fw1.company.com' );
+ *  $infos = $con->getSoftwareVersion();
+ *  print "Platform: ".$infos['type']." Version: ".$infos['version'];
+ *  $pan = new PANConf()
  *
- * $infos = $con->getSoftwareVersion();
+ *  $pan->API_load_from_candidate();
  *
- * print "Platform: ".$infos['type']." Version: ".$infos['version'];
- *
- * $pan = new PANConf()
- *
- * $pan->API_load_from_candidate();
  */
 class PanAPIConnector
 {
