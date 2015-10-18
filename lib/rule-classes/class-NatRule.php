@@ -480,27 +480,6 @@ class NatRule extends Rule
 		$this->rewriteSNAT_XML();
 		
 	}
-
-	
-	function myClone()
-	{
-		$tmparr = cloneArray($this->xmlroot);
-		//$tmparr = $this->xmlroot;
-		
-		$new = new NatRule();
-		
-		$new->owner = $this->owner;
-		$new->load_from_xml($tmparr);
-		//$new->setName($new->name.'-tmpcloned');
-		//$new->setName('LOL');
-		
-		return $new;
-		
-	}
-	
-	
-	
-	
 	
 	public function setService($newServiceObject)
 	{
