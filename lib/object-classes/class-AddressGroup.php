@@ -716,8 +716,15 @@ class AddressGroup
             }
             elseif( $member->isAddress() )
             {
-                $localMap = $member->getIP4Mapping();
-                $mapObject->addMap($localMap, true);
+                if( $member->type() == 'fqdn' )
+                {
+                    $result['unresolved'][] = $member;
+                }
+                else
+                {
+                    $localMap = $member->getIP4Mapping();
+                    $mapObject->addMap($localMap, true);
+                }
             }
             elseif( $member->isGroup() )
             {
