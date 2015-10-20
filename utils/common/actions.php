@@ -38,6 +38,9 @@ class CallContext
             $this->nestedQueries = &$nestedQueries;
     }
 
+    /**
+     * @param $object Address|AddressGroup|Service|ServiceGroup|Rule
+     */
     public function executeAction($object)
     {
         $this->object = $object;
