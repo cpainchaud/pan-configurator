@@ -1091,12 +1091,46 @@ $supportedActions['securityprofile-group-set'] = Array(
     'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
         if( $context->isAPI )
             $rule->API_setSecurityProfileGroup($context->arguments['profName']);
         else
             $rule->setSecurityProfileGroup($context->arguments['profName']);
     },
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+$supportedActions['securityprofile-group-set-fastapi'] = Array(
+    'name' => 'securityProfile-Group-Set-FastAPI',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding." - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->setSecurityProfileGroup($context->arguments['profName']) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<profile-setting><group><member>' . $context->arguments['profName'] . '</member></group></profile-setting>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
 );
 
 $supportedActions['description-append'] = Array(

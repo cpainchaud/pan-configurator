@@ -7,6 +7,7 @@ core:
 utils:
 * rules-edit.php : new Actions 'description-append'
 * rules-edit.php : create FastAPI modes for : 'enabled-set', 'logStart-Enable', 'logStart-Disable', 'logEnd-Enable', 'logEnd-Disable'
+					'securityProfile-Group-Set'
 
 bugfixes:
 * rules-edit.php : destination zone calculation fix in

@@ -379,22 +379,29 @@ class SecurityRule extends Rule
 	
 	public function setSecurityProfileGroup( $newgroup )
 	{
+        //TODO : implement better 'change' detection to remove this return true
 		$this->secproftype = 'group';
 		$this->secprofgroup = $newgroup;
 		$this->secprofprofiles = Array();
 			
 		$this->rewriteSecProfXML();
+
+        return true;
 	}
 
 	public function API_setSecurityProfileGroup( $newgroup )
 	{
-		$this->setSecurityProfileGroup($newgroup);
+		$ret = $this->setSecurityProfileGroup($newgroup);
 
-		$xpath = $this->getXPath().'/profile-setting';
-		$con = findConnectorOrDie($this);
+        if( $ret )
+        {
+            $xpath = $this->getXPath() . '/profile-setting';
+            $con = findConnectorOrDie($this);
 
-		$con->sendEditRequest( $xpath, '<profile-setting><group><member>'.$newgroup.'</member></group></profile-setting>');
+            $con->sendEditRequest($xpath, '<profile-setting><group><member>' . $newgroup . '</member></group></profile-setting>');
+        }
 
+        return $ret;
 	}
 
 	
