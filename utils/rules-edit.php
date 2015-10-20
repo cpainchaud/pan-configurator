@@ -914,7 +914,7 @@ $supportedActions['app-remove-force-any'] = Array(
  //               Log based Actions                 //
 //                                                 //
 $supportedActions['logstart-enable'] = Array(
-    'name' => 'logStart-enable',
+    'name' => 'logStart-Enable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -979,8 +979,29 @@ $supportedActions['logstart-disable-fastapi'] = Array(
         $context->doBundled_API_Call();
     },
 );
+$supportedActions['logstart-enable-fastapi'] = Array(
+    'name' => 'logStart-Enable-FastAPI',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->setLogStart(true) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<log-start>yes</log-start>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
+);
 $supportedActions['logend-enable'] = Array(
-    'name' => 'logEnd-enable',
+    'name' => 'logEnd-Enable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -992,7 +1013,7 @@ $supportedActions['logend-enable'] = Array(
     }
 );
 
-$supportedActions['logend-disable'] = Array(
+$supportedActions['logend-Disable'] = Array(
     'name' => 'logEnd-disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1003,6 +1024,48 @@ $supportedActions['logend-disable'] = Array(
         else
             $rule->setLogEnd(false);
     }
+);
+$supportedActions['logend-disable-fastapi'] = Array(
+    'name' => 'logend-Disable-FastAPI',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->setLogEnd(false) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<log-end>no</log-end>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
+);
+$supportedActions['logend-enable-fastapi'] = Array(
+    'name' => 'logend-Enable-FastAPI',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->setLogEnd(true) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<log-end>yes</log-end>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
 );
 $supportedActions['logsetting-set'] = Array(
     'name' => 'logSetting-set',
