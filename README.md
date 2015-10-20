@@ -63,7 +63,7 @@ Do you hate scripting ? Utility script 'rules-edit.php' is a swiss knife to edit
 
 Do you want to enable log at start for rule going to DMZ zone and that has only object group 'Webfarms' as a destination ?
 
-    rules-edit.php in=api://fw1.mycompany.com actions=enableLogStart 'filter=(to has dmz) and (dst has.only Webfarms)'
+    rules-edit.php in=api://fw1.mycompany.com actions=logStart-Enable 'filter=(to has dmz) and (dst has.only Webfarms)'
 
 You are not sure about your filter and want to see rules before making changes ? Use action 'display' :
 
