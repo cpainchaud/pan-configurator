@@ -36,7 +36,7 @@ function display_usage_and_exit($shortMessage = false)
     print "php ".basename(__FILE__)." help          : more help messages\n";
     print PH::boldText("\nExamples:\n");
     print " - php ".basename(__FILE__)." in=api://192.169.50.10 location=DMZ-Firewall-Group actions=from-add:dmz2,dmz3 'filter=(to has untrust) or (to is.any)'\n";
-    print " - php ".basename(__FILE__)." in=config.xml out=output.xml location=any actions=setSecurityProfile:avProf1\n";
+    print " - php ".basename(__FILE__)." in=config.xml out=output.xml location=any actions=securityProfile-Group-Set:BlockAll\n";
 
     if( !$shortMessage )
     {
