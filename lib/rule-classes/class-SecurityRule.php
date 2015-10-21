@@ -370,12 +370,30 @@ class SecurityRule extends Rule
 	
 	public function removeSecurityProfile()
 	{
+        //TODO : implement better 'change' detection to remove this return true
 		$this->secproftype = 'none';
 		$this->secprofgroup = null;
 		$this->secprofprofiles = Array();
 		
 		$this->rewriteSecProfXML();
+
+        return true;
 	}
+
+    public function API_removeSecurityProfile()
+    {
+        $ret = $this->removeSecurityProfile();
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath() . '/profile-setting';
+            $con = findConnectorOrDie($this);
+
+            $con->sendDeleteRequest($xpath);
+        }
+
+        return $ret;
+    }
 	
 	public function setSecurityProfileGroup( $newgroup )
 	{

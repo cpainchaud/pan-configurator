@@ -1105,6 +1105,24 @@ $supportedActions['securityprofile-group-set'] = Array(
     },
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
+$supportedActions['securityprofile-remove'] = Array(
+    'name' => 'securityProfile-Remove',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_removeSecurityProfile();
+        else
+            $rule->removeSecurityProfile();
+    },
+);
 $supportedActions['securityprofile-group-set-fastapi'] = Array(
     'name' => 'securityProfile-Group-Set-FastAPI',
     'section' => 'log',
