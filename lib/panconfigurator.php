@@ -31,6 +31,20 @@ if (!extension_loaded('curl')) {
         dl('curl.so');
     }
 }
+if (!extension_loaded('xml')) {
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        dl('php_xml.dll');
+    } else {
+        dl('xml.so');
+    }
+}
+if (!extension_loaded('dom')) {
+    if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+        dl('php_dom.dll');
+    } else {
+        dl('dom.so');
+    }
+}
 
 
 /**
