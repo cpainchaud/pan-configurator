@@ -443,13 +443,20 @@ class PanAPIConnector
 
         if( isset($this->serial) && $this->serial !== null )
         {
-            $finalUrl = 'https://'.$host.'/api/';
+            if($this->port == 80 )
+                $finalUrl = 'http://'.$host.'/api/';
+            else
+                $finalUrl = 'https://'.$host.'/api/';
+
             if( !$sendThroughPost )
              $finalUrl .= '?key='.urlencode($this->apikey).'&target='.$this->serial;
         }
         else
         {
-            $finalUrl = 'https://' . $host . '/api/';
+            if($this->port == 80 )
+                $finalUrl = 'http://' . $host . '/api/';
+            else
+                $finalUrl = 'https://' . $host . '/api/';
             if( !$sendThroughPost )
                 $finalUrl .= '?key=' . urlencode($this->apikey);
         }
