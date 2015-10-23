@@ -40,10 +40,10 @@ class AddressGroup
 	 */
 	private $membersRoot = null;
 
-	/**
-	 * @var TagStore
-	 */
-	public $tags;
+    /**
+     * @var TagRuleContainer
+     */
+    public $tags;
 
 	
 	/**

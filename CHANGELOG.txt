@@ -3,6 +3,8 @@ CHANGELOG
 1.5.4
 core:
 * AddressGroup : new function API_add() and API_remove()
+* Service : added tag support
+* ServiceGroup : added tag support
 
 utils:
 * rules-edit.php : new Actions 'description-append', 'securityProfile-Remove'

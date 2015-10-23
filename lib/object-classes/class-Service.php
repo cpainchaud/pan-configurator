@@ -48,6 +48,11 @@ class Service
 	public $owner=null;
 
     /**
+     * @var TagRuleContainer
+     */
+    public $tags;
+
+    /**
      * @property Array $dportMap
      * @property Array $sportMap
      */
@@ -70,7 +75,9 @@ class Service
 
             $rootDoc = $owner->servroot->ownerDocument;
             $this->xmlroot = $rootDoc->importNode($node, true);
+            $this->owner = $owner;
             $this->load_from_domxml($this->xmlroot);
+            $this->owner = null;
 
             $this->setName($name);
 		}
@@ -78,6 +85,7 @@ class Service
 			$this->name = $name;
 			
 		$this->owner = $owner;
+        $this->tags = new TagRuleContainer($this);
 		
 	}
 
@@ -120,6 +128,13 @@ class Service
 		{
 			$this->_sport = $sportroot->textContent;
 		}
+
+        if( $this->owner->owner->version >= 60 )
+        {
+            $tagRoot = DH::findFirstElement('tag', $xml);
+            if( $tagRoot !== false )
+                $this->tags->load_from_domxml($tagRoot);
+        }
 	}
 
     /**

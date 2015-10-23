@@ -33,12 +33,20 @@ class ServiceGroup
 	 */
 	public $owner = null;
 
+
+    /**
+     * @var TagRuleContainer
+     */
+    public $tags;
+
 	
 	
 	public function __construct($name,$owner=null)
 	{
 		$this->owner = $owner;
 		$this->name = $name;
+
+        $this->tags = new TagRuleContainer($this);
 	}
 
 
@@ -99,6 +107,13 @@ class ServiceGroup
 
 			}
 		}
+
+        if( $this->owner->owner->version >= 60 )
+        {
+            $tagRoot = DH::findFirstElement('tag', $xml);
+            if( $tagRoot !== false )
+                $this->tags->load_from_domxml($tagRoot);
+        }
 	
 	}
 

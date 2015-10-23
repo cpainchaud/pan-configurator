@@ -36,7 +36,7 @@ class Address
 	public $owner;
 
 	/**
-	 * @var TagStore
+	 * @var TagRuleContainer
 	 */
 	public $tags;
 
