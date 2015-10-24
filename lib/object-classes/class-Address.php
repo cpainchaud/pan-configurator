@@ -22,7 +22,7 @@
  */
 class Address
 {
-	use ReferencableObject {removeReference as super_removeReference;}
+	use AddressCommon;
 	use PathableName;
 	use XmlConvertible;
     use ObjectWithDescription;
@@ -318,11 +318,6 @@ class Address
 	public function type()
 	{
 		return self::$AddressTypes[$this->type];
-	}
-
-	public function isGroup()
-	{
-		return false;
 	}
 
 	public function isAddress()

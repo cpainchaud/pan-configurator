@@ -2,7 +2,7 @@ CHANGELOG
 
 1.5.4
 core:
-* AddressGroup : new function API_add() and API_remove()
+* AddressGroup : new functions API_add(), API_remove(), function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
 * Service : added tag support, new function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
 * ServiceGroup : added tag support new function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
 
@@ -30,7 +30,7 @@ bugfixes:
 
 1.5.2
 * switched classes constructors to __construct() which is mainstream for PHP5.4+ and 7.0
-* major performance improvment when loading a configuration (added 'name to objects' indexes for fast searches)
+* major performance improvement when loading a configuration (added 'name to objects' indexes for fast searches)
 * renamed address query filter "value eq" to "value string.eq" for string comparison
 * new address query filters "value ip4.match.exact"
 * rules-edit.php : improved zone calculation feature by allowing to load an external firewall

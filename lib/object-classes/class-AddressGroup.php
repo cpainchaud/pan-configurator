@@ -20,8 +20,8 @@
 class AddressGroup
 {
 	use PathableName;
-	use ReferencableObject;
 	use XmlConvertible;
+    use AddressCommon;
 
     private $isDynamic = false;
 
@@ -445,15 +445,6 @@ class AddressGroup
 		return true;
 	}
 
-	public function isAddress()
-	{
-		return false;
-	}
-
-	public function isTmpAddr()
-	{
-		return false;
-	}
 
     /**
      * @param Address|AddressGroup $otherObject

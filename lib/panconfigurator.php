@@ -122,6 +122,7 @@ require_once $basedir.'/object-classes/class-AddressStore.php';
 require_once $basedir.'/object-classes/class-ServiceStore.php';
 require_once $basedir.'/object-classes/class-Tag.php';
 require_once $basedir.'/object-classes/class-App.php';
+require_once $basedir.'/object-classes/trait-AddressCommon.php';
 require_once $basedir.'/object-classes/class-Address.php';
 require_once $basedir.'/object-classes/class-AddressGroup.php';
 require_once $basedir.'/object-classes/trait-ServiceCommon.php';

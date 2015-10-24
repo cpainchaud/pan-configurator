@@ -16,11 +16,11 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-trait ServiceCommon
+trait AddressCommon
 {
     use ReferencableObject {removeReference as super_removeReference;}
 
-    public function isService()
+    public function isAddress()
     {
         return false;
     }
@@ -30,12 +30,7 @@ trait ServiceCommon
         return false;
     }
 
-    public function isTmpSrv()
-    {
-        return false;
-    }
-
-    public function isDynamic()
+    public function isTmpAddr()
     {
         return false;
     }
@@ -46,7 +41,7 @@ trait ServiceCommon
     }
 
     /**
-     * @param $objectToAdd Service|ServiceGroup
+     * @param $objectToAdd Address|AddressGroup
      * @param $displayOutput bool
      * @param $skipIfConflict bool
      * @param $outputPadding string|int
@@ -62,16 +57,16 @@ trait ServiceCommon
         foreach($this->refrules as $ref)
         {
             $refClass = get_class($ref);
-            if( $refClass == 'ServiceGroup' )
+            if( $refClass == 'AddressGroup' )
             {
-                /** @var $ref ServiceGroup */
+                /** @var $ref AddressGroup */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
                 $ref->add($objectToAdd);
             }
-            elseif( $refClass == 'ServiceRuleContainer' )
+            elseif( $refClass == 'AddressRuleContainer' )
             {
-                /** @var $ref ServiceRuleContainer */
+                /** @var $ref AddressRuleContainer */
 
                 $ruleClass = get_class($ref->owner);
                 if( $ruleClass == 'SecurityRule' )
@@ -79,11 +74,16 @@ trait ServiceCommon
                     if( $displayOutput )
                         print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";
 
-                    $ref->add($objectToAdd);
+                    $ref->addObject($objectToAdd);
                 }
                 elseif( $ruleClass == 'NatRule' )
                 {
-                    derr('unsupported use case in '.$ref->_PANC_shortName());
+                    if( $ref->owner->name() == 'source' || $ref->owner->name() == 'destination' )
+                    {
+                        $ref->addObject($objectToAdd);
+                    }
+                    else
+                        derr('unsupported use case in '.$ref->owner->_PANC_shortName());
                 }
                 else
                     derr('unsupported owner_class: '.$ruleClass);
@@ -94,7 +94,7 @@ trait ServiceCommon
     }
 
     /**
-     * @param $objectToAdd Service|ServiceGroup
+     * @param $objectToAdd Address|AddressGroup
      * @param $displayOutput bool
      * @param $skipIfConflict bool
      * @param $outputPadding string|int
@@ -110,16 +110,16 @@ trait ServiceCommon
         foreach($this->refrules as $ref)
         {
             $refClass = get_class($ref);
-            if( $refClass == 'ServiceGroup' )
+            if( $refClass == 'AddressGroup' )
             {
-                /** @var $ref ServiceGroup */
+                /** @var $ref AddressGroup */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
                 $ref->API_add($objectToAdd);
             }
-            elseif( $refClass == 'ServiceRuleContainer' )
+            elseif( $refClass == 'AddressRuleContainer' )
             {
-                /** @var $ref ServiceRuleContainer */
+                /** @var $ref AddressRuleContainer */
 
                 $ruleClass = get_class($ref->owner);
                 if( $ruleClass == 'SecurityRule' )
@@ -131,7 +131,12 @@ trait ServiceCommon
                 }
                 elseif( $ruleClass == 'NatRule' )
                 {
-                    derr('unsupported use case in '.$ref->_PANC_shortName());
+                    if( $ref->owner->name() == 'source' || $ref->owner->name() == 'destination' )
+                    {
+                        $ref->API_add($objectToAdd);
+                    }
+                    else
+                        derr('unsupported use case in '.$ref->owner->_PANC_shortName());
                 }
                 else
                     derr('unsupported owner_class: '.$ruleClass);
