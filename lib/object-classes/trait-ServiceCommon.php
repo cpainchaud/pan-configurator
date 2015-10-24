@@ -76,6 +76,10 @@ trait ServiceCommon
 
                     $ref->add($objectToAdd);
                 }
+                elseif( $ruleClass == 'NatRule' )
+                {
+                    derr('unsupported use case in '.$ref->_PANC_shortName());
+                }
                 else
                     derr('unsupported owner_class: '.$ruleClass);
             }
