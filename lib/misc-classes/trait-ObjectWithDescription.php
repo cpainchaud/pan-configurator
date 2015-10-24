@@ -24,6 +24,9 @@ trait ObjectWithDescription
     /** @var string  */
     protected $_description = null;
 
+    /**
+     * @return string if no description then string will be empty: ''
+     */
     function description()
     {
         if( $this->_description === null )
@@ -33,8 +36,8 @@ trait ObjectWithDescription
     }
 
     /**
-     * @param null|string $newDescription
-     * @return bool
+     * @param null|string $newDescription  empty or null description will erase existing one
+     * @return bool false if no update was made to description (already had same value)
      */
     function setDescription($newDescription=null)
     {
