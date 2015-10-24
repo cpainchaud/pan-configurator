@@ -7,7 +7,7 @@
 	<title>Class Service | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3502742178"></script>
+	<script type="text/javascript" src="elementlist.js?3680294853"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -93,6 +93,7 @@
 
 			<h3>Traits</h3>
 			<ul>
+				<li><a href="class-AddressCommon.html">AddressCommon</a></li>
 				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
 				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
 				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
@@ -104,6 +105,7 @@
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-ServiceCommon.html">ServiceCommon</a></li>
 				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
 			</ul>
 
@@ -177,13 +179,13 @@
 <b><span>Service</span></b>			
 			
 			 uses 
-				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>, 
-			
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
 				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
 			
-				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>, 
+			
+				<a href="class-ServiceCommon.html"><span>ServiceCommon</span></a>
 			
 		</dd>
 	</dl>
@@ -626,35 +628,6 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isGroup" id="_isGroup">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_isGroup">#</a>
-		<code><b>isGroup</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="isTmpSrv" id="_isTmpSrv">
 
 		<td class="attributes"><code>
@@ -841,29 +814,10 @@
 
 
 	<table class="summary used">
-	<caption>Methods used from <a href="class-ReferencableObject.html#methods">ReferencableObject</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-ReferencableObject.html#_addReference"><b>addReference()</b></a>, 
-			<a href="class-ReferencableObject.html#_broadcastMyNameChange"><b>broadcastMyNameChange()</b></a>, 
-			<a href="class-ReferencableObject.html#_countReferences"><b>countReferences()</b></a>, 
-			<a href="class-ReferencableObject.html#_display_references"><b>display_references()</b></a>, 
-			<a href="class-ReferencableObject.html#_findAssociatedRule_byType"><b>findAssociatedRule_byType()</b></a>, 
-			<a href="class-ReferencableObject.html#_findAssociatedSecurityRules"><b>findAssociatedSecurityRules()</b></a>, 
-			<a href="class-ReferencableObject.html#_generateRefHashComp"><b>generateRefHashComp()</b></a>, 
-			<a href="class-ReferencableObject.html#_getRefHashComp"><b>getRefHashComp()</b></a>, 
-			<a href="class-ReferencableObject.html#_getReferences"><b>getReferences()</b></a>, 
-			<a href="class-ReferencableObject.html#_name"><b>name()</b></a>, 
-			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
-			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>, 
-			<a href="class-ReferencableObject.html#_removeReference"><b>super_removeReference()</b></a>(as super_removeReference())
-		</code></td>
-	</tr>
-	</table>
-	<table class="summary used">
 	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
 	<tr>
 		<td><code>
+			<a href="class-PathableName.html#__PANC_shortName"><b>_PANC_shortName()</b></a>, 
 			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
 		</code></td>
 	</tr>
@@ -887,6 +841,37 @@
 			<a href="class-ObjectWithDescription.html#__load_description_from_domxml"><b>_load_description_from_domxml()</b></a>, 
 			<a href="class-ObjectWithDescription.html#_description"><b>description()</b></a>, 
 			<a href="class-ObjectWithDescription.html#_setDescription"><b>setDescription()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ServiceCommon.html#methods">ServiceCommon</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ServiceCommon.html#_API_addObjectWhereIamUsed"><b>API_addObjectWhereIamUsed()</b></a>, 
+			<a href="class-ServiceCommon.html#_addObjectWhereIamUsed"><b>addObjectWhereIamUsed()</b></a>, 
+			<a href="class-ServiceCommon.html#_isDynamic"><b>isDynamic()</b></a>, 
+			<a href="class-ServiceCommon.html#_isGroup"><b>isGroup()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ReferencableObject.html#methods">ReferencableObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ReferencableObject.html#_addReference"><b>addReference()</b></a>, 
+			<a href="class-ReferencableObject.html#_broadcastMyNameChange"><b>broadcastMyNameChange()</b></a>, 
+			<a href="class-ReferencableObject.html#_countReferences"><b>countReferences()</b></a>, 
+			<a href="class-ReferencableObject.html#_display_references"><b>display_references()</b></a>, 
+			<a href="class-ReferencableObject.html#_findAssociatedRule_byType"><b>findAssociatedRule_byType()</b></a>, 
+			<a href="class-ReferencableObject.html#_findAssociatedSecurityRules"><b>findAssociatedSecurityRules()</b></a>, 
+			<a href="class-ReferencableObject.html#_generateRefHashComp"><b>generateRefHashComp()</b></a>, 
+			<a href="class-ReferencableObject.html#_getRefHashComp"><b>getRefHashComp()</b></a>, 
+			<a href="class-ReferencableObject.html#_getReferences"><b>getReferences()</b></a>, 
+			<a href="class-ReferencableObject.html#_name"><b>name()</b></a>, 
+			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
+			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>, 
+			<a href="class-ReferencableObject.html#_removeReference"><b>super_removeReference()</b></a>(as super_removeReference())
 		</code></td>
 	</tr>
 	</table>
@@ -1148,16 +1133,6 @@
 
 
 	<table class="summary used">
-	<caption>Properties used from <a href="class-ReferencableObject.html#properties">ReferencableObject</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-ReferencableObject.html#$name"><var>$name</var></a>, 
-			<a href="class-ReferencableObject.html#$refcomphash"><var>$refcomphash</var></a>, 
-			<a href="class-ReferencableObject.html#$refrules"><var>$refrules</var></a>
-		</code></td>
-	</tr>
-	</table>
-	<table class="summary used">
 	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
 	<tr>
 		<td><code>
@@ -1176,6 +1151,15 @@
 
 
 
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-PathableName.html#properties">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#m$name"><var>$name</var></a>, 
+			<a href="class-PathableName.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
 	<table class="summary used">
 	<caption>Magic properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
 	<tr>

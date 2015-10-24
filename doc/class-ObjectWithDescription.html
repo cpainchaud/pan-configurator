@@ -7,7 +7,7 @@
 	<title>Trait ObjectWithDescription | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3502742178"></script>
+	<script type="text/javascript" src="elementlist.js?3680294853"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -93,6 +93,7 @@
 
 			<h3>Traits</h3>
 			<ul>
+				<li><a href="class-AddressCommon.html">AddressCommon</a></li>
 				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
 				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
 				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
@@ -104,6 +105,7 @@
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-ServiceCommon.html">ServiceCommon</a></li>
 				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
 			</ul>
 
@@ -181,6 +183,7 @@
 	<div>
 		<h4>Direct Known Users</h4>
 			<a href="class-Address.html">Address</a>, 
+			<a href="class-AddressGroup.html">AddressGroup</a>, 
 			<a href="class-Rule.html">Rule</a>, 
 			<a href="class-Service.html">Service</a>
 	</div>
@@ -210,7 +213,7 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			string
 			
 			</code>
 		</td>
@@ -228,6 +231,10 @@
 
 
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br>if no description then string will be empty: ''<br />
+				</div>
 
 
 
@@ -259,12 +266,12 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$newDescription</var></dt>
-					<dd><code>null|string</code><br>$newDescription</dd>
+					<dd><code>null|string</code><br>$newDescription empty or null description will erase existing one</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">
-					<code>boolean</code><br />
+					<code>boolean</code><br>false if no update was made to description (already had same value)<br />
 				</div>
 
 

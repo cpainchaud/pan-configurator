@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Trait centralTagStore | PAN-Configurator</title>
+	<title>Trait ServiceCommon | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
 	<script type="text/javascript" src="elementlist.js?3680294853"></script>
@@ -99,13 +99,13 @@
 				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
-				<li class="active"><a href="class-centralTagStore.html">centralTagStore</a></li>
+				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
-				<li><a href="class-ServiceCommon.html">ServiceCommon</a></li>
+				<li class="active"><a href="class-ServiceCommon.html">ServiceCommon</a></li>
 				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
 			</ul>
 
@@ -170,10 +170,19 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Trait centralTagStore</h1>
+	<h1>Trait ServiceCommon</h1>
 
 
 
+	<dl class="tree">
+		<dd style="padding-left:0px">
+<b><span>ServiceCommon</span></b>			
+			
+			 uses 
+				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>
+			
+		</dd>
+	</dl>
 
 
 
@@ -182,8 +191,8 @@
 
 	<div>
 		<h4>Direct Known Users</h4>
-			<a href="class-PANConf.html">PANConf</a>, 
-			<a href="class-PanoramaConf.html">PanoramaConf</a>
+			<a href="class-Service.html">Service</a>, 
+			<a href="class-ServiceGroup.html">ServiceGroup</a>
 	</div>
 
 
@@ -193,25 +202,25 @@
 		
 		
 
-		<b>Located at</b> object-classes/class-TagStore.php<br />
+		<b>Located at</b> object-classes/trait-ServiceCommon.php<br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="tagStore" id="_tagStore">
+	<tr data-order="isService" id="_isService">
 
 		<td class="attributes"><code>
 			 public 
-			<code><a href="class-TagStore.html">TagStore</a></code>
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_tagStore">#</a>
-		<code><b>tagStore</b>( )</code>
+		<a class="anchor" href="#_isService">#</a>
+		<code><b>isService</b>( )</code>
 
 		<div class="description short">
 			
@@ -222,10 +231,202 @@
 
 
 
-				<h4>Returns</h4>
-				<div class="list">
-					<code><code><a href="class-TagStore.html">TagStore</a></code></code><br />
-				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isGroup" id="_isGroup">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isGroup">#</a>
+		<code><b>isGroup</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isTmpSrv" id="_isTmpSrv">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isTmpSrv">#</a>
+		<code><b>isTmpSrv</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isDynamic" id="_isDynamic">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isDynamic">#</a>
+		<code><b>isDynamic</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="removeReference" id="_removeReference">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_removeReference">#</a>
+		<code><b>removeReference</b>( <span>mixed <var>$ref</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="addObjectWhereIamUsed" id="_addObjectWhereIamUsed">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_addObjectWhereIamUsed">#</a>
+		<code><b>addObjectWhereIamUsed</b>( <span>mixed <var>$objectToAdd</var></span>, <span>mixed <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$skipIfConflict</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$objectToAdd</var></dt>
+					<dd><code>mixed</code><br>$objectToAdd Service|ServiceGroup</dd>
+					<dt><var>$displayOutput</var></dt>
+					<dd><code>mixed</code><br>$displayOutput bool</dd>
+					<dt><var>$outputPadding</var></dt>
+					<dd><code>mixed</code><br>$skipIfConflict bool</dd>
+					<dt><var>$skipIfConflict</var></dt>
+					<dd><code>mixed</code><br>$outputPadding string|int</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_addObjectWhereIamUsed" id="_API_addObjectWhereIamUsed">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_addObjectWhereIamUsed">#</a>
+		<code><b>API_addObjectWhereIamUsed</b>( <span>mixed <var>$objectToAdd</var></span>, <span>mixed <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$skipIfConflict</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$objectToAdd</var></dt>
+					<dd><code>mixed</code><br>$objectToAdd Service|ServiceGroup</dd>
+					<dt><var>$displayOutput</var></dt>
+					<dd><code>mixed</code><br>$displayOutput bool</dd>
+					<dt><var>$outputPadding</var></dt>
+					<dd><code>mixed</code><br>$skipIfConflict bool</dd>
+					<dt><var>$skipIfConflict</var></dt>
+					<dd><code>mixed</code><br>$outputPadding string|int</dd>
+				</dl></div>
+
 
 
 
@@ -236,47 +437,48 @@
 	</table>
 
 
-
-
-
-
-
-
-
-
-
-
-	<table class="summary" id="properties">
-	<caption>Properties summary</caption>
-	<tr data-order="tagStore" id="$tagStore">
-		<td class="attributes"><code>
-			public  
-			<code><a href="class-TagStore.html">TagStore</a></code>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ReferencableObject.html#methods">ReferencableObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ReferencableObject.html#_addReference"><b>addReference()</b></a>, 
+			<a href="class-ReferencableObject.html#_broadcastMyNameChange"><b>broadcastMyNameChange()</b></a>, 
+			<a href="class-ReferencableObject.html#_countReferences"><b>countReferences()</b></a>, 
+			<a href="class-ReferencableObject.html#_display_references"><b>display_references()</b></a>, 
+			<a href="class-ReferencableObject.html#_findAssociatedRule_byType"><b>findAssociatedRule_byType()</b></a>, 
+			<a href="class-ReferencableObject.html#_findAssociatedSecurityRules"><b>findAssociatedSecurityRules()</b></a>, 
+			<a href="class-ReferencableObject.html#_generateRefHashComp"><b>generateRefHashComp()</b></a>, 
+			<a href="class-ReferencableObject.html#_getRefHashComp"><b>getRefHashComp()</b></a>, 
+			<a href="class-ReferencableObject.html#_getReferences"><b>getReferences()</b></a>, 
+			<a href="class-ReferencableObject.html#_name"><b>name()</b></a>, 
+			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
+			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>, 
+			<a href="class-ReferencableObject.html#_removeReference"><b>super_removeReference()</b></a>(as super_removeReference())
 		</code></td>
-
-		<td class="name">
-<var>$tagStore</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$tagStore" class="anchor">#</a>
-
-			<div class="description short">
-				
-<p>central tag store</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>central tag store</p>
-
-
-			</div>
-		</div></td>
 	</tr>
 	</table>
 
 
+
+
+
+
+
+
+
+
+
+
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ReferencableObject.html#properties">ReferencableObject</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ReferencableObject.html#$name"><var>$name</var></a>, 
+			<a href="class-ReferencableObject.html#$refcomphash"><var>$refcomphash</var></a>, 
+			<a href="class-ReferencableObject.html#$refrules"><var>$refrules</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 

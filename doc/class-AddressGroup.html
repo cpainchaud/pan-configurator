@@ -7,7 +7,7 @@
 	<title>Class AddressGroup | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3502742178"></script>
+	<script type="text/javascript" src="elementlist.js?3680294853"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -93,6 +93,7 @@
 
 			<h3>Traits</h3>
 			<ul>
+				<li><a href="class-AddressCommon.html">AddressCommon</a></li>
 				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
 				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
 				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
@@ -104,6 +105,7 @@
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
 				<li><a href="class-PathableName.html">PathableName</a></li>
 				<li><a href="class-ReferencableObject.html">ReferencableObject</a></li>
+				<li><a href="class-ServiceCommon.html">ServiceCommon</a></li>
 				<li><a href="class-XmlConvertible.html">XmlConvertible</a></li>
 			</ul>
 
@@ -179,9 +181,11 @@
 			 uses 
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
-				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>, 
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
 			
-				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>
+				<a href="class-AddressCommon.html"><span>AddressCommon</span></a>, 
+			
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>
 			
 		</dd>
 	</dl>
@@ -834,64 +838,6 @@ AddressGroups, Regions..)</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isAddress" id="_isAddress">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_isAddress">#</a>
-		<code><b>isAddress</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="isTmpAddr" id="_isTmpAddr">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_isTmpAddr">#</a>
-		<code><b>isTmpAddr</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="equals" id="_equals">
 
 		<td class="attributes"><code>
@@ -1261,7 +1207,31 @@ $network is partially matched by this object.</p>
 	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
 	<tr>
 		<td><code>
+			<a href="class-PathableName.html#__PANC_shortName"><b>_PANC_shortName()</b></a>, 
 			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_API_sync"><b>API_sync()</b></a>, 
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-AddressCommon.html#methods">AddressCommon</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-AddressCommon.html#_API_addObjectWhereIamUsed"><b>API_addObjectWhereIamUsed()</b></a>, 
+			<a href="class-AddressCommon.html#_addObjectWhereIamUsed"><b>addObjectWhereIamUsed()</b></a>, 
+			<a href="class-AddressCommon.html#_isAddress"><b>isAddress()</b></a>, 
+			<a href="class-AddressCommon.html#_isTmpAddr"><b>isTmpAddr()</b></a>, 
+			<a href="class-AddressCommon.html#_removeReference"><b>removeReference()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -1279,20 +1249,20 @@ $network is partially matched by this object.</p>
 			<a href="class-ReferencableObject.html#_getRefHashComp"><b>getRefHashComp()</b></a>, 
 			<a href="class-ReferencableObject.html#_getReferences"><b>getReferences()</b></a>, 
 			<a href="class-ReferencableObject.html#_name"><b>name()</b></a>, 
-			<a href="class-ReferencableObject.html#_removeReference"><b>removeReference()</b></a>, 
 			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
-			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>
+			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>, 
+			<a href="class-ReferencableObject.html#_removeReference"><b>super_removeReference()</b></a>(as super_removeReference())
 		</code></td>
 	</tr>
 	</table>
 	<table class="summary used">
-	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<caption>Methods used from <a href="class-ObjectWithDescription.html#methods">ObjectWithDescription</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-XmlConvertible.html#_API_sync"><b>API_sync()</b></a>, 
-			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
-			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
-			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+			<a href="class-ObjectWithDescription.html#_API_setDescription"><b>API_setDescription()</b></a>, 
+			<a href="class-ObjectWithDescription.html#__load_description_from_domxml"><b>_load_description_from_domxml()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_description"><b>description()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_setDescription"><b>setDescription()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -1422,16 +1392,6 @@ $network is partially matched by this object.</p>
 
 
 	<table class="summary used">
-	<caption>Properties used from <a href="class-ReferencableObject.html#properties">ReferencableObject</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-ReferencableObject.html#$name"><var>$name</var></a>, 
-			<a href="class-ReferencableObject.html#$refcomphash"><var>$refcomphash</var></a>, 
-			<a href="class-ReferencableObject.html#$refrules"><var>$refrules</var></a>
-		</code></td>
-	</tr>
-	</table>
-	<table class="summary used">
 	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
 	<tr>
 		<td><code>
@@ -1439,9 +1399,34 @@ $network is partially matched by this object.</p>
 		</code></td>
 	</tr>
 	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#$_description"><var>$_description</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-PathableName.html#properties">PathableName</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-PathableName.html#m$name"><var>$name</var></a>, 
+			<a href="class-PathableName.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#m$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 </div>
 
