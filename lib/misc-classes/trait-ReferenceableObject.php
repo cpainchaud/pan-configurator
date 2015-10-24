@@ -108,6 +108,17 @@ trait ReferencableObject
     {
         derr('not implemented yet');
     }
+
+    /**
+     * @param $objectToAdd Service|ServiceGroup
+     * @param $displayOutput bool
+     * @param $skipIfConflict bool
+     * @param $outputPadding string|int
+     */
+    public function API_addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false)
+    {
+        derr('not implemented yet');
+    }
 	
 	
 	public function countReferences()

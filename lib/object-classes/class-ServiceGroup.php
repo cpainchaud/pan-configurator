@@ -167,6 +167,29 @@ class ServiceGroup
 		return false;
 	}
 
+    /**
+     * Add a member to this group, it must be passed as an object
+     * @param Service|ServiceGroup $newObject Object to be added
+     * @return bool
+     */
+    public function API_add($newObject)
+    {
+        $ret = $this->add($newObject);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            if( $this->owner->owner->version >= 60 )
+                $xpath .= '/members';
+
+            $con->sendSetRequest($xpath, "<member>{$newObject->name()}</member>");
+        }
+
+        return $ret;
+    }
+
 	/**
 	 * @param Service|ServiceGroup $old
 	 * @param bool $rewritexml

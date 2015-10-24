@@ -3,8 +3,8 @@ CHANGELOG
 1.5.4
 core:
 * AddressGroup : new function API_add() and API_remove()
-* Service : added tag support, new function addObjectWhereIamUsed()
-* ServiceGroup : added tag support new function addObjectWhereIamUsed()
+* Service : added tag support, new function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
+* ServiceGroup : added tag support new function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
 
 utils:
 * rules-edit.php : new Actions 'description-append', 'securityProfile-Remove'

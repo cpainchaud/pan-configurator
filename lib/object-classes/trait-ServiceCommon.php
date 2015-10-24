@@ -88,4 +88,52 @@ trait ServiceCommon
         }
     }
 
+    /**
+     * @param $objectToAdd Service|ServiceGroup
+     * @param $displayOutput bool
+     * @param $skipIfConflict bool
+     * @param $outputPadding string|int
+     */
+    public function API_addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false)
+    {
+        if( $skipIfConflict )
+            derr('unsupported');
+
+        if( !is_string($outputPadding) )
+            $outputPadding = str_pad('', $outputPadding);
+
+        foreach($this->refrules as $ref)
+        {
+            $refClass = get_class($ref);
+            if( $refClass == 'ServiceGroup' )
+            {
+                /** @var $ref ServiceGroup */
+                if( $displayOutput )
+                    print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
+                $ref->API_add($objectToAdd);
+            }
+            elseif( $refClass == 'ServiceRuleContainer' )
+            {
+                /** @var $ref ServiceRuleContainer */
+
+                $ruleClass = get_class($ref->owner);
+                if( $ruleClass == 'SecurityRule' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";
+
+                    $ref->API_add($objectToAdd);
+                }
+                elseif( $ruleClass == 'NatRule' )
+                {
+                    derr('unsupported use case in '.$ref->_PANC_shortName());
+                }
+                else
+                    derr('unsupported owner_class: '.$ruleClass);
+            }
+            else
+                derr('unsupport class : '.$refClass);
+        }
+    }
+
 }
