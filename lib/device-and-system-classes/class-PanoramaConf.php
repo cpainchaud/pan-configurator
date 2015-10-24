@@ -476,10 +476,12 @@ class PanoramaConf
 		$gpreSecRules = $this->securityRules->countPreRules();
 		$gpreNatRules = $this->natRules->countPreRules();
         $gpreDecryptRules = $this->decryptionRules->countPreRules();
+        $gpreAppOverrideRules = $this->appOverrideRules->countPreRules();
 
 		$gpostSecRules = $this->securityRules->countPostRules();
 		$gpostNatRules = $this->natRules->countPostRules();
         $gpostDecryptRules = $this->decryptionRules->countPostRules();
+        $gpostAppOverrideRules = $this->appOverrideRules->countPostRules();
 
 		$gnservices = $this->serviceStore->countServices();
 		$gnservicesUnused = $this->serviceStore->countUnusedServices();
@@ -498,10 +500,12 @@ class PanoramaConf
 			$gpreSecRules += $cur->securityRules->countPreRules();
 			$gpreNatRules += $cur->natRules->countPreRules();
             $gpreDecryptRules += $cur->decryptionRules->countPreRules();
+            $gpreAppOverrideRules += $cur->appOverrideRules->countPreRules();
 
 			$gpostSecRules += $cur->securityRules->countPostRules();
 			$gpostNatRules += $cur->natRules->countPostRules();
             $gpostDecryptRules += $cur->decryptionRules->countPostRules();
+            $gpostAppOverrideRules += $cur->appOverrideRules->countPostRules();
 
 			$gnservices += $cur->serviceStore->countServices();
 			$gnservicesUnused += $cur->serviceStore->countUnusedServices();
@@ -523,8 +527,11 @@ class PanoramaConf
 		print "- ".$this->natRules->countPreRules()." (".$gpreNatRules.") pre-NatRules\n";
 		print "- ".$this->natRules->countPostRules()." (".$gpostNatRules.") post-NatRules\n";
 
-        print "- ".$this->decryptionRules->countPreRules()." (".$gpreDecryptRules.") pre-NatRules\n";
-        print "- ".$this->decryptionRules->countPostRules()." (".$gpostDecryptRules.") post-NatRules\n";
+        print "- ".$this->decryptionRules->countPreRules()." (".$gpreDecryptRules.") pre-DecryptionRules\n";
+        print "- ".$this->decryptionRules->countPostRules()." (".$gpostDecryptRules.") post-DecryptionRules\n";
+
+        print "- ".$this->appOverrideRules->countPreRules()." (".$gpreAppOverrideRules.") pre-appOverrideRules\n";
+        print "- ".$this->appOverrideRules->countPostRules()." (".$gpostAppOverrideRules.") post-appOverrideRules\n";
 
 		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects. {$gnaddresssUnused} unused\n";
 

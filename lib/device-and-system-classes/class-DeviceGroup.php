@@ -274,8 +274,10 @@ class DeviceGroup
 	public function display_statistics()
 	{
 		print "Statistics for DG '".PH::boldText($this->name)."'\n";
-        print "- {$this->securityRules->countPreRules()} / {$this->securityRules->countPostRules()} pre/post SecRules\n";
-        print "- {$this->natRules->countPreRules()} / {$this->natRules->countPostRules()} pre/post NatRules\n";
+        print "- {$this->securityRules->countPreRules()} / {$this->securityRules->countPostRules()} pre/post Security rules\n";
+        print "- {$this->natRules->countPreRules()} / {$this->natRules->countPostRules()} pre/post Nat rules\n";
+        print "- {$this->decryptionRules->countPreRules()} / {$this->decryptionRules->countPostRules()} pre/post Decrypt rules\n";
+        print "- {$this->appOverrideRules->countPreRules()} / {$this->appOverrideRules->countPostRules()} pre/post AppOverride rules\n";
 		print "- {$this->addressStore->countAddresses()} / {$this->addressStore->countAddressGroups()} / {$this->addressStore->countTmpAddresses()} address/group/tmp/total objects\n";
 		print "- {$this->serviceStore->countServices()} / {$this->serviceStore->countServiceGroups()} / {$this->serviceStore->countTmpServices()} service/group/tmp/total objects\n";
 		print "- {$this->tagStore->count()} tags. {$this->tagStore->countUnused()} unused\n";
