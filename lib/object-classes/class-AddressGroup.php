@@ -22,6 +22,7 @@ class AddressGroup
 	use PathableName;
 	use XmlConvertible;
     use AddressCommon;
+    use ObjectWithDescription;
 
     private $isDynamic = false;
 
@@ -170,6 +171,7 @@ class AddressGroup
 			}
 		}
 
+        $this->_load_description_from_domxml();
 	}
 
     /**
