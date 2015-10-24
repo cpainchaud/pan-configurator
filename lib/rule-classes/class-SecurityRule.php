@@ -27,11 +27,6 @@ class SecurityRule extends Rule
 
 	protected $logstart = false;
 	protected $logend = true;
-
-	/** @var null|DOMElement */
-	protected $logstartroot;
-	/** @var null|DOMElement */
-	protected $logendroot;
 	
 	protected $negatedSource = false;
 	protected $negatedDestination = false;
@@ -176,7 +171,7 @@ class SecurityRule extends Rule
 		//
 		// Begin <log-setting> extraction
 		//
-		$tmp = $this->logstartroot = DH::findFirstElement('log-setting', $xml);
+		$tmp = DH::findFirstElement('log-setting', $xml);
 		if( $tmp === false )
 			$this->logSetting = false;
 		else
@@ -189,16 +184,16 @@ class SecurityRule extends Rule
 		//
 		// Begin <log-start> extraction
 		//
-		$this->logstartroot = DH::findFirstElementOrCreate('log-start', $xml, 'no');
-		$this->logstart = yesNoBool($this->logstartroot->textContent);
+		$tmp = DH::findFirstElementOrCreate('log-start', $xml, 'no');
+		$this->logstart = yesNoBool($tmp->textContent);
 		// End of <log-start>
 		
 		
 		//
 		// Begin <log-end> extraction
 		//
-		$this->logendroot = DH::findFirstElementOrCreate('log-end', $xml, 'yes');
-		$this->logend = yesNoBool($this->logendroot->textContent);
+		$tmp = DH::findFirstElementOrCreate('log-end', $xml, 'yes');
+		$this->logend = yesNoBool($tmp->textContent);
 		// End of <log-start>
 		
 		
@@ -604,15 +599,14 @@ class SecurityRule extends Rule
 	{
 		if( $this->logstart != $yes )
 		{
-			$this->logstartroot->nodeValue =  boolYesNo($yes);
+            $tmp = DH::findFirstElementOrCreate('log-start', $this->xmlroot);
+			DH::setDomNodeText( $tmp, boolYesNo($yes));
 
 			$this->logstart = $yes;
 
 			return true;
 		}
-
 		return false;
-
 	}
 	
 	/**
@@ -629,19 +623,19 @@ class SecurityRule extends Rule
 	* @param bool $yes
 	 * @return bool
 	*/
-	public function setLogEnd($yes)
-	{
-		if( $this->logend != $yes )
-		{
-			$this->logendroot->nodeValue =  boolYesNo($yes);
+    public function setLogEnd($yes)
+    {
+        if( $this->logstart != $yes )
+        {
+            $tmp = DH::findFirstElementOrCreate('log-end', $this->xmlroot);
+            DH::setDomNodeText( $tmp, boolYesNo($yes));
 
-			$this->logend = $yes;
+            $this->logend = $yes;
 
-			return true;
-		}
-		
-		return false;
-	}
+            return true;
+        }
+        return false;
+    }
 
 	/**
 	 * enable or disabled logging at end

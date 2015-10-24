@@ -61,10 +61,6 @@ class Rule
 	 */
 	public $owner = null;
 
-    /**
-     * @var null|string[]|DOMNode
-     */
-	protected $disabledroot = null;
 	
 	/**
 	* Returns name of this rule
@@ -164,9 +160,9 @@ class Rule
 	{
 		$xml = $this->xmlroot;
 		
-		$this->disabledroot = DH::findFirstElementOrCreate('disabled', $xml, 'no');
+		$disabledroot = DH::findFirstElementOrCreate('disabled', $xml, 'no');
 
-		$lstate = strtolower($this->disabledroot->textContent);
+		$lstate = strtolower($disabledroot->textContent);
 		if( $lstate == 'yes' )
 		{
 			$this->disabled = true;
@@ -191,9 +187,15 @@ class Rule
 	protected function rewriteSDisabled_XML()
 	{
 		if( $this->disabled )
-			DH::setDomNodeText($this->disabledroot, 'yes');
+        {
+            $find = DH::findFirstElementOrCreate('disabled', $this->xmlroot);
+            DH::setDomNodeText($find, 'yes');
+        }
 		else
-			DH::setDomNodeText($this->disabledroot , 'no');
+        {
+            $find = DH::findFirstElementOrCreate('disabled', $this->xmlroot);
+            DH::setDomNodeText($find, 'no');
+        }
 	}
 	
 	/**
