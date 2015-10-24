@@ -19,11 +19,10 @@
 
 class Service
 {
-
-	use ReferencableObject {removeReference as super_removeReference;}
 	use PathableName;
 	use XmlConvertible;
     use ObjectWithDescription;
+    use ServiceCommon;
 
 	protected $_protocol = 'tcp';
 	protected $_dport = '';
@@ -268,10 +267,6 @@ class Service
 		return true;
 	}
 
-	public function isGroup()
-	{
-		return false;
-	}
 
 	public function isTmpSrv()
 	{

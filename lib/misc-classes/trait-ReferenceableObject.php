@@ -97,6 +97,17 @@ trait ReferencableObject
 			$o->replaceReferencedObject($this, $newobject);
 		}
 	}
+
+    /**
+     * @param $objectToAdd Service|ServiceGroup
+     * @param $displayOutput bool
+     * @param $skipIfConflict bool
+     * @param $outputPadding string|int
+     */
+    public function addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false)
+    {
+        derr('not implemented yet');
+    }
 	
 	
 	public function countReferences()

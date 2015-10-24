@@ -19,8 +19,8 @@
 class ServiceGroup
 {
 	use PathableName;
-	use ReferencableObject;
 	use XmlConvertible;
+    use ServiceCommon;
 
     /**
      * @var Service|ServiceGroup[]
@@ -255,19 +255,9 @@ class ServiceGroup
 			$this->rewriteXML();
 	}
 
-	public function isService()
-	{
-		return false;
-	}
-
 	public function isGroup()
 	{
 		return true;
-	}
-
-	public function isTmpSrv()
-	{
-		return false;
 	}
 
 
@@ -366,9 +356,9 @@ class ServiceGroup
 		$indent = str_pad(' ', $indent);
 
 		if( !$toString )
-			print $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+			print $indent."Diff between ".$this->_PANC_shortName()." vs ".$otherObject->_PANC_shortName()."\n";
 		else
-			$retString .= $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+			$retString .= $indent."Diff for between ".$this->_PANC_shortName()." vs ".$otherObject->_PANC_shortName()."\n";
 
 		$lO = Array();
 		$oO = Array();

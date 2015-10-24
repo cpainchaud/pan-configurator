@@ -124,6 +124,7 @@ require_once $basedir.'/object-classes/class-Tag.php';
 require_once $basedir.'/object-classes/class-App.php';
 require_once $basedir.'/object-classes/class-Address.php';
 require_once $basedir.'/object-classes/class-AddressGroup.php';
+require_once $basedir.'/object-classes/trait-ServiceCommon.php';
 require_once $basedir.'/object-classes/class-Service.php';
 require_once $basedir.'/object-classes/class-ServiceGroup.php';
 
@@ -356,6 +357,11 @@ function __CmpObjMemID( $objA, $objB)
 }*/
 
 
+/**
+ * Class PathableName
+ * @property $owner AppStore|AddressStore|ServiceStore|RuleStore
+ * @property $name string
+ */
 trait PathableName
 {
     /**
@@ -373,6 +379,18 @@ trait PathableName
             $ret = $this->owner->toString().' / '.$ret;
 
         return $ret;
+    }
+
+    public function _PANC_shortName()
+    {
+        $location = 'shared';
+
+        if( $this->owner->owner->isVirtualSystem() || $this->owner->owner->isDeviceGroup() )
+        {
+            $location = $this->owner->owner->name();
+        }
+
+        return $location.'/'.get_class($this).'/'.$this->name;
     }
 
 }
