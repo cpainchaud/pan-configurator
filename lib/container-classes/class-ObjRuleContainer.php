@@ -206,6 +206,8 @@ class ObjRuleContainer
 
     public function replaceReferencedObject($old, $new)
     {
+        if( $old === $new )
+            return false;
 
         $pos = array_search($old, $this->o, TRUE);
 
@@ -228,7 +230,6 @@ class ObjRuleContainer
         $this->rewriteXML();
 
         return true;
-
     }
 
     /**
