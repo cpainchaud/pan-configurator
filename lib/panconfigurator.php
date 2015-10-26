@@ -667,27 +667,20 @@ function & sortArrayByStartValue( &$arrayToSort)
     $tmp = Array();
     foreach($arrayToSort as &$incl)
     {
-        $tmp[] = $incl['start'];
+        $tmp[$incl['start']][] = $incl;
     }
     unset($incl);
-    sort($tmp, SORT_NUMERIC);
-    foreach($tmp as &$value)
+    ksort($tmp, SORT_NUMERIC);
+    foreach($tmp as $start => &$ends)
     {
-        foreach($arrayToSort as &$incl)
+        foreach($ends as &$end)
         {
-            if( $value == $incl['start'] )
-            {
-                //print "     -'".$incl['object']->name()." (".$incl['startip']."-".$incl['endip'].")'\n";
-                $returnMap[] = $incl;
-            }
+            $returnMap[] = $end;
         }
     }
 
     return $returnMap;
 }
-
-
-
 
 
 

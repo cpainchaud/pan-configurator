@@ -728,9 +728,10 @@ $supportedActions['showip4mapping'] = Array(
                         if( $type == 'ip-netmask' || $type == 'ip-range' )
                         {
                             $resolvMap = $object->getIP4Mapping()->getMapArray();
+                            $resolvMap = reset($resolvMap);
                             print $context->padding." - ".str_pad(long2ip($resolvMap['start']), 14)." - ".long2ip($resolvMap['end'])."\n";
                         }
-                        print $context->padding." - UNSUPPORTED \n";
+                        else print $context->padding." - UNSUPPORTED \n";
                     }
                 }
 );
