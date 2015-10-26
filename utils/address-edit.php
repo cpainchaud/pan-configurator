@@ -710,9 +710,10 @@ $supportedActions['showip4mapping'] = Array(
                     if( $object->isGroup() )
                     {
                         $resolvMap=$object->getIP4Mapping();
+                        print $context->padding."* {$resolvMap->count()} entries\n";
                         foreach($resolvMap->getMapArray() as &$resolvRecord)
                         {
-                            print "     * ".str_pad(long2ip($resolvRecord['start']), 14)." - ".long2ip($resolvRecord['end'])."\n";
+                            print $context->padding." - ".str_pad(long2ip($resolvRecord['start']), 14)." - ".long2ip($resolvRecord['end'])."\n";
                         }
                         /*foreach($resolvMap['unresolved'] as &$resolvRecord)
                         {
@@ -727,9 +728,9 @@ $supportedActions['showip4mapping'] = Array(
                         if( $type == 'ip-netmask' || $type == 'ip-range' )
                         {
                             $resolvMap = $object->getIP4Mapping()->getMapArray();
-                            print "     * ".str_pad(long2ip($resolvMap['start']), 14)." - ".long2ip($resolvMap['end'])."\n";
+                            print $context->padding." - ".str_pad(long2ip($resolvMap['start']), 14)." - ".long2ip($resolvMap['end'])."\n";
                         }
-                        print "     * UNSUPPORTED \n";
+                        print $context->padding." - UNSUPPORTED \n";
                     }
                 }
 );
