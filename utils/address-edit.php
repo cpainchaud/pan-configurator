@@ -751,10 +751,16 @@ $supportedActions['display'] = Array(
     {
         $object = $context->object;
 
-        print "      * ".get_class($object)." '{$object->name()}'\n";
         if( $object->isGroup() )
-            foreach($object->members() as $member)
+        {
+            print "      * ".get_class($object)." '{$object->name()}' ({$object->count()} members)\n";
+
+            foreach ($object->members() as $member)
                 print "          - {$member->name()}\n";
+        }
+        else
+            print "      * ".get_class($object)." '{$object->name()}'\n";
+
         print "\n";
     },
 );
