@@ -29,7 +29,7 @@ class ServiceStore
 	/**
 	 * @var null|ServiceStore
 	 */
-	protected $parentCentralStore = null;
+	public $parentCentralStore = null;
 	
 	protected $appdef = false;
 

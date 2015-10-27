@@ -78,9 +78,13 @@ class AddressStore
 		$this->owner = $owner;
 
         if( isset($owner->parentDeviceGroup) && $owner->parentDeviceGroup !== null )
+        {
             $this->parentCentralStore = $owner->parentDeviceGroup->addressStore;
+        }
 		else
+        {
             $this->findParentCentralStore();
+        }
 
 		$this->addr = Array();
 		$this->addrg = Array();
@@ -294,7 +298,6 @@ class AddressStore
      * @param string $objectName
 	 * @param ReferenceableObject $ref
 	 * @param bool $nested
-	 * @param string $type
      * @return Address|AddressGroup|null
 	*/
 	public function find( $objectName , $ref=null, $nested=true)
@@ -308,6 +311,7 @@ class AddressStore
             return $foundObject;
         }
 
+        // when load a PANOS firewall attached to a Panorama
         if( $nested && isset($this->panoramaShared) )
         {
             $f = $this->panoramaShared->find( $objectName , $ref, false);
@@ -315,7 +319,8 @@ class AddressStore
             if( $f !== null )
                 return $f;
         }
-        else if( $nested && isset($this->panoramaDG) )
+        // when load a PANOS firewall attached to a Panorama
+        if( $nested && isset($this->panoramaDG) )
         {
             $f = $this->panoramaDG->find( $objectName , $ref, false);
             if( $f !== null )

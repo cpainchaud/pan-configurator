@@ -394,6 +394,8 @@ class PanoramaConf
                     {
                         $parentDG->childDeviceGroups[$dgName] = $ldv;
                         $ldv->parentDeviceGroup = $parentDG;
+                        $ldv->addressStore->parentCentralStore = $parentDG->addressStore;
+                        $ldv->serviceStore->parentCentralStore = $parentDG->serviceStore;
                     }
                 }
 
