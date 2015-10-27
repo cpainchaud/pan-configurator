@@ -137,8 +137,100 @@ trait ServiceCommon
                     derr('unsupported owner_class: '.$ruleClass);
             }
             else
-                derr('unsupport class : '.$refClass);
+                derr('unsupported class : '.$refClass);
         }
+    }
+
+    /**
+     * @param $displayOutput bool
+     * @param $apiMode bool
+     * @param $actionIfLastInRule string can be delete|setany|disable
+     * @param $outputPadding string|int
+     */
+    private function __removeWhereIamUsed($objectToAdd, $apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    {
+        /** @var $this Service|ServiceGroup */
+
+        $allowedActionIfLastInRule = Array('delete' => true, 'setany' => true, 'disable' => true);
+        if( !isset($allowedActionIfLastInRule[$actionIfLastInRule]) )
+            derr('unsupported actionIfLastInRule='.$actionIfLastInRule);
+
+        foreach($this->getReferences() as $ref)
+        {
+            $refClass = get_class($ref);
+            if( $refClass == 'ServiceGroup' )
+            {
+                /** @var $ref ServiceGroup */
+                if( $displayOutput )
+                    print $outputPadding."- removing from {$ref->_PANC_shortName()}\n";
+                if($apiMode)
+                    $ref->API_remove($this);
+                else
+                    $ref->remove($this);
+            }
+            elseif( $refClass == 'ServiceRuleContainer' )
+            {
+                /** @var $ref ServiceRuleContainer */
+                if( $ref->count() <= 1 && $actionIfLastInRule == 'delete' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so deleting {$ref->_PANC_shortName()}\n";
+                    if( $apiMode)
+                        $ref->owner->owner->API_remove($ref->owner, true);
+                    else
+                        $ref->owner->owner->remove($ref->owner, true);
+                }
+                elseif( $ref->count() <= 1 && $actionIfLastInRule == 'setany' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->API_setAny();
+                    else
+                        $ref->setAny();
+                }
+                elseif( $ref->count() <= 1 && $actionIfLastInRule == 'disable' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->owner->API_setDisabled(true);
+                    else
+                        $ref->owner->setDisabled(true);
+                }
+                else
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- removing from {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->API_remove($this);
+                    else
+                        $ref->remove($this);
+                }
+            }
+            else
+                derr("unsupported class '{$refClass}'");
+        }
+    }
+
+    /**
+     * @param $displayOutput bool
+     * @param $actionIfLastInRule string can be delete|setany|disable
+     * @param $outputPadding string|int
+     */
+    public function removeWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    {
+        $this->__removeWhereIamUsed($objectToAdd, false, $displayOutput, $outputPadding, $actionIfLastInRule);
+    }
+
+    /**
+     * @param $displayOutput bool
+     * @param $actionIfLastInRule string can be delete|setany|disable
+     * @param $outputPadding string|int
+     */
+    public function API_removeWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    {
+        $this->__removeWhereIamUsed($objectToAdd, true, $displayOutput, $outputPadding, $actionIfLastInRule);
     }
 
 }

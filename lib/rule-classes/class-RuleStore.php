@@ -982,12 +982,13 @@ class RuleStore
     /**
      * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
      * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule
+     * @param bool $deleteForever
      * @return bool
      */
-	public function API_remove($rule)
+	public function API_remove($rule, $deleteForever = false)
 	{
 		$xpath = $rule->getXPath();
-		$ret = $this->remove($rule);
+		$ret = $this->remove($rule, $deleteForever);
 
 		if( $ret )
 		{

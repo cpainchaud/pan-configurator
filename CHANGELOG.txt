@@ -4,7 +4,8 @@ CHANGELOG
 core:
 * AddressGroup : new functions API_add(), API_remove(), function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
 * Service : added tag support, new function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
-* ServiceGroup : added tag support new function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
+* ServiceGroup : added tag support new function API_remove(), addObjectWhereIamUsed(), API_addObjectWhereIamUsed(), removeWhereIamUsed()
+						API_removeWhereIamUsed()
 
 utils:
 * rules-edit.php : new Actions 'description-append', 'securityProfile-Remove'

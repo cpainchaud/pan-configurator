@@ -489,6 +489,8 @@ $supportedActions['move'] = Array(
     ),
 );
 
+//TODO add action==removeWhereUsed
+
 $supportedActions['replacegroupbyservice'] = Array(
     'name' => 'replaceGroupByService',
     'MainFunction' => function ( ServiceCallContext $context )

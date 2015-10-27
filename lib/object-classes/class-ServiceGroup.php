@@ -168,6 +168,32 @@ class ServiceGroup
 	}
 
     /**
+     * @param Service|ServiceGroup objectToRemove
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function API_remove( $objectToRemove, $rewriteXml = true )
+    {
+        $ret = $this->remove($objectToRemove);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            if( $this->owner->owner->version >= 60 )
+                $xpath .= '/members';
+
+            $con->sendDeleteRequest($xpath."/member[text()='{$objectToRemove->name()}']");
+
+            return $ret;
+        }
+
+        return $ret;
+    }
+
+
+    /**
      * Add a member to this group, it must be passed as an object
      * @param Service|ServiceGroup $newObject Object to be added
      * @return bool
@@ -506,14 +532,6 @@ class ServiceGroup
 		return $this->members;
 	}
 
-
-	public function API_delete()
-	{
-		$connector = findConnectorOrDie($this);
-		$xpath = $this->getXPath();
-
-		$connector->sendDeleteRequest($xpath);
-	}
 
 	/**
 	 * @param Service|ServiceGroup $object

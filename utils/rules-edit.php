@@ -1668,7 +1668,6 @@ $supportedActions['cloneforappoverride'] = Array(
                         'restrictToListOfServices' => Array( 'type' => 'string', 'default' => '*sameAsInRule*'  ), )
 );
 // </editor-fold>
-//TODO add action==removeWhereUsed
 /************************************ */
 
 
