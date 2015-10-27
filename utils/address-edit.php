@@ -307,7 +307,7 @@ $supportedActions['replacewithobject'] = Array(
         if( $foundObject === null )
             derr("cannot find an object named '{$context->arguments['objectName']}'");
 
-        /** @var $objectRef ServiceGroup|ServiceRuleContainer */
+        /** @var $objectRef AddressGroup|AddressRuleContainer */
 
         foreach ($objectRefs as $objectRef)
         {
