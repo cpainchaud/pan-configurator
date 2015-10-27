@@ -232,6 +232,18 @@ class ObjRuleContainer
         return true;
     }
 
+    public function API_replaceReferencedObject($old, $new)
+    {
+        $ret = $this->replaceReferencedObject($old, $new);
+
+        if($ret)
+        {
+            $this->API_sync();
+        }
+
+        return $ret;
+    }
+
     /**
      *
      * @ignore

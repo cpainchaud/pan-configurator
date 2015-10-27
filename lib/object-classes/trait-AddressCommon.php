@@ -78,11 +78,6 @@ trait AddressCommon
                 }
                 elseif( $ruleClass == 'NatRule' )
                 {
-                    if( $ref->owner->name() == 'source' || $ref->owner->name() == 'destination' )
-                    {
-                        $ref->addObject($objectToAdd);
-                    }
-                    else
                         derr('unsupported use case in '.$ref->owner->_PANC_shortName());
                 }
                 else
@@ -131,11 +126,6 @@ trait AddressCommon
                 }
                 elseif( $ruleClass == 'NatRule' )
                 {
-                    if( $ref->owner->name() == 'source' || $ref->owner->name() == 'destination' )
-                    {
-                        $ref->API_add($objectToAdd);
-                    }
-                    else
                         derr('unsupported use case in '.$ref->owner->_PANC_shortName());
                 }
                 else

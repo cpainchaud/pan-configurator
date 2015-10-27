@@ -230,7 +230,6 @@ class ServiceGroup
 	{
 		if( $old === null )
 			derr("\$old cannot be null");
-		
 
 		if( in_array($old, $this->members, true) )
 		{
@@ -250,7 +249,19 @@ class ServiceGroup
 				
 		return false;
 	}
-	
+
+    public function API_replaceReferencedObject($old, $new)
+    {
+        $ret = $this->replaceReferencedObject($old, $new);
+
+        if($ret)
+        {
+            $this->API_sync();
+        }
+
+        return $ret;
+    }
+
 	
 	public function rewriteXML()
 	{
