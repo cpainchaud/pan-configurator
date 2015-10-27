@@ -295,6 +295,24 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
     },
 );
 
+$supportedActions['addobjectwhereused'] = Array(
+    'name' => 'addObjectWhereUsed',
+    'MainFunction' => function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $foundObject = $object->owner->find($context->arguments['objectName']);
+
+        if( $foundObject === null )
+            derr("cannot find an object named '{$context->arguments['objectName']}'");
+
+        if( $context->isAPI )
+            $object->API_addObjectWhereIamUsed($foundObject, true, $context->padding.'  ', false);
+        else
+            $object->addObjectWhereIamUsed($foundObject, true, $context->padding.'  ', false);
+    },
+    'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+
 $supportedActions['replacewithobject'] = Array(
     'name' => 'replaceWithObject',
     'MainFunction' => function ( AddressCallContext $context )

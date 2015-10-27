@@ -78,7 +78,15 @@ trait AddressCommon
                 }
                 elseif( $ruleClass == 'NatRule' )
                 {
+                    if( $ref->name == 'snathosts' )
                         derr('unsupported use case in '.$ref->owner->_PANC_shortName());
+                    if( $ref->name == 'source' && $ref->owner->natType() == 'static-ip'  )
+                        derr('unsupported use case with static-ip NAT and source insertion in '.$ref->owner->_PANC_shortName());
+
+                    if( $displayOutput )
+                        print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";
+
+                    $ref->addObject($objectToAdd);
                 }
                 else
                     derr('unsupported owner_class: '.$ruleClass);
@@ -126,7 +134,15 @@ trait AddressCommon
                 }
                 elseif( $ruleClass == 'NatRule' )
                 {
+                    if( $ref->name == 'snathosts' )
                         derr('unsupported use case in '.$ref->owner->_PANC_shortName());
+                    if( $ref->name == 'source' && $ref->owner->natType() == 'static-ip'  )
+                        derr('unsupported use case with static-ip NAT and source insertion in '.$ref->owner->_PANC_shortName());
+
+                    if( $displayOutput )
+                        print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";
+
+                    $ref->API_add($objectToAdd);
                 }
                 else
                     derr('unsupported owner_class: '.$ruleClass);
