@@ -367,9 +367,20 @@ class AddressGroup
 			mwarning("object is not part of this group: ".$old->toString());
 
 		
-		return false;		
-
+		return false;
 	}
+
+    public function API_replaceReferencedObject($old, $new)
+    {
+        $ret = $this->replaceReferencedObject($old, $new);
+
+        if($ret)
+        {
+            $this->API_sync();
+        }
+
+        return $ret;
+    }
 
 	/**
 	 * @param $obj Address|AddressGroup

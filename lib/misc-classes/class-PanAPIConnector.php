@@ -806,7 +806,7 @@ class PanAPIConnector
     public function sendSetRequest($xpath, $element, $useChildNodes=false, $timeout = 30)
     {
         $params = Array();
-        $moreOptions = Array( 'timeout' => $timeout, 'lowSpeedTime' => -0);
+        $moreOptions = Array( 'timeout' => $timeout, 'lowSpeedTime' => 0);
 
         if( is_string($element) )
         {
@@ -835,16 +835,35 @@ class PanAPIConnector
         return $this->sendRequest($request, false, $file, '', $options);
     }
 
-    public function sendEditRequest($xpath, $element)
+    /**
+     * @param $xpath string|XmlConvertible
+     * @param $element string
+     * @param $useChildNodes bool if $element is an object then don't use its root but its childNodes to generate xml
+     * @return DomDocument
+     */
+    public function sendEditRequest($xpath, $element, $useChildNodes=false, $timeout = 30)
     {
         $params = Array();
+        $moreOptions = Array( 'timeout' => $timeout, 'lowSpeedTime' => 0);
+
+        if( is_string($element) )
+        {
+
+        }
+        elseif( is_object($element) )
+        {
+            if( $useChildNodes )
+                $element = $element->getChildXmlText_inline();
+            else
+                $element = $element->getXmlText_inline();
+        }
 
         $params['type']  = 'config';
         $params['action']  = 'edit';
         $params['xpath']  = &$xpath;
         $params['element']  = &$element;
 
-        return $this->sendRequest($params);
+        return $this->sendSimpleRequest($params, $moreOptions);
     }
 
     public function sendDeleteRequest($xpath)

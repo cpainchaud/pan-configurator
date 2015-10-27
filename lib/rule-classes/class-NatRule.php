@@ -38,7 +38,8 @@ class NatRule extends Rule
 	/** @var null|DOMElement */
 	public $snatroot = null;
 
-	/** @ignore */
+	/**  @var null|DOMElement
+     @ignore */
 	public $dnatroot=Array();
 	/** @ignore */
 	public $serviceroot = null;
@@ -163,12 +164,37 @@ class NatRule extends Rule
 				}
 				$transladx = DH::findFirstElement('translated-address', $firstE);
 				
-				$fad = $this->parentAddressStore->findOrCreate( $transladx->textContent , $this );
+				$fad = $this->parentAddressStore->findOrCreate( $transladx->textContent );
 				
 				$this->snathosts->addObject($fad);
 				$this->snathosts->xmlroot = $transladx;
 			}
-			// Extract of dynamic-ip-and-port
+            else if( $this->snattype == "dynamic-ip" )
+            {
+                $subtype = DH::findFirstElement('translated-address', $firstE);
+                if( $subtype ===  false )
+                    mwarning('invalid nat rule with missing "translated-address');
+
+                $subtype = DH::findFirstElementOrCreate('translated-address', $firstE);
+
+                if( DH::firstChildElement($subtype) === FALSE )
+                {
+                    // this rule has no address specified
+                    mwarning('invalid nat rule with missing "<member>"', $subtype);
+                }
+                else
+                {
+                    foreach( $subtype->childNodes as $node )
+                    {
+                        if( $node->nodeType != 1 ) continue;
+                        $translad = $this->parentAddressStore->findOrCreate( $node->textContent );
+                        $this->snathosts->addObject($translad);
+                    }
+
+                    $this->snathosts->xmlroot = $subtype;
+
+                }
+            }
 			else if( $this->snattype == "dynamic-ip-and-port" )
 			{
 				// Is it <translated-address> type ?
@@ -185,7 +211,7 @@ class NatRule extends Rule
 						foreach( $subtype->childNodes as $node )
 						{
 							if( $node->nodeType != 1 ) continue;
-							$translad = $this->parentAddressStore->findOrCreate( $node->textContent , $this );
+							$translad = $this->parentAddressStore->findOrCreate( $node->textContent );
 							$this->snathosts->addObject($translad);
 						}
 						
@@ -212,7 +238,7 @@ class NatRule extends Rule
 							}
 							else if( $node->nodeName == 'ip' )
 							{
-								$translad = $this->parentAddressStore->findOrCreate( $node->textContent, $this );
+								$translad = $this->parentAddressStore->findOrCreate( $node->textContent );
 								$this->snathosts->addObject($translad);
 							}
 							else
@@ -273,39 +299,73 @@ class NatRule extends Rule
 	
 	public function replaceReferencedObject($old, $new )
 	{
-		$found = false;
-		
 		if( $this->service === $old )
-		{
-			$found = true;
-			$this->service = $new;
-			$this->rewriteService_XML();
-			$old->removeReference($this);
-		}
-		if( $this->dnathost === $old )
-		{
-			$found = true;
-			$this->setDNAT($new, $this->dnatports);
-		}
-		if( $this->snathosts->has($old) )
-		{
-			$found = true;
-			$this->snathosts->addObject($new);
-			$this->snathosts->remove($old);
-			if( $this->dnathost !== $old )
-				$old->removeReference($this);
-			$this->rewriteSNAT_XML();
-		}
+        {
+            $this->service = $new;
+            $this->rewriteService_XML();
+            $old->removeReference($this);
+            $new->addReference($this);
+            return true;
+        }
+        if( $this->dnathost === $old )
+        {
+            $found = true;
+            $this->setDNAT($new, $this->dnatports);
+            $old->removeReference($this);
+            if( $new !== null )
+                $new->addReference($this);
+            return true;
+        }
+        if( $this->snathosts->has($old) )
+        {
+            derr('unexpected use case');
+        }
 
-		
-		if($found)
-			$new->addReference($this);
-		else
-		{
-			mwarning("object is not part of this nat rule : {$old->toString()}");
-		}
-		
+        mwarning("object is not part of this nat rule : {$old->toString()}");
+
+        return false;
 	}
+
+    /**
+     * @param $old AddressGroup|Address|Service|ServiceGroup
+     * @param $new Address|AddressGroup|Service|ServiceGroup
+     * @throws Exception
+     * @return bool
+     */
+    public function API_replaceReferencedObject($old, $new )
+    {
+        if( $this->service === $old )
+        {
+            $this->service = $new;
+            $this->rewriteService_XML();
+            $old->removeReference($this);
+            $new->addReference($this);
+            $xpath = DH::elementToPanXPath($this->serviceroot);
+            $connector = findConnectorOrDie($this);
+            $connector->sendEditRequest($xpath, DH::dom_to_xml($this->serviceroot, -1, false), true);
+            return true;
+        }
+        if( $this->dnathost === $old )
+        {
+            $found = true;
+            $this->setDNAT($new, $this->dnatports);
+
+            $xpath = DH::elementToPanXPath($this->dnatroot);
+            $connector = findConnectorOrDie($this);
+            $connector->sendEditRequest($xpath, DH::dom_to_xml($this->dnatroot, -1, false), true);
+
+            return true;
+        }
+        if( $this->snathosts->has($old) )
+        {
+            derr('unexpected use case');
+        }
+
+        mwarning("object is not part of this nat rule : {$old->toString()}");
+
+        return false;
+    }
+
 
 
 	public function rewriteSNAT_XML()

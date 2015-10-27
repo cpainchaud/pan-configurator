@@ -116,7 +116,7 @@ $supportedActions['delete'] = Array(
         $object = $context->object;
 
         if( $object->countReferences() != 0)
-            derr("this object is used by other objects and cannot be deleted (use deleteForce to try anyway)");
+            derr("this object is used by other objects and cannot be deleted (use 'deleteForce' to try anyway or 'replaceWithObject')");
         if( $context->isAPI )
             $object->owner->API_remove($object);
         else

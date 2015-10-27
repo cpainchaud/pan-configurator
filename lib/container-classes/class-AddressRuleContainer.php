@@ -141,11 +141,16 @@ class AddressRuleContainer extends ObjRuleContainer
 
     public function API_sync()
     {
-
+        if( $this->name == 'snathosts' )
+        {
+            $xpath = DH::elementToPanXPath($this->xmlroot);
+        }
+        else
+        {
             $xpath = &$this->getXPath();
-            $con = findConnectorOrDie($this);
-
-            $con->sendEditRequest($xpath, $this->getXmlText_inline());
+        }
+        $con = findConnectorOrDie($this);
+        $con->sendEditRequest($xpath, $this->getXmlText_inline());
     }
 
     public function setAny()
@@ -223,10 +228,23 @@ class AddressRuleContainer extends ObjRuleContainer
         if( $this->xmlroot === null )
             return;
 
-        if( $this->xmlroot !== null && $this->name == 'snathosts' && count($this->o) == 0 )
-            DH::clearDomNodeChilds($this->xmlroot);
+        if( $this->name == 'snathosts' )
+        {
+            if (count($this->o) == 0 )
+                DH::clearDomNodeChilds($this->xmlroot);
+            else
+            {
+                if( $this->owner->natType() == 'static-ip' )
+                {
+                    DH::clearDomNodeChilds($this->xmlroot);
+                    DH::setDomNodeText($this->xmlroot, reset($this->o)->name());
+                }
+                else
+                    DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
+            }
+        }
         else
-            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', true);
+            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
     }
 
     public function toString_inline()

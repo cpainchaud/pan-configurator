@@ -295,6 +295,33 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
     },
 );
 
+$supportedActions['replacewithobject'] = Array(
+    'name' => 'replaceWithObject',
+    'MainFunction' => function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $objectRefs = $object->getReferences();
+
+        $foundObject = $object->owner->find($context->arguments['objectName']);
+
+        if( $foundObject === null )
+            derr("cannot find an object named '{$context->arguments['objectName']}'");
+
+        /** @var $objectRef ServiceGroup|ServiceRuleContainer */
+
+        foreach ($objectRefs as $objectRef)
+        {
+            print $context->padding." * replacing in {$objectRef->toString()}\n";
+            if( $context->isAPI )
+                $objectRef->API_replaceReferencedObject($object, $foundObject);
+            else
+                $objectRef->replaceReferencedObject($object, $foundObject);
+        }
+
+    },
+    'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+
 
 $supportedActions['exporttoexcel'] = Array(
     'name' => 'exportToExcel',
