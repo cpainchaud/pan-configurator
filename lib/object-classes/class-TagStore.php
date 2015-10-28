@@ -179,9 +179,9 @@ class TagStore extends ObjStore
 
         $ownerClass = get_class($this->owner);
 
-        if( $ownerClass == 'VirtualSystem' || $ownerClass == 'DeviceGroup' )
+        if( $this->owner->isDeviceGroup() || $this->owner->isVirtualSystem() )
             $str = $this->owner->getXPath();
-        elseif( $ownerClass == 'PanoramaConf' )
+        elseif( $this->owner->isPanorama() || $this->owner->isPanOS() )
             $str = '/config/shared';
         else
             derr('unsupported');

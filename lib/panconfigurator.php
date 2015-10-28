@@ -290,12 +290,9 @@ function &insertAfter(&$arradd,&$refo,&$arr)
  */
 function reLinkObjs(&$arr, &$ref)
 {
-    $c = count($arr);
-    $k = array_keys($arr);
-
-    for( $i=0; $i<$c; $i++ )
+    foreach($arr as $object)
     {
-        $arr[$k[$i]]->addReference($ref);
+        $object->addReference($ref);
     }
 }
 
@@ -506,7 +503,7 @@ function mdeb($msg)
             {
                 fwrite(STDERR,$l['object']->toString()."\n");
             }
-            
+
             $file = '';
             if( isset($l['file']) )
                 $file = $l['file'];
