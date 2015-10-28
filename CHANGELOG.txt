@@ -11,7 +11,7 @@ utils:
 * rules-edit.php : new Actions 'description-append', 'securityProfile-Remove'
 * rules-edit.php : create FastAPI modes for : 'enabled-set', 'logStart-Enable', 'logStart-Disable', 'logEnd-Enable', 'logEnd-Disable'
 					'securityProfile-Group-Set'
-* service-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed'
+* service-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed', 'removeWhereUsed'
 * address-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed'
 
 bugfixes:

@@ -321,6 +321,7 @@ class ObjRuleContainer
         }
 
         $this->o = null;
+        $this->owner = null;
     }
 
     /**

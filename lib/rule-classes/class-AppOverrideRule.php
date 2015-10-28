@@ -341,4 +341,29 @@ class AppOverrideRule extends Rule
     }
 
 
+    public function cleanForDestruction()
+    {
+        $this->from->__destruct();
+        $this->to->__destruct();
+        $this->source->__destruct();
+        $this->destination->__destruct();
+        $this->tags->__destruct();
+
+
+        $this->from = null;
+        $this->to = null;
+        $this->source = null;
+        $this->destination = null;
+        $this->tags = null;
+
+        if( $this->_app !== null )
+        {
+            $this->_app->removeReference($this);
+            unset($this->_app);
+        }
+
+        $this->owner = null;
+    }
+
+
 }

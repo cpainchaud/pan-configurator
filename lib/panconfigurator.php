@@ -386,7 +386,9 @@ trait PathableName
     {
         $location = 'shared';
 
-        if( $this->owner->owner->isVirtualSystem() || $this->owner->owner->isDeviceGroup() )
+        $locationObject = PH::findLocationObjectOrDie($this);
+
+        if( $locationObject->isVirtualSystem() || $locationObject->isDeviceGroup() )
         {
             $location = $this->owner->owner->name();
         }

@@ -540,22 +540,48 @@ class NatRule extends Rule
 		$this->rewriteSNAT_XML();
 		
 	}
-	
+
+    /**
+     * @param $newServiceObject Service|ServiceGroup|null use null to set ANY
+     * @return bool return true if any change was made
+     */
 	public function setService($newServiceObject)
 	{
-		if( $this->service )
+        if( $this->service === $newServiceObject )
+            return false;
+
+        if( $this->service !== null )
 		{
-			if( $this->service === $newServiceObject )
-				return;
-			
 			$this->service->removeReference($this);
 		}
 		
 		$this->service = $newServiceObject;
-		$this->service->addReference($this);
+
+        if( $newServiceObject !== null )
+		    $this->service->addReference($this);
 		
 		$this->rewriteService_XML();
+
+        return true;
 	}
+
+    /**
+     * @param $newServiceObject Service|ServiceGroup|null use null to set ANY
+     * @return bool return true if any change was made
+     */
+    public function API_setService($newServiceObject)
+    {
+        $ret = $this->setService($newServiceObject);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $xpath = $this->getXPath().'/service';
+            $con->sendEditRequest($xpath, $this->serviceroot);
+        }
+
+        return $ret;
+    }
 	
 	
 	
@@ -628,6 +654,40 @@ class NatRule extends Rule
     public function isNatRule()
     {
         return true;
+    }
+
+    public function cleanForDestruction()
+    {
+        $this->from->__destruct();
+        $this->to->__destruct();
+        $this->source->__destruct();
+        $this->destination->__destruct();
+        $this->tags->__destruct();
+
+        $this->from = null;
+        $this->to = null;
+        $this->source = null;
+        $this->destination = null;
+        $this->tags = null;
+
+        if( $this->service !== null )
+        {
+            $this->service->removeReference($this);
+            unset($this->service);
+        }
+
+        if( $this->dnathost !== null )
+        {
+            $this->dnathost->removeReference($this);
+            unset($this->dnathost);
+        }
+
+        if( $this->dnatports !== null )
+        {
+            $this->dnatports->removeReference($this);
+            unset($this->dnatports);
+        }
+
     }
 
     public function storeVariableName()

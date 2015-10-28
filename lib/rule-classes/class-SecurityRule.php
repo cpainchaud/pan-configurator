@@ -1157,16 +1157,6 @@ class SecurityRule extends Rule
 		$this->apps->__destruct();
 		$this->services->__destruct();
 
-
-		$this->from->owner = null;
-		$this->from->owner = null;
-		$this->to->owner = null;
-		$this->source->owner = null;
-		$this->destination->owner = null;
-		$this->tags->owner = null;
-		$this->services->owner = null;
-		$this->apps->owner = null;
-
 		$this->from = null;
 		$this->to = null;
 		$this->source = null;
@@ -1174,6 +1164,8 @@ class SecurityRule extends Rule
 		$this->tags = null;
 		$this->services = null;
 		$this->apps = null;
+
+        $this->owner = null;
 	}
 
     public function isSecurityRule()

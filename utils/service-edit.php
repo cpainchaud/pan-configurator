@@ -489,7 +489,23 @@ $supportedActions['move'] = Array(
     ),
 );
 
-//TODO add action==removeWhereUsed
+$supportedActions['removewhereused'] = Array(
+    'name' => 'removeWhereUsed',
+    'MainFunction' => function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $context->isAPI )
+            $object->API_removeWhereIamUsed(true, $context->padding, $context->arguments['actionIfLastMemberInRule']);
+        else
+            $object->removeWhereIamUsed(true, $context->padding, $context->arguments['actionIfLastMemberInRule']);
+    },
+    'args' => Array( 'actionIfLastMemberInRule' => Array(   'type' => 'string',
+                                                            'default' => 'delete',
+                                                            'choices' => Array( 'delete', 'disable', 'setAny' )
+                                                        ),
+    ),
+);
 
 $supportedActions['replacegroupbyservice'] = Array(
     'name' => 'replaceGroupByService',

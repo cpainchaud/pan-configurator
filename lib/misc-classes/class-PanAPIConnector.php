@@ -836,8 +836,8 @@ class PanAPIConnector
     }
 
     /**
-     * @param $xpath string|XmlConvertible
-     * @param $element string
+     * @param $xpath string
+     * @param $element string|XmlConvertible|DOMElement
      * @param $useChildNodes bool if $element is an object then don't use its root but its childNodes to generate xml
      * @return DomDocument
      */
@@ -846,16 +846,32 @@ class PanAPIConnector
         $params = Array();
         $moreOptions = Array( 'timeout' => $timeout, 'lowSpeedTime' => 0);
 
+        if( is_object($xpath) )
+            derr('unsupported yet');
+
         if( is_string($element) )
         {
 
         }
         elseif( is_object($element) )
         {
-            if( $useChildNodes )
-                $element = $element->getChildXmlText_inline();
+            $elementClass = get_class($element);
+
+            if( $elementClass === 'DOMElement' )
+            {
+                /** @var $element DOMElement */
+                if ($useChildNodes)
+                    $element = DH::domlist_to_xml($element->childNodes, -1, false);
+                else
+                    $element = DH::dom_to_xml($element, -1, false);
+            }
             else
-                $element = $element->getXmlText_inline();
+            {
+                if ($useChildNodes)
+                    $element = $element->getChildXmlText_inline();
+                else
+                    $element = $element->getXmlText_inline();
+            }
         }
 
         $params['type']  = 'config';

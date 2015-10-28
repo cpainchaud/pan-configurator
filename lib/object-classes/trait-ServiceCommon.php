@@ -147,7 +147,7 @@ trait ServiceCommon
      * @param $actionIfLastInRule string can be delete|setany|disable
      * @param $outputPadding string|int
      */
-    private function __removeWhereIamUsed($objectToAdd, $apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    private function __removeWhereIamUsed($apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
         /** @var $this Service|ServiceGroup */
 
@@ -208,6 +208,41 @@ trait ServiceCommon
                         $ref->remove($this);
                 }
             }
+            elseif( $refClass == 'NatRule' )
+            {
+                /** @var $ref NatRule */
+                if( $actionIfLastInRule == 'delete' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so deleting {$ref->_PANC_shortName()}\n";
+                    if( $apiMode)
+                        $ref->owner->API_remove($ref, true);
+                    else
+                        $ref->owner->remove($ref, true);
+                }
+                elseif( $actionIfLastInRule == 'setany' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->API_setService(null);
+                    else
+                        $ref->setService(null);
+                }
+                elseif( $actionIfLastInRule == 'disable' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->API_setDisabled(true);
+                    else
+                        $ref->setDisabled(true);
+                }
+                else
+                {
+                    derr('unsupported');
+                }
+            }
             else
                 derr("unsupported class '{$refClass}'");
         }
@@ -218,9 +253,9 @@ trait ServiceCommon
      * @param $actionIfLastInRule string can be delete|setany|disable
      * @param $outputPadding string|int
      */
-    public function removeWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    public function removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
-        $this->__removeWhereIamUsed($objectToAdd, false, $displayOutput, $outputPadding, $actionIfLastInRule);
+        $this->__removeWhereIamUsed(false, $displayOutput, $outputPadding, $actionIfLastInRule);
     }
 
     /**
@@ -228,9 +263,9 @@ trait ServiceCommon
      * @param $actionIfLastInRule string can be delete|setany|disable
      * @param $outputPadding string|int
      */
-    public function API_removeWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    public function API_removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
-        $this->__removeWhereIamUsed($objectToAdd, true, $displayOutput, $outputPadding, $actionIfLastInRule);
+        $this->__removeWhereIamUsed(true, $displayOutput, $outputPadding, $actionIfLastInRule);
     }
 
 }
