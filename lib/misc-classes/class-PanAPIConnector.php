@@ -940,7 +940,9 @@ class PanAPIConnector
     }
 
     /**
-     * @param $cmd
+     * @param $cmd string
+     * @param $checkResultTag bool
+     * @param $maxWaitTime integer
      * @return DomDocument|string[]
      */
     public function sendCmdRequest($cmd, $checkResultTag = true, $maxWaitTime = -1)
@@ -1018,6 +1020,7 @@ class PanAPIConnector
      *
      * @param DOMNode $configDomXml
      * @param string $configName
+     * @param bool $verbose
      * @return DOMNode
      */
     public function uploadConfiguration( $configDomXml, $configName = 'stage0.xml', $verbose = true )

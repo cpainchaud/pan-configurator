@@ -11,8 +11,10 @@ utils:
 * rules-edit.php : new Actions 'description-append', 'securityProfile-Remove'
 * rules-edit.php : create FastAPI modes for : 'enabled-set', 'logStart-Enable', 'logStart-Disable', 'logEnd-Enable', 'logEnd-Disable'
 					'securityProfile-Group-Set'
+* rules-edit.php : new filters 'name is.in.file'
 * service-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed', 'removeWhereUsed'
 * address-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed'
+* address-edit.php : new filters 'name is.in.file'
 
 bugfixes:
 * rules-edit.php : destination zone calculation fix in

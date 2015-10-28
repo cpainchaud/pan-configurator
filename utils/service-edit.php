@@ -1102,6 +1102,7 @@ foreach( $objectsToProcess as &$objectsRecord )
 {
     $subObjectsProcessed = 0;
 
+    /** @var ServiceStore $store */
     $store = $objectsRecord['store'];
     $objects = &$objectsRecord['objects'];
     foreach( $doActions as $doAction )

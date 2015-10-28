@@ -64,6 +64,10 @@ class RQuery
 
         if($this->objectType == 'service' )
             $this->contextObject = new ServiceRQueryContext($this);
+        elseif($this->objectType == 'address' )
+            $this->contextObject = new AddressRQueryContext($this);
+        elseif($this->objectType == 'rule' )
+            $this->contextObject = new RuleRQueryContext($this);
     }
 
     /**
@@ -336,7 +340,7 @@ class RQuery
         else
         {
             //print $this->padded . "Sub-queries found\n";
-            //$this->text = $text;
+            $this->text = $text;
         }
 
         return 1;
@@ -1293,6 +1297,37 @@ RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
     'arg' => true
 );
 
+RQuery::$defaultFilters['rule']['name']['operators']['is.in.file'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === false )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        return isset($list[$object->name()]);
+    },
+    'arg' => true
+);
+
 RQuery::$defaultFilters['rule']['description']['operators']['is.empty'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
@@ -1393,6 +1428,36 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
         if( $matching === 1 )
             return true;
         return false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['address']['name']['operators']['is.in.file'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === false )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        return isset($list[$object->name()]);
     },
     'arg' => true
 );
@@ -1535,9 +1600,6 @@ RQuery::$defaultFilters['service']['name']['operators']['is.in.file'] = Array(
         else
             $list = &$context->cachedList;
 
-        if($object->isService())
-            return isset($list[$object->name()]);
-
         return isset($list[$object->name()]);
     },
     'arg' => true
@@ -1644,6 +1706,90 @@ RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
 class RQueryContext
 {
 
+
+}
+
+/**
+ * Class RuleRQueryContext
+ * @ignore
+ */
+class RuleRQueryContext extends RQueryContext
+{
+    /** @var  SecurityRule|NatRule|DecryptionRule|AppOverrideRule */
+    public $object;
+    public $value;
+
+    public $rQueryObject;
+
+    public $nestedQueries;
+
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
+    }
+
+    /**
+     * @param $object SecurityRule|NatRule|DecryptionRule|AppOverrideRule
+     * @return bool
+     */
+    function execute($object, $nestedQueries = null)
+    {
+        if( $nestedQueries !== null )
+            $this->nestedQueries = &$nestedQueries;
+
+        $this->object = $object;
+        $this->value = &$this->rQueryObject->argument;
+
+        return $this->rQueryObject->refOperator['Function']($this);
+    }
+
+}
+
+/**
+ * Class AddressRQueryContext
+ * @ignore
+ */
+class AddressRQueryContext extends RQueryContext
+{
+    /** @var  Address|AddressGroup */
+    public $object;
+    public $value;
+
+    public $rQueryObject;
+
+    public $nestedQueries;
+
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
+    }
+
+    /**
+     * @param $object Address|AddressGroup
+     * @return bool
+     */
+    function execute($object, $nestedQueries = null)
+    {
+        if( $nestedQueries !== null )
+            $this->nestedQueries = &$nestedQueries;
+
+        $this->object = $object;
+        $this->value = &$this->rQueryObject->argument;
+
+        return $this->rQueryObject->refOperator['Function']($this);
+    }
 
 }
 
