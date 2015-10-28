@@ -272,7 +272,7 @@ $supportedActions['exporttoexcel'] = Array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                if ($object->owner->owner->isPanorama() || $object->owner->owner->isPanOS())
+                if ($object->owner->owner->isPanorama() || $object->owner->owner->isFirewall())
                     $lines .= $encloseFunction('shared');
                 else
                     $lines .= $encloseFunction($object->owner->owner->name());
@@ -336,7 +336,7 @@ $supportedActions['move'] = Array(
 
         $localLocation = 'shared';
 
-        if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isPanOS() )
+        if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isFirewall() )
             $localLocation = $object->owner->owner->name();
 
         $targetLocation = $context->arguments['location'];
@@ -636,7 +636,7 @@ $supportedActions['name-addprefix'] = Array(
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
-            $rootObject->isPanOS() && $object->owner->find($newName, null, true) !== null   )
+            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
         {
             print " *** SKIPPED : an object with same name already exists\n";
             return;
@@ -664,7 +664,7 @@ $supportedActions['name-addsuffix'] = Array(
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
-            $rootObject->isPanOS() && $object->owner->find($newName, null, true) !== null   )
+            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
         {
             print " *** SKIPPED : an object with same name already exists\n";
             return;

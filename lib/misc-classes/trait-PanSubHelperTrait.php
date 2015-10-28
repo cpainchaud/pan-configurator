@@ -24,7 +24,7 @@ trait PanSubHelperTrait
 		false;
 	}
 
-	public function isPanOS()
+	public function isFirewall()
 	{
 		false;
 	}

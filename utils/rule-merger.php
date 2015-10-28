@@ -241,7 +241,7 @@ if( isset(PH::$args['location'])  )
 }
 else
 {
-    if( $pan->isPanOS() )
+    if( $pan->isFirewall() )
     {
         print " - No 'location' provided so using default ='vsys1'\n";
         $rulesLocation = 'vsys1';

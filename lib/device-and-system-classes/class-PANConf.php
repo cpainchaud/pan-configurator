@@ -437,7 +437,7 @@ class PANConf
 	}
 
 
-	public function isPanOS()
+	public function isFirewall()
 	{
 		return true;
 	}

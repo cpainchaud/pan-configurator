@@ -1317,7 +1317,7 @@ $supportedActions['copy'] = Array(
 
                     if( strtolower($location) == 'shared' )
                     {
-                        if( $pan->isPanOS() )
+                        if( $pan->isFirewall() )
                             derr("Rules cannot be copied to SHARED location on a firewall, only in Panorama");
 
                         $ruleStore = $pan->$variableName;
@@ -1401,7 +1401,7 @@ $supportedActions['exporttoexcel'] = Array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                if ($rule->owner->owner->isPanorama() || $rule->owner->owner->isPanOS())
+                if ($rule->owner->owner->isPanorama() || $rule->owner->owner->isFirewall())
                     $lines .= $encloseFunction('shared');
                 else
                     $lines .= $encloseFunction($rule->owner->owner->name());

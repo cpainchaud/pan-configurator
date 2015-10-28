@@ -1161,7 +1161,7 @@ RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
         {
             if( $owner->isPanorama() )
                 return true;
-            if( $owner->isPanOS() )
+            if( $owner->isFirewall() )
                 return true;
             return false;
         }
@@ -1498,7 +1498,7 @@ RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
                     {
                         if( $owner->isPanorama() )
                             return true;
-                        if( $owner->isPanOS() )
+                        if( $owner->isFirewall() )
                             return true;
                         return false;
                     }
@@ -1686,7 +1686,7 @@ RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
         {
             if( $owner->isPanorama() )
                 return true;
-            if( $owner->isPanOS() )
+            if( $owner->isFirewall() )
                 return true;
             return false;
         }
