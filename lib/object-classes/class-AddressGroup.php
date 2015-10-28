@@ -548,6 +548,7 @@ class AddressGroup
 		{
 			foreach($diff['minus'] as $d )
 			{
+                /** @var $d Address|AddressGroup */
 				if( !$toString )
 					print $indent." - {$d->name()}\n";
 				else

@@ -1029,8 +1029,6 @@ class SecurityRule extends Rule
             $first = false;
         }
 
-        $dvq = '';
-
         if( $parentClass == 'VirtualSystem' )
         {
             $dvq = ' and (vsys eq '.$this->owner->owner->name().')';

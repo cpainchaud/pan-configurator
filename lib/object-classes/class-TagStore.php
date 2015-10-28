@@ -23,6 +23,7 @@
  */
 class TagStore extends ObjStore
 {
+    /** @var null|TagStore */
 	protected $parentCentralStore = null;
 	
 	public static $childn = 'Tag';
@@ -86,7 +87,10 @@ class TagStore extends ObjStore
     }
 
 	/**
-	*
+	* @param $base string
+     * @param $suffix string
+     * @param $startCount integer|string
+     * @return string
 	*/
 	public function findAvailableTagName($base, $suffix, $startCount = '')
 	{
@@ -176,8 +180,6 @@ class TagStore extends ObjStore
     public function &getXPath()
     {
         $str = '';
-
-        $ownerClass = get_class($this->owner);
 
         if( $this->owner->isDeviceGroup() || $this->owner->isVirtualSystem() )
             $str = $this->owner->getXPath();

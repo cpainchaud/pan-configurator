@@ -81,6 +81,9 @@ class PanoramaConf
     /** @var ZoneStore */
     public $zoneStore=null;
 
+    /** @var PANConf[] */
+    public $managedFirewalls = Array();
+
 
     /** @var PanAPIConnector|null */
 	public $connector = null;
@@ -280,7 +283,7 @@ class PanoramaConf
             foreach ($this->devicegrouproot->childNodes as $node)
             {
                 if ($node->nodeType != XML_ELEMENT_NODE) continue;
-                $lvname = $node->nodeName;
+                //$lvname = $node->nodeName;
                 //print "Device Group '$lvname' found\n";
 
                 $ldv = new DeviceGroup($this);
@@ -339,7 +342,6 @@ class PanoramaConf
                 if( count($dgLoadOrder) <= $dgLoadOrderCount )
                     derr('dg-meta-data seems to be corrupted, parent.child template cannot be calculated ', $dgMetaDataNode);
 
-                $dgLoadOrderCount = count($dgLoadOrder);
             }
 
             /*print "DG loading order:\n";
@@ -569,14 +571,14 @@ class PanoramaConf
 
 	/**
 	* send current config to the firewall and save under name $config_name
-	*
+	* @param $config_filename string filename you want to save config in PANOS
 	*/
-	public function API_uploadConfig( $config_name = 'panconfigurator-default.xml' )
+	public function API_uploadConfig( $config_filename = 'panconfigurator-default.xml' )
 	{
 		print "Uploadig config to device....";
 
 		$url = "&type=import&category=configuration&category=configuration";
-		$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_name );
+		$this->connector->sendRequest($url, false, DH::dom_to_xml($this->xmlroot), $config_filename );
 
 		print "OK!\n";
 	}
@@ -588,7 +590,20 @@ class PanoramaConf
 	{
 		$this->managedFirewalls = Array();
 
-		derr('not implemented yet');
+        $connector = findConnectorOrDie($this);
+
+        foreach( $this->managedFirewallsSerials as $serial )
+        {
+            $fw = new PANConf($this, $serial);
+            $fw->panorama = $this;
+            $newCon = new PanAPIConnector(  $connector->apihost,
+                                            $connector->apikey,
+                                            'panos-via-panorama',
+                                            $serial,
+                                            $connector->port);
+            $fw->API_load_from_candidate($newCon);
+        }
+
 	}
 
 	/**
@@ -615,6 +630,7 @@ class PanoramaConf
 					print "Loading FW '$serial' from file '$file'.\n";
 
 					$fw = new PANConf($this, $serial);
+                    $fw->panorama = $this;
 					$fw->load_from_file($fromDirectory.'/'.$file);
 					$this->managedFirewalls[] = $fw;
 					break;
@@ -667,16 +683,17 @@ class PanoramaConf
 
 	/**
 	* Create a blank device group. Return that DV object.
+     * @param $name string
+     * @return DeviceGroup
 	**/
-	public function createDeviceGroup($newDV_Name)
+	public function createDeviceGroup($name)
 	{
 		$newDG = new DeviceGroup($this);
 		$newDG->load_from_templateXml();
 
-		$newDG->setName($newDV_Name);
+		$newDG->setName($name);
 
 		return $newDG;
-
 	}
 
     /**

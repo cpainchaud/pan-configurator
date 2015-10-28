@@ -98,7 +98,7 @@ class Address
 
 	/**
 	* @ignore
-	*
+	* @param $xml DOMElement
 	*/
 	public function load_from_domxml(DOMElement $xml)
 	{
@@ -120,6 +120,8 @@ class Address
 		{
 			if( $node->nodeType != 1  )
 				continue;
+
+            /** @var $node DOMElement*/
 
 			$lsearch = array_search($node->nodeName, self::$AddressTypes);
 			if( $lsearch !== FALSE )
