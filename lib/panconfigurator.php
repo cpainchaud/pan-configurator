@@ -506,11 +506,18 @@ function mdeb($msg)
             {
                 fwrite(STDERR,$l['object']->toString()."\n");
             }
-            print $l['function']."()\n";
+            
+            $file = '';
+            if( isset($l['file']) )
+                $file = $l['file'];
+            $line = '';
+            if( isset($l['line']) )
+                $line = $l['line'];
+
             if( isset($l['object']) )
-                fwrite(STDERR,'       '.$l['class'].'::'.$l['file']." line ".$l['line']."\n");
+                fwrite(STDERR,'       '.PH::boldText($l['class'].'::'.$l['function']."()")." @\n           {$file} line {$line}\n");
             else
-                fwrite(STDERR,'       ::'.$l['file']." line ".$l['line']."\n");
+                fwrite(STDERR,"       ".PH::boldText($l['function'])."()\n       ::{$file} line {$line}\n");
         }
         $skip++;
     }
@@ -561,11 +568,18 @@ function mwarning($msg, $object = null)
             {
                 fwrite(STDERR,'   '.$l['object']->toString()."\n");
             }
-            //print $l['function']."()\n";
+
+            $file = '';
+            if( isset($l['file']) )
+                $file = $l['file'];
+            $line = '';
+            if( isset($l['line']) )
+                $line = $l['line'];
+
             if( isset($l['object']) )
-                fwrite(STDERR,'       '.PH::boldText($l['class'].'::'.$l['function']."()")." @\n           ".$l['file']." line ".$l['line']."\n");
+                fwrite(STDERR,'       '.PH::boldText($l['class'].'::'.$l['function']."()")." @\n           {$file} line {$line}\n");
             else
-                fwrite(STDERR,'       ::'.$l['file']." line ".$l['line']."\n");
+                fwrite(STDERR,"       ".PH::boldText($l['function'])."()\n       ::{$file} line {$line}\n");
         }
         $skip++;
         $count++;
