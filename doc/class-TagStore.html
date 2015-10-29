@@ -7,7 +7,7 @@
 	<title>Class TagStore | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3680294853"></script>
+	<script type="text/javascript" src="elementlist.js?1419490963"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -96,7 +96,6 @@
 				<li><a href="class-AddressCommon.html">AddressCommon</a></li>
 				<li><a href="class-centralAddressStore.html">centralAddressStore</a></li>
 				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
-				<li><a href="class-centralAppStore.html">centralAppStore</a></li>
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
 				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
@@ -366,7 +365,7 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			string
 			
 			</code>
 		</td>
@@ -383,7 +382,20 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$base</var></dt>
+					<dd><code>mixed</code><br>$base string</dd>
+					<dt><var>$suffix</var></dt>
+					<dd><code>mixed</code><br>$suffix string</dd>
+					<dt><var>$startCount</var></dt>
+					<dd><code>mixed</code><br>$startCount integer|string</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string</code><br />
+				</div>
 
 
 
@@ -635,7 +647,7 @@ it and return it.</p>
 	<tr data-order="parentCentralStore" id="$parentCentralStore">
 		<td class="attributes"><code>
 			protected  
-			mixed
+			null|<code><a href="class-TagStore.html">TagStore</a></code>
 		</code></td>
 
 		<td class="name">
