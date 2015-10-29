@@ -83,7 +83,7 @@ class PH
             $nameExplode[0] = str_ireplace( '-', '', $nameExplode[0]);
 
             if( isset(PH::$args[$nameExplode[0]]) )
-                derr("argument '".PH::$args[$nameExplode[0]]."' was input twice in command line");
+                derr("argument '".$nameExplode[0]."' was input twice in command line");
 
             PH::$args[$nameExplode[0]] = $value;
         }
