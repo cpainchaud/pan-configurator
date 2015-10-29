@@ -34,7 +34,6 @@ class PanoramaConf
 {
 	use PathableName;
 	use centralTagStore;
-	use centralAppStore;
 	use PanSubHelperTrait;
 
 
@@ -87,6 +86,9 @@ class PanoramaConf
 
     /** @var PanAPIConnector|null */
 	public $connector = null;
+
+    /** @var AppStore */
+    public $appStore;
 	
 	public $name = '';
 

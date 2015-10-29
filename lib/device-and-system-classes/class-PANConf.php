@@ -37,7 +37,6 @@ class PANConf
 	
 	use PathableName;
 	use centralTagStore;
-	use centralAppStore;
 	use PanSubHelperTrait;
 
     /** @var DOMElement */
@@ -75,6 +74,8 @@ class PANConf
 	/** @var NetworkPropertiesContainer */
 	public $network;
 
+    /** @var AppStore */
+    public $appStore;
 
 
 	public function name()
