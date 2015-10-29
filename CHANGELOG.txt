@@ -8,7 +8,7 @@ core:
 						API_removeWhereIamUsed()
 
 utils:
-* rules-edit.php : new Actions 'description-append', 'securityProfile-Remove'
+* rules-edit.php : new Actions 'description-append', 'securityProfile-Remove', 'removeWhereUsed'
 * rules-edit.php : create FastAPI modes for : 'enabled-set', 'logStart-Enable', 'logStart-Disable', 'logEnd-Enable', 'logEnd-Disable'
 					'securityProfile-Group-Set'
 * rules-edit.php : new filters 'name is.in.file'

@@ -152,4 +152,131 @@ trait AddressCommon
         }
     }
 
+    /**
+     * @param $displayOutput bool
+     * @param $apiMode bool
+     * @param $actionIfLastInRule string can be delete|setany|disable
+     * @param $outputPadding string|int
+     */
+    private function __removeWhereIamUsed($apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    {
+        /** @var $this Address|AddressGroup */
+
+        $allowedActionIfLastInRule = Array('delete' => true, 'setany' => true, 'disable' => true);
+        if( !isset($allowedActionIfLastInRule[$actionIfLastInRule]) )
+            derr('unsupported actionIfLastInRule='.$actionIfLastInRule);
+
+        foreach($this->getReferences() as $ref)
+        {
+            $refClass = get_class($ref);
+            if( $refClass == 'AddressGroup' )
+            {
+                /** @var $ref AddressGroup */
+                if( $displayOutput )
+                    print $outputPadding."- removing from {$ref->_PANC_shortName()}\n";
+                if($apiMode)
+                    $ref->API_remove($this);
+                else
+                    $ref->remove($this);
+            }
+            elseif( $refClass == 'AddressRuleContainer' )
+            {
+                /** @var $ref AddressRuleContainer */
+                if( $ref->count() <= 1 && $actionIfLastInRule == 'delete' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so deleting {$ref->_PANC_shortName()}\n";
+                    if( $apiMode)
+                        $ref->owner->owner->API_remove($ref->owner, true);
+                    else
+                        $ref->owner->owner->remove($ref->owner, true);
+                }
+                elseif( $ref->count() <= 1 && $actionIfLastInRule == 'setany' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->API_setAny();
+                    else
+                        $ref->setAny();
+                }
+                elseif( $ref->count() <= 1 && $actionIfLastInRule == 'disable' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->owner->API_setDisabled(true);
+                    else
+                        $ref->owner->setDisabled(true);
+                }
+                else
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- removing from {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->API_remove($this);
+                    else
+                        $ref->remove($this);
+                }
+            }
+            elseif( $refClass == 'NatRule' )
+            {
+                /** @var $ref NatRule */
+                if( $actionIfLastInRule == 'delete' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so deleting {$ref->_PANC_shortName()}\n";
+                    if( $apiMode)
+                        $ref->owner->API_remove($ref, true);
+                    else
+                        $ref->owner->remove($ref, true);
+                }
+                elseif( $actionIfLastInRule == 'setany' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so setting ANY {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->API_setService(null);
+                    else
+                        $ref->setService(null);
+                }
+                elseif( $actionIfLastInRule == 'disable' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so disabling rule {$ref->_PANC_shortName()}\n";
+                    if( $apiMode )
+                        $ref->API_setDisabled(true);
+                    else
+                        $ref->setDisabled(true);
+                }
+                else
+                {
+                    derr('unsupported');
+                }
+            }
+            else
+                derr("unsupported class '{$refClass}'");
+        }
+    }
+
+    /**
+     * @param $displayOutput bool
+     * @param $actionIfLastInRule string can be delete|setany|disable
+     * @param $outputPadding string|int
+     */
+    public function removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    {
+        $this->__removeWhereIamUsed(false, $displayOutput, $outputPadding, $actionIfLastInRule);
+    }
+
+    /**
+     * @param $displayOutput bool
+     * @param $actionIfLastInRule string can be delete|setany|disable
+     * @param $outputPadding string|int
+     */
+    public function API_removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
+    {
+        $this->__removeWhereIamUsed(true, $displayOutput, $outputPadding, $actionIfLastInRule);
+    }
+
 }
