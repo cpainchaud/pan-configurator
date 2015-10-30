@@ -365,7 +365,9 @@ class SecurityRule extends Rule
 	
 	public function removeSecurityProfile()
 	{
-        //TODO : implement better 'change' detection to remove this return true
+        if( $this->secproftype == 'none' )
+            return false;
+
 		$this->secproftype = 'none';
 		$this->secprofgroup = null;
 		$this->secprofprofiles = Array();

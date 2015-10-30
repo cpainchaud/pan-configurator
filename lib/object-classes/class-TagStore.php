@@ -236,19 +236,3 @@ class TagStore extends ObjStore
 }
 
 
-trait centralTagStore
-{
-	/**
-	* @var TagStore central tag store
-	*/
-	public $tagStore=null;
-	
-	/**
-	* @return TagStore
-	*/
-	public function tagStore()
-	{
-		return $this->tagStore;
-	}
-}
-

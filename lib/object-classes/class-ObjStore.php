@@ -165,7 +165,6 @@ class ObjStore
 		else
 			mwarning("object with name '{$oldName}' was not part of this store/index");
 	}
-	
 
 	
 	/**
@@ -220,8 +219,7 @@ class ObjStore
 	{
 		return $this->o;
 	}
-	
-	
+
 
 	public function rewriteXML()
 	{
@@ -264,7 +262,6 @@ class ObjStore
 		}
 	}
 
-	
 
 }
 

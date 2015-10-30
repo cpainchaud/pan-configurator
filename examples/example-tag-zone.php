@@ -43,12 +43,12 @@ if( !$external )
 
 
 // We are looking for a tag called "Outgoing" , to be used later, same for Incoming tag
-$outgoing = $p->tagStore()->find('Outgoing');
+$outgoing = $p->tagStore->find('Outgoing');
 if( !$outgoing )
 	derr("We didn't find tag Outgoing, is there a problem? \n");
 
 // We are looking for a tag called "Incoming"
-$incoming = $p->tagStore()->find('Incoming');
+$incoming = $p->tagStore->find('Incoming');
 if( !$incoming )
 	derr("We didn't find tag Incoming, is there a problem? \n");
 

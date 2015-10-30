@@ -36,7 +36,6 @@ class PANConf
 {
 	
 	use PathableName;
-	use centralTagStore;
 	use PanSubHelperTrait;
 
     /** @var DOMElement */
@@ -76,6 +75,9 @@ class PANConf
 
     /** @var AppStore */
     public $appStore;
+
+    /** @var TagStore */
+    public $tagStore;
 
 
 	public function name()
