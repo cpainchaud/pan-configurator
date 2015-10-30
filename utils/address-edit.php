@@ -104,8 +104,6 @@ $supportedActions = Array();
 // <editor-fold desc="  ****  Supported Actions Array  ****" defaultstate="collapsed" >
 
 
-
-
 $supportedActions['delete'] = Array(
     'name' => 'delete',
     'MainFunction' => function ( AddressCallContext $context )
@@ -824,7 +822,7 @@ $supportedActions['display'] = Array(
                 print "          - {$member->name()}\n";
         }
         else
-            print "      * ".get_class($object)." '{$object->name()}'\n";
+            print "      * ".get_class($object)." '{$object->name()}  value: {$object->name()}'\n";
 
         print "\n";
     },

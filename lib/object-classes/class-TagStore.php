@@ -124,8 +124,8 @@ class TagStore extends ObjStore
 	
 	
 	/**
-	* returns a copy of current Tag array
-	*
+	* return tags in this store
+	* @return Tag[]
 	*/
 	public function tags()
 	{

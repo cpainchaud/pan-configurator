@@ -388,7 +388,10 @@ class Address
             $this->_ip4Map = IP4Map::mapFromText($this->name);
         }
         elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
-            derr('cannot resolve an object of type '.$this->type());
+        {
+            $this->_ip4Map = new IP4Map();
+            //$this->_ip4Map->
+        }
         elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
         {
             $this->_ip4Map = IP4Map::mapFromText($this->value);
