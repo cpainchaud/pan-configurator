@@ -517,11 +517,40 @@ $supportedActions['from-calculate-zones'] = Array(
 
         $commonActionFunctions['calculate-zones']($context, 'from');
     },
-    'args' => Array(    'mode' => Array( 'type' => 'string', 'default' => 'append', 'choices' => Array('replace', 'append', 'show') ),
-                        'virtualRouter' => Array('type' => 'string', 'default' => '*autodetermine*'),
-                        'template' => Array('type' => 'string', 'default' => '*notPanorama*'),
-                        'vsys' => Array('type' => 'string', 'default' => '*autodetermine*'),
+    'args' => Array(    'mode' => Array(    'type' => 'string',
+                                            'default' => 'append',
+                                            'choices' => Array('replace', 'append', 'show'),
+                                            'help' =>   "will determine what to do with resolved zones : show them, replace them in the rule".
+                                                        " or only append them (removes none but adds missing ones)"
+                                        ),
+                        'virtualRouter' => Array(   'type' => 'string',
+                                                    'default' => '*autodetermine*',
+                                                    'help' =>   "can optionally be provided if script cannot find which virtualRouter it should be using".
+                                                                " (ie: there are several VR in same VSYS)"
+                                                ),
+                        'template' => Array(    'type' => 'string',
+                                                'default' => '*notPanorama*',
+                                                'help' =>   "When you are using Panorama then 1 or more templates could apply to a DeviceGroup, in".
+                                                            " such a case you may want to specify which Template name to use.\nBeware that if the Template is overriden".
+                                                            " or if you are not using Templates then you will want load its config in lieu of specifying a template.".
+                                                            " \nFor this, give value 'api@XXXXX' where XXXXX is serial number of the device number you want to use to".
+                                                            " calculate zones.\nIf you don't want to use API but have firewall config file on your computer you can then".
+                                                            " specify file@/folderXYZ/config.xml."
+                                            ),
+                        'vsys' => Array(    'type' => 'string',
+                                            'default' => '*autodetermine*',
+                                            'help' =>   "specify vsys when script cannot autodetermine it or when you when to manually override"
+                                        ),
     ),
+    'help' =>
+        "This Action will use routing tables to resolve zones. When the program cannot find all parameters by".
+        " itself (like vsys or template name you will have ti manually provide them.\n\n".
+        "Usage examples:\n\n".
+        "    - xxx-calculate-zones\n".
+        "    - xxx-calculate-zones:replace\n".
+        "    - xxx-calculate-zones:append,vr1\n".
+        "    - xxx-calculate-zones:replace,vr3,api@0011C890C,vsys1\n".
+        "    - xxx-calculate-zones:show,vr5,Datacenter_template\n"
 );
 $supportedActions['to-calculate-zones'] = Array(
     'name' => 'to-calculate-zones',
@@ -1675,23 +1704,67 @@ PH::processCliArgs();
 
 $nestedQueries = Array();
 
-foreach ( PH::$args as $index => &$arg )
-{
-    if( !isset($supportedArguments[$index]) )
-    {
-        if( strpos($index,'subquery') === 0 )
-        {
-            $nestedQueries[$index] = &$arg;
-            continue;
-        }
-        //var_dump($supportedArguments);
-        display_error_usage_exit("unsupported argument provided: '$index'");
-    }
-}
 
 if( isset(PH::$args['help']) )
 {
-    display_usage_and_exit();
+    $pos = array_search('help', $argv);
+
+    if( $pos === false )
+        display_usage_and_exit(false);
+
+    $keys = array_keys($argv);
+
+    if( $pos == end($keys) )
+        display_usage_and_exit(false);
+
+    $action = $argv[(array_search($pos, $keys) +1)];
+
+    if( !isset($supportedActions[strtolower($action)]) )
+        derr("request help for action '{$action}' but it does not exist");
+
+    $action = &$supportedActions[strtolower($action)];
+
+    $args = Array();
+    if( isset($action['args']) )
+    {
+        foreach( $action['args'] as $argName => &$argDetails )
+        {
+            if( $argDetails['default'] == '*nodefault*' )
+                $args[] = "{$argName}";
+            else
+                $args[] = "[{$argName}]";
+        }
+    }
+
+    $args = PH::list_to_string($args);
+    print "*** help for Action ".PH::boldText($action['name']).":".$args."\n";
+
+    if( isset($action['help']) )
+        print $action['help'];
+
+    if( !isset($args) )
+    {
+        print "\n\n**No arguments required**";
+    }
+    else
+    {
+        print "\nListing arguments:\n\n";
+        foreach( $action['args'] as $argName => &$argDetails )
+        {
+            print "-- ".PH::boldText($argName)." : type={$argDetails['type']}";
+            print "\n";
+            if( isset($argDetails['help']) )
+                print " ".str_replace("\n", "\n ",$argDetails['help']);
+            else
+                print "  *no help avaiable*";
+            print "\n\n";
+        }
+    }
+
+
+    print "\n\n";
+
+    exit(0);
 }
 
 if( isset(PH::$args['listactions']) )
@@ -1767,7 +1840,20 @@ if( isset(PH::$args['listfilters']) )
     exit(0);
 }
 
-
+// check that only supoprted arguments were provided
+foreach ( PH::$args as $index => &$arg )
+{
+    if( !isset($supportedArguments[$index]) )
+    {
+        if( strpos($index,'subquery') === 0 )
+        {
+            $nestedQueries[$index] = &$arg;
+            continue;
+        }
+        //var_dump($supportedArguments);
+        display_error_usage_exit("unsupported argument provided: '$index'");
+    }
+}
 
 
 if( ! isset(PH::$args['in']) )
