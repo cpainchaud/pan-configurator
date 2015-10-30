@@ -822,7 +822,7 @@ $supportedActions['display'] = Array(
                 print "          - {$member->name()}\n";
         }
         else
-            print "      * ".get_class($object)." '{$object->name()}  value: {$object->name()}'\n";
+            print "      * ".get_class($object)." '{$object->name()}  value: {$object->value()}'\n";
 
         print "\n";
     },
