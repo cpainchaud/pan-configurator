@@ -520,19 +520,19 @@ $supportedActions['from-calculate-zones'] = Array(
     'args' => Array(    'mode' => Array(    'type' => 'string',
                                             'default' => 'append',
                                             'choices' => Array('replace', 'append', 'show'),
-                                            'help' =>   "will determine what to do with resolved zones : show them, replace them in the rule".
+                                            'help' =>   "Will determine what to do with resolved zones : show them, replace them in the rule".
                                                         " or only append them (removes none but adds missing ones)"
                                         ),
                         'virtualRouter' => Array(   'type' => 'string',
                                                     'default' => '*autodetermine*',
-                                                    'help' =>   "can optionally be provided if script cannot find which virtualRouter it should be using".
+                                                    'help' =>   "Can optionally be provided if script cannot find which virtualRouter it should be using".
                                                                 " (ie: there are several VR in same VSYS)"
                                                 ),
                         'template' => Array(    'type' => 'string',
                                                 'default' => '*notPanorama*',
                                                 'help' =>   "When you are using Panorama then 1 or more templates could apply to a DeviceGroup, in".
                                                             " such a case you may want to specify which Template name to use.\nBeware that if the Template is overriden".
-                                                            " or if you are not using Templates then you will want load its config in lieu of specifying a template.".
+                                                            " or if you are not using Templates then you will want load firewall config in lieu of specifying a template.".
                                                             " \nFor this, give value 'api@XXXXX' where XXXXX is serial number of the device number you want to use to".
                                                             " calculate zones.\nIf you don't want to use API but have firewall config file on your computer you can then".
                                                             " specify file@/folderXYZ/config.xml."
@@ -1751,7 +1751,14 @@ if( isset(PH::$args['help']) )
         print "\nListing arguments:\n\n";
         foreach( $action['args'] as $argName => &$argDetails )
         {
-            print "-- ".PH::boldText($argName)." : type={$argDetails['type']}";
+            print "-- ".PH::boldText($argName)." :";
+            if( $argDetails['default'] != "*nodefault" )
+                print " OPTIONAL";
+            print " type={$argDetails['type']}";
+            if( isset($argDetails['choices']) )
+            {
+                print "     choices: ".PH::list_to_string($argDetails['choices']);
+            }
             print "\n";
             if( isset($argDetails['help']) )
                 print " ".str_replace("\n", "\n ",$argDetails['help']);

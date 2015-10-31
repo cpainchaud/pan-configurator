@@ -69,11 +69,7 @@ function display_error_usage_exit($msg)
     display_usage_and_exit(true);
 }
 
-class ServiceCallContext extends CallContext
-{
-    /** @var  Service|ServiceGroup */
-    public $object;
-}
+
 
 print "\n";
 

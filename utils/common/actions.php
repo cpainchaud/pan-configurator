@@ -166,6 +166,9 @@ class CallContext
     }
 }
 
+
+
+
 class RuleCallContext extends CallContext
 {
     public function addRuleToMergedApiChange($setValue)
@@ -313,3 +316,17 @@ class RuleCallContext extends CallContext
         }
     }
 }
+
+class ServiceCallContext extends CallContext
+{
+    /** @var  Service|ServiceGroup */
+    public $object;
+}
+
+class AddressCallContext extends CallContext
+{
+    /** @var  Address|AddressGroup */
+    public $object;
+}
+
+
