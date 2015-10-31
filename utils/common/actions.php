@@ -171,6 +171,10 @@ class CallContext
 
 class RuleCallContext extends CallContext
 {
+
+    public static $commonActionFunctions = Array();
+    public static $supportedActions = Array();
+
     public function addRuleToMergedApiChange($setValue)
     {
         $rule = $this->object;
@@ -316,6 +320,11 @@ class RuleCallContext extends CallContext
         }
     }
 }
+
+require_once "actions-rule.php";
+
+
+
 
 class ServiceCallContext extends CallContext
 {
