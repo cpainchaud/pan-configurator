@@ -764,6 +764,27 @@ class PanAPIConnector
         return $r;
 	}
 
+    public function getMergedConfig()
+    {
+        $r = $this->sendOpRequest('<show><config><merged/></config></show>');
+
+        $configRoot = DH::findFirstElement('response', $r);
+        if( $configRoot === false )
+            derr("<response> was not found", $r);
+
+        $configRoot = DH::findFirstElement('result', $configRoot);
+        if( $configRoot === false )
+            derr("<result> was not found", $r);
+
+        $configRoot = DH::findFirstElement('config', $configRoot);
+        if( $configRoot === false )
+            derr("<config> was not found", $r);
+
+        DH::makeElementAsRoot($configRoot, $r);
+
+        return $r;
+    }
+
     public function getCandidateConfig($apiTimeOut=60)
     {
         return $this->getSavedConfig('candidate-config', $apiTimeOut);

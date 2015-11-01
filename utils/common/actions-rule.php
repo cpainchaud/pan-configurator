@@ -55,15 +55,46 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                 $_tmp_explTemplateName = explode('@', $context->arguments['template']);
                 if( count($_tmp_explTemplateName) > 1 )
                 {
-                    if( $_tmp_explTemplateName[0] == 'api' )
+                    $panconf = new PANConf();
+                    $configIsOnLocalFirewall = true;
+
+                    if( strtolower($_tmp_explTemplateName[0]) == 'api' )
                     {
-                        $configIsOnLocalFirewall = true;
                         $panoramaConnector = findConnector($system);
                         $connector = new PanAPIConnector($panoramaConnector->apihost, $panoramaConnector->apikey, 'panos-via-panorama', $_tmp_explTemplateName[1]);
-                        $panconf = new PANConf();
                         $panconf->connector = $connector;
-                        $panconf->load_from_domxml($connector->getCandidateConfig());
+                        $doc = $connector->getMergedConfig();
+                        $panconf->load_from_domxml($doc);
+                        unset($connector);
                     }
+                    elseif( strtolower($_tmp_explTemplateName[0]) == 'file')
+                    {
+                        $filename = $_tmp_explTemplateName[1];
+                        if( !file_exists($filename) )
+                            derr("cannot read firewall configuration file '{$filename}''");
+                        $doc = new DOMDocument();
+                        if( ! $doc->load($filename) )
+                            derr("invalive xml file".libxml_get_last_error()->message);
+                        unset($filename);
+                    }
+                    else
+                        derr("unsupported method: {$_tmp_explTemplateName[0]}@");
+
+
+                    // delete rules to avoid loading all the config
+                    $deletedNodesCount = DH::removeChildrenElementsMatchingXPath("/config/devices/entry/vsys/entry/rulebase/*", $doc);
+                    if( $deletedNodesCount === false )
+                        derr("xpath issue");
+                    $deletedNodesCount = DH::removeChildrenElementsMatchingXPath("/config/shared/rulebase/*", $doc);
+                    if( $deletedNodesCount === false )
+                        derr("xpath issue");
+
+                    //print "\n\n deleted $deletedNodesCount nodes \n\n";
+
+                    $panconf->load_from_domxml($doc);
+
+                    unset($deletedNodesCount);
+                    unset($doc);
                 }
 
 

@@ -202,6 +202,28 @@ class DH
 	}
 
     /**
+     * @param DOMNode $node
+     * @param string $xpath
+     * @return int|bool number of nodes deleted or false of XPATH is wrong
+     */
+    static function removeChildrenElementsMatchingXPath($xpath, DOMNode $node)
+    {
+        $list = DH::findXPath($xpath, $node);
+
+        if( $list === false )
+            return false;
+
+        for($i=0 ; $i < $list->length; $i++ )
+        {
+            $item = $list->item($i);
+            $item->parentNode->removeChild($item);
+        }
+
+        return $i+1;
+
+    }
+
+    /**
      * @param string $tagName
      * @param $value
      * @param DOMNode $node
