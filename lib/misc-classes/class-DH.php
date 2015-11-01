@@ -219,7 +219,7 @@ class DH
             $item->parentNode->removeChild($item);
         }
 
-        return $i+1;
+        return $i;
 
     }
 
