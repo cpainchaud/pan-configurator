@@ -8,6 +8,9 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
 
         $addrContainerIsNegated = false;
 
+        $zoneContainer = null;
+        $addrContainer = null;
+
         if( $fromOrTo == 'from' )
         {
             $zoneContainer  = $rule->from;
@@ -50,7 +53,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                     derr('with Panorama configs, you need to specify a template name');
 
                 if( $context->arguments['virtualRouter'] == $context->actionRef['args']['virtualRouter']['default'] )
-                    derr('with Panorama configs, you need to specify virtualRouter argument. Available virtual routes are: '.$list);
+                    derr('with Panorama configs, you need to specify virtualRouter argument. Available virtual routes are: ');
 
                 $_tmp_explTemplateName = explode('@', $context->arguments['template']);
                 if( count($_tmp_explTemplateName) > 1 )
