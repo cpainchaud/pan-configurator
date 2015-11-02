@@ -545,9 +545,9 @@ $supportedActions['replacebymembersanddelete'] = Array(
             }
 
             if( $context->isAPI )
-                $object->owner->API_remove($object);
+                $object->owner->API_remove($object, true);
             else
-                $object->owner->remove($object);
+                $object->owner->remove($object, true);
         }
     },
 );
@@ -1257,6 +1257,7 @@ foreach( $objectsToProcess as &$objectsRecord )
 
     foreach($objects as $object )
     {
+        /** @var $object Address|AddressGroup */
         if( $objectFilterRQuery !== null )
         {
             $queryResult = $objectFilterRQuery->matchSingleObject($object);

@@ -610,9 +610,9 @@ $supportedActions['replacebymembersanddelete'] = Array(
 
             }
             if( $context->isAPI )
-                $object->owner->API_remove($object);
+                $object->owner->API_remove($object, true);
             else
-                $object->owner->remove($object);
+                $object->owner->remove($object, true);
         }
     },
 );
