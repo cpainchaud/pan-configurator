@@ -7,7 +7,7 @@
 	<title>Class ServiceStore | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?1419490963"></script>
+	<script type="text/javascript" src="elementlist.js?1217078312"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -98,7 +98,6 @@
 				<li><a href="class-centralAddressStoreUser.html">centralAddressStoreUser</a></li>
 				<li><a href="class-centralServiceStore.html">centralServiceStore</a></li>
 				<li><a href="class-centralServiceStoreUser.html">centralServiceStoreUser</a></li>
-				<li><a href="class-centralTagStore.html">centralTagStore</a></li>
 				<li><a href="class-InterfaceType.html">InterfaceType</a></li>
 				<li><a href="class-ObjectWithDescription.html">ObjectWithDescription</a></li>
 				<li><a href="class-PanSubHelperTrait.html">PanSubHelperTrait</a></li>
@@ -749,7 +748,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove">#</a>
-		<code><b>remove</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$s</var></span>, <span>boolean <var>$rewritexml</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><b>remove</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$s</var></span>, <span>boolean <var>$cleanInMemory</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -763,7 +762,7 @@
 				<div class="list"><dl>
 					<dt><var>$s</var></dt>
 					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$s</dd>
-					<dt><var>$rewritexml</var></dt>
+					<dt><var>$cleanInMemory</var></dt>
 					<dd><code>boolean</code><br>$rewritexml</dd>
 				</dl></div>
 
@@ -789,7 +788,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_API_remove">#</a>
-		<code><b>API_remove</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$s</var></span>, <span>boolean <var>$rewritexml</var> = <span class="php-keyword1">true</span></span>, <span>boolean <var>$forceAny</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>API_remove</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$s</var></span>, <span>mixed <var>$cleanInMemory</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -803,10 +802,8 @@
 				<div class="list"><dl>
 					<dt><var>$s</var></dt>
 					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$s</dd>
-					<dt><var>$rewritexml</var></dt>
-					<dd><code>boolean</code><br>$rewritexml</dd>
-					<dt><var>$forceAny</var></dt>
-					<dd><code>boolean</code><br>$forceAny</dd>
+					<dt><var>$cleanInMemory</var></dt>
+					<dd></dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -1506,7 +1503,7 @@
 	<tr data-order="servroot" id="$servroot">
 		<td class="attributes"><code>
 			public  
-			mixed
+			<code><a href="class-DOMElement.html">DOMElement</a></code>
 		</code></td>
 
 		<td class="name">
@@ -1528,7 +1525,7 @@
 	<tr data-order="servgroot" id="$servgroot">
 		<td class="attributes"><code>
 			public  
-			mixed
+			<code><a href="class-DOMElement.html">DOMElement</a></code>
 		</code></td>
 
 		<td class="name">
