@@ -535,6 +535,15 @@ $supportedActions['replacegroupbyservice'] = Array(
             return;
         }
 
+        foreach( $object->members() as $member )
+        {
+            if( $member->isTmpSrv() )
+            {
+                print $context->padding." *** SKIPPED : temporary services detected\n";
+                return;
+            }
+        }
+
 
         $store = $object->owner;
 
