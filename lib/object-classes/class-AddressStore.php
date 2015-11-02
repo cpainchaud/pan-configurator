@@ -477,20 +477,19 @@ class AddressStore
 
 	/**
 	 * @param Address|AddressGroup $s
-	 * @param bool $rewritexml
-	 * @param bool $forceAny
+	 * @param bool $cleanInMemory
 	 * @return bool
 	 */
-	public function API_remove($s, $rewritexml = true, $forceAny = false)
+	public function API_remove($s, $cleanInMemory = false)
 	{
 		$xpath = null;
 
 		if( !$s->isTmpAddr() )
 			$xpath = $s->getXPath();
 
-		$ret = $this->remove($s, $rewritexml, $forceAny);
+		$ret = $this->remove($s, $cleanInMemory);
 
-		if( $ret && !$s->isTmpAddr())
+		if( $ret && !$s->isTmpAddr() )
 		{
 			$con = findConnectorOrDie($this);
 			$con->sendDeleteRequest($xpath);

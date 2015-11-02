@@ -552,6 +552,22 @@ class ServiceGroup
 
 		return false;
 	}
+
+
+    public function removeAll($rewriteXml = true)
+    {
+        foreach( $this->members as $a)
+        {
+            $a->removeReference($this);
+        }
+        $this->members = Array();
+
+
+        if( $rewriteXml )
+        {
+            $this->rewriteXML();
+        }
+    }
 	
 	
 }

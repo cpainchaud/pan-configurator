@@ -53,8 +53,14 @@ class ServiceStore
 	
 	protected $fast = Array(); 
 	protected $fastMemToIndex = null;
-	
+
+    /**
+     * @var DOMElement
+     */
 	public $servroot;
+    /**
+     * @var DOMElement
+     */
 	public $servgroot;
 	
 	
@@ -68,7 +74,6 @@ class ServiceStore
             $this->findParentCentralStore();
 		
 		$this->regen_Indexes();
-		
 	}
 
 
@@ -388,7 +393,7 @@ class ServiceStore
 	 * @param bool $rewritexml
 	 * @return bool
 	 */
-	public function remove($s , $rewritexml=true)
+	public function remove($s, $cleanInMemory = false)
 	{
 		$class = get_class($s);
 		
@@ -414,6 +419,8 @@ class ServiceStore
 			{
 				$pos = array_search($s, $this->servg,true);
 				unset($this->servg[$pos]);
+                if( $cleanInMemory )
+                    $s->removeAll(false);
 			}
 			else
 				derr("Class $class is not supported");
@@ -424,14 +431,19 @@ class ServiceStore
 
 			$s->owner = null;
 
-			if( $rewritexml )
+			if( !$s->isTmpSrv() )
 			{
 				if( $class == "Service" )
 				{
-					$this->rewriteServiceStoreXML();
+                    $this->servroot->removeChild($s->xmlroot);
 				}
 				else if( $class == "ServiceGroup" )
-					$this->rewriteServiceGroupStoreXML();
+					$this->servgroot->removeChild($s->xmlroot);
+                else
+                    derr('unsupported');
+
+                if( $cleanInMemory )
+                    $s->xmlroot = null;
 			}
 			return true;
 		}
@@ -440,18 +452,16 @@ class ServiceStore
 
 	/**
 	 * @param Service|ServiceGroup $s
-	 * @param bool $rewritexml
-	 * @param bool $forceAny
 	 * @return bool
 	 */
-	public function API_remove($s, $rewritexml = true, $forceAny = false)
+	public function API_remove($s, $cleanInMemory = false)
 	{
 		$xpath = null;
 
 		if( !$s->isTmpSrv() )
 			$xpath = $s->getXPath();
 
-		$ret = $this->remove($s, $rewritexml, $forceAny);
+		$ret = $this->remove($s, $cleanInMemory);
 
 		if( $ret && !$s->isTmpSrv())
 		{
@@ -540,9 +550,7 @@ class ServiceStore
 	{
 		$str = '';
 
-		$class = get_class($this->owner);
-
-		if ($class == 'PanoramaConf' ||  $class == 'PANConf' )
+		if ($this->owner->isPanorama() ||  $this->owner->isFirewall() )
 		{
 			$str = "/config/shared";
 		}
