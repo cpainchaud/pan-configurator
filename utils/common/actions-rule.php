@@ -50,7 +50,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                     derr('with Panorama configs, you need to specify a template name');
 
                 if( $context->arguments['virtualRouter'] == $context->actionRef['args']['virtualRouter']['default'] )
-                    derr('with Panorama configs, you need to specify virtualRouter argument');
+                    derr('with Panorama configs, you need to specify virtualRouter argument. Available virtual routes are: '.$list);
 
                 $_tmp_explTemplateName = explode('@', $context->arguments['template']);
                 if( count($_tmp_explTemplateName) > 1 )
@@ -191,6 +191,12 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
 
 
         $ipMapping = &$context->cachedIPmapping[$serial];
+
+        if( $addrContainer->isAny() )
+        {
+            print $context->padding." - SKIPPED : address continaer is ANY()\n";
+            return;
+        }
 
         if( $rule->isSecurityRule() )
             $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4'], $addrContainerIsNegated );

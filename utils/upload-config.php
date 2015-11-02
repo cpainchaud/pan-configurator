@@ -175,12 +175,17 @@ elseif ( $configInput['type'] == 'api'  )
 
     print "{$configInput['connector']->apihost} ... ";
 
+    /** @var PanAPIConnector $inputConnector */
+    $inputConnector = $configInput['connector'];
+
     if( !isset($configInput['filename']) || $configInput['filename'] == '' || $configInput['filename'] == 'candidate-config' )
-        $doc = $configInput['connector']->getCandidateConfig();
+        $doc = $inputConnector->getCandidateConfig();
     elseif ( $configInput['filename'] == 'running-config' )
-        $doc = $configInput['connector']->getRunningConfig();
+        $doc = $inputConnector->getRunningConfig();
+    elseif ( $configInput['filename'] == 'merged-config' || $configInput['filename'] == 'merged' )
+        $doc = $inputConnector->getMergedConfig();
     else
-        $doc = $configInput['connector']->getSavedConfig($configInput['filename']);
+        $doc = $inputConnector->getSavedConfig($configInput['filename']);
 
 
 }
