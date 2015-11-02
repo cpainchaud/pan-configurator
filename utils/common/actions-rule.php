@@ -1514,9 +1514,9 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
 
         $content = str_replace('%lines%', $lines, $content);
 
-        $jscontent =  file_get_contents(dirname(__FILE__).'/common/jquery-1.11.js');
+        $jscontent =  file_get_contents(dirname(__FILE__).'/jquery-1.11.js');
         $jscontent .= "\n";
-        $jscontent .= file_get_contents(dirname(__FILE__).'/common/jquery.stickytableheaders.min.js');
+        $jscontent .= file_get_contents(dirname(__FILE__).'/jquery.stickytableheaders.min.js');
         $jscontent .= "\n\$('table').stickyTableHeaders();\n";
 
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
