@@ -1505,7 +1505,7 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             }
         }
 
-        $content = file_get_contents(dirname(__FILE__).'/common/html-export-template.html');
+        $content = file_get_contents(dirname(__FILE__).'/html-export-template.html');
         $content = str_replace('%TableHeaders%',
             '<th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>'.
             '<th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>'.
