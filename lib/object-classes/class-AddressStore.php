@@ -200,7 +200,7 @@ class AddressStore
 			{
                 $this->tmpaddr[$objectName]->replaceMeGlobally($ns);
                 if( isset($this->tmpaddr[$objectName]) )
-				    $this->remove($this->tmpaddr[$objectName], false);
+				    $this->remove($this->tmpaddr[$objectName], true);
 			}
 
 			$this->addrg[$objectName] = $ns;
@@ -501,10 +501,10 @@ class AddressStore
 
     /**
      * @param Address|AddressGroup $s
-     * @param bool $rewriteXML
+     * @param bool $cleanInMemory
      * @return bool
      */
-	public function remove($s, $rewriteXML = true)
+	public function remove($s, $cleanInMemory = false)
 	{
 		$class = get_class($s);
 
@@ -534,6 +534,8 @@ class AddressStore
 		else if( $class == 'AddressGroup' )
 		{
 			unset($this->addrg[$objectName]);
+            if( $cleanInMemory )
+                $s->removeAll(false);
 		}
 		else
 			derr('invalid class found');
@@ -541,7 +543,7 @@ class AddressStore
 		$s->owner = null;
 
 		
-		if( $rewriteXML && !$s->isTmpAddr() )
+		if( !$s->isTmpAddr() )
 		{
 			if( $class == "Address" )
             {
@@ -554,6 +556,9 @@ class AddressStore
             else
                 derr('unsupported');
         }
+
+        if( $cleanInMemory )
+            $s->xmlroot = null;
 		
 		return true;
 	}

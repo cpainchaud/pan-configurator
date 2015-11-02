@@ -216,9 +216,12 @@ class AddressGroup
 		{
 			$this->members[] = $newObject;
 			$newObject->addReference($this);
-			if( $rewriteXml )
+			if( $rewriteXml && $this->owner !== null)
 			{
-				$this->rewriteXML();
+                if( $this->owner->owner->version >= 60 )
+                    DH::createElement($this->membersRoot, 'member', $newObject->name() );
+                else
+                    DH::createElement($this->xmlroot, 'member', $newObject->name() );
 			}
 
 			return true;
@@ -399,6 +402,9 @@ class AddressGroup
 	{
         if( $this->isDynamic() )
             derr('unsupported');
+
+        if( $this->owner === null )
+            return;
 
 		if( $this->owner->owner->version >= 60 )
 			DH::Hosts_to_xmlDom($this->membersRoot, $this->members, 'member', false);

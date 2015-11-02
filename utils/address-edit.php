@@ -482,7 +482,13 @@ $supportedActions['replacebymembersanddelete'] = Array(
 
         if( !$object->isGroup() )
         {
-            print $context->padding."     *  skipped it's not a group\n";
+            print $context->padding." - SKIPPED : it's not a group\n";
+            return;
+        }
+
+        if( $object->owner === null )
+        {
+            print $context->padding." -  SKIPPED : object was previously removed\n";
             return;
         }
 
@@ -494,7 +500,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
             if( $class != 'AddressRuleContainer' && $class != 'AddressGroup' )
             {
                 $clearForAction = false;
-                print "     *  skipped because its used in unsupported class $class\n";
+                print "- SKIPPED : it's used in unsupported class $class\n";
                 return;
             }
         }
@@ -504,6 +510,14 @@ $supportedActions['replacebymembersanddelete'] = Array(
             {
                 $class = get_class($objectRef);
                 /** @var $objectRef AddressRuleContainer|AddressGroup */
+
+                if( $objectRef->owner === null )
+                {
+                    print $context->padding."  - SKIPPED because object already removed ({$objectRef->toString()})\n";
+                    continue;
+                }
+
+                print $context->padding."  - adding members in {$objectRef->toString()}\n";
 
                 if( $class == 'AddressRuleContainer' || $class == 'AddressGroup')
                 {
@@ -516,7 +530,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
                                 $objectRef->addObject($objectMember);
                             else
                                 $objectRef->add($objectMember);
-
+                        print $context->padding."     -> {$objectMember->toString()}\n";
                     }
                     if( $context->isAPI )
                         $objectRef->API_remove($object);
@@ -529,6 +543,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
                 }
 
             }
+
             if( $context->isAPI )
                 $object->owner->API_remove($object);
             else
