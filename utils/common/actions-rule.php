@@ -1061,7 +1061,7 @@ RuleCallContext::$supportedActions['logsetting-set'] = Array(
 
 
 //                                                   //
-//                Security profile Based Actions       //
+//                Security profile Based Actions     //
 //                                                   //
 RuleCallContext::$supportedActions['securityprofile-group-set'] = Array(
     'name' => 'securityProfile-Group-Set',
@@ -1333,8 +1333,11 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
         $filename = $args['filename'];
 
         $lines = '';
+
         $encloseFunction  = function($value, $nowrap = true)
         {
+            $output = '';
+
             if( is_string($value) )
                 $output = htmlspecialchars($value);
             elseif( is_array($value) )
@@ -1362,7 +1365,7 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             if( $nowrap )
                 return '<td style="white-space: nowrap">'.$output.'</td>';
 
-            return '<td>'.$output.'</td>';
+            return "<td>{$output}</td>";
         };
 
         $count = 0;
