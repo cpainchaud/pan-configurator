@@ -9,19 +9,19 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
         $addrContainerIsNegated = false;
 
         $zoneContainer = null;
-        $addrContainer = null;
+        $addressContainer = null;
 
         if( $fromOrTo == 'from' )
         {
             $zoneContainer  = $rule->from;
-            $addrContainer = $rule->source;
+            $addressContainer = $rule->source;
             if( $rule->isSecurityRule() && $rule->sourceIsNegated() )
                 $addrContainerIsNegated = true;
         }
         elseif( $fromOrTo == 'to' )
         {
             $zoneContainer  = $rule->to;
-            $addrContainer = $rule->destination;
+            $addressContainer = $rule->destination;
             if( $rule->isSecurityRule() && $rule->destinationIsNegated() )
                 $addrContainerIsNegated = true;
         }
@@ -44,7 +44,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
         {
             if( $system->isDeviceGroup() || $system->isPanorama() )
             {
-                $panconf = null;
+                $firewall = null;
                 $panorama = $system;
                 if( $system->isDeviceGroup() )
                     $panorama = $system->owner;
@@ -58,16 +58,17 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                 $_tmp_explTemplateName = explode('@', $context->arguments['template']);
                 if( count($_tmp_explTemplateName) > 1 )
                 {
-                    $panconf = new PANConf();
+                    $firewall = new PANConf();
                     $configIsOnLocalFirewall = true;
+                    $doc = null;
 
                     if( strtolower($_tmp_explTemplateName[0]) == 'api' )
                     {
                         $panoramaConnector = findConnector($system);
                         $connector = new PanAPIConnector($panoramaConnector->apihost, $panoramaConnector->apikey, 'panos-via-panorama', $_tmp_explTemplateName[1]);
-                        $panconf->connector = $connector;
+                        $firewall->connector = $connector;
                         $doc = $connector->getMergedConfig();
-                        $panconf->load_from_domxml($doc);
+                        $firewall->load_from_domxml($doc);
                         unset($connector);
                     }
                     elseif( strtolower($_tmp_explTemplateName[0]) == 'file')
@@ -94,7 +95,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
 
                     //print "\n\n deleted $deletedNodesCount nodes \n\n";
 
-                    $panconf->load_from_domxml($doc);
+                    $firewall->load_from_domxml($doc);
 
                     unset($deletedNodesCount);
                     unset($doc);
@@ -110,24 +111,24 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                 }
 
                 if( $configIsOnLocalFirewall )
-                    $virtualRouterToProcess = $panconf->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+                    $virtualRouterToProcess = $firewall->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
                 else
                     $virtualRouterToProcess = $template->deviceConfiguration->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
 
                 if( $virtualRouterToProcess === null )
                 {
                     if( $configIsOnLocalFirewall )
-                        $tmpVar = $panconf->network->virtualRouterStore->virtualRouters();
+                        $tmpVar = $firewall->network->virtualRouterStore->virtualRouters();
                     else
                         $tmpVar = $template->deviceConfiguration->network->virtualRouterStore->virtualRouters();
 
                     derr("cannot find VirtualRouter named '{$context->arguments['virtualRouter']}' in Template '{$context->arguments['template']}'. Available VR list: " . PH::list_to_string($tmpVar));
                 }
 
-                if( ( !$configIsOnLocalFirewall && count($template->deviceConfiguration->virtualSystems) == 1) || ($configIsOnLocalFirewall && count($panconf->virtualSystems) == 1))
+                if( ( !$configIsOnLocalFirewall && count($template->deviceConfiguration->virtualSystems) == 1) || ($configIsOnLocalFirewall && count($firewall->virtualSystems) == 1))
                 {
                     if( $configIsOnLocalFirewall )
-                        $system = $panconf->virtualSystems[0];
+                        $system = $firewall->virtualSystems[0];
                     else
                         $system = $template->deviceConfiguration->virtualSystems[0];
                 }
@@ -145,7 +146,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                     else
                     {
                         if( $configIsOnLocalFirewall )
-                            $vsys = $panconf->findVirtualSystem($context->arguments['vsys']);
+                            $vsys = $firewall->findVirtualSystem($context->arguments['vsys']);
                         else
                             $vsys = $template->deviceConfiguration->findVirtualSystem($context->arguments['vsys']);
                         if( $vsys === null )
@@ -195,16 +196,16 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
 
         $ipMapping = &$context->cachedIPmapping[$serial];
 
-        if( $addrContainer->isAny() )
+        if( $addressContainer->isAny() )
         {
             print $context->padding." - SKIPPED : address continaer is ANY()\n";
             return;
         }
 
         if( $rule->isSecurityRule() )
-            $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4'], $addrContainerIsNegated );
+            $resolvedZones = & $addressContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4'], $addrContainerIsNegated );
         else
-            $resolvedZones = & $addrContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4']);
+            $resolvedZones = & $addressContainer->calculateZonesFromIP4Mapping($ipMapping['ipv4']);
 
         if( count($resolvedZones) == 0 )
         {
@@ -241,7 +242,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
         if( $mode == 'replace' )
         {
             print $context->padding." - REPLACE MODE, syncing with (".count($resolvedZones).") resolved zones.";
-            if( $addrContainer->isAny() )
+            if( $addressContainer->isAny() )
                 print " *** IGNORED because value is 'ANY' ***\n";
             elseif(count($resolvedZones) == 0)
                 print " *** IGNORED because no zone was resolved ***\n";
@@ -258,7 +259,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
         elseif( $mode == 'append' )
         {
             print $context->padding." - APPEND MODE: adding missing (".count($minus).") zones only.";
-            if( $addrContainer->isAny() )
+            if( $addressContainer->isAny() )
                 print " *** IGNORED because value is 'ANY' ***\n";
             elseif(count($minus) == 0)
                 print " *** IGNORED because no missing zones were found ***\n";
@@ -326,7 +327,7 @@ RuleCallContext::$commonActionFunctions['zone-add'] = Array(
             derr('unsupported');
 
         $objectFind = $zoneContainer->parentCentralStore->find($context->arguments['zoneName']);
-        if ($objectFind === null && $force = false)
+        if ($objectFind === null && $force == false)
             derr("zone named '{$context->arguments['zoneName']}' not found");
 
         $objectFind = $zoneContainer->parentCentralStore->findOrCreate($context->arguments['zoneName']);
