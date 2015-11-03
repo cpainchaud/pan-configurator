@@ -708,7 +708,13 @@ $supportedActions['move'] = Array(
             {
                 print "    * Removed because target has same content\n";
 
-                goto do_replace;
+                $object->replaceMeGlobally($conflictObject);
+                if($context->isAPI)
+                    $object->owner->API_remove($object);
+                else
+                    $object->owner->remove($object);
+
+                return;
             }
             else
             {
@@ -728,18 +734,29 @@ $supportedActions['move'] = Array(
                     return;
                 }
 
-                print "    * Removed because it has same numerical value\n";
+                print $context->padding."    * Removed because it has same numerical value\n";
 
-                goto do_replace;
+                $object->replaceMeGlobally($conflictObject);
+                if($context->isAPI)
+                    $object->owner->API_remove($object);
+                else
+                    $object->owner->remove($object);
+
+                return;
 
             }
-            return;
         }
 
         if( $object->equals($conflictObject) )
         {
             print "    * Removed because target has same content\n";
-            goto do_replace;
+            $object->replaceMeGlobally($conflictObject);
+
+            if($context->isAPI)
+                $object->owner->API_remove($object);
+            else
+                $object->owner->remove($object);
+            return;
         }
 
         if( $context->arguments['mode'] == 'removeifmatch' )
@@ -755,8 +772,6 @@ $supportedActions['move'] = Array(
         }
 
         print "    * Removed because target has same numerical value\n";
-
-        do_replace:
 
         $object->replaceMeGlobally($conflictObject);
         if($context->isAPI)

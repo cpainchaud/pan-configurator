@@ -518,12 +518,10 @@ class AddressGroup
 		$localObjects = $this->members;
 		$otherObjects = $otherObject->members;
 
-
 		usort($localObjects, '__CmpObjName');
 		usort($otherObjects, '__CmpObjName');
 
 		$diff = array_udiff($otherObjects, $localObjects, '__CmpObjName');
-
 		if( count($diff) != 0 )
 			foreach($diff as $d )
 			{
@@ -547,36 +545,28 @@ class AddressGroup
 
 		$indent = str_pad(' ', $indent);
 
-		if( !$toString )
-			print $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
-		else
-			$retString .= $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+
+        $retString .= $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
 
 		$diff = $this->getValueDiff($otherObject);
 
 		if( count($diff['minus']) != 0 )
-		{
 			foreach($diff['minus'] as $d )
 			{
                 /** @var $d Address|AddressGroup */
-				if( !$toString )
-					print $indent." - {$d->name()}\n";
-				else
-					$retString .= $indent." - {$d->name()}\n";
+                $retString .= $indent." - {$d->name()}\n";
 			}
-		}
 
 		if( count($diff['plus']) != 0 )
 			foreach($diff['plus'] as $d )
 			{
-				if( !$toString )
-					print $indent." + {$d->name()}\n";
-				else
-					$retString .= $indent." + {$d->name()}\n";
+                $retString .= $indent." + {$d->name()}\n";
 			}
 
 		if( $toString )
 			return $retString;
+
+        print $retString;
 	}
 
 	/**

@@ -323,6 +323,8 @@ $supportedActions['exporttoexcel'] = Array(
     'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
 );
 
+// TODO replaceByApp with file list
+// TODO SUPERDIFF XML : order element by tagname/nameprop/content
 
 $supportedActions['move'] = Array(
     'name' => 'move',
