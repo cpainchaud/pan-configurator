@@ -826,13 +826,20 @@ $supportedActions['display'] = Array(
 
         if( $object->isGroup() )
         {
-            print "      * ".get_class($object)." '{$object->name()}' ({$object->count()} members)\n";
+            if( $object->isDynamic() )
+            {
+                print $context->padding."* " . get_class($object) . " '{$object->name()}' (DYNAMIC)\n";
+            }
+            else
+            {
+                print $context->padding."* " . get_class($object) . " '{$object->name()}' ({$object->count()} members)\n";
 
-            foreach ($object->members() as $member)
-                print "          - {$member->name()}\n";
+                foreach ($object->members() as $member)
+                    print "          - {$member->name()}\n";
+            }
         }
         else
-            print "      * ".get_class($object)." '{$object->name()}'  value: '{$object->value()}'\n";
+            print $context->padding."* ".get_class($object)." '{$object->name()}'  value: '{$object->value()}'\n";
 
         print "\n";
     },

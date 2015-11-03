@@ -135,7 +135,11 @@ class AddressGroup
 
 			if( $this->membersRoot === false )
 			{
-				$this->isDynamic = true;
+				$tmp = DH::findFirstElement('dynamic', $xml);
+                if( $tmp === false )
+                    mwarning('unsupported AddressGroup type: ', $xml);
+                else
+                    $this->isDynamic;
 			}
 			else
 			{

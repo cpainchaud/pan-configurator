@@ -118,7 +118,7 @@ class Address
 
 		foreach($xml->childNodes as $node)
 		{
-			if( $node->nodeType != 1  )
+			if( $node->nodeType != XML_ELEMENT_NODE  )
 				continue;
 
             /** @var $node DOMElement*/

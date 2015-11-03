@@ -4,7 +4,7 @@ CHANGELOG
 core:
 * AddressGroup : new functions API_add(), API_remove(), function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
 * Service : added tag support, new function addObjectWhereIamUsed(), API_addObjectWhereIamUsed()
-* ServiceGroup : added tag support new function API_remove(), addObjectWhereIamUsed(), API_addObjectWhereIamUsed(), removeWhereIamUsed()
+* ServiceGroup : added tag support, new function API_remove(), addObjectWhereIamUsed(), API_addObjectWhereIamUsed(), removeWhereIamUsed()
 						API_removeWhereIamUsed()
 
 utils:
@@ -18,6 +18,7 @@ utils:
 
 bugfixes:
 * rules-edit.php : destination zone calculation fix in
+* AddressGroup : was incorrectly reported as Dynamic when object XML was empty (MigrationTool issue)
 
 
 1.5.3
