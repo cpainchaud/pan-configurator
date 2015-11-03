@@ -778,7 +778,7 @@ RuleCallContext::$supportedActions['service-add'] = Array(
         if( $context->isAPI )
             $rule->services->API_add($objectFind);
         else
-            $rule->services->addObject($objectFind);
+            $rule->services->add($objectFind);
     },
     'args' => Array( 'svcName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
