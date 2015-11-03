@@ -218,10 +218,6 @@ if( isset(PH::$args['fromxpath']) )
 
 
 
-
-print "Now saving/uploading that configuration to ";
-
-
 //
 // What kind of config output do we have.
 //     File or API ?
@@ -239,8 +235,10 @@ if( $configOutput['type'] == 'file' )
     {
         derr("toXpath options was used, it's incompatible with a file output. Make a feature request !!!  ;)");
     }
-    print "{$configOutput['filename']} ... ";
+    print "Now saving configuration to ";
+    print "{$configOutput['filename']}... ";
     $doc->save($configOutput['filename']);
+    print "OK!\n";
 }
 elseif ( $configOutput['type'] == 'api'  )
 {
@@ -267,9 +265,10 @@ elseif ( $configOutput['type'] == 'api'  )
     else
     {
         if (  isset(PH::$args['preservemgmtconfig']) ||
-              isset(PH::$args['preservemgmtusers']) )
+              isset(PH::$args['preservemgmtusers']) ||
+            isset(PH::$args['preservemgmtsystem']))
         {
-            print "Option 'preserveXXXXX was used, we will first download the running config ...";
+            print "Option 'preserveXXXXX was used, we will first download the running config of target device...";
             $runningConfig = $configOutput['connector']->getRunningConfig();
             print "OK!\n";
 
@@ -374,6 +373,7 @@ elseif ( $configOutput['type'] == 'api'  )
             $usersNode = DH::findXPathSingleEntryOrDie('/config/mgt-config/users', $doc);
             $newUserNode = DH::importXmlStringOrDie($doc, '<entry name="admin2"><phash>$1$bgnqjgob$HmenJzuuUAYmETzsMcdfJ/</phash><permissions><role-based><superuser>yes</superuser></role-based></permissions></entry>');
             $usersNode->appendChild($newUserNode);
+            print "Injected 'admin2' with 'admin' password\n";
         }
 
         if ($debugAPI)
@@ -384,15 +384,15 @@ elseif ( $configOutput['type'] == 'api'  )
         else
             $saveName = 'stage0.xml';
 
+        print "Now saving/uploading that configuration to ";
         print "{$configOutput['connector']->apihost}/$saveName ... ";
-
         $configOutput['connector']->uploadConfiguration(DH::firstChildElement($doc), $saveName, false);
+        print "OK!\n";
     }
 }
 else
     derr('not supported yet');
 
-print "OK!\n";
 
 
 if( $loadConfigAfterUpload )
