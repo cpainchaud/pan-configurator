@@ -45,29 +45,29 @@ class AddressStore
 	/**
 	 * @var Address[]
 	 */
-	protected $addr = Array();
+	protected $_addressObjects = Array();
 
 
 	/**
 	 * @var Address[]
 	 */
-	protected $tmpaddr = Array();
+	protected $_tmpAddresses = Array();
 
 
 	/**
 	 * @var AddressGroup[]
 	 */
-	protected $addrg = Array();
+	protected $_addressGroups = Array();
 
     /**
-     * @var string[]|DOMElement
+     * @var DOMElement
      */
-	public $addrroot;
+	public $addressRoot;
 
     /**
-     * @var string[]|DOMElement
+     * @var DOMElement
      */
-	public $addrgroot;
+	public $addressGroupRoot;
 
 
     /**
@@ -86,15 +86,13 @@ class AddressStore
             $this->findParentCentralStore();
         }
 
-		$this->addr = Array();
-		$this->addrg = Array();
-		$this->tmpaddr = Array();
+		$this->_addressObjects = Array();
+		$this->_addressGroups = Array();
+		$this->_tmpAddresses = Array();
 	}
 
 	private function &getBaseXPath()
 	{
-		$str = '';
-
 		$class = get_class($this->owner);
 
 		if ($class == 'PanoramaConf' ||  $class == 'PANConf' )
@@ -103,7 +101,6 @@ class AddressStore
 		}
 		else
 			$str = $this->owner->getXPath();
-
 
         return $str;
 	}
@@ -128,9 +125,9 @@ class AddressStore
 	*/
 	public function load_addresses_from_domxml($xml)
 	{
-        $this->addrroot = $xml;
+        $this->addressRoot = $xml;
 		
-		foreach( $this->addrroot->childNodes as $node )
+		foreach( $this->addressRoot->childNodes as $node )
 		{
 			if( $node->nodeType != 1 ) continue;
 
@@ -140,7 +137,7 @@ class AddressStore
 
 			$objectName = $ns->name();
 
-			$this->addr[$objectName] = $ns;
+			$this->_addressObjects[$objectName] = $ns;
 			$this->all[$objectName] = $ns;
 		}
 	}
@@ -148,7 +145,7 @@ class AddressStore
 
 	/*private function remergeAll()
 	{
-		$this->all = array_merge($this->addr, $this->addrg, $this->tmpaddr);
+		$this->all = array_merge($this->_addressObjects, $this->_addressGroups, $this->_tmpAddresses);
 		
 		
 		$this->regen_Indexes();
@@ -185,7 +182,7 @@ class AddressStore
 
 	public function load_addressgroups_from_domxml($xml)
 	{
-		$this->addrgroot = $xml;
+		$this->addressGroupRoot = $xml;
 		
 		foreach( $xml->childNodes as $node )
 		{
@@ -196,14 +193,14 @@ class AddressStore
 
             $objectName = $ns->name();
 
-			if( isset($this->tmpaddr[$objectName]) )
+			if( isset($this->_tmpAddresses[$objectName]) )
 			{
-                $this->tmpaddr[$objectName]->replaceMeGlobally($ns);
-                if( isset($this->tmpaddr[$objectName]) )
-				    $this->remove($this->tmpaddr[$objectName], true);
+                $this->_tmpAddresses[$objectName]->replaceMeGlobally($ns);
+                if( isset($this->_tmpAddresses[$objectName]) )
+				    $this->remove($this->_tmpAddresses[$objectName], true);
 			}
 
-			$this->addrg[$objectName] = $ns;
+			$this->_addressGroups[$objectName] = $ns;
 			$this->all[$objectName] = $ns;
 		}
 	}
@@ -248,19 +245,19 @@ class AddressStore
 	*/
 	public function countAddressGroups()
 	{
-		return count($this->addrg);
+		return count($this->_addressGroups);
 	}
 	
 	
 	public function countAddresses()
 	{
-		return count($this->addr);
+		return count($this->_addressObjects);
 	}
 	
 	
 	public function countTmpAddresses()
 	{
-		return count($this->tmpaddr);
+		return count($this->_tmpAddresses);
 	}
 	
 	
@@ -356,16 +353,16 @@ class AddressStore
         if( $nested )
             derr("nested is not supported yet");
 
-        if( !isset($this->tmpaddr[$name]) )
+        if( !isset($this->_tmpAddresses[$name]) )
             return null;
 
-        return $this->tmpaddr[$name];
+        return $this->_tmpAddresses[$name];
 	}
 	
 	public function displayTmpAddresss()
 	{
 		print "Tmp addresses for ".$this->toString()."\n";
-		foreach($this->tmpaddr as $object)
+		foreach($this->_tmpAddresses as $object)
 		{
 			print " - ".$object->name()."\n";
 		}
@@ -447,22 +444,22 @@ class AddressStore
 		{
 			if( $s->type() == 'tmp' )
 			{
-				$this->tmpaddr[$objectName] = $s;
+				$this->_tmpAddresses[$objectName] = $s;
 			}
 			else
 			{
-				$this->addr[$objectName] = $s;
-				$this->addrroot->appendChild($s->xmlroot);
+				$this->_addressObjects[$objectName] = $s;
+				$this->addressRoot->appendChild($s->xmlroot);
 			}
 				
 			$this->all[$objectName] = $s;
 		}
 		elseif ( $class == 'AddressGroup' )
 		{
-			$this->addrg[$objectName] = $s;
+			$this->_addressGroups[$objectName] = $s;
 			$this->all[$objectName] = $s;
 
-            $this->addrgroot->appendChild($s->xmlroot);
+            $this->addressGroupRoot->appendChild($s->xmlroot);
 			
 		}
 		else
@@ -523,16 +520,16 @@ class AddressStore
 		{
 			if( $s->isTmpAddr() )
 			{
-				unset($this->tmpaddr[$objectName]);
+				unset($this->_tmpAddresses[$objectName]);
 			}
 			else
 			{
-				unset($this->addr[$objectName]);
+				unset($this->_addressObjects[$objectName]);
 			}
 		}
 		else if( $class == 'AddressGroup' )
 		{
-			unset($this->addrg[$objectName]);
+			unset($this->_addressGroups[$objectName]);
             if( $cleanInMemory )
                 $s->removeAll(false);
 		}
@@ -546,11 +543,18 @@ class AddressStore
 		{
 			if( $class == "Address" )
             {
-                $this->addrroot->removeChild($s->xmlroot);
+                if( count($this->_addressObjects) > 0 )
+                    $this->addressRoot->removeChild($s->xmlroot);
+                else
+                    DH::clearDomNodeChilds($this->addressRoot);
+
             }
             else if( $class == "AddressGroup" )
             {
-                $this->addrgroot->removeChild($s->xmlroot);
+                if( count($this->_addressGroups) > 0 )
+                    $this->addressGroupRoot->removeChild($s->xmlroot);
+                else
+                    DH::clearDomNodeChilds($this->addressGroupRoot);
             }
             else
                 derr('unsupported');
@@ -565,19 +569,19 @@ class AddressStore
 
 	public function rewriteAddressStoreXML()
 	{
-		DH::clearDomNodeChilds($this->addrroot);
-		foreach( $this->addr as $s )
+		DH::clearDomNodeChilds($this->addressRoot);
+		foreach( $this->_addressObjects as $s )
 		{
-			$this->addrroot->appendChild($s->xmlroot);
+			$this->addressRoot->appendChild($s->xmlroot);
 		}
 	}
 
 	public function rewriteAddressGroupStoreXML()
 	{
-		DH::clearDomNodeChilds($this->addrgroot);
-		foreach( $this->addrg as $s )
+		DH::clearDomNodeChilds($this->addressGroupRoot);
+		foreach( $this->_addressGroups as $s )
 		{
-			$this->addrgroot->appendChild($s->xmlroot);
+			$this->addressGroupRoot->appendChild($s->xmlroot);
 		}
 	}
 
@@ -674,7 +678,7 @@ class AddressStore
 	*/
 	public function addressGroups()
 	{
-		return $this->addrg;
+		return $this->_addressGroups;
 	}
 	
 	/**
@@ -684,7 +688,7 @@ class AddressStore
 	*/
 	public function addressObjects()
 	{
-		return $this->addr;
+		return $this->_addressObjects;
 	}
 	
 	/**
@@ -722,13 +726,13 @@ class AddressStore
 
 		if( $class == 'Address' )
 		{
-			unset($this->addr[$oldName]);
-			$this->addr[$newName] = $h;
+			unset($this->_addressObjects[$oldName]);
+			$this->_addressObjects[$newName] = $h;
 		}
 		elseif( $class == 'AddressGroup' )
 		{
-			unset($this->addrg[$oldName]);
-			$this->addrg[$newName] = $h;
+			unset($this->_addressGroups[$oldName]);
+			$this->_addressGroups[$newName] = $h;
 		}
 		else
 			derr('unsupported class');
@@ -753,7 +757,7 @@ class AddressStore
 	public function countUnusedAddresses()
 	{
 		$count = 0;
-		foreach( $this->addr as $o )
+		foreach( $this->_addressObjects as $o )
 		{
 			if( $o->countReferences() == 0 )
 				$count++;
@@ -765,7 +769,7 @@ class AddressStore
 	public function countUnusedAddressGroups()
 	{
 		$count = 0;
-		foreach( $this->addrg as $o )
+		foreach( $this->_addressGroups as $o )
 		{
 			if( $o->countReferences() == 0 )
 				$count++;

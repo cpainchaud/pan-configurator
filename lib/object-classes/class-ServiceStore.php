@@ -41,15 +41,15 @@ class ServiceStore
 	/**
 	 * @var Service[]
 	 */
-	protected $serv = Array();
+	protected $_serviceObjects = Array();
 	/**
 	 * @var ServiceGroup[]
 	 */
-	protected $servg = Array();
+	protected $_serviceGroups = Array();
 	/**
 	 * @var Service[]
 	 */
-	protected $tmpserv = Array();
+	protected $_tmpServices = Array();
 	
 	protected $fast = Array(); 
 	protected $fastMemToIndex = null;
@@ -57,11 +57,11 @@ class ServiceStore
     /**
      * @var DOMElement
      */
-	public $servroot;
+	public $serviceRoot;
     /**
      * @var DOMElement
      */
-	public $servgroot;
+	public $serviceGroupRoot;
 	
 	
 	public function __construct($owner)
@@ -83,16 +83,16 @@ class ServiceStore
 	*/
 	public function load_services_from_domxml($xml)
 	{
-		$this->servroot = $xml;
+		$this->serviceRoot = $xml;
 
-		foreach( $this->servroot->childNodes as $node )
+		foreach( $this->serviceRoot->childNodes as $node )
 		{
 			if( $node->nodeType != 1 ) continue;
 
 			$ns = new Service('',$this);
 			$ns->load_from_domxml($node);
 			//print $this->toString()." : new service '".$ns->name."' created\n";
-			$this->serv[] = $ns;
+			$this->_serviceObjects[] = $ns;
 			$this->all[] = $ns;
 			$this->add_Obj_inIndex( $ns,lastIndex($this->all));
 		}
@@ -105,7 +105,7 @@ class ServiceStore
 	private function remergeAll()
 	{
 		
-		$this->all = array_merge($this->serv, $this->servg, $this->tmpserv);
+		$this->all = array_merge($this->_serviceObjects, $this->_serviceGroups, $this->_tmpServices);
 		
 		
 		$this->regen_Indexes();
@@ -124,7 +124,7 @@ class ServiceStore
 	 */
 	public function serviceObjects()
 	{
-		return $this->serv;
+		return $this->_serviceObjects;
 	}
 
 	/**
@@ -132,7 +132,7 @@ class ServiceStore
 	 */
 	public function serviceGroups()
 	{
-		return $this->servg;
+		return $this->_serviceGroups;
 	}
 
 	/**
@@ -140,13 +140,13 @@ class ServiceStore
 	 */
 	public function serviceTmpObjects()
 	{
-		return $this->tmpserv;
+		return $this->_tmpServices;
 	}
 
 
 	public function load_servicegroups_from_domxml($xml)
 	{
-		$this->servgroot = $xml;
+		$this->serviceGroupRoot = $xml;
 		
 		foreach( $xml->childNodes as $node )
 		{
@@ -155,13 +155,13 @@ class ServiceStore
 			$ns = new ServiceGroup('',$this);
 			$ns->load_from_domxml($node);
 			
-			$f = $this->findTmpService($ns->name(), null,false);
+			$f = $this->findTmpService($ns->name());
 			if( $f )
 			{
 				$f->replaceMeGlobally($ns);
-				
+                $this->remove($f);
 			}
-			$this->servg[] = $ns;
+			$this->_serviceGroups[] = $ns;
 			$this->all[] = $ns; 
 			$this->add_Obj_inIndex($ns,lastIndex($this->all));
 		}
@@ -169,42 +169,6 @@ class ServiceStore
 		$this->regen_Indexes();
 	}
 
-
-    /**
-     * @param DOMElement $xml
-     */
-	public function load_local_objects_domxml($xml)
-	{
-		$this->xmlroot = $xml;
-		
-		$i=0;
-		foreach( $xml->childNodes as $node )
-		{
-			if( $node->nodeType != 1 ) continue;
-			$lname = $node->textContent;
-			
-			if( $i == 0 )
-			{
-				if( $lname == 'any' )
-				{
-					break;
-				}
-				if( $lname == 'application-default' )
-				{
-					$this->appdef = true;
-					break;
-				}
-			}
-			$f = $this->parentCentralStore->findOrCreate($lname);
-			
-			$f->addReference($this);
-			$this->all[] = $f;
-			$this->add_Obj_inIndex($f, lastIndex($this->all));
-			$i++;
-		}
-		
-		$this->regen_Indexes();
-	}
 	
 	/**
 	*
@@ -225,19 +189,19 @@ class ServiceStore
 	public function countServiceGroups()
 	{
 	
-		return count($this->servg);
+		return count($this->_serviceGroups);
 	}
 	
 	
 	public function countServices()
 	{
-		return count($this->serv);
+		return count($this->_serviceObjects);
 	}
 	
 	
 	public function countTmpServices()
 	{
-		return count($this->tmpserv);
+		return count($this->_tmpServices);
 	}
 	
 	
@@ -283,7 +247,7 @@ class ServiceStore
 
         if( $type == 'tmp' )
         {
-            $a = &$this->tmpserv;
+            $a = &$this->_tmpServices;
             foreach($a as $o)
             {
                 if( $o->name() == $fn )
@@ -348,49 +312,11 @@ class ServiceStore
 	{
 		$this->servessStore->displayTmpServices();
 	}
-	
-	
-	public function toString_inline()
-	{
-		$arr = &$this->all;
-		$c = count($arr);
 
-		if( $this->appdef )
-		{
-			$ret = 'application-default';
-			return $ret;
-		}
-		
-		if( $c == 0 )
-		{
-			$ret = '*ANY*';
-			return $ret;
-		}
-		
-		$first = true;
-		
-		$ret = '';
-		
-		foreach ( $arr as $s )
-		{
-			if( $first)
-			{
-				$ret .= $s->name();
-			}
-			else
-				$ret .= ','.$s->name();
-			
-			
-			$first = false;
-		}
-		
-		return $ret;
-		
-	}
 
 	/**
 	 * @param Service|ServiceGroup $s
-	 * @param bool $rewritexml
+	 * @param bool $cleanInMemory
 	 * @return bool
 	 */
 	public function remove($s, $cleanInMemory = false)
@@ -405,20 +331,20 @@ class ServiceStore
 			{
 				if( $s->type == 'tmp' )
 				{
-					$pos = array_search($s, $this->tmpserv,true);
-					unset($this->tmpserv[$pos]);
+					$pos = array_search($s, $this->_tmpServices,true);
+					unset($this->_tmpServices[$pos]);
 
 				}
 				else
 				{
-					$pos = array_search($s, $this->serv,true);
-					unset($this->serv[$pos]);
+					$pos = array_search($s, $this->_serviceObjects,true);
+					unset($this->_serviceObjects[$pos]);
 				}
 			}
 			else if( $class == "ServiceGroup" )
 			{
-				$pos = array_search($s, $this->servg,true);
-				unset($this->servg[$pos]);
+				$pos = array_search($s, $this->_serviceGroups,true);
+				unset($this->_serviceGroups[$pos]);
                 if( $cleanInMemory )
                     $s->removeAll(false);
 			}
@@ -435,10 +361,18 @@ class ServiceStore
 			{
 				if( $class == "Service" )
 				{
-                    $this->servroot->removeChild($s->xmlroot);
+                    if( count($this->_serviceObjects) > 0 )
+                        $this->serviceRoot->removeChild($s->xmlroot);
+                    else
+                        DH::clearDomNodeChilds($this->serviceRoot);
 				}
 				else if( $class == "ServiceGroup" )
-					$this->servgroot->removeChild($s->xmlroot);
+                {
+                    if( count($this->_serviceGroups) > 0 )
+                        $this->serviceGroupRoot->removeChild($s->xmlroot);
+                    else
+                        DH::clearDomNodeChilds($this->serviceGroupRoot);
+                }
                 else
                     derr('unsupported');
 
@@ -475,19 +409,19 @@ class ServiceStore
 	
 	public function rewriteServiceStoreXML()
 	{
-		DH::clearDomNodeChilds($this->servroot);
-		foreach( $this->serv as $s )
+		DH::clearDomNodeChilds($this->serviceRoot);
+		foreach( $this->_serviceObjects as $s )
 		{
-			$this->servroot->appendChild($s->xmlroot);
+			$this->serviceRoot->appendChild($s->xmlroot);
 		}
 	}
 
 	public function rewriteServiceGroupStoreXML()
 	{
-		DH::clearDomNodeChilds($this->servgroot);
-		foreach( $this->servg as $s )
+		DH::clearDomNodeChilds($this->serviceGroupRoot);
+		foreach( $this->_serviceGroups as $s )
 		{
-			$this->servgroot->appendChild($s->xmlroot);
+			$this->serviceGroupRoot->appendChild($s->xmlroot);
 		}
 	}
 
@@ -514,16 +448,16 @@ class ServiceStore
 			if( $class == 'Service' )
 			{
 				if( $s->type == 'tmp' )
-					$this->tmpserv[] = $s;
+					$this->_tmpServices[] = $s;
 				else
 				{
-					$this->serv[] = $s;
+					$this->_serviceObjects[] = $s;
 				}
 	
 			}
 			elseif ( $class == 'ServiceGroup' )
 			{
-				$this->servg[] = $s;
+				$this->_serviceGroups[] = $s;
 				
 			}
 			else
@@ -591,7 +525,7 @@ class ServiceStore
 	function createTmp($name, $ref=null)
 	{
 		$f = new Service($name,$this);
-		$this->tmpserv[] = $f;
+		$this->_tmpServices[] = $f;
 		$this->all[] = $f;
 		$f->type = 'tmp';
 		$f->addReference($ref);
@@ -651,40 +585,7 @@ class ServiceStore
 		$this->fast[$f->name()] = $f;
 		$this->fastMemToIndex[spl_object_hash($f)] = $index;
 	}
-	
 
-
-
-	
-	
-	
-	public function equals( $other )
-	{
-		
-		if( count($this->all) != count($other->all) )
-			return false;
-		
-		if( $this->appdef != $other->appdef )
-			return false;
-		
-		$indexes = array_keys($this->fast);
-		
-		foreach( $indexes as $index )
-		{
-			if( ! isset($other->fast[$index]) )
-			{
-				return false;
-			}
-			if( $other->fast[$index] === $this->fast[$index] )
-			{
-			}
-			else
-				return false;
-		}
-		
-		
-		return true;
-	}
 
 	public function countUnused()
 	{
@@ -701,7 +602,7 @@ class ServiceStore
 	public function countUnusedServices()
 	{
 		$count = 0;
-		foreach( $this->serv as $o )
+		foreach( $this->_serviceObjects as $o )
 		{
 			if( $o->countReferences() == 0 )
 				$count++;
@@ -713,7 +614,7 @@ class ServiceStore
 	public function countUnusedServiceGroups()
 	{
 		$count = 0;
-		foreach( $this->servg as $o )
+		foreach( $this->_serviceGroups as $o )
 		{
 			if( $o->countReferences() == 0 )
 				$count++;
