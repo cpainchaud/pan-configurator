@@ -196,7 +196,7 @@ class ServiceRuleContainer extends ObjRuleContainer
         {
             if( $node->nodeType != 1 ) continue;
 
-            $lower = strtolower($node->textContent);
+            $lower = $node->textContent;
 
             if( $lower == 'any' )
             {

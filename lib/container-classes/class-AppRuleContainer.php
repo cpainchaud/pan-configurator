@@ -160,7 +160,7 @@ class AppRuleContainer extends ObjRuleContainer
         {
             if( $node->nodeType != 1 ) continue;
 
-            if( $i == 0 && strtolower($node->textContent) == 'any' )
+            if( $i == 0 && $node->textContent == 'any' )
             {
                 return;
             }

@@ -206,7 +206,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
             $content = $node->textContent;
 
-            if( $i == 0 && strtolower($content) == 'any' )
+            if( $i == 0 && $content == 'any' )
             {
                 return;
             }
