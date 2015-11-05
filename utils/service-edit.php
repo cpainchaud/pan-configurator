@@ -598,10 +598,11 @@ $supportedActions['replacebymembersanddelete'] = Array(
             foreach ($objectRefs as $objectRef)
             {
                 $class = get_class($objectRef);
-                if ($class == 'ServiceRuleContainer' || $class == 'ServiceGroup')
+                if( $class == 'ServiceRuleContainer' )
                 {
+                    /** @var ServiceRuleContainer $objectRef */
+
                     print $context->padding."    - in Reference: {$objectRef->toString()}\n";
-                    /** @var ServiceRuleContainer|ServiceGroup $objectRef */
                     foreach ($object->members() as $objectMember)
                     {
                         print $context->padding."      - adding {$objectMember->name()}\n";
@@ -614,7 +615,26 @@ $supportedActions['replacebymembersanddelete'] = Array(
                         $objectRef->API_remove($object);
                     else
                         $objectRef->remove($object);
-                } else
+                }
+                elseif( $class == 'ServiceGroup' )
+                {
+                    /** @var ServiceGroup $objectRef */
+
+                    print $context->padding."    - in Reference: {$objectRef->toString()}\n";
+                    foreach ($object->members() as $objectMember)
+                    {
+                        print $context->padding."      - adding {$objectMember->name()}\n";
+                        if( $context->isAPI )
+                            $objectRef->API_addMember($objectMember);
+                        else
+                            $objectRef->addMember($objectMember);
+                    }
+                    if( $context->isAPI )
+                        $objectRef->API_removeMember($object);
+                    else
+                        $objectRef->removeMember($object);
+                }
+                else
                 {
                     derr('unsupported class');
                 }

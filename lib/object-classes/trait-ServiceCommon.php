@@ -67,7 +67,7 @@ trait ServiceCommon
                 /** @var $ref ServiceGroup */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
-                $ref->add($objectToAdd);
+                $ref->addMember($objectToAdd);
             }
             elseif( $refClass == 'ServiceRuleContainer' )
             {
@@ -115,7 +115,7 @@ trait ServiceCommon
                 /** @var $ref ServiceGroup */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
-                $ref->API_add($objectToAdd);
+                $ref->API_addMember($objectToAdd);
             }
             elseif( $refClass == 'ServiceRuleContainer' )
             {
@@ -164,9 +164,9 @@ trait ServiceCommon
                 if( $displayOutput )
                     print $outputPadding."- removing from {$ref->_PANC_shortName()}\n";
                 if($apiMode)
-                    $ref->API_remove($this);
+                    $ref->API_removeMember($this);
                 else
-                    $ref->remove($this);
+                    $ref->removeMember($this);
             }
             elseif( $refClass == 'ServiceRuleContainer' )
             {

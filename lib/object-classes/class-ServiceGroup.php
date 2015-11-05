@@ -131,7 +131,7 @@ class ServiceGroup
 	 * @param bool $rewriteXml
 	 * @return bool
 	 */
-	public function add($newObject, $rewriteXml = true)
+	public function addMember($newObject, $rewriteXml = true)
 	{
 		
 		if( !is_object($newObject) )
@@ -172,9 +172,9 @@ class ServiceGroup
      * @param bool $rewriteXml
      * @return bool
      */
-    public function API_remove( $objectToRemove, $rewriteXml = true )
+    public function API_removeMember( $objectToRemove, $rewriteXml = true )
     {
-        $ret = $this->remove($objectToRemove);
+        $ret = $this->removeMember($objectToRemove);
 
         if( $ret )
         {
@@ -198,9 +198,9 @@ class ServiceGroup
      * @param Service|ServiceGroup $newObject Object to be added
      * @return bool
      */
-    public function API_add($newObject)
+    public function API_addMember($newObject)
     {
-        $ret = $this->add($newObject);
+        $ret = $this->addMember($newObject);
 
         if( $ret )
         {
@@ -221,7 +221,7 @@ class ServiceGroup
 	 * @param bool $rewritexml
 	 * @return bool
 	 */
-	public function remove( $old , $rewritexml = true)
+	public function removeMember( $old , $rewritexml = true)
 	{
 		if( !is_object($old) )
 			derr("Only objects can be passed to this function");
@@ -261,14 +261,14 @@ class ServiceGroup
 		{
 			if( $new !== null )
 			{
-				$this->add($new, false);
+				$this->addMember($new, false);
 				if( $old->name() == $new->name() )
-					$this->remove($old, false);
+					$this->removeMember($old, false);
 				else
-					$this->remove($old);
+					$this->removeMember($old);
 			}
 			else
-				$this->remove($old);
+				$this->removeMember($old);
 			
 			return true;
 		}
