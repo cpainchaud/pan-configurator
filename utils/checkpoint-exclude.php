@@ -471,7 +471,7 @@ foreach( $groupsToProcess as $group )
     $groupToProcess->removeAll();
     foreach( $inclNo as &$incl )
     {
-    	$groupToProcess->add($incl['object'],false);
+    	$groupToProcess->addMember($incl['object'],false);
     }
 
     //
@@ -526,7 +526,7 @@ foreach( $groupsToProcess as $group )
     			}
 
     			print " --> ".$newO->name()."\n";
-    			$groupToProcess->add($newO,false);
+    			$groupToProcess->addMember($newO,false);
     		}
     	}
     }

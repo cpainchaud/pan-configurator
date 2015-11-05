@@ -415,6 +415,11 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$xml</var></dt>
+					<dd><code>mixed</code><br>$xml DOMElement</dd>
+				</dl></div>
 
 
 
@@ -467,13 +472,13 @@
 
 		<div class="description short">
 			
-<p>returns the count of ServerGroups in this store</p>
+<p>returns the count of ServiceGroups in this store</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>returns the count of ServerGroups in this store</p>
+<p>returns the count of ServiceGroups in this store</p>
 
 
 
@@ -500,10 +505,14 @@
 
 		<div class="description short">
 			
+<p>returns the count of Services (ie not groups) in this store</p>
+
 		</div>
 
 		<div class="description detailed hidden">
 			
+<p>returns the count of Services (ie not groups) in this store</p>
+
 
 
 
@@ -591,14 +600,14 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			null|<code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code>
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_findOrCreate">#</a>
-		<code><b>findOrCreate</b>( <span>mixed <var>$fn</var></span>, <span>mixed <var>$ref</var> = <span class="php-keyword1">null</span></span>, <span>mixed <var>$nested</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><b>findOrCreate</b>( <span>mixed <var>$fn</var></span>, <span>null <var>$ref</var> = <span class="php-keyword1">null</span></span>, <span>boolean|true <var>$nested</var> = <span class="php-keyword1">true</span></span> )</code>
 
 		<div class="description short">
 			
@@ -608,7 +617,20 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$fn</var></dt>
+					<dd><code>mixed</code><br>$fn</dd>
+					<dt><var>$ref</var></dt>
+					<dd><code>null</code><br>$ref</dd>
+					<dt><var>$nested</var></dt>
+					<dd><code>boolean|true</code><br>$nested</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>null|<code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br />
+				</div>
 
 
 
@@ -620,7 +642,7 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			null|<code><a href="class-Service.html">Service</a></code>
 			
 			</code>
 		</td>
@@ -637,36 +659,16 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$name</var></dt>
+					<dd><code>mixed</code><br>$name</dd>
+				</dl></div>
 
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="displayTmpServices" id="_displayTmpServices">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_displayTmpServices">#</a>
-		<code><b>displayTmpServices</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
+				<h4>Returns</h4>
+				<div class="list">
+					<code>null|<code><a href="class-Service.html">Service</a></code></code><br />
+				</div>
 
 
 

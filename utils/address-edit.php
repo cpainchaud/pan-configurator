@@ -251,11 +251,10 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
             foreach( $objectRefs as $objectRef )
             {
                 $class = get_class($objectRef);
-                /** @var $objectRef AddressRuleContainer|AddressGroup */
 
                 if( $class == 'AddressRuleContainer' )
                 {
-
+                    /** @var AddressRuleContainer $objectRef */
                     print $context->padding."     - replacing in {$objectRef->toString()}\n";
 
                     if( $context->isAPI )
@@ -270,7 +269,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
                 }
                 elseif( $class == 'NatRule' )
                 {
-
+                    /** @var NatRule $objectRef */
                     print $context->padding."     - replacing in {$objectRef->toString()}\n";
 
                     if( $context->isAPI )
@@ -519,23 +518,38 @@ $supportedActions['replacebymembersanddelete'] = Array(
 
                 print $context->padding."  - adding members in {$objectRef->toString()}\n";
 
-                if( $class == 'AddressRuleContainer' || $class == 'AddressGroup')
+                if( $class == 'AddressRuleContainer' )
                 {
+                    /** @var AddressRuleContainer $objectRef */
                     foreach( $object->members() as $objectMember )
                     {
                         if( $context->isAPI )
                             $objectRef->API_add($objectMember);
                         else
-                            if( $class == 'AddressRuleContainer' )
-                                $objectRef->addObject($objectMember);
-                            else
-                                $objectRef->add($objectMember);
+                            $objectRef->addObject($objectMember);
+
                         print $context->padding."     -> {$objectMember->toString()}\n";
                     }
                     if( $context->isAPI )
                         $objectRef->API_remove($object);
                     else
                         $objectRef->remove($object);
+                }
+                elseif( $class == 'AddressGroup')
+                {
+                    /** @var AddressGroup $objectRef */
+                    foreach( $object->members() as $objectMember )
+                    {
+                        if( $context->isAPI )
+                            $objectRef->API_addMember($objectMember);
+                        else
+                            $objectRef->addMember($objectMember);
+                        print $context->padding."     -> {$objectMember->toString()}\n";
+                    }
+                    if( $context->isAPI )
+                        $objectRef->API_removeMember($object);
+                    else
+                        $objectRef->removeMember($object);
                 }
                 else
                 {
@@ -1345,7 +1359,6 @@ if( $configOutput !== null )
 print "\n\n********** END OF ADDRESS-EDIT UTILITY ***********\n";
 print     "**************************************************\n";
 print "\n\n";
-
 
 
 

@@ -208,7 +208,7 @@ class AddressGroup
 	* @param bool $rewriteXml
      * @return bool
 	*/
-	public function add($newObject, $rewriteXml = true)
+	public function addMember($newObject, $rewriteXml = true)
 	{
 		if( $this->isDynamic )
 			derr('cannot be used on Dynamic Address Groups');
@@ -239,9 +239,9 @@ class AddressGroup
      * @param Address|AddressGroup $newObject Object to be added
      * @return bool
      */
-    public function API_add($newObject)
+    public function API_addMember($newObject)
     {
-        $ret = $this->add($newObject);
+        $ret = $this->addMember($newObject);
 
         if( $ret )
         {
@@ -263,7 +263,7 @@ class AddressGroup
      * @param bool $rewriteXml
      * @return bool
      */
-	public function remove( $objectToRemove, $rewriteXml = true )
+	public function removeMember( $objectToRemove, $rewriteXml = true )
 	{
 		if( $this->isDynamic )
 			derr('cannot be used on Dynamic Address Groups');
@@ -291,9 +291,9 @@ class AddressGroup
      * @param bool $rewriteXml
      * @return bool
      */
-    public function API_remove( $objectToRemove, $rewriteXml = true )
+    public function API_removeMember( $objectToRemove, $rewriteXml = true )
     {
-        $ret = $this->remove($objectToRemove);
+        $ret = $this->removeMember($objectToRemove);
 
         if( $ret )
         {

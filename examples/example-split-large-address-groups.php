@@ -107,14 +107,14 @@ foreach($subs as $sub )
 					print "      New AddressGroup object created with name: ".$newGroup->name()."\n";
 
 					// add this new sub-group to the original one. Don't rewrite XML for performance reasons.
-					$group->add($newGroup, false);
+					$group->addMember($newGroup, false);
 				}
 				
 				// remove current group member from old group, don't rewrite XML yet for performance savings
-				$group->remove( $member, false );
+				$group->removeMember( $member, false );
 
 				// we add current group member to new subgroup
-				$newGroup->add( $member, false );
+				$newGroup->addMember( $member, false );
 				
 				$i++;
 			}

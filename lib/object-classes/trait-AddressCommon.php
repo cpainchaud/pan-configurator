@@ -48,6 +48,7 @@ trait AddressCommon
      */
     public function addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false)
     {
+        /** @var Address|AddressGroup $this */
         if( $skipIfConflict )
             derr('unsupported');
 
@@ -62,7 +63,7 @@ trait AddressCommon
                 /** @var AddressGroup $ref */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
-                $ref->add($objectToAdd);
+                $ref->addMember($objectToAdd);
             }
             elseif( $refClass == 'AddressRuleContainer' )
             {
@@ -104,6 +105,8 @@ trait AddressCommon
      */
     public function API_addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false)
     {
+        /** @var Address|AddressGroup $this */
+
         if( $skipIfConflict )
             derr('unsupported');
 
@@ -118,7 +121,7 @@ trait AddressCommon
                 /** @var AddressGroup $ref */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
-                $ref->API_add($objectToAdd);
+                $ref->API_addMember($objectToAdd);
             }
             elseif( $refClass == 'AddressRuleContainer' )
             {
@@ -175,9 +178,9 @@ trait AddressCommon
                 if( $displayOutput )
                     print $outputPadding."- removing from {$ref->_PANC_shortName()}\n";
                 if($apiMode)
-                    $ref->API_remove($this);
+                    $ref->API_removeMember($this);
                 else
-                    $ref->remove($this);
+                    $ref->removeMember($this);
             }
             elseif( $refClass == 'AddressRuleContainer' )
             {
@@ -266,6 +269,7 @@ trait AddressCommon
      */
     public function removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
+        /** @var Address|AddressGroup $this */
         $this->__removeWhereIamUsed(false, $displayOutput, $outputPadding, $actionIfLastInRule);
     }
 
@@ -276,6 +280,7 @@ trait AddressCommon
      */
     public function API_removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
+        /** @var Address|AddressGroup $this */
         $this->__removeWhereIamUsed(true, $displayOutput, $outputPadding, $actionIfLastInRule);
     }
 
