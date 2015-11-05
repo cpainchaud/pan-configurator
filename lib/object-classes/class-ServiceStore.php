@@ -144,6 +144,9 @@ class ServiceStore
 	}
 
 
+    /**
+     * @param $xml DOMElement
+     */
 	public function load_servicegroups_from_domxml($xml)
 	{
 		$this->serviceGroupRoot = $xml;
@@ -169,21 +172,15 @@ class ServiceStore
 		$this->regen_Indexes();
 	}
 
-	
-	/**
-	*
-	*
-	*/
+
 	public function count()
 	{
 		return count($this->all);
 	}
-	
-	
-	
+
 	
 	/**
-	* returns the count of ServerGroups in this store
+	* returns the count of ServiceGroups in this store
 	*
 	*/
 	public function countServiceGroups()
@@ -191,8 +188,11 @@ class ServiceStore
 	
 		return count($this->_serviceGroups);
 	}
-	
-	
+
+    /**
+     * returns the count of Services (ie not groups) in this store
+     *
+     */
 	public function countServices()
 	{
 		return count($this->_serviceObjects);
@@ -257,6 +257,8 @@ class ServiceStore
                 }
             }
         }
+        else
+            derr('unsupported type: '.$type);
 
         if( isset($this->fast[$fn] ) )
         {
@@ -291,7 +293,13 @@ class ServiceStore
         return $f;
 
 	}
-	
+
+    /**
+     * @param $fn
+     * @param null $ref
+     * @param bool|true $nested
+     * @return null|Service|ServiceGroup
+     */
 	public function findOrCreate( $fn , $ref=null, $nested=true)
 	{
         $f = $this->find( $fn , $ref, $nested);
@@ -302,15 +310,14 @@ class ServiceStore
 
         return $f;
 	}
-	
+
+    /**
+     * @param $name
+     * @return null|Service
+     */
 	public function findTmpService($name)
 	{
 		return $this->find($name , null, false, 'tmp');
-	}
-	
-	public function displayTmpServices()
-	{
-		$this->servessStore->displayTmpServices();
 	}
 
 

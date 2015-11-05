@@ -731,7 +731,7 @@ class PanAPIConnector
             {
                 if( $item->nodeType != XML_ELEMENT_NODE )
                     continue;
-                /** @var $item DOMElement */
+                /** @var DOMElement $item */
 
                 $newline[$item->nodeName] = $item->textContent;
             }
@@ -880,7 +880,7 @@ class PanAPIConnector
 
             if( $elementClass === 'DOMElement' )
             {
-                /** @var $element DOMElement */
+                /** @var DOMElement $element */
                 if ($useChildNodes)
                     $element = DH::domlist_to_xml($element->childNodes, -1, false);
                 else

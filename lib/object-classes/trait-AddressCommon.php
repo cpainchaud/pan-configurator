@@ -59,14 +59,14 @@ trait AddressCommon
             $refClass = get_class($ref);
             if( $refClass == 'AddressGroup' )
             {
-                /** @var $ref AddressGroup */
+                /** @var AddressGroup $ref */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
                 $ref->add($objectToAdd);
             }
             elseif( $refClass == 'AddressRuleContainer' )
             {
-                /** @var $ref AddressRuleContainer */
+                /** @var AddressRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
                 if( $ruleClass == 'SecurityRule' )
@@ -115,14 +115,14 @@ trait AddressCommon
             $refClass = get_class($ref);
             if( $refClass == 'AddressGroup' )
             {
-                /** @var $ref AddressGroup */
+                /** @var AddressGroup $ref */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
                 $ref->API_add($objectToAdd);
             }
             elseif( $refClass == 'AddressRuleContainer' )
             {
-                /** @var $ref AddressRuleContainer */
+                /** @var AddressRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
                 if( $ruleClass == 'SecurityRule' )
@@ -160,7 +160,7 @@ trait AddressCommon
      */
     private function __removeWhereIamUsed($apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
-        /** @var $this Address|AddressGroup */
+        /** @var Address|AddressGroup $this */
 
         $allowedActionIfLastInRule = Array('delete' => true, 'setany' => true, 'disable' => true);
         if( !isset($allowedActionIfLastInRule[$actionIfLastInRule]) )
@@ -171,7 +171,7 @@ trait AddressCommon
             $refClass = get_class($ref);
             if( $refClass == 'AddressGroup' )
             {
-                /** @var $ref AddressGroup */
+                /** @var AddressGroup $ref */
                 if( $displayOutput )
                     print $outputPadding."- removing from {$ref->_PANC_shortName()}\n";
                 if($apiMode)
@@ -181,7 +181,7 @@ trait AddressCommon
             }
             elseif( $refClass == 'AddressRuleContainer' )
             {
-                /** @var $ref AddressRuleContainer */
+                /** @var AddressRuleContainer $ref */
                 if( $ref->count() <= 1 && $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
@@ -221,7 +221,7 @@ trait AddressCommon
             }
             elseif( $refClass == 'NatRule' )
             {
-                /** @var $ref NatRule */
+                /** @var NatRule $ref */
                 if( $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )

@@ -20,6 +20,7 @@
  * Class TagStore
  * @property Tag[] $o
  * @property VirtualSystem|DeviceGroup|PanoramaConf|PANConf $owner
+ * @method Tag[] getAll()
  */
 class TagStore extends ObjStore
 {
@@ -102,7 +103,6 @@ class TagStore extends ObjStore
 
 		while(true)
 		{
-
 			$incl = strlen(strval($inc));
 
 			if( $basePlusSuffixL + $incl > $maxl )

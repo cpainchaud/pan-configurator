@@ -17,6 +17,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
 class Service
 {
 	use PathableName;
@@ -51,21 +52,16 @@ class Service
      */
     public $tags;
 
-    /**
-     * @property Array $dportMap
-     * @property Array $sportMap
-     */
-
 
     /**
      * @param $name
      * @param ServiceStore $owner
-     * @param bool $fromtemplatexml
+     * @param bool $fromTemplateXml
      */
-	function __construct($name, $owner=null, $fromtemplatexml=false)
+	function __construct($name, $owner=null, $fromTemplateXml=false)
 	{
 		
-		if( $fromtemplatexml )
+		if( $fromTemplateXml )
 		{
             $doc = new DOMDocument();
             $doc->loadXML(self::$templatexml);
@@ -222,6 +218,9 @@ class Service
             DH::createElement($this->tcpOrUdpRoot, 'source-port' ,$this->_dport);
 	}
 
+    /**
+     * @return string
+     */
     public function protocol()
     {
         if( $this->isTmpSrv() )
@@ -230,12 +229,18 @@ class Service
         else
             return $this->_protocol;
     }
-	
+
+    /**
+     * @return string
+     */
 	public function getDestPort()
 	{
 		return $this->_dport;
 	}
 
+    /**
+     * @return string
+     */
     public function getSourcePort()
     {
         return $this->_sport;
@@ -277,6 +282,10 @@ class Service
 	}
 
 
+    /**
+     * @param $otherObject Service|ServiceStore
+     * @return bool
+     */
 	public function equals( $otherObject )
 	{
 		if( ! $otherObject->isService() )

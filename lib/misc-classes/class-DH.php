@@ -553,7 +553,7 @@ class DH
                 continue;
 
             $count++;
-            /** @var $child DOMElement*/
+            /** @var DOMElement $child */
             $target->appendChild($child->cloneNode(true));
         }
 
