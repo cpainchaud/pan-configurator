@@ -181,7 +181,7 @@ class ObjRuleContainer
         $c = count($this->o);
 
         echo "$indent";
-        print "Displaying the $c ".$this->classn."(s) in ".$this->toString()."\n";
+        print "Displaying the $c object(s) in ".$this->toString()."\n";
 
         foreach( $this->o as $o)
         {

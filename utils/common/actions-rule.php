@@ -246,6 +246,10 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                 print " *** IGNORED because value is 'ANY' ***\n";
             elseif(count($resolvedZones) == 0)
                 print " *** IGNORED because no zone was resolved ***\n";
+            elseif( count($minus) == 0 && count($plus) == 0 )
+            {
+                print " *** IGNORED because there is no diff ***\n";
+            }
             else
             {
                 print "\n";
@@ -1189,7 +1193,7 @@ RuleCallContext::$supportedActions['enabled-set-fastapi'] = Array(
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
 RuleCallContext::$supportedActions['disabled-set'] = Array(
-    'name' => 'disable-Set',
+    'name' => 'disabled-Set',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
@@ -1201,7 +1205,7 @@ RuleCallContext::$supportedActions['disabled-set'] = Array(
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
 RuleCallContext::$supportedActions['disabled-set-fastapi'] = Array(
-    'name' => 'disable-Set-FastAPI',
+    'name' => 'disabled-Set-FastAPI',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;

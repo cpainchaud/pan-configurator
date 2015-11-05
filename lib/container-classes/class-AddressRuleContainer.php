@@ -613,9 +613,9 @@ class AddressRuleContainer extends ObjRuleContainer
         if( $objectIsNegated )
         {
             $fakeMapping= IP4Map::mapFromText('0.0.0.0-255.255.255.255');
-            $objectsMapping->substract($fakeMapping);
+            $fakeMapping->substract($objectsMapping);
+            $objectsMapping = $fakeMapping;
         }
-
 
         foreach( $zoneIP4Mapping as &$zoneMapping )
         {

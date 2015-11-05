@@ -199,7 +199,7 @@ class IP4Map
             $ret[] = long2ip($entry['start']).'-'.long2ip($entry['end']);
         }
 
-        $ret = & PH::list_to_string($ret);
+        $ret = PH::list_to_string($ret);
 
         return $ret;
 
