@@ -257,8 +257,7 @@ class ServiceStore
                 }
             }
         }
-        else
-            derr('unsupported type: '.$type);
+
 
         if( isset($this->fast[$fn] ) )
         {
