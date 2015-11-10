@@ -1070,7 +1070,7 @@ class SecurityRule extends Rule
             ."<query>(rule eq '{$this->name}') {$dvq} {$excludedAppsString}</query>";
 
 
-        print "\nQuery: $query\n";
+        //print "\nQuery: $query\n";
 
         $ret = $con->getReport($query);
 
