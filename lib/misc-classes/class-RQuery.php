@@ -1042,6 +1042,13 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['not.set'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['secprof']['operators']['is.set'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
+        return $object->securityProfileType() != "none";
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.profile'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var $object Rule|SecurityRule|NatRule|DecryptionRule */
