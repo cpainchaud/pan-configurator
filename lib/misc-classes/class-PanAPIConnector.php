@@ -571,7 +571,7 @@ class PanAPIConnector
         return $xmlDoc;
 	}
 
-    public function & sendExportRequest($category)
+    public function &sendExportRequest($category)
     {
         $sendThroughPost = false;
 
@@ -648,7 +648,7 @@ class PanAPIConnector
     }
 
 
-    public function & getReport($req)
+    public function &getReport($req)
     {
         $ret = $this->sendRequest($req);
 

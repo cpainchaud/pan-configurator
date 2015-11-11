@@ -189,7 +189,7 @@ class ServiceDstPortMapping
     /**
      * @return string
      */
-    public function & tcpMappingToText()
+    public function &tcpMappingToText()
     {
         $returnText = '';
 
@@ -213,7 +213,7 @@ class ServiceDstPortMapping
     /**
      * @return string
      */
-    public function & udpMappingToText()
+    public function &udpMappingToText()
     {
         $returnText = '';
 

@@ -438,7 +438,7 @@ class RuleStore
 	/**
 	 * @param string $base
 	 * @param string $suffix
-	 * @param integer $startCount
+	 * @param integer|string $startCount
 	 * @return string
 	 */
 	public function findAvailableName($base, $suffix= '', $startCount = '')
@@ -507,9 +507,9 @@ class RuleStore
 
 
     /**
-     * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+     * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
      * @param string $newName
-	 * @param string $inPostRuleBase null|bool
+	 * @param null|bool $inPostRuleBase
      * @return SecurityRule|NatRule
      */
 	public function cloneRule($rule, $newName = null, $inPostRuleBase=null)
@@ -525,7 +525,7 @@ class RuleStore
         if( $inPostRuleBase === null )
             $inPostRuleBase = $rule->isPostRule();
 
-        /** @var SecurityRule|NatRule|DecryptionRule $newRule */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule $newRule */
 		$newRule = new $this->type($this);
         $xml = $rule->xmlroot->cloneNode(true);
 		$newRule->load_from_domxml($xml);
@@ -782,7 +782,7 @@ class RuleStore
      * @param null|string|string[] $withFilter
 	* @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
 	*/
-	public function & rules( $withFilter=null )
+	public function &rules( $withFilter=null )
 	{
         $query = null;
 
@@ -1060,7 +1060,7 @@ class RuleStore
 	 * @return string
 	 * @throws Exception
 	 */
-	public function & getXPath($contextRule)
+	public function &getXPath($contextRule)
 	{
 
 			$class = get_class($this->owner);
@@ -1188,7 +1188,7 @@ class RuleStore
 	}
 
     /**
-     * @param $rule string|Rule|SecurityRule|NatRule|DecryptionRule
+     * @param string|Rule|SecurityRule|NatRule|DecryptionRule $rule
      * @return int
      */
     public function getRulePosition($rule)
@@ -1196,12 +1196,15 @@ class RuleStore
         if( is_string($rule) )
         {
             $rule = $this->find($rule);
+            /** @var Rule|SecurityRule|NatRule|DecryptionRule $rule */
             if( $rule === null )
                 derr("cannot find a rule named '{$rule->name()}'");
             return $this->getRulePosition($rule);
         }
         elseif( !is_object($rule) )
             derr("unsupported object type");
+
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule $rule */
 
         if( !$this->isPreOrPost || $this->ruleIsPreRule($rule) )
         {

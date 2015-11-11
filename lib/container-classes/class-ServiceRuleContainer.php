@@ -486,7 +486,7 @@ class ServiceRuleContainer extends ObjRuleContainer
     /**
      * @return Service[]|ServiceGroup[]
      */
-    public function & membersExpanded($keepGroupsInList=false)
+    public function &membersExpanded($keepGroupsInList=false)
     {
         $localA = Array();
 

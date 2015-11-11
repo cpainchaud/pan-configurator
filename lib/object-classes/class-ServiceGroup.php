@@ -379,7 +379,7 @@ class ServiceGroup
 		return true;
 	}
 
-    public function & getValueDiff( ServiceGroup $otherObject)
+    public function &getValueDiff( ServiceGroup $otherObject)
     {
         $result = Array('minus' => Array(), 'plus' => Array() );
 
@@ -506,7 +506,7 @@ class ServiceGroup
 	/**
 	* @return Array list of all member objects, if some of them are groups, they are exploded and their members inserted
 	*/
-	public function & expand($keepGroupsInList=false)
+	public function &expand($keepGroupsInList=false)
 	{
 		$ret = Array();
 

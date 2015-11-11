@@ -117,7 +117,7 @@ class cidr
         return 0;
     }
 
-    static public function & stringToStartEnd($value)
+    static public function &stringToStartEnd($value)
     {
         $result = Array();
 

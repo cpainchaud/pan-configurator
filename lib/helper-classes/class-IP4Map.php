@@ -25,7 +25,7 @@ class IP4Map
         return $this->_map;
     }
 
-    public function & getMapArrayPointer()
+    public function &getMapArrayPointer()
     {
         return $this->_map;
     }
@@ -126,7 +126,7 @@ class IP4Map
     }
 
 
-    public function & mapDiff( IP4Map $other )
+    public function &mapDiff( IP4Map $other )
     {
         $thisCopy = clone $this;
         $otherCopy = clone $other;
@@ -189,7 +189,7 @@ class IP4Map
     /**
      * @return string
      */
-    public function & dumpToString()
+    public function &dumpToString()
     {
 
         $ret = Array();

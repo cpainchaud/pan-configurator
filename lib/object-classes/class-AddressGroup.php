@@ -31,9 +31,7 @@ class AddressGroup
      */
 	public $owner=null;
 
-    /**
-     * @var Address[]|AddressGroup[]
-     */
+    /** @var Address[]|AddressGroup[] $members */
 	private $members = Array();
 
 	/**
@@ -456,7 +454,7 @@ class AddressGroup
 	/**
 	* @return string
 	*/
-	public function & getXPath()
+	public function &getXPath()
 	{
 		$str = $this->owner->getAddressGroupStoreXPath()."/entry[@name='".$this->name."']";
 
@@ -511,7 +509,7 @@ class AddressGroup
 	}
 
 
-	public function & getValueDiff( AddressGroup $otherObject)
+	public function &getValueDiff( AddressGroup $otherObject)
 	{
 		$result = Array('minus' => Array(), 'plus' => Array() );
 
@@ -570,9 +568,10 @@ class AddressGroup
 	}
 
 	/**
-	* @return Array list of all member objects, if some of them are groups, they are exploded and their members inserted
+     *  $keepGroupsInList keep groups in the the list on top of just expending them
+	* @return Address[]|AddressGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
 	*/
-	public function & expand($keepGroupsInList=false)
+	public function &expand($keepGroupsInList=false)
 	{
 		$ret = Array();
 
@@ -580,7 +579,9 @@ class AddressGroup
 		{
 			if( $object->isGroup() )
 			{
-				$ret = array_merge( $ret, $object->expand() );
+                /** @var AddressGroup $object */
+                $tmpList = & $object->expand();
+				$ret = array_merge( $ret, $tmpList);
                 if( $keepGroupsInList )
                     $ret[] = $object;
 			}

@@ -126,7 +126,7 @@ class PanAPIConnector
 		$this->apihost = $host;
 	}
 	
-	public function & sendRequest($url, $checkResultTag=false, &$filecontent=null, $filename = '')
+	public function &sendRequest($url, $checkResultTag=false, &$filecontent=null, $filename = '')
 	{
         $url = str_replace('#', '%23',$url);
 

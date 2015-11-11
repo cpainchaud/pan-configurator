@@ -87,7 +87,7 @@ class VirtualRouter
     /**
      * @return VirtualSystem[]
      */
-    public function & findConcernedVsys()
+    public function &findConcernedVsys()
     {
         $vsysList = Array();
         foreach($this->attachedInterfaces->interfaces() as $if )

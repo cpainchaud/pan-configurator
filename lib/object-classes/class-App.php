@@ -151,7 +151,7 @@ class App
 	 * will return a list of dependencies and remove the 'implicit' ones
 	 * @return App[]
 	 */
-	public function & calculateDependencies()
+	public function &calculateDependencies()
 	{
 		$ret = Array();
 

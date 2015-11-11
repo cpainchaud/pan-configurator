@@ -26,7 +26,7 @@ class CsvParser
      * @param null|string[] $customHeaders
      * @return false|Array
      */
-    static public function & parseFile( $fileName, &$errorMessage, $hasHeaders = true, $customHeaders = null)
+    static public function &parseFile( $fileName, &$errorMessage, $hasHeaders = true, $customHeaders = null)
     {
         if( !file_exists($fileName) )
         {

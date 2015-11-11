@@ -17,9 +17,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+
 trait XmlConvertible
 {
-    /** @var null|DOMElement  */
+    /** @var DOMElement $xmlroot  */
     public $xmlroot = null;
 
 	function &getXmlText_inline()

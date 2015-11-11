@@ -164,7 +164,7 @@ require_once $basedir.'/rule-classes/class-AppOverrideRule.php';
 unset($basedir);
 
 
-function & array_diff_no_cast(&$ar1, &$ar2)
+function &array_diff_no_cast(&$ar1, &$ar2)
 {
     $diff = Array();
     foreach ($ar1 as $key => $val1)
@@ -178,7 +178,7 @@ function & array_diff_no_cast(&$ar1, &$ar2)
 }
 
 
-function & array_unique_no_cast(&$ar1)
+function &array_unique_no_cast(&$ar1)
 {
     $unique = Array();
     foreach ($ar1 as $val1)
@@ -676,7 +676,7 @@ function &array_to_devicequery(&$devices)
 }
 
 
-function & sortArrayByStartValue( &$arrayToSort)
+function &sortArrayByStartValue( &$arrayToSort)
 {
     //
     // Sort incl objects IP mappings by Start IP
