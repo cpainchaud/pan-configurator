@@ -553,7 +553,7 @@ class AddressGroup
 		if( count($diff['minus']) != 0 )
 			foreach($diff['minus'] as $d )
 			{
-                /** @var $d Address|AddressGroup */
+                /** @var Address|AddressGroup $d */
                 $retString .= $indent." - {$d->name()}\n";
 			}
 

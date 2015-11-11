@@ -64,14 +64,14 @@ trait ServiceCommon
             $refClass = get_class($ref);
             if( $refClass == 'ServiceGroup' )
             {
-                /** @var $ref ServiceGroup */
+                /** @var ServiceGroup $ref */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
                 $ref->addMember($objectToAdd);
             }
             elseif( $refClass == 'ServiceRuleContainer' )
             {
-                /** @var $ref ServiceRuleContainer */
+                /** @var ServiceRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
                 if( $ruleClass == 'SecurityRule' )
@@ -112,14 +112,14 @@ trait ServiceCommon
             $refClass = get_class($ref);
             if( $refClass == 'ServiceGroup' )
             {
-                /** @var $ref ServiceGroup */
+                /** @var ServiceGroup $ref */
                 if( $displayOutput )
                     print $outputPadding."- adding in {$ref->_PANC_shortName()}\n";
                 $ref->API_addMember($objectToAdd);
             }
             elseif( $refClass == 'ServiceRuleContainer' )
             {
-                /** @var $ref ServiceRuleContainer */
+                /** @var ServiceRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
                 if( $ruleClass == 'SecurityRule' )
@@ -149,7 +149,7 @@ trait ServiceCommon
      */
     private function __removeWhereIamUsed($apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
-        /** @var $this Service|ServiceGroup */
+        /** @var Service|ServiceGroup $this */
 
         $allowedActionIfLastInRule = Array('delete' => true, 'setany' => true, 'disable' => true);
         if( !isset($allowedActionIfLastInRule[$actionIfLastInRule]) )
@@ -160,7 +160,7 @@ trait ServiceCommon
             $refClass = get_class($ref);
             if( $refClass == 'ServiceGroup' )
             {
-                /** @var $ref ServiceGroup */
+                /** @var ServiceGroup $ref */
                 if( $displayOutput )
                     print $outputPadding."- removing from {$ref->_PANC_shortName()}\n";
                 if($apiMode)
@@ -170,7 +170,7 @@ trait ServiceCommon
             }
             elseif( $refClass == 'ServiceRuleContainer' )
             {
-                /** @var $ref ServiceRuleContainer */
+                /** @var ServiceRuleContainer $ref */
                 if( $ref->count() <= 1 && $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
@@ -210,7 +210,7 @@ trait ServiceCommon
             }
             elseif( $refClass == 'NatRule' )
             {
-                /** @var $ref NatRule */
+                /** @var NatRule $ref */
                 if( $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )

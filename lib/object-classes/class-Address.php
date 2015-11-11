@@ -121,7 +121,7 @@ class Address
 			if( $node->nodeType != XML_ELEMENT_NODE  )
 				continue;
 
-            /** @var $node DOMElement*/
+            /** @var DOMElement $node */
 
 			$lsearch = array_search($node->nodeName, self::$AddressTypes);
 			if( $lsearch !== FALSE )

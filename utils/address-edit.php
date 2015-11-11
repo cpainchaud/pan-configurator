@@ -335,7 +335,7 @@ $supportedActions['replacewithobject'] = Array(
         if( $foundObject === null )
             derr("cannot find an object named '{$context->arguments['objectName']}'");
 
-        /** @var $objectRef AddressGroup|AddressRuleContainer */
+        /** @var AddressGroup|AddressRuleContainer $objectRef */
 
         foreach ($objectRefs as $objectRef)
         {
@@ -508,7 +508,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
             foreach( $objectRefs as $objectRef )
             {
                 $class = get_class($objectRef);
-                /** @var $objectRef AddressRuleContainer|AddressGroup */
+                /** @var AddressRuleContainer|AddressGroup $objectRef */
 
                 if( $objectRef->owner === null )
                 {
@@ -1293,7 +1293,7 @@ foreach( $objectsToProcess as &$objectsRecord )
 
     foreach($objects as $object )
     {
-        /** @var $object Address|AddressGroup */
+        /** @var Address|AddressGroup $object */
         if( $objectFilterRQuery !== null )
         {
             $queryResult = $objectFilterRQuery->matchSingleObject($object);
