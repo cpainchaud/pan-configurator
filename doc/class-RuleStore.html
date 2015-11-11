@@ -675,7 +675,7 @@ then it also count disabled rules</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_findAvailableName">#</a>
-		<code><b>findAvailableName</b>( <span>string <var>$base</var></span>, <span>string <var>$suffix</var> = <span class="php-quote">''</span></span>, <span>integer <var>$startCount</var> = <span class="php-quote">''</span></span> )</code>
+		<code><b>findAvailableName</b>( <span>string <var>$base</var></span>, <span>string <var>$suffix</var> = <span class="php-quote">''</span></span>, <span>integer|string <var>$startCount</var> = <span class="php-quote">''</span></span> )</code>
 
 		<div class="description short">
 			
@@ -692,7 +692,7 @@ then it also count disabled rules</p>
 					<dt><var>$suffix</var></dt>
 					<dd><code>string</code><br>$suffix</dd>
 					<dt><var>$startCount</var></dt>
-					<dd><code>integer</code><br>$startCount</dd>
+					<dd><code>integer|string</code><br>$startCount</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -759,7 +759,7 @@ accurate indexing</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_cloneRule">#</a>
-		<code><b>cloneRule</b>( <span><code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a></code>|<code><a href="class-AppOverrideRule.html">AppOverrideRule</a></code> <var>$rule</var></span>, <span>string <var>$newName</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$inPostRuleBase</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><b>cloneRule</b>( <span><code><a href="class-Rule.html">Rule</a></code>|<code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a></code>|<code><a href="class-AppOverrideRule.html">AppOverrideRule</a></code> <var>$rule</var></span>, <span>string <var>$newName</var> = <span class="php-keyword1">null</span></span>, <span>null|boolean <var>$inPostRuleBase</var> = <span class="php-keyword1">null</span></span> )</code>
 
 		<div class="description short">
 			
@@ -772,11 +772,11 @@ accurate indexing</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$rule</var></dt>
-					<dd><code><code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a></code>|<code><a href="class-AppOverrideRule.html">AppOverrideRule</a></code></code><br>$rule</dd>
+					<dd><code><code><a href="class-Rule.html">Rule</a></code>|<code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a></code>|<code><a href="class-AppOverrideRule.html">AppOverrideRule</a></code></code><br>$rule</dd>
 					<dt><var>$newName</var></dt>
 					<dd><code>string</code><br>$newName</dd>
 					<dt><var>$inPostRuleBase</var></dt>
-					<dd><code>string</code><br>$inPostRuleBase null|bool</dd>
+					<dd><code>null|boolean</code><br>$inPostRuleBase</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -1733,7 +1733,7 @@ time. You should not need to call it by yourself in normal situations</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_getRulePosition">#</a>
-		<code><b>getRulePosition</b>( <span>mixed <var>$rule</var></span> )</code>
+		<code><b>getRulePosition</b>( <span>string|<code><a href="class-Rule.html">Rule</a></code>|<code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a></code> <var>$rule</var></span> )</code>
 
 		<div class="description short">
 			
@@ -1746,7 +1746,7 @@ time. You should not need to call it by yourself in normal situations</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$rule</var></dt>
-					<dd><code>mixed</code><br>$rule string|Rule|SecurityRule|NatRule|DecryptionRule</dd>
+					<dd><code>string|<code><a href="class-Rule.html">Rule</a></code>|<code><a href="class-SecurityRule.html">SecurityRule</a></code>|<code><a href="class-NatRule.html">NatRule</a></code>|<code><a href="class-DecryptionRule.html">DecryptionRule</a></code></code><br>$rule</dd>
 				</dl></div>
 
 				<h4>Returns</h4>

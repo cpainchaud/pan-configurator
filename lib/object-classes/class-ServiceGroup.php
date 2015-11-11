@@ -23,7 +23,7 @@ class ServiceGroup
     use ServiceCommon;
 
     /**
-     * @var Service|ServiceGroup[]
+     * @var Service[]|ServiceGroup[]
      */
 	public $members = Array();
 
@@ -504,7 +504,7 @@ class ServiceGroup
 
 
 	/**
-	* @return Array list of all member objects, if some of them are groups, they are exploded and their members inserted
+	* @return Service[]|ServiceGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
 	*/
 	public function &expand($keepGroupsInList=false)
 	{
@@ -527,6 +527,9 @@ class ServiceGroup
 		return $ret;
 	}
 
+    /**
+     * @return Service[]|ServiceGroup[]
+     */
 	public function members()
 	{
 		return $this->members;
