@@ -192,6 +192,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
     /**
      * should only be called from a Rule constructor
+     * @param DOMElement $xml
      * @ignore
      */
     public function load_from_domxml($xml)
@@ -201,6 +202,7 @@ class AddressRuleContainer extends ObjRuleContainer
         $i=0;
         foreach( $xml->childNodes as $node )
         {
+            /** @var DOMElement $node */
             if( $node->nodeType != XML_ELEMENT_NODE )
                 continue;
 

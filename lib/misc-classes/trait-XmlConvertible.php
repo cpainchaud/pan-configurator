@@ -28,6 +28,10 @@ trait XmlConvertible
 		return DH::dom_to_xml($this->xmlroot, -1, false);
 	}
 
+    /**
+     * @param bool|true $indenting
+     * @return string
+     */
 	function &getXmlText( $indenting = true)
 	{
 
@@ -36,6 +40,9 @@ trait XmlConvertible
 		return DH::dom_to_xml($this->xmlroot, -1, true);
 	}
 
+    /**
+     * @return string
+     */
     function &getChildXmlText_inline()
     {
         return DH::domlist_to_xml($this->xmlroot->childNodes, -1, false);

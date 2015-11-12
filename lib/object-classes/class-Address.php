@@ -98,7 +98,7 @@ class Address
 
 	/**
 	* @ignore
-	* @param $xml DOMElement
+	* @param DOMElement $xml
 	*/
 	public function load_from_domxml(DOMElement $xml)
 	{
@@ -118,10 +118,10 @@ class Address
 
 		foreach($xml->childNodes as $node)
 		{
+            /** @var DOMElement $node */
+
 			if( $node->nodeType != XML_ELEMENT_NODE  )
 				continue;
-
-            /** @var DOMElement $node */
 
 			$lsearch = array_search($node->nodeName, self::$AddressTypes);
 			if( $lsearch !== FALSE )
