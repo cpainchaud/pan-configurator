@@ -1561,6 +1561,29 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact'] = Ar
     },
     'arg' => true
 );
+RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Address|AddressGroup  $object */
+        /** @var string $value */
+
+        $values = explode(',', $value);
+        $mapping = new IP4Map();
+
+        $count = 0;
+        foreach( $values as $net )
+        {
+            $net = trim($net);
+            if( strlen($net) < 1 )
+                derr("empty network/IP name provided for argument #$count");
+            $mapping->addMap(IP4Map::mapFromText($net));
+            $count++;
+        }
+
+        return $mapping->includesOtherMap($object->getIP4Mapping());
+    },
+    'arg' => true
+);
 // </editor-fold>
 
 
