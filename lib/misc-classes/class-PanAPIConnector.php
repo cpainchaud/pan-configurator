@@ -172,7 +172,9 @@ class PanAPIConnector
 
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
         {
-            if( strlen(getenv('HOMEDRIVE')) > 0)
+            if( strlen(getenv('USERPROFILE')) > 0)
+                $file = getenv('USERPROFILE') . "\\" . self::$keyStoreFileName;
+            elseif( strlen(getenv('HOMEDRIVE')) > 0)
                 $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
             else
                 $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
