@@ -1567,6 +1567,9 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = Ar
         /** @var Address|AddressGroup  $object */
         /** @var string $value */
 
+        if( $object->isAddress() && $object->type() == 'fqdn' )
+            return false;
+
         $values = explode(',', $value);
         $mapping = new IP4Map();
 
