@@ -1580,7 +1580,7 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = Ar
             $count++;
         }
 
-        return $mapping->includesOtherMap($object->getIP4Mapping());
+        return $object->getIP4Mapping()->includedInOtherMap($mapping) == 1;
     },
     'arg' => true
 );
