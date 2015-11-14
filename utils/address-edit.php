@@ -316,11 +316,12 @@ $supportedActions['addobjectwhereused'] = Array(
             derr("cannot find an object named '{$context->arguments['objectName']}'");
 
         if( $context->isAPI )
-            $object->API_addObjectWhereIamUsed($foundObject, true, $context->padding.'  ', false);
+            $object->API_addObjectWhereIamUsed($foundObject, true, $context->padding.'  ', false, $context->arguments['skipNatRules']);
         else
-            $object->addObjectWhereIamUsed($foundObject, true, $context->padding.'  ', false);
+            $object->addObjectWhereIamUsed($foundObject, true, $context->padding.'  ', false, $context->arguments['skipNatRules']);
     },
-    'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+    'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+                     'skipNatRules' => Array( 'type' => 'bool', 'default' => false ) )
 );
 
 $supportedActions['replacewithobject'] = Array(

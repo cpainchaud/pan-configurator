@@ -177,7 +177,7 @@ class IP4Map
 
         $affectedRowsThis = $thisCopy->substract($other);
 
-        if( $this->count() == 0 )
+        if( $thisCopy->count() == 0 )
             return 1;
 
         if( $affectedRowsThis == 0 )

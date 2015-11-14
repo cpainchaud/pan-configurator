@@ -465,6 +465,17 @@ class Address
 		if( filter_var($this->name, FILTER_VALIDATE_IP) !== false  )
 			return true;
 
+        $ex = explode( '-', $this->name );
+
+        if( count($ex) == 2 )
+        {
+            if( filter_var($ex[0], FILTER_VALIDATE_IP) === FALSE || filter_var($ex[1], FILTER_VALIDATE_IP) === FALSE )
+            {
+                return false;
+            }
+            return true;
+        }
+
 		$ex = explode('/', $this->name);
 
 		if( count($ex) != 2 )

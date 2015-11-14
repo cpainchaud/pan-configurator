@@ -14,11 +14,13 @@ utils:
 * rules-edit.php : new filters 'name is.in.file'
 * service-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed', 'removeWhereUsed'
 * address-edit.php : new Action 'replaceWithObject', 'addObjectWhereUsed'
-* address-edit.php : new filters 'name is.in.file'
+* address-edit.php : new filters 'name is.in.file' 'value ip4.included-in '
 
 bugfixes:
 * rules-edit.php : destination zone calculation fix in
 * AddressGroup : was incorrectly reported as Dynamic when object XML was empty (MigrationTool issue)
+* Address : support usage of IP ranges directly in rules which was not supported before.
+* IP4Map : included-in calculation was return wrong 0 whatever the input
 
 
 1.5.3

@@ -45,12 +45,20 @@ trait AddressCommon
      * @param $displayOutput bool
      * @param $skipIfConflict bool
      * @param $outputPadding string|int
+     * @@param $skipNatRules bool
      */
-    public function addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false)
+    public function addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false, $skipNatRules = false)
     {
         /** @var Address|AddressGroup $this */
         if( $skipIfConflict )
             derr('unsupported');
+
+        if( $this === $objectToAdd )
+        {
+            if( $displayOutput )
+                print $outputPadding."**SKIPPED** argument is same object\n";
+            return;
+        }
 
         if( !is_string($outputPadding) )
             $outputPadding = str_pad('', $outputPadding);
@@ -70,7 +78,7 @@ trait AddressCommon
                 /** @var AddressRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
-                if( $ruleClass == 'SecurityRule' )
+                if( $ruleClass == 'SecurityRule'  || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' )
                 {
                     if( $displayOutput )
                         print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";
@@ -79,6 +87,12 @@ trait AddressCommon
                 }
                 elseif( $ruleClass == 'NatRule' )
                 {
+                    if( $skipNatRules )
+                    {
+                        if($displayOutput)
+                            print $outputPadding."- SKIPPED {$ref->owner->_PANC_shortName()} because request by user\n";
+                        continue;
+                    }
                     if( $ref->name == 'snathosts' )
                         derr('unsupported use case in '.$ref->owner->_PANC_shortName());
                     if( $ref->name == 'source' && $ref->owner->natType() == 'static-ip'  )
