@@ -627,6 +627,10 @@ function findConnector( $object )
     return findConnector($object->owner);
 }
 
+/**
+ * @param $object
+ * @return PanAPIConnector|null
+ */
 function findConnectorOrDie( $object )
 {
     if( isset($object->connector) )
