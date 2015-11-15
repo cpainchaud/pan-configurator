@@ -101,6 +101,7 @@ require_once $basedir.'/helper-classes/class-cidr.php';
 require_once $basedir.'/misc-classes/trait-ReferenceableObject.php';
 require_once $basedir.'/misc-classes/trait-XmlConvertible.php';
 require_once $basedir.'/misc-classes/trait-ObjectWithDescription.php';
+require_once $basedir.'/misc-classes/trait-PathableName.php';
 require_once $basedir.'/misc-classes/class-DH.php';
 require_once $basedir.'/misc-classes/class-PH.php';
 require_once $basedir.'/misc-classes/class-RQuery.php';
@@ -354,46 +355,6 @@ function __CmpObjMemID( $objA, $objB)
 	unset($indexes);
 }*/
 
-
-/**
- * Class PathableName
- * @property $owner AppStore|AddressStore|ServiceStore|RuleStore
- * @property $name string
- */
-trait PathableName
-{
-    /**
-     *
-     * @return String
-     */
-    public function toString()
-    {
-        if( isset($this->name) )
-            $ret = get_class($this).':'.$this->name;
-        else
-            $ret = get_class($this);
-
-        if( isset($this->owner) && $this->owner !== null )
-            $ret = $this->owner->toString().' / '.$ret;
-
-        return $ret;
-    }
-
-    public function _PANC_shortName()
-    {
-        $location = 'shared';
-
-        $locationObject = PH::findLocationObjectOrDie($this);
-
-        if( $locationObject->isVirtualSystem() || $locationObject->isDeviceGroup() )
-        {
-            $location = $this->owner->owner->name();
-        }
-
-        return $location.'/'.get_class($this).'/'.$this->name;
-    }
-
-}
 
 function printn($msg)
 {
