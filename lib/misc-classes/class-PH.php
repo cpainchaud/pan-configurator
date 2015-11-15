@@ -268,6 +268,51 @@ class PH
         derr("cannot find PanoramaConf or PANConf object");
     }
 
+    /**
+     * @param $panConfObject
+     * @return PANConf|PanoramaConf|DeviceGroup|VirtualSystem
+     * @throws Exception
+     */
+    public static function findLocationObject($panConfObject)
+    {
+        while(true)
+        {
+            $class = get_class($panConfObject);
+            if( $class == 'PANConf' || $class == 'PanoramaConf' || $class == 'DeviceGroup' || $class == 'VirtualSystem' )
+                return $panConfObject;
+
+            if( isset($panConfObject->owner) && is_object($panConfObject->owner) )
+                $panConfObject = $panConfObject->owner;
+            else
+                return null;
+
+        }
+    }
+
+    /**
+     * @param PathableName $panConfObject
+     * @return PANConf|PanoramaConf|DeviceGroup|VirtualSystem
+     * @throws Exception
+     */
+    public static function getLocationString($panConfObject)
+    {
+        /** @var PANConf|PanoramaConf|DeviceGroup|VirtualSystem $panConfObject */
+        while(true)
+        {
+            $class = get_class($panConfObject);
+            if( $class == 'PANConf' || $class == 'PanoramaConf' )
+                return 'shared';
+            if( $class == 'DeviceGroup' || $class == 'VirtualSystem' )
+                return $panConfObject->name();
+
+            if( isset($panConfObject->owner) && is_object($panConfObject->owner) )
+                $panConfObject = $panConfObject->owner;
+            else
+                return false;
+
+        }
+    }
+
 }
 
 foreach( $argv as $argIndex => &$arg )

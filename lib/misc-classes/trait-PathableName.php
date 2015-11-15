@@ -18,7 +18,7 @@
 
 /**
  * Class PathableName
- * @property $owner AppStore|AddressStore|ServiceStore|RuleStore
+ * @property $owner AppStore|AddressStore|ServiceStore|RuleStore|Rule|PanoramaConf|PANConf|DeviceGroup|VirtualSystem
  * @property $name string
  */
 trait PathableName
