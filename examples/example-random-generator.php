@@ -5,7 +5,7 @@
 *
 *	 more comments needed
 *		
-*	This script will load a PANOS config and create 15000 random rules
+*	This script will load a PANOS config and create 1500 random rules
 *
 *****************************************************************************/
 require_once("../lib/panconfigurator.php");
@@ -29,19 +29,20 @@ if( $v === null )
 
 print "\n***********************************************\n\n";
 
-$newrules = Array();
+
+$v->securityRules->removeAll();
+
+/** @var SecurityRule[] $newRules */
+$newRules = Array();
 $addresses = $v->addressStore->all();
 $ac = count($addresses);
 $ak = array_keys($addresses);
 
-for( $i=0; $i < 15001; $i++ )
+for( $i=0; $i < 1500; $i++ )
 {
-	$newrules[$i] = $v->securityRules->newSecurityRule('autogen-'.$i);
-	$newrules[$i]->setName('autogen2-'.$i);
-	if( $i%500 == 0 )
-	{
-		memory_and_gc("i=$i");
-	}
+	$newRules[$i] = $v->securityRules->newSecurityRule('autogen-'.$i);
+	$newRules[$i]->setName('autogen2-'.$i);
+
 	$r = rand(1,10);
 	if( $r > 3 )
 	{
@@ -49,11 +50,20 @@ for( $i=0; $i < 15001; $i++ )
 		for($j =0; $j<$r; $j++ )
 		{
 			$addr = $addresses[$ak[rand(0,$ac-1)]];
-			//print "adding '".$addr->name()."'\n";
-			$newrules[$i]->source->add($addr);
-			//$newrules[$i]->source->add('test');
+			$newRules[$i]->source->addObject($addr);
 		}
 	}
+
+    $r = rand(1,10);
+    if( $r > 3 )
+    {
+        $r = rand(1,5);
+        for($j =0; $j<$r; $j++ )
+        {
+            $addr = $addresses[$ak[rand(0,$ac-1)]];
+            $newRules[$i]->destination->addObject($addr);
+        }
+    }
 }
 
 

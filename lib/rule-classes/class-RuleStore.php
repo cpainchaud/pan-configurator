@@ -25,13 +25,13 @@ class RuleStore
 	/**
 	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
 	 */
-	protected $rules = Array();
+	protected $_rules = Array();
 
 
 	/**
 	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
 	 */
-	protected $postRules = Array();
+	protected $_postRules = Array();
 
     /**
      * @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf
@@ -97,7 +97,7 @@ class RuleStore
 		
 		$count = 0;
 		
-		foreach($this->rules as $rule)
+		foreach($this->_rules as $rule)
 		{
 			if( $rule->SourceNat_Type() == 'dynamic-ip-and-port' )
 			{
@@ -139,7 +139,7 @@ class RuleStore
             /** @var SecurityRule|NatRule|DecryptionRule|Rule $nr */
 			$nr = new $this->type($this);
 			$nr->load_from_domxml($node);
-			$this->rules[] = $nr;
+			$this->_rules[] = $nr;
 		}
 
 		// print $count." prerules found\n";
@@ -160,7 +160,7 @@ class RuleStore
 					print "Parsed $count rules so far\n";
 				$nr = new $this->type($this);
 				$nr->load_from_domxml($node);
-				$this->postRules[] = $nr;
+				$this->_postRules[] = $nr;
 			}
 
 			//print $count." postrules found\n";
@@ -192,8 +192,8 @@ class RuleStore
 			{
 				$rule->owner = $this;
 
-				$this->rules[] = $rule;
-				$index = lastIndex($this->rules);
+				$this->_rules[] = $rule;
+				$index = lastIndex($this->_rules);
 				$this->fastMemToIndex[$ser] = $index;
 				$this->fastNameToIndex[$rule->name()] = $index;
 
@@ -209,8 +209,8 @@ class RuleStore
 			{
 				$rule->owner = $this;
 
-				$this->postRules[] = $rule;
-				$index = lastIndex($this->postRules);
+				$this->_postRules[] = $rule;
+				$index = lastIndex($this->_postRules);
 				$this->fastMemToIndex_forPost[$ser] = $index;
 				$this->fastNameToIndex_forPost[$rule->name()] = $index;
 
@@ -627,7 +627,7 @@ class RuleStore
 		$i = 0;
 		$newArray = Array();
 
-		foreach($this->rules as $rule)
+		foreach($this->_rules as $rule)
 		{
 			if( $rule === $ruleToBeMoved )
 			{
@@ -645,7 +645,7 @@ class RuleStore
 			}
 		}
 		
-		$this->rules = &$newArray;
+		$this->_rules = &$newArray;
 		
 		$this->regen_Indexes();
 		
@@ -669,6 +669,27 @@ class RuleStore
 		$con->sendRequest($url);
 	}
 
+    public function removeAll()
+    {
+        foreach($this->_rules as $rule)
+        {
+            $rule->cleanForDestruction();
+            $rule->owner = null;
+        }
+
+        if( $this->xmlroot !== null )
+            DH::clearDomNodeChilds($this->xmlroot);
+        if( $this->postRulesRoot !== null )
+            DH::clearDomNodeChilds($this->postRulesRoot);
+
+        $this->_rules = Array();
+        $this->fastMemToIndex = Array();
+        $this->fastMemToIndex_forPost = Array();
+        $this->fastNameToIndex = Array();
+        $this->fastNameToIndex_forPost =Array();
+
+        $this->_postRules = Array();
+    }
 
 	/**
 	 * this function will move $ruleToBeMoved before $ruleRef.
@@ -735,7 +756,7 @@ class RuleStore
         $i = 0;
         $newArray = Array();
 
-        foreach($this->rules as $rule)
+        foreach($this->_rules as $rule)
         {
             if( $rule === $ruleToBeMoved )
             {
@@ -752,7 +773,7 @@ class RuleStore
             $i++;
         }
 
-        $this->rules = &$newArray;
+        $this->_rules = &$newArray;
 
         $this->regen_Indexes();
 
@@ -805,7 +826,7 @@ class RuleStore
 
             $res = Array();
 
-			foreach( $this->rules as $rule )
+			foreach($this->_rules as $rule )
 			{
 				$queryContext['object'] = $rule;
 				if( $query->matchSingleObject($queryContext) )
@@ -813,7 +834,7 @@ class RuleStore
 			}
 			if( $this->isPreOrPost )
 			{
-				foreach( $this->postRules as $rule )
+				foreach($this->_postRules as $rule )
 				{
 					$queryContext['object'] = $rule;
 					if( $query->matchSingleObject($queryContext) )
@@ -825,11 +846,11 @@ class RuleStore
 
 		if( !$this->isPreOrPost )
         {
-            $res = $this->rules;
+            $res = $this->_rules;
             return $res;
         }
 
-        $res = array_merge($this->rules, $this->postRules);
+        $res = array_merge($this->_rules, $this->_postRules);
 
 		return $res;
 	}
@@ -840,7 +861,7 @@ class RuleStore
 	*/
 	public function count()
 	{
-		return count($this->rules) + count($this->postRules);
+		return count($this->_rules) + count($this->_postRules);
 	}
 	
 	
@@ -850,11 +871,11 @@ class RuleStore
 	*/
 	public function display()
 	{
-		foreach($this->rules as $r )
+		foreach($this->_rules as $r )
 		{
 			$r->display();
 		}
-		foreach($this->postRules as $r )
+		foreach($this->_postRules as $r )
 		{
 			$r->display();
 		}
@@ -871,10 +892,10 @@ class RuleStore
 			derr("String was expected for rule name");
 		
 		if( isset( $this->fastNameToIndex[$name]) )
-			return $this->rules[$this->fastNameToIndex[$name]];
+			return $this->_rules[$this->fastNameToIndex[$name]];
 
 		if( isset( $this->fastNameToIndex_forPost[$name]) )
-			return $this->postRules[$this->fastNameToIndex_forPost[$name]];
+			return $this->_postRules[$this->fastNameToIndex_forPost[$name]];
 		
 		return null;
 	}
@@ -947,7 +968,7 @@ class RuleStore
 		{
 			$found = true;
 			unset($this->fastNameToIndex[$rule->name()]);
-			unset($this->rules[$this->fastMemToIndex[$serial]]);
+			unset($this->_rules[$this->fastMemToIndex[$serial]]);
 			unset($this->fastMemToIndex[$serial]);
 			$this->xmlroot->removeChild($rule->xmlroot);
 			$rule->owner = null;
@@ -963,7 +984,7 @@ class RuleStore
 			{
 				$found = true;
 				unset($this->fastNameToIndex_forPost[$rule->name()]);
-				unset($this->postRules[$this->fastMemToIndex_forPost[$serial]]);
+				unset($this->_postRules[$this->fastMemToIndex_forPost[$serial]]);
 				unset($this->fastMemToIndex_forPost[$serial]);
 				$this->postRulesRoot->removeChild($rule->xmlroot);
 				$rule->owner = null;
@@ -1009,14 +1030,14 @@ class RuleStore
 	public function rewriteXML()
 	{
 		DH::clearDomNodeChilds($this->xmlroot);
-		foreach( $this->rules as $rule )
+		foreach($this->_rules as $rule )
 		{
 			$this->xmlroot->appendChild($rule->xmlroot);
 		}
 		if( $this->isPreOrPost )
 		{
 			DH::clearDomNodeChilds($this->postRulesRoot);
-			foreach( $this->postRules as $rule )
+			foreach($this->_postRules as $rule )
 			{
 				$this->postRulesRoot->appendChild($rule->xmlroot);
 			}
@@ -1028,7 +1049,7 @@ class RuleStore
 		$this->fastMemToIndex = Array();
 		$this->fastNameToIndex = Array();
 		
-		foreach($this->rules as $i=>$rule)
+		foreach($this->_rules as $i=> $rule)
 		{
 			$this->fastMemToIndex[spl_object_hash($rule)] = $i ;
 			$this->fastNameToIndex[$rule->name()] = $i ;
@@ -1040,7 +1061,7 @@ class RuleStore
 		$this->fastMemToIndex_forPost = Array();
 		$this->fastNameToIndex_forPost = Array();
 
-		foreach($this->postRules as $i=>$rule)
+		foreach($this->_postRules as $i=> $rule)
 		{
 			$this->fastMemToIndex_forPost[spl_object_hash($rule)] = $i ;
 			$this->fastNameToIndex_forPost[$rule->name()] = $i ;
@@ -1111,7 +1132,7 @@ class RuleStore
 		if( !$this->isPreOrPost )
 			derr('This is not a panorama/devicegroup based RuleStore');
 
-		return $this->rules;
+		return $this->_rules;
 	}
 
 
@@ -1123,7 +1144,7 @@ class RuleStore
 		if( !$this->isPreOrPost )
 			derr('This is not a panorama/devicegroup based RuleStore');
 
-		return $this->postRules;
+		return $this->_postRules;
 	}
 
 	public function ruleIsPreRule(Rule $rule)
@@ -1172,7 +1193,7 @@ class RuleStore
 		if(!$this->isPreOrPost )
 			derr('unsupported');
 
-		return count($this->rules);
+		return count($this->_rules);
 	}
 
 	/**
@@ -1184,7 +1205,7 @@ class RuleStore
 		if(!$this->isPreOrPost )
 			derr('unsupported');
 
-		return count($this->postRules);
+		return count($this->_postRules);
 	}
 
     /**
@@ -1209,7 +1230,7 @@ class RuleStore
         if( !$this->isPreOrPost || $this->ruleIsPreRule($rule) )
         {
             $count = 0;
-            foreach($this->rules as $lrule)
+            foreach($this->_rules as $lrule)
             {
                 if( $rule === $lrule )
                     return $count;
@@ -1220,7 +1241,7 @@ class RuleStore
         elseif( $this->ruleIsPostRule($rule) )
         {
             $count = 0;
-            foreach($this->postRules as $lrule)
+            foreach($this->_postRules as $lrule)
             {
                 if( $rule === $lrule )
                     return $count;
