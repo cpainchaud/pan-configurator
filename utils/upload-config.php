@@ -138,6 +138,11 @@ if( isset(PH::$args['fromxpath']) )
    {
        display_error_usage_exit("'fromXpath' option must be used with 'toXpath'");
    }
+    $fromXpath = str_replace('"', "'", PH::$args['fromxpath']);
+}
+if( isset(PH::$args['toxpath']) )
+{
+    $toXpath = str_replace('"', "'", PH::$args['toxpath']);
 }
 
 if( !isset(PH::$args['apiTimeout']) )
@@ -194,10 +199,10 @@ else
 
 print " OK!!\n\n";
 
-if( isset(PH::$args['fromxpath']) )
+if( isset($fromXpath) )
 {
-    print " * fromXPath is specified with value '".PH::$args['fromxpath']."'\n";
-    $foundInputXpathList = DH::findXPath(PH::$args['fromxpath'], $doc);
+    print " * fromXPath is specified with value '".$fromXpath."'\n";
+    $foundInputXpathList = DH::findXPath($fromXpath, $doc);
 
     if( $foundInputXpathList === FALSE )
         derr("invalid xpath syntax");
@@ -231,7 +236,7 @@ if( $configOutput['status'] == 'fail' )
 
 if( $configOutput['type'] == 'file' )
 {
-    if( isset(PH::$args['toxpath']) )
+    if( isset($toXpath) )
     {
         derr("toXpath options was used, it's incompatible with a file output. Make a feature request !!!  ;)");
     }
@@ -245,10 +250,10 @@ elseif ( $configOutput['type'] == 'api'  )
     if( $debugAPI )
         $configOutput['connector']->setShowApiCalls(true);
 
-    if( isset(PH::$args['toxpath']) )
+    if( isset($toXpath) )
     {
         print "Sending SET command to API...";
-        if( isset(PH::$args['toxpath']) )
+        if( isset($toXpath) )
         {
             $stringToSend = '';
             foreach($foundInputXpathList as $xpath)
@@ -259,7 +264,7 @@ elseif ( $configOutput['type'] == 'api'  )
         else
             $stringToSend = DH::dom_to_xml(DH::firstChildElement($doc),-1,false);
 
-        $configOutput['connector']->sendSetRequest(PH::$args['toxpath'], $stringToSend);
+        $configOutput['connector']->sendSetRequest($toXpath, $stringToSend);
         print "OK!";
     }
     else
