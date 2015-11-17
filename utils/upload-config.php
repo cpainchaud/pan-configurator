@@ -138,7 +138,7 @@ if( isset(PH::$args['fromxpath']) )
    {
        display_error_usage_exit("'fromXpath' option must be used with 'toXpath'");
    }
-    $fromXpath = str_replace('"', "'", PH::$args['fromxpath']);
+    //$fromXpath = str_replace('"', "'", PH::$args['fromxpath']);
 }
 if( isset(PH::$args['toxpath']) )
 {
