@@ -50,7 +50,7 @@ class EthernetInterface
 
     protected $l3ipv4Addresses;
 
-    static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group', 'log-card' );
+    static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group', 'log-card', 'empty' );
 
     /**
      * @param string $name
@@ -94,7 +94,8 @@ class EthernetInterface
 
         if( $this->type == 'tmp' )
         {
-            derr('unsupported ethernet interface type : not found', $xml);
+            $this->type = 'empty';
+            return;
         }
 
         if( $this->type == 'layer3' )
