@@ -386,49 +386,24 @@ if( $configType == 'panos' )
 {
     if( isset(PH::$args['loadpanoramapushedconfig']) )
     {
-        print " - 'loadPanoramaPushedConfig' was requested so additional configs will be downloaded from 'pushed' through firewall API\n";
+        print " - 'loadPanoramaPushedConfig' was requested, downloading it through API...";
+        $panoramaDoc = $inputConnector->getPanoramaPushedConfig();
 
-        $xpathResult = DH::findXPath('/config/devices/entry/vsys/entry', $xmlDoc);
+        $xpathResult = DH::findXPath('/panorama/vsys', $panoramaDoc);
 
         if( $xpathResult === false )
             derr("could not find any VSYS");
 
-        if( $xpathResult->length < 1 )
-            derr("could not find any VSYS");
+        if( $xpathResult->length != 1 )
+            derr("found more than 1 <VSYS>");
 
         $fakePanorama = new PanoramaConf();
         $fakePanorama->_fakeMode = true;
         $inputConnector->refreshSystemInfos();
-        $panoramaString = "<config version=\"{$inputConnector->info_PANOS_version}\"><shared></shared><devices><entry name=\"localhost.localdomain\"><device-group></device-group></entry></devices></config>";
+        $newDGRoot = $xpathResult->item(0);
+        $panoramaString = "<config version=\"{$inputConnector->info_PANOS_version}\"><shared></shared><devices><entry name=\"localhost.localdomain\"><device-group>".DH::domlist_to_xml($newDGRoot->childNodes)."</device-group></entry></devices></config>";
+        print $panoramaString;
         $fakePanorama->load_from_xmlstring($panoramaString);
-
-        foreach( $xpathResult as $node )
-        {
-            /** @var DOMElement $node */
-            $name = $node->getAttribute('name');
-            if( strlen($name) < 1 )
-                derr("vsys name not found", $node);
-
-            if( $name === 'vsys1' && !$inputConnector->info_multiVSYS )
-            {
-                print "    - downloading for '{$name}'... ";
-                $tmpDoc = $inputConnector->getPanoramaPushedConfig();
-                $tmpDoc = DH::firstChildElement($tmpDoc);
-                print "OK!\n";
-            }
-            else
-                derr('unsupported');
-
-            $tmpDoc = DH::findFirstElementOrDie('panorama', $tmpDoc);
-
-            $newDG = $fakePanorama->createDeviceGroup($name);
-            DH::clearDomNodeChilds($newDG->xmlroot);
-            DH::copyChildElementsToNewParentNode($tmpDoc, $newDG->xmlroot);
-            $newDG->load_from_domxml($newDG->xmlroot);
-
-        }
-        unset($name);
-        unset($xpathResult);
 
         $pan = new PANConf($fakePanorama);
     }

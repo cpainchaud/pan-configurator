@@ -844,17 +844,15 @@ class PanAPIConnector
 
     public function getPanoramaPushedConfig()
     {
-        $r = $this->sendOpRequest('<show><config><pushed-shared-policy/></config></show>');
+        $url = 'action=get&type=config&xpath=/config/panorama';
 
-        $configRoot = DH::findFirstElement('response', $r);
-        if( $configRoot === false )
-            derr("<response> was not found", $r);
+        $r = $this->sendRequest($url, true);
 
-        $configRoot = DH::findFirstElement('result', $configRoot);
+        $configRoot = DH::findFirstElement('result', $r);
         if( $configRoot === false )
             derr("<result> was not found", $r);
 
-        $configRoot = DH::findFirstElement('policy', $configRoot);
+        $configRoot = DH::findFirstElement('panorama', $configRoot);
         if( $configRoot === false )
             derr("<panorama> was not found", $r);
 
