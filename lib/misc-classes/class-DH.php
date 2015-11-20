@@ -547,6 +547,8 @@ class DH
 
         $count = 0;
 
+        $children = Array();
+
         foreach( $source->childNodes as $child )
         {
             if( $child->nodeType != XML_ELEMENT_NODE )

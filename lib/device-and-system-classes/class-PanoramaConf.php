@@ -83,7 +83,7 @@ class PanoramaConf
     public $managedFirewalls = Array();
 
 
-    /** @var PanAPIConnector|null */
+    /** @var PanAPIConnector|null $connector */
 	public $connector = null;
 
     /** @var AppStore */
@@ -91,6 +91,8 @@ class PanoramaConf
 
     /** @var TagStore */
     public $tagStore;
+
+    public $_fakeMode = false;
 	
 	public $name = '';
 
@@ -282,7 +284,7 @@ class PanoramaConf
         //
 		// loading Device Groups now
         //
-        if( $this->version < 70 )
+        if( $this->version < 70 || $this->_fakeMode )
         {
             foreach ($this->devicegrouproot->childNodes as $node)
             {
@@ -694,8 +696,9 @@ class PanoramaConf
 	{
 		$newDG = new DeviceGroup($this);
 		$newDG->load_from_templateXml();
-
 		$newDG->setName($name);
+
+        $this->deviceGroups[] = $newDG;
 
 		return $newDG;
 	}

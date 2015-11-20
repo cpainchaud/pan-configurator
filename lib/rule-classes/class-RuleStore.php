@@ -854,6 +854,99 @@ class RuleStore
 
 		return $res;
 	}
+
+
+    /**
+     * Returns an Array with all Rules inside this store
+     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+     */
+    public function &resultingRuleSet()
+    {
+
+        $res = Array();
+
+        if( isset($this->owner->parentDeviceGroup) )
+        {
+            $varName = $this->getStoreVarName();
+            /** @var RuleStore $var */
+            $var = $this->owner->parentDeviceGroup->$varName;
+            $res = $var->resultingPreRuleSet();
+        }
+
+        $res = array_merge($res, $this->_rules);
+
+        if( $this->owner->isPanorama() || $this->owner->isDeviceGroup() )
+        {
+            $res = array_merge($res, $this->_postRules);
+        }
+
+        if( isset($this->owner->parentDeviceGroup) )
+        {
+            $varName = $this->getStoreVarName();
+            /** @var RuleStore $var */
+            $var = $this->owner->parentDeviceGroup->$varName;
+            $res = array_merge($res, $var->resultingPostRuleSet());
+        }
+
+        return $res;
+    }
+
+    /**
+     * Returns an Array with all Rules inside this store
+     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+     */
+    public function &resultingPreRuleSet()
+    {
+
+        $res = Array();
+
+        if( isset($this->owner->parentDeviceGroup) )
+        {
+            $varName = $this->getStoreVarName();
+            /** @var RuleStore $var */
+            $var = $this->owner->parentDeviceGroup->$varName;
+            $res = $var->resultingPreRuleSet();
+        }
+        elseif( $this->owner->isPanorama() )
+        {
+            $varName = $this->getStoreVarName();
+            /** @var RuleStore $var */
+            $var = $this->owner->$varName;
+            $res = $var->preRules();
+        }
+
+        $res = array_merge($res, $this->_rules);
+
+        return $res;
+    }
+
+    /**
+     * Returns an Array with all Rules inside this store
+     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+     */
+    public function &resultingPostRuleSet()
+    {
+
+        $res = $this->_postRules;
+
+        if( isset($this->owner->parentDeviceGroup) )
+        {
+            $varName = $this->getStoreVarName();
+            /** @var RuleStore $var */
+            $var = $this->owner->parentDeviceGroup->$varName;
+            $res = array_merge($var->resultingPostRuleSet(), $res );
+        }
+        elseif( $this->owner->isPanorama() )
+        {
+            $varName = $this->getStoreVarName();
+            /** @var RuleStore $var */
+            $var = $this->owner->$varName;
+            $res = array_merge($var->postRules(), $res );
+        }
+
+
+        return $res;
+    }
 	
 	/**
 	* Counts the number of rules in this store

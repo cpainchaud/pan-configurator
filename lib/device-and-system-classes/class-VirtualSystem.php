@@ -63,14 +63,18 @@ class VirtualSystem
     /** @var ZoneStore */
     public $zoneStore=null;
 
-    /** @var  InterfaceContainer */
+    /** @var InterfaceContainer */
     public $importedInterfaces;
 
-	
-	
-	public function __construct(PANConf $owner)
+    /** @var DeviceGroup $parentDeviceGroup in case it load as part of Panorama */
+    public $parentDeviceGroup = null;
+
+
+	public function __construct(PANConf $owner, DeviceGroup $applicableDG=null)
 	{
 		$this->owner = $owner;
+
+        $this->parentDeviceGroup = $applicableDG;
 
         $this->version = &$owner->version;
 		

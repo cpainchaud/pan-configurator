@@ -95,6 +95,7 @@ $supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "fi
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['stats'] = Array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
 $supportedArguments['apitimeout'] = Array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
+$supportedArguments['loadpanoramapushedconfig'] = Array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules' );
 
 
 
@@ -245,7 +246,7 @@ if( isset(PH::$args['listfilters']) )
     exit(0);
 }
 
-// check that only supoprted arguments were provided
+// check that only supported arguments were provided
 foreach ( PH::$args as $index => &$arg )
 {
     if( !isset($supportedArguments[$index]) )
@@ -323,8 +324,15 @@ if( $configInput['status'] == 'fail' )
     fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");exit(1);
 }
 
+/** @var $inputConnector PanAPIConnector */
+$inputConnector = null;
+
 if( $configInput['type'] == 'file' )
 {
+    if( isset(PH::$args['loadpanoramapushedconfig']) )
+    {
+        derr("'loadPanoramaPushedConfig' option cannot used in API/Online mode");
+    }
     if(isset(PH::$args['out']) )
     {
         $configOutput = PH::$args['out'];
@@ -344,10 +352,11 @@ if( $configInput['type'] == 'file' )
 }
 elseif ( $configInput['type'] == 'api'  )
 {
+    $inputConnector = $configInput['connector'];
     if($debugAPI)
-        $configInput['connector']->setShowApiCalls(true);
+       $inputConnector->setShowApiCalls(true);
     print " - Downloading config from API... ";
-    $xmlDoc = $configInput['connector']->getCandidateConfig($apiTimeoutValue);
+    $xmlDoc = $inputConnector->getCandidateConfig($apiTimeoutValue);
     print "OK!\n";
 }
 else
@@ -360,21 +369,77 @@ $xpathResult = DH::findXPath('/config/devices/entry/vsys', $xmlDoc);
 if( $xpathResult === FALSE )
     derr('XPath error happened');
 if( $xpathResult->length <1 )
+{
     $configType = 'panorama';
+    if( isset(PH::$args['loadpanoramapushedconfig']) )
+    {
+        derr("'loadPanoramaPushedConfig' mode can be used only on Firewalls but Panorama was detected");
+    }
+}
 else
     $configType = 'panos';
 unset($xpathResult);
 
+print " - Detected platform type is '{$configType}'\n";
 
 if( $configType == 'panos' )
-    $pan = new PANConf();
+{
+    if( isset(PH::$args['loadpanoramapushedconfig']) )
+    {
+        print " - 'loadPanoramaPushedConfig' was requested so additional configs will be downloaded from 'pushed' through firewall API\n";
+
+        $xpathResult = DH::findXPath('/config/devices/entry/vsys/entry', $xmlDoc);
+
+        if( $xpathResult === false )
+            derr("could not find any VSYS");
+
+        if( $xpathResult->length < 1 )
+            derr("could not find any VSYS");
+
+        $fakePanorama = new PanoramaConf();
+        $fakePanorama->_fakeMode = true;
+        $inputConnector->refreshSystemInfos();
+        $panoramaString = "<config version=\"{$inputConnector->info_PANOS_version}\"><shared></shared><devices><entry name=\"localhost.localdomain\"><device-group></device-group></entry></devices></config>";
+        $fakePanorama->load_from_xmlstring($panoramaString);
+
+        foreach( $xpathResult as $node )
+        {
+            /** @var DOMElement $node */
+            $name = $node->getAttribute('name');
+            if( strlen($name) < 1 )
+                derr("vsys name not found", $node);
+
+            if( $name === 'vsys1' && !$inputConnector->info_multiVSYS )
+            {
+                print "    - downloading for '{$name}'... ";
+                $tmpDoc = $inputConnector->getPanoramaPushedConfig();
+                $tmpDoc = DH::firstChildElement($tmpDoc);
+                print "OK!\n";
+            }
+            else
+                derr('unsupported');
+
+            $tmpDoc = DH::findFirstElementOrDie('panorama', $tmpDoc);
+
+            $newDG = $fakePanorama->createDeviceGroup($name);
+            DH::clearDomNodeChilds($newDG->xmlroot);
+            DH::copyChildElementsToNewParentNode($tmpDoc, $newDG->xmlroot);
+            $newDG->load_from_domxml($newDG->xmlroot);
+
+        }
+        unset($name);
+        unset($xpathResult);
+
+        $pan = new PANConf($fakePanorama);
+    }
+    else $pan = new PANConf();
+}
 else
     $pan = new PanoramaConf();
 
-print " - Detected platform type is '{$configType}'\n";
+if( $inputConnector !== null )
+    $pan->connector = $inputConnector;
 
-if( $configInput['type'] == 'api' )
-    $pan->connector = $configInput['connector'];
 // </editor-fold>
 
 
@@ -535,25 +600,51 @@ foreach( $rulesLocation as $location )
     {
         foreach ($pan->getVirtualSystems() as $sub)
         {
-            if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
+            if( isset(PH::$args['loadpanoramapushedconfig']) )
             {
-                if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
+                if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
                 {
-                    $rulesToProcess[] = Array('store' => $sub->securityRules, 'rules' => $sub->securityRules->rules());
+                    if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->securityRules, 'rules' => $sub->securityRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->resultingRuleSet());
+                    }
+                    $locationFound = true;
                 }
-                if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
+            }
+            else
+            {
+                if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
                 {
-                    $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->rules());
+                    if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->securityRules, 'rules' => $sub->securityRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->rules());
+                    }
+                    $locationFound = true;
                 }
-                if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
-                {
-                    $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
-                }
-                if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
-                {
-                    $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->rules());
-                }
-                $locationFound = true;
             }
         }
     }

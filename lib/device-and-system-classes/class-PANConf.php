@@ -64,7 +64,7 @@ class PANConf
     /** @var VirtualSystem[] */
 	public $virtualSystems = Array();
 
-    /** @var PanAPIConnector|null */
+    /** @var PanAPIConnector|null $connector */
 	public $connector = null;
 
     /** @var null|Template  */
@@ -239,32 +239,36 @@ class PANConf
 		{
 			if( $node->nodeType != 1 ) continue;
 			//print "DOM type: ".$node->nodeType."\n";
-			$lvsys = new VirtualSystem($this);
 
-			$lvname = DH::findAttribute('name', $node);
+			$localVirtualSystemName = DH::findAttribute('name', $node);
 
-			if( $lvname === FALSE )
+			if( $localVirtualSystemName === FALSE || strlen($localVirtualSystemName) < 1 )
 				derr('cannot find VirtualSystem name');
+
+            $dg = null;
 
 			if( isset($this->panorama) )
 			{
-				$dg = $this->panorama->findApplicableDGForVsys($this->serial , $lvname);
-				if( $dg !== FALSE )
-				{
-					$lvsys->addressStore->panoramaDG = $dg->addressStore;
-					$lvsys->serviceStore->panoramaDG = $dg->serviceStore;
-				}
+                if( $this->panorama->_fakeMode )
+                    $dg = $this->panorama->findDeviceGroup($localVirtualSystemName);
+				else
+                    $dg = $this->panorama->findApplicableDGForVsys($this->serial , $localVirtualSystemName);
 			}
 
-			$lvsys->load_from_domxml($node);
-			$this->virtualSystems[] = $lvsys;
+            if( $dg !== false && $dg !== null )
+                $localVsys = new VirtualSystem($this, $dg);
+            else
+                $localVsys = new VirtualSystem($this);
 
-            $importedInterfaces = $lvsys->importedInterfaces->interfaces();
+			$localVsys->load_from_domxml($node);
+			$this->virtualSystems[] = $localVsys;
+
+            $importedInterfaces = $localVsys->importedInterfaces->interfaces();
             foreach( $importedInterfaces as &$ifName )
             {
                 $resolvedIf = $this->network->findInterface($ifName);
                 if( $resolvedIf !== null )
-                    $resolvedIf->importedByVSYS = $lvsys;
+                    $resolvedIf->importedByVSYS = $localVsys;
             }
 		}
 

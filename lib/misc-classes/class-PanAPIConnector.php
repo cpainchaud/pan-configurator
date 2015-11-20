@@ -67,6 +67,67 @@ class PanAPIConnector
     static private $keyStoreFileName = '.panconfkeystore';
     static private $keyStoreInitialized = false;
 
+    public $info_deviceType = null;
+    public $info_PANOS_version = null;
+    public $info_PANOS_version_int = null;
+    public $info_multiVSYS = null;
+
+    public function refreshSystemInfos()
+    {
+        $url = "type=op&cmd=<show><system><info></info></system></show>";
+        $res = $this->sendRequest($url, true);
+        $orig = $res;
+        $res = DH::findFirstElement('result', $res);
+        if ($res === false )
+            derr('cannot find <result>:'.DH::dom_to_xml($orig,0,true,2));
+        $res = DH::findFirstElement('system', $res);
+        if ($res === false )
+            derr('cannot find <system>');
+
+
+        $version = DH::findFirstElement('sw-version', $res);
+        if ($version === false )
+            derr("cannot find <sw-version>:\n".DH::dom_to_xml($orig,0,true,4));
+
+        $this->info_PANOS_version = $version->textContent;
+
+        $model = DH::findFirstElement('model', $res);
+        if ($model === false )
+            derr('cannot find <model>');
+
+        $model = $model->nodeValue;
+
+        if ($model == 'Panorama')
+        {
+            $this->info_deviceType = 'panorama';
+        } else
+        {
+            $this->info_deviceType = 'panos';
+        }
+
+        $vex = explode('.', $this->info_PANOS_version);
+        if (count($vex) != 3)
+            derr("ERROR! Unsupported PANOS version :  " . $version . "\n\n");
+
+        $this->info_PANOS_version_int = $vex[0] * 10 + $vex[1] * 1;
+
+        if( $this->info_deviceType == 'panos' )
+        {
+            $multi = DH::findFirstElement('multi-vsys', $res);
+            if ($multi === false )
+                derr('cannot find <multi-vsys>');
+
+            $multi = strtolower($multi->textContent);
+            if( $multi == 'on' )
+                $this->info_multiVSYS = true;
+            elseif( $multi == 'off' )
+                $this->info_multiVSYS = false;
+            else
+                derr("unsupported multi-vsys mode: {$multi}");
+        }
+
+    }
+
     /**
      * @return string[]  Array('type'=> pano|panorama,  'version'=>61 ) (if PANOS=6.1)
      */
@@ -282,15 +343,7 @@ class PanAPIConnector
     {
         print " Testing API connectivity: ";
 
-        $res = $this->sendOpRequest("<show><system><info></info></system></show>");
-
-        $res = DH::findFirstElement('response', $res);
-        if ($res === false)
-            derr('missing <response> from API answer');
-
-        $res = DH::findFirstElement('result', $res);
-        if ($res === false)
-            derr('missing <result> from API answer');
+        $this->refreshSystemInfos();
 
         print "OK!\n";
 
@@ -783,6 +836,27 @@ class PanAPIConnector
         $configRoot = DH::findFirstElement('config', $configRoot);
         if( $configRoot === false )
             derr("<config> was not found", $r);
+
+        DH::makeElementAsRoot($configRoot, $r);
+
+        return $r;
+    }
+
+    public function getPanoramaPushedConfig()
+    {
+        $r = $this->sendOpRequest('<show><config><pushed-shared-policy/></config></show>');
+
+        $configRoot = DH::findFirstElement('response', $r);
+        if( $configRoot === false )
+            derr("<response> was not found", $r);
+
+        $configRoot = DH::findFirstElement('result', $configRoot);
+        if( $configRoot === false )
+            derr("<result> was not found", $r);
+
+        $configRoot = DH::findFirstElement('policy', $configRoot);
+        if( $configRoot === false )
+            derr("<panorama> was not found", $r);
 
         DH::makeElementAsRoot($configRoot, $r);
 
