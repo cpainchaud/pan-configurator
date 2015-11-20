@@ -1,6 +1,4 @@
 <?php
-
-
 /*
  * Copyright (c) 2014 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
  * Author: Christophe Painchaud <cpainchaud _AT_ paloaltonetworks.com>
@@ -18,9 +16,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/**
- * Class SecurityRule
- */
+// TODO code UserID, userIsAny userIsPrelogon userIsUnknown bare minimum
 class SecurityRule extends Rule
 {
 	protected $action = self::ActionAllow;
