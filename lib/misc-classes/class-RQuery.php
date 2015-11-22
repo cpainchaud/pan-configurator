@@ -1005,7 +1005,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = Array(
 //                                              //
 //          Services properties                 //
 //                                              //
-RQuery::$defaultFilters['rule']['services']['operators']['is.any'] = Array(
+RQuery::$defaultFilters['rule']['service']['operators']['is.any'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule $object */
@@ -1013,7 +1013,7 @@ RQuery::$defaultFilters['rule']['services']['operators']['is.any'] = Array(
     },
     'arg' => false
 );
-RQuery::$defaultFilters['rule']['services']['operators']['is.application-default'] = Array(
+RQuery::$defaultFilters['rule']['service']['operators']['is.application-default'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule $object */
@@ -1021,7 +1021,7 @@ RQuery::$defaultFilters['rule']['services']['operators']['is.application-default
     },
     'arg' => false
 );
-RQuery::$defaultFilters['rule']['services']['operators']['has'] = Array(
+RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule $object */
