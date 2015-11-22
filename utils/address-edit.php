@@ -144,19 +144,8 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
 
         if( !$object->nameIsValidRuleIPEntry() )
         {
-            $explode = explode( '-', $object->name() );
-            if( count($explode) != 2 )
-            {
-                print $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
-                return;
-            }
-            if( filter_var($explode[0], FILTER_VALIDATE_IP) === FALSE || filter_var($explode[1], FILTER_VALIDATE_IP) === FALSE )
-            {
-                print $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
-                return;
-            }
-
-            $rangeDetected = true;
+            print $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
+            return;
         }
 
         $objectRefs = $object->getReferences();
@@ -174,7 +163,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
 
         $pan = PH::findRootObjectOrDie($object->owner);
 
-        if( !$rangeDetected )
+        if( strpos($object->name(), '-') === FALSE )
         {
             $explode = explode('/',$object->name());
 
@@ -212,6 +201,8 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
         }
         else
         {
+            $rangeDetected = true;
+            $explode= explode('-', $object->name());
             $newName = "R-".$explode[0].'-'.$explode[1];
         }
 
