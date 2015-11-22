@@ -183,25 +183,33 @@ class AddressStore
 	public function load_addressgroups_from_domxml($xml)
 	{
 		$this->addressGroupRoot = $xml;
+
+        foreach( $xml->childNodes as $node )
+        {
+            /** @var DOMElement $node */
+            if( $node->nodeType != 1 ) continue;
+
+            $name = $node->getAttribute('name');
+            if( strlen($name) == 0 )
+                derr("unsupported empty group name", $node);
+
+            $ns = new AddressGroup( $name, $this);
+
+            $this->_addressGroups[$name] = $ns;
+            $this->all[$name] = $ns;
+
+        }
 		
 		foreach( $xml->childNodes as $node )
 		{
+            /** @var DOMElement $node */
 			if( $node->nodeType != 1 ) continue;
 
-			$ns = new AddressGroup('',$this);
+            $name = $node->getAttribute('name');
+            $ns = $this->_addressGroups[$name];
 			$ns->load_from_domxml($node);
 
             $objectName = $ns->name();
-
-			if( isset($this->_tmpAddresses[$objectName]) )
-			{
-                $this->_tmpAddresses[$objectName]->replaceMeGlobally($ns);
-                if( isset($this->_tmpAddresses[$objectName]) )
-				    $this->remove($this->_tmpAddresses[$objectName], true);
-			}
-
-			$this->_addressGroups[$objectName] = $ns;
-			$this->all[$objectName] = $ns;
 		}
 	}
 

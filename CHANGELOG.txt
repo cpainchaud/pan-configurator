@@ -3,6 +3,7 @@ CHANGELOG
 1.5.6
 * PANConf : enhanced support to load pushed panorama config
 * RuleStore : new function to get rules from parent DeviceGroups
+* AddressGroup : enhanced group loading time & consistency
 
 utils:
 rules-edit : loading of firewall configurations can now get panorama pushed config, use option 'loadPanoramaPushedConfig'
