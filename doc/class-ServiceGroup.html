@@ -386,7 +386,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_API_removeMember">#</a>
-		<code><b>API_removeMember</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$objectToRemove</var></span>, <span>boolean <var>$rewriteXml</var> = <span class="php-keyword1">true</span> </span> )</code>
+		<code><b>API_removeMember</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$objectToRemove</var></span> )</code>
 
 		<div class="description short">
 			
@@ -400,8 +400,6 @@
 				<div class="list"><dl>
 					<dt><var>$objectToRemove</var></dt>
 					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>objectToRemove</dd>
-					<dt><var>$rewriteXml</var></dt>
-					<dd><code>boolean</code><br>$rewriteXml</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -530,14 +528,14 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			boolean
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_replaceReferencedObject">#</a>
-		<code><b>replaceReferencedObject</b>( <span>mixed <var>$old</var></span>, <span>mixed <var>$new</var></span> )</code>
+		<code><b>replaceReferencedObject</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$old</var></span>, <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$new</var></span> )</code>
 
 		<div class="description short">
 			
@@ -547,8 +545,23 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$old</var></dt>
+					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$old</dd>
+					<dt><var>$new</var></dt>
+					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$new</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
 
 
 
@@ -624,7 +637,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_referencedObjectRenamed">#</a>
-		<code><b>referencedObjectRenamed</b>( <span>mixed <var>$h</var></span> )</code>
+		<code><b>referencedObjectRenamed</b>( <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$h</var></span> )</code>
 
 		<div class="description short">
 			
@@ -634,6 +647,11 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$h</var></dt>
+					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$h</dd>
+				</dl></div>
 
 
 
@@ -780,14 +798,14 @@
 
 		<td class="attributes"><code>
 			 public 
-			
+			string|
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_displayValueDiff">#</a>
-		<code><b>displayValueDiff</b>( <span><code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$otherObject</var></span>, <span>mixed <var>$indent</var> = <span class="php-num">0</span></span>, <span>mixed <var>$toString</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>displayValueDiff</b>( <span><code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$otherObject</var></span>, <span>integer <var>$indent</var> = <span class="php-num">0</span></span>, <span>boolean|false <var>$toString</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -797,7 +815,20 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$otherObject</var></dt>
+					<dd><code><code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$otherObject</dd>
+					<dt><var>$indent</var></dt>
+					<dd><code>integer</code><br>$indent</dd>
+					<dt><var>$toString</var></dt>
+					<dd><code>boolean|false</code><br>$toString</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string|</code><br />
+				</div>
 
 
 
@@ -874,7 +905,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_expand">#</a>
-		<code><b>expand</b>( <span>mixed <var>$keepGroupsInList</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>expand</b>( <span>boolean <var>$keepGroupsInList</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -884,6 +915,11 @@
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$keepGroupsInList</var></dt>
+					<dd><code>boolean</code><br>$keepGroupsInList</dd>
+				</dl></div>
 
 				<h4>Returns</h4>
 				<div class="list">

@@ -32,6 +32,9 @@ class DeviceGroup
 	/** @var DOMElement */
 	public $xmlroot;
 
+    /** @var DOMElement */
+    public $devicesRoot;
+
     /** @var AddressStore */
     public $addressStore=null;
     /** @var ServiceStore */
@@ -118,9 +121,9 @@ class DeviceGroup
 
 	/**
 	* !! Should not be used outside of a PanoramaConf constructor. !!
-	*
+	* @param DOMElement $xml
 	*/
-	public function load_from_domxml( $xml)
+	public function load_from_domxml( $xml )
 	{
 		$this->xmlroot = $xml;
 		

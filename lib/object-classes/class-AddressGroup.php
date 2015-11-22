@@ -188,6 +188,7 @@ class AddressGroup
 
 	/**
 	* @ignore
+     * @param Address|AddressGroup $h
 	* ** This is for internal use only **
 	*
 	*/
@@ -286,10 +287,9 @@ class AddressGroup
     /**
      * Removes a member from this group
      * @param Address|AddressGroup $objectToRemove Object to be removed
-     * @param bool $rewriteXml
      * @return bool
      */
-    public function API_removeMember( $objectToRemove, $rewriteXml = true )
+    public function API_removeMember( $objectToRemove )
     {
         $ret = $this->removeMember($objectToRemove);
 
@@ -568,7 +568,7 @@ class AddressGroup
 	}
 
 	/**
-     *  $keepGroupsInList keep groups in the the list on top of just expending them
+     * @param bool $keepGroupsInList keep groups in the the list on top of just expanding them
 	* @return Address[]|AddressGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
 	*/
 	public function &expand($keepGroupsInList=false)

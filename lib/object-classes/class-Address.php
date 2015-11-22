@@ -271,6 +271,12 @@ class Address
 			DH::createElement($this->xmlroot, 'description', $this->_description );
 		}
 
+        if( $this->tags->count() > 0 )
+        {
+            $this->tags->xmlroot = DH::createElement($this->xmlroot, 'tag');
+            $this->tags->rewriteXML();
+        }
+
 	}
 	
 	/**

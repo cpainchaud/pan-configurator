@@ -149,6 +149,11 @@ class TagRuleContainer extends ObjRuleContainer
         return $ret;
     }
 
+    /**
+     * @param Tag|String $Obj
+     * @param bool|true $rewriteXML
+     * @return bool
+     */
     public function API_addTag($Obj, $rewriteXML = true)
     {
         if( $this->addTag($Obj, $rewriteXML) )
@@ -167,36 +172,6 @@ class TagRuleContainer extends ObjRuleContainer
     {
         $xpath = $this->owner->getXPath().'/tag';
         return $xpath;
-    }
-
-    /**
-     *
-     */
-    public function findAvailableTagName($base, $suffix)
-    {
-        $maxl = 31;
-        $basel = strlen($base);
-        $suffixl = strlen($suffix);
-        $inc = 1;
-        $basePlusSuffixL = $basel + $suffixl;
-
-        while(true)
-        {
-
-            $incl = strlen(strval($inc));
-
-            if( $basePlusSuffixL + $incl > $maxl )
-            {
-                $newname = substr($base,0, $basel-$suffixl-$incl).$suffix.$inc;
-            }
-            else
-                $newname = $base.$suffix.$inc;
-
-            if( $this->find($newname) === null )
-                return $newname;
-
-            $inc++;
-        }
     }
 
 

@@ -273,7 +273,7 @@ class RQuery
             $newQuery = new RQuery($this->objectType, $this->level + 1);
             $this->subQueries[] = $newQuery;
 
-            $res = $newQuery->parseFromString(substr($text, $findOpen+1), $errorMessage, $supportedFilters );
+            $res = $newQuery->parseFromString(substr($text, $findOpen+1), $errorMessage );
 
             if( $res === false )
                 return false;

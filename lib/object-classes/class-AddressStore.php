@@ -709,6 +709,12 @@ class AddressStore
 	}
 
 
+    /**
+     * @param Address|AddressGroup $h
+     * @param string $oldName
+     * @return bool
+     * @throws Exception
+     */
 	public function referencedObjectRenamed($h, $oldName)
 	{
 		if( $this->all[$oldName] !== $h)

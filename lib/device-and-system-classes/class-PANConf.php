@@ -43,10 +43,13 @@ class PANConf
 
     /** @var DOMDocument */
     public $xmldoc;
-	
+
+    /** @var DOMDocument */
 	public $sharedroot;
+    /** @var DOMDocument */
 	public $devicesroot;
-	public $localhostlocaldomain;
+    /** @var DOMDocument */
+	public $localhostroot;
 
 	/** @var DOMElement|null */
 	public $vsyssroot;
@@ -106,13 +109,9 @@ class PANConf
 
 		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
-		if( $withPanorama !== null )
-			$this->serviceStore->panoramaShared = $this->panorama->serviceStore;
 
 		$this->addressStore = new AddressStore($this);
 		$this->addressStore->name = 'addresses';
-		if( $withPanorama !== null )
-			$this->addressStore->panoramaShared = $this->panorama->addressStore;
 
 		$this->network = new NetworkPropertiesContainer($this);
 	}
@@ -137,14 +136,10 @@ class PANConf
         if( $xml->nodeType == XML_DOCUMENT_NODE )
         {
 		    $this->xmldoc = $xml;
-            $this->configroot = DH::findFirstElementOrDie('config', $this->xmldoc);
-            $this->xmlroot = $this->configroot;
+            $this->xmlroot = DH::findFirstElementOrDie('config', $this->xmldoc);
         }
         else
-        {
             $this->xmlroot = $xml;
-            $this->configroot = $xml;
-        }
 
 
         if( $this->owner !== null )
@@ -153,7 +148,7 @@ class PANConf
         }
         else
         {
-            $versionAttr = DH::findAttribute('version', $this->configroot);
+            $versionAttr = DH::findAttribute('version', $this->xmlroot);
             if( $versionAttr !== false )
             {
                 $this->version = PH::versionFromString($versionAttr);
@@ -170,7 +165,7 @@ class PANConf
         }
 
 
-		$this->devicesroot = DH::findFirstElementOrCreate('devices', $this->configroot);
+		$this->devicesroot = DH::findFirstElementOrCreate('devices', $this->xmlroot);
 
 		$this->localhostroot = DH::findFirstElement('entry', $this->devicesroot);
         if( $this->localhostroot === false )
@@ -185,7 +180,7 @@ class PANConf
 
         if( $this->owner === null )
         {
-            $this->sharedroot = DH::findFirstElementOrDie('shared', $this->configroot);
+            $this->sharedroot = DH::findFirstElementOrDie('shared', $this->xmlroot);
             //
             // Extract Tag objects
             //

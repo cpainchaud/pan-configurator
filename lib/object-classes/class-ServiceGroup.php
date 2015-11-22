@@ -169,10 +169,9 @@ class ServiceGroup
 
     /**
      * @param Service|ServiceGroup objectToRemove
-     * @param bool $rewriteXml
      * @return bool
      */
-    public function API_removeMember( $objectToRemove, $rewriteXml = true )
+    public function API_removeMember( $objectToRemove)
     {
         $ret = $this->removeMember($objectToRemove);
 
@@ -251,7 +250,13 @@ class ServiceGroup
 
 		return $str;
 	}
-	
+
+    /**
+     * @param Service|ServiceGroup $old
+     * @param Service|ServiceGroup $new
+     * @return bool
+     * @throws Exception
+     */
 	public function replaceReferencedObject($old, $new)
 	{
 		if( $old === null )
@@ -305,7 +310,7 @@ class ServiceGroup
 	}
 	
 	/**
-	*
+	* @param Service|ServiceGroup $h
 	*
 	*/
 	public function referencedObjectRenamed($h)
@@ -409,6 +414,12 @@ class ServiceGroup
     }
 
 
+    /**
+     * @param ServiceGroup $otherObject
+     * @param int $indent
+     * @param bool|false $toString
+     * @return string|void
+     */
 	public function displayValueDiff( ServiceGroup $otherObject, $indent=0, $toString = false)
 	{
 		$retString = '';
@@ -504,6 +515,7 @@ class ServiceGroup
 
 
 	/**
+     * @param bool $keepGroupsInList
 	* @return Service[]|ServiceGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
 	*/
 	public function &expand($keepGroupsInList=false)
