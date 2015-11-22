@@ -98,7 +98,10 @@ class RQuery
             // print $this->padded."about to eval\n";
             if( isset($this->refOperator['Function'] ) )
             {
-                return $this->contextObject->execute($object);
+                $boolReturn =  $this->contextObject->execute($object);
+                if( $this->inverted )
+                    return !$boolReturn;
+                return $boolReturn;
             }
             else
             {
@@ -1334,6 +1337,39 @@ RQuery::$defaultFilters['rule']['name']['operators']['is.in.file'] = Array(
     },
     'arg' => true
 );
+
+//                                              //
+//                UserID properties             //
+//                                              //
+RQuery::$defaultFilters['rule']['user']['operators']['is.any'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return $context->object->userID_IsAny();
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['rule']['user']['operators']['is.known'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return $context->object->userID_IsKnown();
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['rule']['user']['operators']['is.unknown'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return $context->object->userID_IsUnknown();
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['rule']['user']['operators']['is.prelogon'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return $context->object->userID_IsPreLogon();
+    },
+    'arg' => false
+);
+
 
 RQuery::$defaultFilters['rule']['description']['operators']['is.empty'] = Array(
     'eval' => function($object, &$nestedQueries, $value)

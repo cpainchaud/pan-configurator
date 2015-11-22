@@ -17,7 +17,7 @@
 */
 
 // TODO code UserID, userIsAny userIsPrelogon userIsUnknown bare minimum
-class SecurityRule extends Rule
+class SecurityRule extends RuleWithUserID
 {
 	protected $action = self::ActionAllow;
 
@@ -68,46 +68,6 @@ class SecurityRule extends Rule
         self::ActionResetServer => 'reset-server',
         self::ActionResetBoth => 'reset-both'
     );
-
-
-    /*
-    const __UserIDType_Any = 0;
-    const __UserIDType_Unknown = 1;
-    const __UserIDType_Known = 2;
-    const __UserIDType_PreLogon = 3;
-    const __UserIDType_Custom = 4;
-
-    private $__RuleTypes = Array(
-        self::__UserIDType_Any => 'any',
-        self::__UserIDType_Unknown => 'unknown',
-        self::__UserIDType_Known => 'known',
-        self::__UserIDType_PreLogon => 'pre-logon',
-        self::__UserIDType_Custom => 'custom'
-    );
-
-    private $_userIDType = self::__UserIDType_Any;
-    private $_users = Array();
-
-    function userID_IsAny()
-    {
-        return $this->_userIDType == self::__UserIDType_Any;
-    }
-    function userID_IsUnknown()
-    {
-        return $this->_userIDType == self::__UserIDType_Unknown;
-    }
-    function userID_IsKnown()
-    {
-        return $this->_userIDType == self::__UserIDType_Known;
-    }
-    function userID_IsPreLogon()
-    {
-        return $this->_userIDType == self::__UserIDType_PreLogon;
-    }
-    function userID_IsCustom()
-    {
-        return $this->_userIDType == self::__UserIDType_Custom;
-    }*/
 
     protected $ruleType = self::TypeUniversal;
 
@@ -306,6 +266,7 @@ class SecurityRule extends Rule
         }
         // End of <rule-type>
 
+        $this->userID_loadUsersFromXml();
 	}
 
 
@@ -889,6 +850,10 @@ class SecurityRule extends Rule
 		print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
 		print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$this->services->toString_inline()."    Apps:  ".$this->apps->toString_inline()."\n";
+        if( !$this->userID_IsCustom() )
+            print $padding."  User: *".$this->userID_type()."*\n";
+        else
+            print $padding."  User:  ".PH::list_to_string($this->userID_getUsers())."\n";
 		print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
 		print "\n";
 	}
