@@ -1344,28 +1344,52 @@ RQuery::$defaultFilters['rule']['name']['operators']['is.in.file'] = Array(
 RQuery::$defaultFilters['rule']['user']['operators']['is.any'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->userID_IsAny();
+        $rule = $context->object;
+        if( $rule->isDecryptionRule() )
+            return false;
+        if( $rule->isNatRule() )
+            return false;
+
+        return $rule->userID_IsAny();
     },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['user']['operators']['is.known'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->userID_IsKnown();
+        $rule = $context->object;
+        if( $rule->isDecryptionRule() )
+            return false;
+        if( $rule->isNatRule() )
+            return false;
+
+        return $rule->userID_IsKnown();
     },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['user']['operators']['is.unknown'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->userID_IsUnknown();
+        $rule = $context->object;
+        if( $rule->isDecryptionRule() )
+            return false;
+        if( $rule->isNatRule() )
+            return false;
+
+        return $rule->userID_IsUnknown();
     },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['user']['operators']['is.prelogon'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->userID_IsPreLogon();
+        $rule = $context->object;
+        if( $rule->isDecryptionRule() )
+            return false;
+        if( $rule->isNatRule() )
+            return false;
+
+        return $rule->userID_IsPreLogon();
     },
     'arg' => false
 );

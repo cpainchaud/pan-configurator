@@ -17,7 +17,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class DecryptionRule extends Rule
+class DecryptionRule extends RuleWithUserID
 {
 
     public function __construct($owner, $fromTemplateXML=false)
@@ -69,6 +69,7 @@ class DecryptionRule extends Rule
         $this->load_destination();
         $this->load_tags();
 
+        $this->userID_loadUsersFromXml();
     }
 
     public function display()
