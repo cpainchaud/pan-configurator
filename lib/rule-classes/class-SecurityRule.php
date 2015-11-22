@@ -853,7 +853,10 @@ class SecurityRule extends RuleWithUserID
         if( !$this->userID_IsCustom() )
             print $padding."  User: *".$this->userID_type()."*\n";
         else
-            print $padding."  User:  ".PH::list_to_string($this->userID_getUsers())."\n";
+        {
+            $users = $this->userID_getUsers();
+            print $padding . "  User:  " . PH::list_to_string($users) . "\n";
+        }
 		print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
 		print "\n";
 	}
