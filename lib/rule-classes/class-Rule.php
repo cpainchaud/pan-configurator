@@ -335,6 +335,16 @@ class Rule
         return false;
     }
 
+    public function isAppOverrideRule()
+    {
+        return false;
+    }
+
+    public function isCaptivePortalRule()
+    {
+        return false;
+    }
+
     public function isPbfRule()
     {
         return false;

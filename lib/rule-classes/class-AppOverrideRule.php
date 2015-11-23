@@ -365,5 +365,9 @@ class AppOverrideRule extends Rule
         $this->owner = null;
     }
 
+    public function isAppOverrideRule()
+    {
+        return true;
+    }
 
 }

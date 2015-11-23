@@ -63,6 +63,9 @@ class DeviceGroup
     /** @var RuleStore */
     public $appOverrideRules;
 
+    /** @var RuleStore */
+    public $captivePortalRules;
+
     /**
      * @var null|DeviceGroup
      */
@@ -100,6 +103,7 @@ class DeviceGroup
 		$this->natRules = new RuleStore($this, 'NatRule', true);
 		$this->decryptionRules = new RuleStore($this, 'DecryptionRule', true);
         $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule', true);
+        $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule', true);
 
 	}
 
@@ -212,6 +216,13 @@ class DeviceGroup
         $this->appOverrideRules->load_from_domxml($tmp, $tmpPost);
 
 
+        $tmp = DH::findFirstElementOrCreate('captive-portal', $prerulebase);
+        $tmp = DH::findFirstElementOrCreate('rules', $tmp);
+        $tmpPost = DH::findFirstElementOrCreate('captive-portal', $postrulebase);
+        $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+        $this->captivePortalRules->load_from_domxml($tmp, $tmpPost);
+
+
 		// Devices extraction
 		$this->devicesRoot = DH::findFirstElementOrCreate('devices', $xml);
 
@@ -277,10 +288,13 @@ class DeviceGroup
 	public function display_statistics()
 	{
 		print "Statistics for DG '".PH::boldText($this->name)."'\n";
+
         print "- {$this->securityRules->countPreRules()} / {$this->securityRules->countPostRules()} pre/post Security rules\n";
         print "- {$this->natRules->countPreRules()} / {$this->natRules->countPostRules()} pre/post Nat rules\n";
         print "- {$this->decryptionRules->countPreRules()} / {$this->decryptionRules->countPostRules()} pre/post Decrypt rules\n";
         print "- {$this->appOverrideRules->countPreRules()} / {$this->appOverrideRules->countPostRules()} pre/post AppOverride rules\n";
+        print "- {$this->captivePortalRules->countPreRules()} / {$this->captivePortalRules->countPostRules()} pre/post AppOverride rules\n";
+
 		print "- {$this->addressStore->countAddresses()} / {$this->addressStore->countAddressGroups()} / {$this->addressStore->countTmpAddresses()} address/group/tmp/total objects\n";
 		print "- {$this->serviceStore->countServices()} / {$this->serviceStore->countServiceGroups()} / {$this->serviceStore->countTmpServices()} service/group/tmp/total objects\n";
 		print "- {$this->tagStore->count()} tags. {$this->tagStore->countUnused()} unused\n";

@@ -60,6 +60,9 @@ class VirtualSystem
     /** @var RuleStore */
     public $appOverrideRules;
 
+    /** @var RuleStore */
+    public $captivePortalRules;
+
     /** @var ZoneStore */
     public $zoneStore=null;
 
@@ -105,6 +108,9 @@ class VirtualSystem
 
         $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule');
         $this->appOverrideRules->name = 'AppOverride';
+
+        $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule');
+        $this->captivePortalRules->name = 'CaptivePortal';
 		
 	}
 
@@ -227,6 +233,13 @@ class VirtualSystem
             // Decryption Rules extraction
             //
             $tmproot = DH::findFirstElementOrCreate('application-override', $this->rulebaseroot);
+            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
+            $this->appOverrideRules->load_from_domxml($tmprulesroot);
+
+            //
+            // Captive Portal Rules extraction
+            //
+            $tmproot = DH::findFirstElementOrCreate('captive-portal', $this->rulebaseroot);
             $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
             $this->appOverrideRules->load_from_domxml($tmprulesroot);
         }

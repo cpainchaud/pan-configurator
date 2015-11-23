@@ -61,8 +61,8 @@ class RuleStore
         'SecurityRule' => Array( 'name' => 'Security', 'varName' => 'securityRules', 'xpathRoot' => 'security' ),
         'NatRule' => Array( 'name' => 'NAT', 'varName' => 'natRules', 'xpathRoot' => 'nat' ),
         'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'decryptionRules', 'xpathRoot' => 'decryption' ),
-        'AppOverrideRule' => Array( 'name' => 'AppOverride', 'varName' => 'appOverrideRules', 'xpathRoot' => 'application-override' )
-
+        'AppOverrideRule' => Array( 'name' => 'AppOverride', 'varName' => 'appOverrideRules', 'xpathRoot' => 'application-override' ),
+        'CaptivePortalRule' => Array( 'name' => 'CaptivePortal', 'varName' => 'captivePortalRules', 'xpathRoot' => 'captive-portal' ),
     );
  
 	public function __construct($owner, $ruleType, $isPreOrPost = false)
@@ -1009,6 +1009,23 @@ class RuleStore
 		
 		return $rule;
 	}
+
+    /**
+     * Creates a new SecurityRule in this store. It will be placed at the end of the list.
+     * @param string $name name of the new Rule
+     * @param bool $inPost  create it in post or pre (if applicable)
+     * @return CaptivePortalRule
+     */
+    public function newCaptivePortalRule($name, $inPost = false)
+    {
+        $rule = new CaptivePortalRule($this,true);
+        $rule->owner = null;
+
+        $this->addRule($rule, $inPost);
+        $rule->setName($name);
+
+        return $rule;
+    }
 
 	/**
 	 * Creates a new NatRule in this store. It will be placed at the end of the list.

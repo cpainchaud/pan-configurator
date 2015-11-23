@@ -16,16 +16,15 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-// TODO code UserID, userIsAny userIsPrelogon userIsUnknown bare minimum
+
 class SecurityRule extends RuleWithUserID
 {
+    use NegatableRule;
+
 	protected $action = self::ActionAllow;
 
 	protected $logstart = false;
 	protected $logend = true;
-	
-	protected $negatedSource = false;
-	protected $negatedDestination = false;
 
 	protected $logSetting = false;
 
@@ -40,7 +39,7 @@ class SecurityRule extends RuleWithUserID
 	protected $secprofprofiles = Array();
 
     /** @var AppRuleContainer */
-    public $apps = null;
+    public $apps;
 
     const TypeUniversal = 0;
     const TypeIntrazone = 1;
@@ -206,9 +205,9 @@ class SecurityRule extends RuleWithUserID
 		//
 		$negatedSourceRoot = DH::findFirstElement('negate-source', $xml);
 		if( $negatedSourceRoot !== false )
-			$this->negatedSource = yesNoBool($negatedSourceRoot->textContent);
+			$this->_sourceIsNegated = yesNoBool($negatedSourceRoot->textContent);
 		else
-			$this->negatedSource = false;
+			$this->_sourceIsNegated = false;
 		// End of <negate-source>
 		//
 		
@@ -216,9 +215,9 @@ class SecurityRule extends RuleWithUserID
 		//
 		$negatedDestinationRoot = DH::findFirstElement('negate-destination', $xml);
 		if( $negatedDestinationRoot !== false )
-			$this->negatedDestination = yesNoBool($negatedDestinationRoot->textContent);
+			$this->_destinationIsNegated = yesNoBool($negatedDestinationRoot->textContent);
 		else
-			$this->negatedDestination = false;
+			$this->_destinationIsNegated = false;
 		// End of <negate-destination>
 
 
@@ -716,113 +715,6 @@ class SecurityRule extends RuleWithUserID
 			$con->sendSetRequest($this->getXPath(), "<log-setting>$newLogSetting</log-setting>");
 		}
 	}
-	
-	
-	public function sourceIsNegated()
-	{
-		return $this->negatedSource;
-	}
-
-	/**
-	 * @param bool $yes
-	 * @return bool
-	 */
-	public function setSourceIsNegated($yes)
-	{
-		if( $this->negatedSource != $yes )
-		{
-			$tmpRoot = DH::findFirstElement('negate-source', $this->xmlroot);
-			if( $tmpRoot === false )
-			{
-				if($yes)
-					DH::createElement($this->xmlroot, 'negate-source', 'yes');
-			}
-			else
-			{
-				if( !$yes )
-					$this->xmlroot->removeChild($tmpRoot);
-				else
-					DH::setDomNodeText($tmpRoot, 'yes');
-			}
-
-			$this->negatedSource = $yes;
-
-			return true;
-		}
-		
-		return false;
-	}
-
-	/**
-	 * @param bool $yes
-	 * @return bool
-	 */
-	public function API_setSourceIsNegated($yes)
-	{
-		$ret = $this->setSourceIsNegated($yes);
-
-		if( $ret )
-		{
-			$con = findConnectorOrDie($this);
-			$con->sendSetRequest($this->getXPath(), '<negate-source>'.boolYesNo($yes).'</negate-source>');
-		}
-
-		return $ret;
-	}
-	
-	
-	public function destinationIsNegated()
-	{
-		return $this->negatedDestination;
-	}
-
-	/**
-	 * @param bool $yes
-	 * @return bool
-	 */
-	public function setDestinationIsNegated($yes)
-	{
-		if( $this->negatedDestination != $yes )
-		{
-			$tmpRoot = DH::findFirstElement('negate-destination', $this->xmlroot);
-			if( $tmpRoot === false )
-			{
-				if($yes)
-					DH::createElement($this->xmlroot, 'negate-destination', 'yes');
-			}
-			else
-			{
-				if( !$yes )
-					$this->xmlroot->removeChild($tmpRoot);
-				else
-                    DH::setDomNodeText($tmpRoot, 'yes');
-			}
-
-			$this->negatedDestination = $yes;
-
-			return true;
-		}
-
-		return false;
-	}
-
-	/**
-	 * @param bool $yes
-	 * @return bool
-	 */
-	public function API_setDestinationIsNegated($yes)
-	{
-		$ret = $this->setDestinationIsNegated($yes);
-
-		if( $ret )
-		{
-			$con = findConnectorOrDie($this);
-			$con->sendSetRequest($this->getXPath(), '<negate-destination>'.boolYesNo($yes).'</negate-destination>');
-		}
-
-		return $ret;
-	}
-	
 	
 	/**
 	* Helper function to quickly print a function properties to CLI

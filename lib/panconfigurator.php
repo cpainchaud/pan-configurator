@@ -157,11 +157,13 @@ require_once $basedir.'/network-classes/class-AggregateEthernetIfStore.php';
 
 require_once $basedir.'/rule-classes/class-RuleStore.php';
 require_once $basedir.'/rule-classes/class-Rule.php';
+require_once $basedir.'/rule-classes/trait-NegatableRule.php';
 require_once $basedir.'/rule-classes/class-RuleWithUserID.php';
 require_once $basedir.'/rule-classes/class-SecurityRule.php';
 require_once $basedir.'/rule-classes/class-NatRule.php';
 require_once $basedir.'/rule-classes/class-DecryptionRule.php';
 require_once $basedir.'/rule-classes/class-AppOverrideRule.php';
+require_once $basedir.'/rule-classes/class-CaptivePortalRule.php';
 
 unset($basedir);
 
