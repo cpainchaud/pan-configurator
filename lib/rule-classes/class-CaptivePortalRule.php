@@ -135,10 +135,31 @@ class CaptivePortalRule extends Rule
 
     }
 
+    public function action()
+    {
+        return self::$RuleActions[$this->action];
+    }
+
+    public function actionIsNoCP()
+    {
+        return $this->action == self::ActionNoCaptivePortal;
+    }
+
+    public function actionIsNoWebForm()
+    {
+        return $this->action == self::ActionWebForm;
+    }
+
+    public function actionIsBrowserChallenge()
+    {
+        return $this->action == self::ActionBrowserChallenge;
+    }
+
 
     public function display( $padding = 0)
     {
-        $padding = str_pad('', $padding);
+        if( !is_string($padding) )
+            $padding = str_pad('', $padding);
 
         $dis = '';
         if( $this->disabled )
@@ -157,10 +178,10 @@ class CaptivePortalRule extends Rule
         print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
         print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
         print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
+        print $padding."  Action: {$this->action()}\n";
         print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
         print "\n";
     }
-
 
     public function cleanForDestruction()
     {
