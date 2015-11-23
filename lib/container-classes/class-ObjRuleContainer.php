@@ -379,7 +379,7 @@ class ObjRuleContainer
         return $result;
     }
 
-    public function displayMemberDiff( $otherObject, $indent=0, $toString = false)
+    public function displayMembersDiff( $otherObject, $indent=0, $toString = false)
     {
         $retString = '';
 
@@ -388,7 +388,7 @@ class ObjRuleContainer
 
         $retString .= $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
 
-        $diff = $this->getValueDiff($otherObject);
+        $diff = $this->getMembersDiff($otherObject);
 
         if( count($diff['minus']) != 0 )
             foreach($diff['minus'] as $d )

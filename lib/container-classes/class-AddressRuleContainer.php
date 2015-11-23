@@ -22,7 +22,7 @@
  * @property Rule|SecurityRule|NatRule $owner
  *
  * @method Address[]|AddressGroup[] getMembersDiff( AddressRuleContainer $otherObject)
- * @method displayMemberDiff( AddressRuleContainer $otherObject, $indent=0, $toString = false)
+ * @method displayMembersDiff( AddressRuleContainer $otherObject, $indent=0, $toString = false)
  *
  */
 class AddressRuleContainer extends ObjRuleContainer
