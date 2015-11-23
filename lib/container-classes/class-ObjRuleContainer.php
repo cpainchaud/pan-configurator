@@ -356,8 +356,8 @@ class ObjRuleContainer
     {
         $result = Array('minus' => Array(), 'plus' => Array() );
 
-        $localObjects = $this->members;
-        $otherObjects = $otherObject->members;
+        $localObjects = $this->o;
+        $otherObjects = $otherObject->o;
 
         usort($localObjects, '__CmpObjName');
         usort($otherObjects, '__CmpObjName');
