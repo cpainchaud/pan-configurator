@@ -23,13 +23,13 @@ class RuleStore
     use XmlConvertible;
 
 	/**
-	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]
 	 */
 	protected $_rules = Array();
 
 
 	/**
-	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]
 	 */
 	protected $_postRules = Array();
 
@@ -171,7 +171,7 @@ class RuleStore
 
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @param bool $inPost
 	 * @return bool
 	 */
@@ -228,7 +228,7 @@ class RuleStore
 
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @param bool $inPost
 	 * @return bool
 	 */
@@ -246,7 +246,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @return bool
 	 */
 	function inStore($rule)
@@ -262,7 +262,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @return bool
 	 */
 	public function moveRuleToPostRulebase( $rule )
@@ -285,7 +285,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @return bool
 	 */
 	public function API_moveRuleToPostRulebase( $rule )
@@ -309,7 +309,7 @@ class RuleStore
 
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @return bool
 	 */
 	public function moveRuleToPreRulebase( $rule )
@@ -332,7 +332,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @return bool
 	 */
 	public function API_moveRuleToPreRulebase( $rule )
@@ -473,7 +473,7 @@ class RuleStore
 	
 	/**
 	* Only used internally when a rule is renamed to check for it unicity and accurate indexing
-	* @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	* @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @param string $oldName
 	*/
 	public function ruleWasRenamed($rule, $oldName)
@@ -507,7 +507,7 @@ class RuleStore
 
 
     /**
-     * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+     * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
      * @param string $newName
 	 * @param null|bool $inPostRuleBase
      * @return SecurityRule|NatRule
@@ -525,7 +525,7 @@ class RuleStore
         if( $inPostRuleBase === null )
             $inPostRuleBase = $rule->isPostRule();
 
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule $newRule */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $newRule */
 		$newRule = new $this->type($this);
         $xml = $rule->xmlroot->cloneNode(true);
 		$newRule->load_from_domxml($xml);
@@ -542,7 +542,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
 	 * @param string $newName
 	 * @param $inPostRuleBase null|bool
 	 * @return NatRule|SecurityRule
@@ -564,8 +564,8 @@ class RuleStore
 
 	/**
 	 * this function will move $ruleToBeMoved after $ruleRef.
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleToBeMoved
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $ruleRef
 	 * @param bool $rewriteXml
 	 */
 	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
@@ -654,8 +654,8 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleToBeMoved
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $ruleRef
 	 * @param bool $rewritexml
 	 */
 	public function API_moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
@@ -693,8 +693,8 @@ class RuleStore
 
 	/**
 	 * this function will move $ruleToBeMoved before $ruleRef.
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleToBeMoved
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $ruleRef
 	 * @param bool $rewriteXml
 	 */
     public function moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
@@ -782,8 +782,8 @@ class RuleStore
     }
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleToBeMoved
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $ruleRef
 	 * @param bool $rewritexml
 	 */
 	public function API_moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewritexml=true )
@@ -1064,7 +1064,7 @@ class RuleStore
 
     /**
      * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule
+     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule
      * @param bool $deleteForever
      * @return bool
      */
@@ -1112,7 +1112,7 @@ class RuleStore
 
     /**
      * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule
+     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule
      * @param bool $deleteForever
      * @return bool
      */
@@ -1187,7 +1187,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule $contextRule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $contextRule
 	 * @return string
 	 * @throws Exception
 	 */
@@ -1274,7 +1274,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule
+	 * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule
 	 * @return bool
 	 * @throws Exception
 	 */

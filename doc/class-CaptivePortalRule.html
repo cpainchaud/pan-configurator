@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class StaticRoute | PAN-Configurator</title>
+	<title>Class CaptivePortalRule | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
 	<script type="text/javascript" src="elementlist.js?416500399"></script>
@@ -44,7 +44,7 @@
 				<li><a href="class-AppOverrideRule.html">AppOverrideRule</a></li>
 				<li><a href="class-AppRuleContainer.html">AppRuleContainer</a></li>
 				<li><a href="class-AppStore.html">AppStore</a></li>
-				<li><a href="class-CaptivePortalRule.html">CaptivePortalRule</a></li>
+				<li class="active"><a href="class-CaptivePortalRule.html">CaptivePortalRule</a></li>
 				<li><a href="class-cidr.html">cidr</a></li>
 				<li><a href="class-CsvParser.html">CsvParser</a></li>
 				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
@@ -77,7 +77,7 @@
 				<li><a href="class-ServiceGroup.html">ServiceGroup</a></li>
 				<li><a href="class-ServiceRuleContainer.html">ServiceRuleContainer</a></li>
 				<li><a href="class-ServiceStore.html">ServiceStore</a></li>
-				<li class="active"><a href="class-StaticRoute.html">StaticRoute</a></li>
+				<li><a href="class-StaticRoute.html">StaticRoute</a></li>
 				<li><a href="class-Tag.html">Tag</a></li>
 				<li><a href="class-TagRuleContainer.html">TagRuleContainer</a></li>
 				<li><a href="class-TagStore.html">TagStore</a></li>
@@ -171,20 +171,33 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class StaticRoute</h1>
+	<h1>Class CaptivePortalRule</h1>
 
 
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
-<b><span>StaticRoute</span></b>			
+			<a href="class-Rule.html"><span>Rule</span></a>
+			
 			
 			 uses 
-				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
-			
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
-				<a href="class-ReferencableObject.html"><span>ReferencableObject</span></a>
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
+			
+				<a href="class-centralServiceStoreUser.html"><span>centralServiceStoreUser</span></a>, 
+			
+				<a href="class-centralAddressStoreUser.html"><span>centralAddressStoreUser</span></a>, 
+			
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>
+			
+		</dd>
+		<dd style="padding-left:30px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>CaptivePortalRule</span></b>			
+			
+			 uses 
+				<a href="class-NegatableRule.html"><span>NegatableRule</span></a>
 			
 		</dd>
 	</dl>
@@ -202,7 +215,7 @@
 		
 		
 
-		<b>Located at</b> network-classes/class-StaticRoute.php<br />
+		<b>Located at</b> rule-classes/class-CaptivePortalRule.php<br />
 	</div>
 
 
@@ -220,7 +233,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><b>__construct</b>( <span>mixed <var>$name</var></span>, <span>mixed <var>$owner</var></span> )</code>
+		<code><b>__construct</b>( <span>mixed <var>$owner</var></span>, <span>mixed <var>$fromTemplateXML</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -238,7 +251,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="load_from_xml" id="_load_from_xml">
+	<tr data-order="load_from_domxml" id="_load_from_domxml">
 
 		<td class="attributes"><code>
 			 public 
@@ -248,108 +261,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_load_from_xml">#</a>
-		<code><b>load_from_xml</b>( <span>mixed <var>$xml</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-				<h4>Parameters</h4>
-				<div class="list"><dl>
-					<dt><var>$xml</var></dt>
-					<dd><code>mixed</code><br>$xml DOMElement</dd>
-				</dl></div>
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="destination" id="_destination">
-
-		<td class="attributes"><code>
-			 public 
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_destination">#</a>
-		<code><b>destination</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>string</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="destinationIP4Mapping" id="_destinationIP4Mapping">
-
-		<td class="attributes"><code>
-			 public 
-			boolean|string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_destinationIP4Mapping">#</a>
-		<code><b>destinationIP4Mapping</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>boolean|string</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="nexthopIP" id="_nexthopIP">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_nexthopIP">#</a>
-		<code><b>nexthopIP</b>( )</code>
+		<a class="anchor" href="#_load_from_domxml">#</a>
+		<code><b>load_from_domxml</b>( <span>mixed <var>$xml</var></span> )</code>
 
 		<div class="description short">
 			
@@ -367,7 +280,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="nexthopInterface" id="_nexthopInterface">
+	<tr data-order="display" id="_display">
 
 		<td class="attributes"><code>
 			 public 
@@ -377,8 +290,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_nexthopInterface">#</a>
-		<code><b>nexthopInterface</b>( )</code>
+		<a class="anchor" href="#_display">#</a>
+		<code><b>display</b>( <span>mixed <var>$padding</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			
@@ -396,18 +309,18 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="nexthopType" id="_nexthopType">
+	<tr data-order="cleanForDestruction" id="_cleanForDestruction">
 
 		<td class="attributes"><code>
 			 public 
-			string
+			
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_nexthopType">#</a>
-		<code><b>nexthopType</b>( )</code>
+		<a class="anchor" href="#_cleanForDestruction">#</a>
+		<code><b>cleanForDestruction</b>( )</code>
 
 		<div class="description short">
 			
@@ -418,28 +331,89 @@
 
 
 
-				<h4>Returns</h4>
-				<div class="list">
-					<code>string</code><br>'none','ip-address'<br />
-				</div>
 
 
 
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isAppOverrideRule" id="_isAppOverrideRule">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isAppOverrideRule">#</a>
+		<code><b>isAppOverrideRule</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_isAppOverrideRule">Rule::isAppOverrideRule()</a></code></div>
 
 		</div>
 		</div></td>
 	</tr>
 	</table>
 
-
-	<table class="summary used">
-	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Rule.html#methods">Rule</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-XmlConvertible.html#_API_sync"><b>API_sync()</b></a>, 
-			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
-			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
-			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+			<a href="class-Rule.html#_API_setDisabled"><b>API_setDisabled()</b></a>, 
+			<a href="class-Rule.html#_API_setEnabled"><b>API_setEnabled()</b></a>, 
+			<a href="class-Rule.html#_API_setName"><b>API_setName()</b></a>, 
+			<a href="class-Rule.html#_extract_description_from_domxml"><b>extract_description_from_domxml()</b></a>, 
+			<a href="class-Rule.html#_extract_disabled_from_domxml"><b>extract_disabled_from_domxml()</b></a>, 
+			<a href="class-Rule.html#_getXPath"><b>getXPath()</b></a>, 
+			<a href="class-Rule.html#_init_from_with_store"><b>init_from_with_store()</b></a>, 
+			<a href="class-Rule.html#_isCaptivePortalRule"><b>isCaptivePortalRule()</b></a>, 
+			<a href="class-Rule.html#_isDecryptionRule"><b>isDecryptionRule()</b></a>, 
+			<a href="class-Rule.html#_isDisabled"><b>isDisabled()</b></a>, 
+			<a href="class-Rule.html#_isEnabled"><b>isEnabled()</b></a>, 
+			<a href="class-Rule.html#_isNatRule"><b>isNatRule()</b></a>, 
+			<a href="class-Rule.html#_isPbfRule"><b>isPbfRule()</b></a>, 
+			<a href="class-Rule.html#_isPostRule"><b>isPostRule()</b></a>, 
+			<a href="class-Rule.html#_isPreRule"><b>isPreRule()</b></a>, 
+			<a href="class-Rule.html#_isSecurityRule"><b>isSecurityRule()</b></a>, 
+			<a href="class-Rule.html#_load_destination"><b>load_destination()</b></a>, 
+			<a href="class-Rule.html#_load_from"><b>load_from()</b></a>, 
+			<a href="class-Rule.html#_load_source"><b>load_source()</b></a>, 
+			<a href="class-Rule.html#_load_tags"><b>load_tags()</b></a>, 
+			<a href="class-Rule.html#_load_to"><b>load_to()</b></a>, 
+			<a href="class-Rule.html#_name"><b>name()</b></a>, 
+			<a href="class-Rule.html#_rewriteSDisabled_XML"><b>rewriteSDisabled_XML()</b></a>, 
+			<a href="class-Rule.html#_setDisabled"><b>setDisabled()</b></a>, 
+			<a href="class-Rule.html#_setEnabled"><b>setEnabled()</b></a>, 
+			<a href="class-Rule.html#_setName"><b>setName()</b></a>
+		</code></td>
+	</tr>
+	</table>
+
+	<table class="summary used">
+	<caption>Methods used from <a href="class-NegatableRule.html#methods">NegatableRule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-NegatableRule.html#__readNegationFromXml"><b>_readNegationFromXml()</b></a>, 
+			<a href="class-NegatableRule.html#_destinationIsNegated"><b>destinationIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_setDestinationIsNegated"><b>setDestinationIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_setSourceIsNegated"><b>setSourceIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_sourceIsNegated"><b>sourceIsNegated()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -453,24 +427,40 @@
 	</tr>
 	</table>
 	<table class="summary used">
-	<caption>Methods used from <a href="class-ReferencableObject.html#methods">ReferencableObject</a></caption>
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-ReferencableObject.html#_API_addObjectWhereIamUsed"><b>API_addObjectWhereIamUsed()</b></a>, 
-			<a href="class-ReferencableObject.html#_addObjectWhereIamUsed"><b>addObjectWhereIamUsed()</b></a>, 
-			<a href="class-ReferencableObject.html#_addReference"><b>addReference()</b></a>, 
-			<a href="class-ReferencableObject.html#_broadcastMyNameChange"><b>broadcastMyNameChange()</b></a>, 
-			<a href="class-ReferencableObject.html#_countReferences"><b>countReferences()</b></a>, 
-			<a href="class-ReferencableObject.html#_display_references"><b>display_references()</b></a>, 
-			<a href="class-ReferencableObject.html#_findAssociatedRule_byType"><b>findAssociatedRule_byType()</b></a>, 
-			<a href="class-ReferencableObject.html#_findAssociatedSecurityRules"><b>findAssociatedSecurityRules()</b></a>, 
-			<a href="class-ReferencableObject.html#_generateRefHashComp"><b>generateRefHashComp()</b></a>, 
-			<a href="class-ReferencableObject.html#_getRefHashComp"><b>getRefHashComp()</b></a>, 
-			<a href="class-ReferencableObject.html#_getReferences"><b>getReferences()</b></a>, 
-			<a href="class-ReferencableObject.html#_name"><b>name()</b></a>, 
-			<a href="class-ReferencableObject.html#_removeReference"><b>removeReference()</b></a>, 
-			<a href="class-ReferencableObject.html#_replaceMeGlobally"><b>replaceMeGlobally()</b></a>, 
-			<a href="class-ReferencableObject.html#_setRefName"><b>setRefName()</b></a>
+			<a href="class-XmlConvertible.html#_API_sync"><b>API_sync()</b></a>, 
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralServiceStoreUser.html#methods">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#_findParentServiceStore"><b>findParentServiceStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralAddressStoreUser.html#methods">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#_findParentAddressStore"><b>findParentAddressStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ObjectWithDescription.html#methods">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#_API_setDescription"><b>API_setDescription()</b></a>, 
+			<a href="class-ObjectWithDescription.html#__load_description_from_domxml"><b>_load_description_from_domxml()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_description"><b>description()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_setDescription"><b>setDescription()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -480,23 +470,84 @@
 
 
 
+	<table class="summary" id="constants">
+	<caption>Constants summary</caption>
+	<tr data-order="ActionNoCaptivePortal" id="ActionNoCaptivePortal">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionNoCaptivePortal</b>		</code></td>
+		<td class="value"><code><span class="php-num">0</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionNoCaptivePortal" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionWebForm" id="ActionWebForm">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionWebForm</b>		</code></td>
+		<td class="value"><code><span class="php-num">1</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionWebForm" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionBrowserChallenge" id="ActionBrowserChallenge">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionBrowserChallenge</b>		</code></td>
+		<td class="value"><code><span class="php-num">2</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionBrowserChallenge" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 
 
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
-	<tr data-order="_destination" id="$_destination">
+	<tr data-order="templatexml" id="$templatexml">
 		<td class="attributes"><code>
-			protected  
+			protected static 
 			string
 		</code></td>
 
 		<td class="name">
-<var>$_destination</var>		</td>
-		<td class="value"><code></code></td>
+<var>$templatexml</var>		</td>
+		<td class="value"><code><span class="php-quote">'&lt;entry name=&quot;**temporarynamechangeme**&quot;&gt;&lt;from&gt;&lt;member&gt;any&lt;/member&gt;&lt;/from&gt;&lt;to&gt;&lt;member&gt;any&lt;/member&gt;&lt;/to&gt;
+&lt;source&gt;&lt;member&gt;any&lt;/member&gt;&lt;/source&gt;&lt;destination&gt;&lt;member&gt;any&lt;/member&gt;&lt;/destination&gt;&lt;service&gt;&lt;member&gt;any&lt;/member&gt;&lt;/service&gt;&lt;/entry&gt;&lt;/entry&gt;'</span></code></td>
 		<td class="description"><div>
-			<a href="#$_destination" class="anchor">#</a>
+			<a href="#$templatexml" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -508,83 +559,17 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="_nexthopType" id="$_nexthopType">
+	<tr data-order="action" id="$action">
 		<td class="attributes"><code>
 			protected  
-			string
+			integer
 		</code></td>
 
 		<td class="name">
-<var>$_nexthopType</var>		</td>
-		<td class="value"><code><span class="php-quote">'none'</span></code></td>
+<var>$action</var>		</td>
+		<td class="value"><code><code><a href="class-CaptivePortalRule.html#ActionNoCaptivePortal">CaptivePortalRule::<b>ActionNoCaptivePortal</b></a></code></code></td>
 		<td class="description"><div>
-			<a href="#$_nexthopType" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="_nexthopIP" id="$_nexthopIP">
-		<td class="attributes"><code>
-			protected  
-			mixed
-		</code></td>
-
-		<td class="name">
-<var>$_nexthopIP</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$_nexthopIP" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="owner" id="$owner">
-		<td class="attributes"><code>
-			public  
-			<code><a href="class-VirtualRouter.html">VirtualRouter</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$owner</var>		</td>
-		<td class="value"><code></code></td>
-		<td class="description"><div>
-			<a href="#$owner" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="_interface" id="$_interface">
-		<td class="attributes"><code>
-			protected  
-			null|<code><a href="class-EthernetInterface.html">EthernetInterface</a></code>|<code><a href="class-AggregateEthernetInterface.html">AggregateEthernetInterface</a></code>|<code><a href="class-TmpInterface.html">TmpInterface</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$_interface</var>		</td>
-		<td class="value"><code><span class="php-keyword1">null</span></code></td>
-		<td class="description"><div>
-			<a href="#$_interface" class="anchor">#</a>
+			<a href="#$action" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -598,6 +583,22 @@
 	</tr>
 	</table>
 
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Rule.html#properties">Rule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rule.html#$destination"><var>$destination</var></a>, 
+			<a href="class-Rule.html#$disabled"><var>$disabled</var></a>, 
+			<a href="class-Rule.html#$from"><var>$from</var></a>, 
+			<a href="class-Rule.html#$name"><var>$name</var></a>, 
+			<a href="class-Rule.html#$owner"><var>$owner</var></a>, 
+			<a href="class-Rule.html#$services"><var>$services</var></a>, 
+			<a href="class-Rule.html#$source"><var>$source</var></a>, 
+			<a href="class-Rule.html#$tags"><var>$tags</var></a>, 
+			<a href="class-Rule.html#$to"><var>$to</var></a>
+		</code></td>
+	</tr>
+	</table>
 
 	<table class="summary used">
 	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
@@ -608,12 +609,35 @@
 	</tr>
 	</table>
 	<table class="summary used">
-	<caption>Properties used from <a href="class-ReferencableObject.html#properties">ReferencableObject</a></caption>
+	<caption>Properties used from <a href="class-centralServiceStoreUser.html#properties">centralServiceStoreUser</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-ReferencableObject.html#$name"><var>$name</var></a>, 
-			<a href="class-ReferencableObject.html#$refcomphash"><var>$refcomphash</var></a>, 
-			<a href="class-ReferencableObject.html#$refrules"><var>$refrules</var></a>
+			<a href="class-centralServiceStoreUser.html#$parentServiceStore"><var>$parentServiceStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralAddressStoreUser.html#properties">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#$parentAddressStore"><var>$parentAddressStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#$_description"><var>$_description</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-NegatableRule.html#properties">NegatableRule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-NegatableRule.html#$_destinationIsNegated"><var>$_destinationIsNegated</var></a>, 
+			<a href="class-NegatableRule.html#$_sourceIsNegated"><var>$_sourceIsNegated</var></a>
 		</code></td>
 	</tr>
 	</table>
@@ -626,6 +650,14 @@
 		<td><code>
 			<a href="class-PathableName.html#m$name"><var>$name</var></a>, 
 			<a href="class-PathableName.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#m$xmlroot"><var>$xmlroot</var></a>
 		</code></td>
 	</tr>
 	</table>
