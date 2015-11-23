@@ -352,6 +352,63 @@ class ObjRuleContainer
     }*/
 
 
+    public function &getMembersDiff( $otherObject)
+    {
+        $result = Array('minus' => Array(), 'plus' => Array() );
+
+        $localObjects = $this->members;
+        $otherObjects = $otherObject->members;
+
+        usort($localObjects, '__CmpObjName');
+        usort($otherObjects, '__CmpObjName');
+
+        $diff = array_udiff($otherObjects, $localObjects, '__CmpObjName');
+        if( count($diff) != 0 )
+            foreach($diff as $d )
+            {
+                $result['minus'][] = $d;
+            }
+
+        $diff = array_udiff($localObjects, $otherObjects, '__CmpObjName');
+        if( count($diff) != 0 )
+            foreach($diff as $d )
+            {
+                $result['plus'][] = $d;
+            }
+
+        return $result;
+    }
+
+    public function displayMemberDiff( $otherObject, $indent=0, $toString = false)
+    {
+        $retString = '';
+
+        $indent = str_pad(' ', $indent);
+
+
+        $retString .= $indent."Diff for between ".$this->toString()." vs ".$otherObject->toString()."\n";
+
+        $diff = $this->getValueDiff($otherObject);
+
+        if( count($diff['minus']) != 0 )
+            foreach($diff['minus'] as $d )
+            {
+                /** @var Address|AddressGroup $d */
+                $retString .= $indent." - {$d->name()}\n";
+            }
+
+        if( count($diff['plus']) != 0 )
+            foreach($diff['plus'] as $d )
+            {
+                $retString .= $indent." + {$d->name()}\n";
+            }
+
+        if( $toString )
+            return $retString;
+
+        print $retString;
+    }
+
 
 }
 
