@@ -367,14 +367,16 @@ class RuleCallContext extends CallContext
         }
 
         if( $fieldName == 'name')
-        {
             return self::enclose($rule->name(), $wrap);
-        }
 
         if( $fieldName == 'description' )
-        {
             return self::enclose($rule->description(), $wrap);
-        }
+
+        if( $fieldName == 'tags' )
+            return self::enclose( $rule->tags->getAll(), $wrap );
+
+        if( $fieldName == 'type' )
+            return self::enclose( $rule->ruleNature(), $wrap );
 
         if( $fieldName == 'from' )
         {
@@ -421,13 +423,20 @@ class RuleCallContext extends CallContext
             return self::enclose($rule->services->getAll(), $wrap);
         }
 
+        if( $fieldName == 'action' )
+        {
+            if( !$rule->isSecurityRule() && !$rule->isCaptivePortalRule() )
+                return self::enclose('');
+
+            return self::enclose(Array($rule->action()));
+        }
+
         if( $fieldName == 'log_start' )
         {
             if( !$rule->isSecurityRule() )
                 return self::enclose('');
             return self::enclose(boolYesNo($rule->logStart()), $wrap);
         }
-
         if( $fieldName == 'log_end')
         {
             if( !$rule->isSecurityRule() )
@@ -461,16 +470,6 @@ class RuleCallContext extends CallContext
             return self::enclose( boolYesNo($rule->isDisabled()) );
         }
 
-        if( $fieldName == 'tags' )
-        {
-            return self::enclose( $rule->tags->getAll(), $wrap );
-        }
-
-        if( $fieldName == 'type' )
-        {
-            return self::enclose( $rule->ruleNature(), $wrap );
-        }
-
         if( $fieldName == 'users' )
         {
             if( $rule->isNatRule() )
@@ -478,6 +477,8 @@ class RuleCallContext extends CallContext
 
             if( !$rule->userID_IsCustom() )
                 return self::enclose($rule->userID_type(), $wrap);
+            if( $rule->userID_IsAny() )
+                return self::enclose('any');
             return self::enclose($rule->userID_getUsers(), $wrap);
         }
 
