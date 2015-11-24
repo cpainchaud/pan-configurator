@@ -1396,7 +1396,16 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
                     $lines .= $encloseFunction('security');
                 elseif ($rule->isNatRule())
                     $lines .= $encloseFunction('nat');
-                else $lines .= $encloseFunction('unknown');
+                elseif($rule->isAppOverrideRule())
+                    $lines .= $encloseFunction('app-override');
+                elseif($rule->isDecryptionRule())
+                    $lines .= $encloseFunction('decryption');
+                elseif($rule->isCaptivePortalRule())
+                    $lines .= $encloseFunction('captive-portal');
+                elseif($rule->isPbfRule())
+                    $lines .= $encloseFunction('pbf');
+                else
+                    $lines .= $encloseFunction('unknown');
 
                 $lines .= $encloseFunction($rule->name());
 
@@ -1429,7 +1438,7 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
                     $lines .= $encloseFunction($rule->destination->getAll());
                 }
 
-                if ($rule->isSecurityRule())
+                if ($rule->isSecurityRule() || $rule->isCaptivePortalRule() || $rule->isDecryptionRule() )
                 {
                     if ($rule->services->isAny())
                         $lines .= $encloseFunction('any');
@@ -1464,7 +1473,14 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
                     $lines .= $encloseFunction($rule->action());
                     $lines .= $encloseFunction(boolYesNo($rule->logStart()));
                     $lines .= $encloseFunction(boolYesNo($rule->logEnd()));
-                } else
+                }
+                else if ($rule->isCaptivePortalRule())
+                {
+                    $lines .= $encloseFunction($rule->action());
+                    $lines .= $encloseFunction('');
+                    $lines .= $encloseFunction('');
+                }
+                else
                 {
                     $lines .= $encloseFunction('');
                     $lines .= $encloseFunction('');
