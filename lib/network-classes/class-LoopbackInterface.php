@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (c) 2014 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
+ * Copyright (c) 2014-2015 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
  * Author: Christophe Painchaud <cpainchaud _AT_ paloaltonetworks.com>
  *
  * Permission to use, copy, modify, and distribute this software for any
