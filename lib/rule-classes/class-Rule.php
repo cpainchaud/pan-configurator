@@ -350,6 +350,11 @@ class Rule
         return false;
     }
 
+    public function ruleNature()
+    {
+        return 'unknown';
+    }
+
 }
 
 

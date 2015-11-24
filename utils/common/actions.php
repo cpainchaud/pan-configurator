@@ -7,7 +7,7 @@ class CallContext
 {
     public $arguments = Array();
 
-    /** @var  $object Rule|SecurityRule|NatRule|DecryptionRule */
+    /** @var  Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $object  */
     public $object;
 
     public $actionRef;
@@ -316,6 +316,173 @@ class RuleCallContext extends CallContext
             $this->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
             print "OK!\n";
         }
+    }
+
+    private function enclose($value, $nowrap = true)
+    {
+        $output = '';
+
+        if( is_string($value) )
+            $output = htmlspecialchars($value);
+        elseif( is_array($value) )
+        {
+            $output = '';
+            $first = true;
+            foreach( $value as $subValue )
+            {
+                if( !$first )
+                {
+                    $output .= '<br />';
+                }
+                else
+                    $first= false;
+
+                if( is_string($subValue) )
+                    $output .= htmlspecialchars($subValue);
+                else
+                    $output .= htmlspecialchars($subValue->name());
+            }
+        }
+        else
+            derr('unsupported');
+
+        if( $nowrap )
+            return '<td style="white-space: nowrap">'.$output.'</td>';
+
+        return "<td>{$output}</td>";
+    }
+
+    /**
+     * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
+     * @param $fieldName
+     * @return string
+     */
+    public function ruleFieldHtmlExport($rule, $fieldName, $wrap = true)
+    {
+        if( $fieldName == 'location' )
+        {
+            if ($rule->owner->owner->isPanorama() || $rule->owner->owner->isFirewall())
+                return self::enclose('shared');
+            return self::enclose($rule->owner->owner->name(), $wrap);
+        }
+
+        if( $fieldName == 'name')
+        {
+            return self::enclose($rule->name(), $wrap);
+        }
+
+        if( $fieldName == 'description' )
+        {
+            return self::enclose($rule->description(), $wrap);
+        }
+
+        if( $fieldName == 'from' )
+        {
+            if( $rule->from->isAny() )
+                return self::enclose('any');
+            return self::enclose($rule->from->getAll(), $wrap);
+        }
+
+        if( $fieldName == 'to' )
+        {
+            if( $rule->to->isAny() )
+                return self::enclose('any');
+            return self::enclose($rule->to->getAll(), $wrap);
+        }
+
+        if( $fieldName == 'source' )
+        {
+            if( $rule->source->isAny() )
+                return self::enclose('any');
+            return self::enclose($rule->source->getAll(), $wrap);
+        }
+
+        if( $fieldName == 'destination' )
+        {
+            if( $rule->destination->isAny() )
+                return self::enclose('any');
+            return self::enclose($rule->destination->getAll(), $wrap);
+        }
+
+        if( $fieldName == 'service' )
+        {
+            if( $rule->isDecryptionRule() )
+                return self::enclose('');
+            if( $rule->isAppOverrideRule() )
+                return self::enclose($rule->ports());
+            if( $rule->isNatRule() )
+            {
+                if( $rule->service !== null )
+                    return self::enclose(Array($rule->service));
+                return self::enclose('any');
+            }
+            if( $rule->services->isAny() )
+                return self::enclose('any');
+            return self::enclose($rule->services->getAll(), $wrap);
+        }
+
+        if( $fieldName == 'log_start' )
+        {
+            if( !$rule->isSecurityRule() )
+                return self::enclose('');
+            return self::enclose(boolYesNo($rule->logStart()), $wrap);
+        }
+
+        if( $fieldName == 'log_end')
+        {
+            if( !$rule->isSecurityRule() )
+                return self::enclose('');
+            return self::enclose(boolYesNo($rule->logEnd()), $wrap);
+        }
+
+        if( $fieldName == 'snat_type' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            return self::enclose($rule->natType(), $wrap);
+        }
+        if( $fieldName == 'snat_trans' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            return self::enclose($rule->snathosts->getAll(), $wrap);
+        }
+        if( $fieldName == 'dnat_host' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+            if( $rule->dnathost === null )
+                return self::enclose('');
+            return self::enclose(Array($rule->dnathost), $wrap);
+        }
+
+        if( $fieldName == 'disabled' )
+        {
+            return self::enclose( boolYesNo($rule->isDisabled()) );
+        }
+
+        if( $fieldName == 'tags' )
+        {
+            return self::enclose( $rule->tags->getAll(), $wrap );
+        }
+
+        if( $fieldName == 'type' )
+        {
+            return self::enclose( $rule->ruleNature(), $wrap );
+        }
+
+        if( $fieldName == 'users' )
+        {
+            if( $rule->isNatRule() )
+                return self::enclose('');
+
+            if( !$rule->userID_IsCustom() )
+                return self::enclose($rule->userID_type(), $wrap);
+            return self::enclose($rule->userID_getUsers(), $wrap);
+        }
+
+        return self::enclose('unsupported');
+
     }
 }
 

@@ -370,4 +370,9 @@ class AppOverrideRule extends Rule
         return true;
     }
 
+    public function ruleNature()
+    {
+        return 'app-override';
+    }
+
 }

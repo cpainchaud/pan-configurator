@@ -1337,41 +1337,26 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
+        $fields = Array(
+            'location' => 'location',
+            'type' => 'type',
+            'name' => 'name',
+            'tag' => 'tags',
+            'from' => 'from',
+            'src' => 'source',
+            'dst' => 'destination',
+            'service' => 'service',
+            'application' => 'application',
+            'action' => 'action',
+            'disabled' => 'disabled',
+            'log start' => 'log_start',
+            'log end' => 'log_end',
+            'snat type' => 'snat_type',
+            'snat trans' => 'snat_trans',
+            'dnat host' => 'dnat_host'
+        );
+
         $lines = '';
-
-        $encloseFunction  = function($value, $nowrap = true)
-        {
-            $output = '';
-
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = true;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first= false;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">'.$output.'</td>';
-
-            return "<td>{$output}</td>";
-        };
 
         $count = 0;
         if( isset($context->ruleList) )
@@ -1386,141 +1371,9 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
                 else
                     $lines .= "<tr bgcolor=\"#DDDDDD\">";
 
-                if ($rule->owner->owner->isPanorama() || $rule->owner->owner->isFirewall())
-                    $lines .= $encloseFunction('shared');
-                else
-                    $lines .= $encloseFunction($rule->owner->owner->name());
-
-
-                if ($rule->isSecurityRule())
-                    $lines .= $encloseFunction('security');
-                elseif ($rule->isNatRule())
-                    $lines .= $encloseFunction('nat');
-                elseif($rule->isAppOverrideRule())
-                    $lines .= $encloseFunction('app-override');
-                elseif($rule->isDecryptionRule())
-                    $lines .= $encloseFunction('decryption');
-                elseif($rule->isCaptivePortalRule())
-                    $lines .= $encloseFunction('captive-portal');
-                elseif($rule->isPbfRule())
-                    $lines .= $encloseFunction('pbf');
-                else
-                    $lines .= $encloseFunction('unknown');
-
-                $lines .= $encloseFunction($rule->name());
-
-                if ($rule->from->isAny())
-                    $lines .= $encloseFunction('any');
-                else
+                foreach($fields as $fieldName => $fieldID )
                 {
-                    $tmpArray = $rule->from->getAll();
-                    $lines .= $encloseFunction($rule->from->getAll());
-                }
-
-                if ($rule->source->isAny())
-                    $lines .= $encloseFunction('any');
-                else
-                {
-                    $lines .= $encloseFunction($rule->source->getAll());
-                }
-
-                if ($rule->to->isAny())
-                    $lines .= $encloseFunction('any');
-                else
-                {
-                    $lines .= $encloseFunction($rule->to->getAll());
-                }
-
-                if ($rule->destination->isAny())
-                    $lines .= $encloseFunction('any');
-                else
-                {
-                    $lines .= $encloseFunction($rule->destination->getAll());
-                }
-
-                if ($rule->isSecurityRule() || $rule->isCaptivePortalRule() || $rule->isDecryptionRule() )
-                {
-                    if ($rule->services->isAny())
-                        $lines .= $encloseFunction('any');
-                    elseif ($rule->services->isApplicationDefault())
-                        $lines .= $encloseFunction('application-default');
-                    else
-                    {
-                        $lines .= $encloseFunction($rule->services->getAll());
-                    }
-                } elseif ($rule->isNatRule())
-                {
-                    if ($rule->service !== null)
-                        $lines .= $encloseFunction($rule->service->name());
-                    else
-                        $lines .= $encloseFunction('any');
-                } else
-                    $lines .= $encloseFunction('');
-
-                if ($rule->isSecurityRule())
-                {
-                    if ($rule->apps->isAny())
-                        $lines .= $encloseFunction('any');
-                    else
-                    {
-                        $lines .= $encloseFunction($rule->apps->getAll());
-                    }
-                } else
-                    $lines .= $encloseFunction('');
-
-                if ($rule->isSecurityRule())
-                {
-                    $lines .= $encloseFunction($rule->action());
-                    $lines .= $encloseFunction(boolYesNo($rule->logStart()));
-                    $lines .= $encloseFunction(boolYesNo($rule->logEnd()));
-                }
-                else if ($rule->isCaptivePortalRule())
-                {
-                    $lines .= $encloseFunction($rule->action());
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction('');
-                }
-                else
-                {
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction('');
-                }
-
-                $lines .= $encloseFunction(boolYesNo($rule->isDisabled()));
-                $lines .= $encloseFunction(htmlspecialchars($rule->description()), false);
-
-                if ($rule->isNatRule())
-                {
-                    $natType = $rule->natType();
-                    $lines .= $encloseFunction($natType);
-                    if ($natType == 'none')
-                        $lines .= $encloseFunction('');
-                    elseif($natType == 'static-ip' || $natType == 'dynamic-ip' || $natType == 'dynamic-ip-and-port')
-                    {
-                        $lines .= $encloseFunction($rule->snathosts->all());
-                    } else
-                        $lines .= $encloseFunction('unsupported');
-
-                    if( $rule->dnathost !== null )
-                    {
-                        $lines .= $encloseFunction($rule->dnathost->name());
-                    }
-                    else
-                        $lines .= $encloseFunction('');
-
-                    if( $rule->dnatports !== null )
-                    {
-                        $lines .= $encloseFunction($rule->dnatports->name());
-                    }
-                    else
-                        $lines .= $encloseFunction('');
-
-                } else
-                {
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction('');
-                    $lines .= $encloseFunction('');
+                    $lines .= $context->ruleFieldHtmlExport($rule, $fieldID);
                 }
 
 
@@ -1529,12 +1382,20 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             }
         }
 
+
+
+        $tableHeaders = '';
+        foreach($fields as $fName => $value )
+            $tableHeaders .= "<th>{$fName}</th>\n";
+
         $content = file_get_contents(dirname(__FILE__).'/html-export-template.html');
-        $content = str_replace('%TableHeaders%',
+        /*$content = str_replace('%TableHeaders%',
             '<th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>'.
             '<th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>'.
             '<th>SNAT type</th><th>SNAT hosts</th><th>DNAT host</th><th>DNAT port</th>',
-            $content);
+            $content);*/
+
+        $content = str_replace('%TableHeaders%', $tableHeaders, $content);
 
         $content = str_replace('%lines%', $lines, $content);
 

@@ -97,4 +97,9 @@ class DecryptionRule extends RuleWithUserID
         return "decryptionRules";
     }
 
+    public function ruleNature()
+    {
+        return 'decryption';
+    }
+
 } 

@@ -206,4 +206,9 @@ class CaptivePortalRule extends Rule
         return true;
     }
 
+    public function ruleNature()
+    {
+        return 'captive-portal';
+    }
+
 }

@@ -694,6 +694,11 @@ class NatRule extends Rule
     {
         return "natRules";
     }
+
+    public function ruleNature()
+    {
+        return 'nat';
+    }
 }
 
 
