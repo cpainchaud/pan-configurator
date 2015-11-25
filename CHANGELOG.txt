@@ -1,7 +1,7 @@
 CHANGELOG
 
 1.5.6
-* introduction of CaptivePortal type rules support
+* introduction of CaptivePortal, Pbf type rules initial support
 * PANConf : enhanced support to load pushed panorama config
 * RuleStore : new function to get rules from parent DeviceGroups
 * AddressGroup : enhanced group loading time & consistency

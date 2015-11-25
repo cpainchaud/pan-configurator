@@ -17,7 +17,7 @@
 */
 
 /**
- * Class NegatableRule
+ *
  * @property DOMElement $xmlroot
  */
 trait NegatableRule
@@ -39,25 +39,23 @@ trait NegatableRule
     {
         $xml = $this->xmlroot;
 
-        //
-        // Begin <negate-source> extraction
-        //
-        $negatedSourceRoot = DH::findFirstElement('negate-source', $xml);
-        if( $negatedSourceRoot !== false )
-            $this->_sourceIsNegated = yesNoBool($negatedSourceRoot->textContent);
-        else
-            $this->_sourceIsNegated = false;
-        // End of <negate-source>
-        //
+        $sourceFound = false;
+        $destinationFound = false;
 
-        // Begin <negate-destination> extraction
-        //
-        $negatedDestinationRoot = DH::findFirstElement('negate-destination', $xml);
-        if( $negatedDestinationRoot !== false )
-            $this->_destinationIsNegated = yesNoBool($negatedDestinationRoot->textContent);
-        else
-            $this->_destinationIsNegated = false;
-        // End of <negate-destination>
+        foreach($xml->childNodes as $node )
+        {
+            if( $sourceFound && $destinationFound )
+                return;
+
+            /** @var DOMElement $node */
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            if( $node->tagName == 'negate-source' )
+                $this->_sourceIsNegated = yesNoBool($node->textContent);
+            else if( $node->tagName == 'negate-destination' )
+                $this->_destinationIsNegated = yesNoBool($node->textContent);
+        }
     }
 
     /**
@@ -118,6 +116,40 @@ trait NegatableRule
         }
 
         return false;
+    }
+
+    /**
+     * @param bool $yes
+     * @return bool
+     */
+    public function API_setSourceIsNegated($yes)
+    {
+        $ret = $this->setSourceIsNegated($yes);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $con->sendSetRequest($this->getXPath(), '<negate-source>'.boolYesNo($yes).'</negate-source>');
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @param bool $yes
+     * @return bool
+     */
+    public function API_setDestinationIsNegated($yes)
+    {
+        $ret = $this->setDestinationIsNegated($yes);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $con->sendSetRequest($this->getXPath(), '<negate-destination>'.boolYesNo($yes).'</negate-destination>');
+        }
+
+        return $ret;
     }
 
 

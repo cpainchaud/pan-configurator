@@ -176,16 +176,18 @@ class SecurityRule extends RuleWithUserID
 		//
 		// Begin <log-start> extraction
 		//
-		$tmp = DH::findFirstElementOrCreate('log-start', $xml, 'no');
-		$this->logstart = yesNoBool($tmp->textContent);
+		$tmp = DH::findFirstElement('log-start', $xml, 'no');
+		if( $tmp !== false )
+            $this->logstart = yesNoBool($tmp->textContent);
 		// End of <log-start>
 		
 		
 		//
 		// Begin <log-end> extraction
 		//
-		$tmp = DH::findFirstElementOrCreate('log-end', $xml, 'yes');
-		$this->logend = yesNoBool($tmp->textContent);
+		$tmp = DH::findFirstElement('log-end', $xml, 'yes');
+        if( $tmp !== false )
+		    $this->logend = yesNoBool($tmp->textContent);
 		// End of <log-start>
 		
 		
@@ -198,28 +200,7 @@ class SecurityRule extends RuleWithUserID
 		$this->extract_security_profile_from_domxml();
 		// End of <profile-setting>
 				
-		
-		
-		//
-		// Begin <negate-source> extraction
-		//
-		$negatedSourceRoot = DH::findFirstElement('negate-source', $xml);
-		if( $negatedSourceRoot !== false )
-			$this->_sourceIsNegated = yesNoBool($negatedSourceRoot->textContent);
-		else
-			$this->_sourceIsNegated = false;
-		// End of <negate-source>
-		//
-		
-		// Begin <negate-destination> extraction
-		//
-		$negatedDestinationRoot = DH::findFirstElement('negate-destination', $xml);
-		if( $negatedDestinationRoot !== false )
-			$this->_destinationIsNegated = yesNoBool($negatedDestinationRoot->textContent);
-		else
-			$this->_destinationIsNegated = false;
-		// End of <negate-destination>
-
+        $this->_readNegationFromXml();
 
         //
         // Begin <action> extraction

@@ -19,6 +19,7 @@
 
 class AppOverrideRule extends Rule
 {
+    use NegatableRule;
 
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination><port></port><protocol>tcp</protocol><application></application></entry>';
@@ -26,9 +27,6 @@ class AppOverrideRule extends Rule
 
     /** @var AppRuleContainer */
     public $apps = null;
-
-    protected $negatedSource = false;
-    protected $negatedDestination = false;
 
     public $_protocol = '';
     public $_ports = '';
@@ -96,25 +94,8 @@ class AppOverrideRule extends Rule
         $this->load_to();
 
 
-        //
-        // Begin <negate-source> extraction
-        //
-        $negatedSourceRoot = DH::findFirstElement('negate-source', $xml);
-        if( $negatedSourceRoot !== false )
-            $this->negatedSource = yesNoBool($negatedSourceRoot->textContent);
-        else
-            $this->negatedSource = false;
-        // End of <negate-source>
-        //
+        $this->_readNegationFromXml();
 
-        // Begin <negate-destination> extraction
-        //
-        $negatedDestinationRoot = DH::findFirstElement('negate-destination', $xml);
-        if( $negatedDestinationRoot !== false )
-            $this->negatedDestination = yesNoBool($negatedDestinationRoot->textContent);
-        else
-            $this->negatedDestination = false;
-        // End of <negate-destination>
 
         // <protocol> extraction
         //
@@ -129,113 +110,6 @@ class AppOverrideRule extends Rule
         //
 
 
-    }
-
-
-    public function sourceIsNegated()
-    {
-        return $this->negatedSource;
-    }
-
-    /**
-     * @param bool $yes
-     * @return bool
-     */
-    public function setSourceIsNegated($yes)
-    {
-        if( $this->negatedSource != $yes )
-        {
-            $tmpRoot = DH::findFirstElement('negate-source', $this->xmlroot);
-            if( $tmpRoot === false )
-            {
-                if($yes)
-                    DH::createElement($this->xmlroot, 'negate-source', 'yes');
-            }
-            else
-            {
-                if( !$yes )
-                    $this->xmlroot->removeChild($tmpRoot);
-                else
-                    DH::setDomNodeText($tmpRoot, 'yes');
-            }
-
-            $this->negatedSource = $yes;
-
-            return true;
-        }
-
-        return false;
-    }
-
-
-    /**
-     * @param bool $yes
-     * @return bool
-     */
-    public function API_setSourceIsNegated($yes)
-    {
-        $ret = $this->setSourceIsNegated($yes);
-
-        if( $ret )
-        {
-            $con = findConnectorOrDie($this);
-            $con->sendSetRequest($this->getXPath(), '<negate-source>'.boolYesNo($yes).'</negate-source>');
-        }
-
-        return $ret;
-    }
-
-
-    public function destinationIsNegated()
-    {
-        return $this->negatedDestination;
-    }
-
-    /**
-     * @param bool $yes
-     * @return bool
-     */
-    public function setDestinationIsNegated($yes)
-    {
-        if( $this->negatedDestination != $yes )
-        {
-            $tmpRoot = DH::findFirstElement('negate-destination', $this->xmlroot);
-            if( $tmpRoot === false )
-            {
-                if($yes)
-                    DH::createElement($this->xmlroot, 'negate-destination', 'yes');
-            }
-            else
-            {
-                if( !$yes )
-                    $this->xmlroot->removeChild($tmpRoot);
-                else
-                    DH::setDomNodeText($tmpRoot, 'yes');
-            }
-
-            $this->negatedDestination = $yes;
-
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param bool $yes
-     * @return bool
-     */
-    public function API_setDestinationIsNegated($yes)
-    {
-        $ret = $this->setDestinationIsNegated($yes);
-
-        if( $ret )
-        {
-            $con = findConnectorOrDie($this);
-            $con->sendSetRequest($this->getXPath(), '<negate-destination>'.boolYesNo($yes).'</negate-destination>');
-        }
-
-        return $ret;
     }
 
     public function display( $padding = 0)

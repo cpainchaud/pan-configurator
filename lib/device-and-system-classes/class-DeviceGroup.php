@@ -66,6 +66,9 @@ class DeviceGroup
     /** @var RuleStore */
     public $captivePortalRules;
 
+    /** @var RuleStore */
+    public $pbfRules;
+
     /**
      * @var null|DeviceGroup
      */
@@ -104,6 +107,7 @@ class DeviceGroup
 		$this->decryptionRules = new RuleStore($this, 'DecryptionRule', true);
         $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule', true);
         $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule', true);
+        $this->pbfRules = new RuleStore($this, 'PbfRule', true);
 
 	}
 
@@ -222,6 +226,12 @@ class DeviceGroup
         $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
         $this->captivePortalRules->load_from_domxml($tmp, $tmpPost);
 
+        $tmp = DH::findFirstElementOrCreate('pbf', $prerulebase);
+        $tmp = DH::findFirstElementOrCreate('rules', $tmp);
+        $tmpPost = DH::findFirstElementOrCreate('pbf', $postrulebase);
+        $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+        $this->pbfRules->load_from_domxml($tmp, $tmpPost);
+
 
 		// Devices extraction
 		$this->devicesRoot = DH::findFirstElementOrCreate('devices', $xml);
@@ -294,6 +304,7 @@ class DeviceGroup
         print "- {$this->decryptionRules->countPreRules()} / {$this->decryptionRules->countPostRules()} pre/post Decrypt rules\n";
         print "- {$this->appOverrideRules->countPreRules()} / {$this->appOverrideRules->countPostRules()} pre/post AppOverride rules\n";
         print "- {$this->captivePortalRules->countPreRules()} / {$this->captivePortalRules->countPostRules()} pre/post AppOverride rules\n";
+        print "- {$this->pbfRules->countPreRules()} / {$this->pbfRules->countPostRules()} pre/post PBF rules\n";
 
 		print "- {$this->addressStore->countAddresses()} / {$this->addressStore->countAddressGroups()} / {$this->addressStore->countTmpAddresses()} address/group/tmp/total objects\n";
 		print "- {$this->serviceStore->countServices()} / {$this->serviceStore->countServiceGroups()} / {$this->serviceStore->countTmpServices()} service/group/tmp/total objects\n";

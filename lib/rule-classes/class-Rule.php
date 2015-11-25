@@ -160,7 +160,10 @@ class Rule
 	{
 		$xml = $this->xmlroot;
 		
-		$disabledroot = DH::findFirstElementOrCreate('disabled', $xml, 'no');
+		$disabledroot = DH::findFirstElement('disabled', $xml);
+
+        if($disabledroot === false )
+            return;
 
 		$lstate = strtolower($disabledroot->textContent);
 		if( $lstate == 'yes' )

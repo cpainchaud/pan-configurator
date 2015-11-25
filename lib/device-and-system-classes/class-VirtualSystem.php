@@ -63,6 +63,9 @@ class VirtualSystem
     /** @var RuleStore */
     public $captivePortalRules;
 
+    /** @var RuleStore */
+    public $pbfRules;
+
     /** @var ZoneStore */
     public $zoneStore=null;
 
@@ -111,6 +114,9 @@ class VirtualSystem
 
         $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule');
         $this->captivePortalRules->name = 'CaptivePortal';
+
+        $this->pbfRules = new RuleStore($this, 'PbfRule');
+        $this->pbfRules->name = 'PBF';
 		
 	}
 
@@ -242,6 +248,13 @@ class VirtualSystem
             $tmproot = DH::findFirstElementOrCreate('captive-portal', $this->rulebaseroot);
             $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
             $this->appOverrideRules->load_from_domxml($tmprulesroot);
+
+            //
+            // PBF Rules extraction
+            //
+            $tmproot = DH::findFirstElementOrCreate('pbf', $this->rulebaseroot);
+            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
+            $this->pbfRules->load_from_domxml($tmprulesroot);
         }
 	}
 
@@ -259,6 +272,9 @@ class VirtualSystem
 		print "- ".$this->securityRules->count()." security rules\n";
 		print "- ".$this->natRules->count()." nat rules\n";
         print "- ".$this->decryptionRules->count()." decryption rules\n";
+        print "- ".$this->appOverrideRules->count()." app-override rules\n";
+        print "- ".$this->captivePortalRules->count()." capt-portal rules\n";
+        print "- ".$this->pbfRules->count()." pbf rules\n";
 		print "- ".$this->addressStore->countAddresses()." address objects\n";
 		print "- ".$this->addressStore->countAddressGroups()." address groups\n";
 		print "- ".$this->serviceStore->countServices()." service objects\n";

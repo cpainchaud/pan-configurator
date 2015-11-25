@@ -73,6 +73,9 @@ class PanoramaConf
     /** @var RuleStore */
     public $captivePortalRules;
 
+    /** @var RuleStore */
+    public $pbfRules;
+
     /** @var AddressStore */
     public $addressStore=null;
 
@@ -126,6 +129,7 @@ class PanoramaConf
 		$this->decryptionRules = new RuleStore($this, 'DecryptionRule', true);
         $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule', true);
         $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule', true);
+        $this->pbfRules = new RuleStore($this, 'PbfRule', true);
 
 	}
 
@@ -273,6 +277,12 @@ class PanoramaConf
         $tmpPost = DH::findFirstElementOrCreate('captive-portal', $postrulebase);
         $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
         $this->captivePortalRules->load_from_domxml($tmp, $tmpPost);
+
+        $tmp = DH::findFirstElementOrCreate('pbf', $prerulebase);
+        $tmp = DH::findFirstElementOrCreate('rules', $tmp);
+        $tmpPost = DH::findFirstElementOrCreate('pbf', $postrulebase);
+        $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+        $this->pbfRules->load_from_domxml($tmp, $tmpPost);
 
 
         //
@@ -499,12 +509,14 @@ class PanoramaConf
         $gpreDecryptRules = $this->decryptionRules->countPreRules();
         $gpreAppOverrideRules = $this->appOverrideRules->countPreRules();
         $gpreCPRules = $this->captivePortalRules->countPreRules();
+        $gprePbfRules = $this->pbfRules->countPreRules();
 
 		$gpostSecRules = $this->securityRules->countPostRules();
 		$gpostNatRules = $this->natRules->countPostRules();
         $gpostDecryptRules = $this->decryptionRules->countPostRules();
         $gpostAppOverrideRules = $this->appOverrideRules->countPostRules();
         $gpostCPRules = $this->captivePortalRules->countPostRules();
+        $gpostPbfRules = $this->pbfRules->countPostRules();
 
 		$gnservices = $this->serviceStore->countServices();
 		$gnservicesUnused = $this->serviceStore->countUnusedServices();
@@ -525,12 +537,14 @@ class PanoramaConf
             $gpreDecryptRules += $cur->decryptionRules->countPreRules();
             $gpreAppOverrideRules += $cur->appOverrideRules->countPreRules();
             $gpreCPRules += $cur->captivePortalRules->countPreRules();
+            $gprePbfRules += $cur->pbfRules->countPreRules();
 
 			$gpostSecRules += $cur->securityRules->countPostRules();
 			$gpostNatRules += $cur->natRules->countPostRules();
             $gpostDecryptRules += $cur->decryptionRules->countPostRules();
             $gpostAppOverrideRules += $cur->appOverrideRules->countPostRules();
             $gpostCPRules += $cur->captivePortalRules->countPostRules();
+            $gpostPbfRules += $cur->pbfRules->countPostRules();
 
 			$gnservices += $cur->serviceStore->countServices();
 			$gnservicesUnused += $cur->serviceStore->countUnusedServices();
@@ -560,6 +574,9 @@ class PanoramaConf
 
         print "- ".$this->captivePortalRules->countPreRules()." (".$gpreCPRules.") pre-CaptivePortal Rules\n";
         print "- ".$this->captivePortalRules->countPostRules()." (".$gpostCPRules.") post-CaptivePortal Rules\n";
+
+        print "- ".$this->pbfRules->countPreRules()." (".$gprePbfRules.") pre-CaptivePortal Rules\n";
+        print "- ".$this->pbfRules->countPostRules()." (".$gpostPbfRules.") post-CaptivePortal Rules\n";
 
 		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects. {$gnaddresssUnused} unused\n";
 
