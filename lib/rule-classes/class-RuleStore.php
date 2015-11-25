@@ -1258,6 +1258,11 @@ class RuleStore
 		return $this->_postRules;
 	}
 
+    /**
+     * @param $rule
+     * @return bool
+     * @throws Exception
+     */
 	public function ruleIsPreRule(Rule $rule)
 	{
 		if( !$this->isPreOrPost )
@@ -1275,7 +1280,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule
+	 * @param $rule
 	 * @return bool
 	 * @throws Exception
 	 */

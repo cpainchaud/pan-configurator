@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class VirtualRouterStore | PAN-Configurator</title>
+	<title>Class PbfRule | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
 	<script type="text/javascript" src="elementlist.js?3289192737"></script>
@@ -66,7 +66,7 @@
 				<li><a href="class-PanAPIConnector.html">PanAPIConnector</a></li>
 				<li><a href="class-PANConf.html">PANConf</a></li>
 				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
-				<li><a href="class-PbfRule.html">PbfRule</a></li>
+				<li class="active"><a href="class-PbfRule.html">PbfRule</a></li>
 				<li><a href="class-PH.html">PH</a></li>
 				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
@@ -86,7 +86,7 @@
 				<li><a href="class-TmpInterface.html">TmpInterface</a></li>
 				<li><a href="class-TmpInterfaceStore.html">TmpInterfaceStore</a></li>
 				<li><a href="class-VirtualRouter.html">VirtualRouter</a></li>
-				<li class="active"><a href="class-VirtualRouterStore.html">VirtualRouterStore</a></li>
+				<li><a href="class-VirtualRouterStore.html">VirtualRouterStore</a></li>
 				<li><a href="class-VirtualSystem.html">VirtualSystem</a></li>
 				<li><a href="class-Zone.html">Zone</a></li>
 				<li><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></li>
@@ -172,29 +172,37 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class VirtualRouterStore</h1>
+	<h1>Class PbfRule</h1>
 
 
-	<div class="description">
-	
-<p>Class IPsecTunnelStore</p>
-
-	</div>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
-			<a href="class-ObjStore.html"><span>ObjStore</span></a>
+			<a href="class-Rule.html"><span>Rule</span></a>
 			
 			
 			 uses 
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
-				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
+			
+				<a href="class-centralServiceStoreUser.html"><span>centralServiceStoreUser</span></a>, 
+			
+				<a href="class-centralAddressStoreUser.html"><span>centralAddressStoreUser</span></a>, 
+			
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>
 			
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>VirtualRouterStore</span></b>			
+			<a href="class-RuleWithUserID.html"><span>RuleWithUserID</span></a>
+			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>PbfRule</span></b>			
 			
 			
 		</dd>
@@ -213,7 +221,7 @@
 		
 		
 
-		<b>Located at</b> network-classes/class-VirtualRouterStore.php<br />
+		<b>Located at</b> rule-classes/class-PbfRule.php<br />
 	</div>
 
 
@@ -231,69 +239,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#___construct">#</a>
-		<code><b>__construct</b>( <span>mixed <var>$name</var></span>, <span>mixed <var>$owner</var></span> )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="virtualRouters" id="_virtualRouters">
-
-		<td class="attributes"><code>
-			 public 
-			<code><a href="class-VirtualRouter.html">VirtualRouter</a>[]</code>
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_virtualRouters">#</a>
-		<code><b>virtualRouters</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code><code><a href="class-VirtualRouter.html">VirtualRouter</a>[]</code></code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="findVirtualRouter" id="_findVirtualRouter">
-
-		<td class="attributes"><code>
-			 public 
-			null|<code><a href="class-VirtualRouter.html">VirtualRouter</a></code>
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_findVirtualRouter">#</a>
-		<code><b>findVirtualRouter</b>( <span>mixed <var>$vrName</var></span> )</code>
+		<code><b>__construct</b>( <span><code><a href="class-RuleStore.html">RuleStore</a></code> <var>$owner</var></span>, <span>boolean <var>$fromTemplateXML</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -305,14 +251,12 @@
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
-					<dt><var>$vrName</var></dt>
-					<dd><code>mixed</code><br>$vrName string</dd>
+					<dt><var>$owner</var></dt>
+					<dd><code><code><a href="class-RuleStore.html">RuleStore</a></code></code><br>$owner</dd>
+					<dt><var>$fromTemplateXML</var></dt>
+					<dd><code>boolean</code><br>$fromTemplateXML</dd>
 				</dl></div>
 
-				<h4>Returns</h4>
-				<div class="list">
-					<code>null|<code><a href="class-VirtualRouter.html">VirtualRouter</a></code></code><br />
-				</div>
 
 
 
@@ -320,25 +264,156 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="load_from_domxml" id="_load_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_domxml">#</a>
+		<code><b>load_from_domxml</b>( <span><code><a href="class-DOMElement.html">DOMElement</a></code> <var>$xml</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$xml</var></dt>
+					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code></code><br>$xml</dd>
+				</dl></div>
+
+
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="display" id="_display">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_display">#</a>
+		<code><b>display</b>( <span>mixed <var>$padding</var> = <span class="php-num">0</span></span> )</code>
+
+		<div class="description short">
+			
+<p>Helper function to quickly print a function properties to CLI</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>Helper function to quickly print a function properties to CLI</p>
+
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="ruleNature" id="_ruleNature">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_ruleNature">#</a>
+		<code><b>ruleNature</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_ruleNature">Rule::ruleNature()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
 	</table>
 
 	<table class="summary inherited">
-	<caption>Methods inherited from <a href="class-ObjStore.html#methods">ObjStore</a></caption>
+	<caption>Methods inherited from <a href="class-RuleWithUserID.html#methods">RuleWithUserID</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-ObjStore.html#_count"><b>count()</b></a>, 
-			<a href="class-ObjStore.html#_countUnused"><b>countUnused()</b></a>, 
-			<a href="class-ObjStore.html#_createTmp"><b>createTmp()</b></a>, 
-			<a href="class-ObjStore.html#_display"><b>display()</b></a>, 
-			<a href="class-ObjStore.html#_findByName"><b>findByName()</b></a>, 
-			<a href="class-ObjStore.html#_findOrCreate"><b>findOrCreate()</b></a>, 
-			<a href="class-ObjStore.html#_getAll"><b>getAll()</b></a>, 
-			<a href="class-ObjStore.html#_inStore"><b>inStore()</b></a>, 
-			<a href="class-ObjStore.html#_referencedObjectRenamed"><b>referencedObjectRenamed()</b></a>, 
-			<a href="class-ObjStore.html#_remove"><b>remove()</b></a>, 
-			<a href="class-ObjStore.html#_removeAll"><b>removeAll()</b></a>, 
-			<a href="class-ObjStore.html#_rewriteXML"><b>rewriteXML()</b></a>, 
-			<a href="class-ObjStore.html#_setName"><b>setName()</b></a>
+			<a href="class-RuleWithUserID.html#_userID_IsAny"><b>userID_IsAny()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsCustom"><b>userID_IsCustom()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsKnown"><b>userID_IsKnown()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsPreLogon"><b>userID_IsPreLogon()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsUnknown"><b>userID_IsUnknown()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_getUsers"><b>userID_getUsers()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_loadUsersFromXml"><b>userID_loadUsersFromXml()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_type"><b>userID_type()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-Rule.html#methods">Rule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rule.html#_API_setDisabled"><b>API_setDisabled()</b></a>, 
+			<a href="class-Rule.html#_API_setEnabled"><b>API_setEnabled()</b></a>, 
+			<a href="class-Rule.html#_API_setName"><b>API_setName()</b></a>, 
+			<a href="class-Rule.html#_extract_description_from_domxml"><b>extract_description_from_domxml()</b></a>, 
+			<a href="class-Rule.html#_extract_disabled_from_domxml"><b>extract_disabled_from_domxml()</b></a>, 
+			<a href="class-Rule.html#_getXPath"><b>getXPath()</b></a>, 
+			<a href="class-Rule.html#_init_from_with_store"><b>init_from_with_store()</b></a>, 
+			<a href="class-Rule.html#_isAppOverrideRule"><b>isAppOverrideRule()</b></a>, 
+			<a href="class-Rule.html#_isCaptivePortalRule"><b>isCaptivePortalRule()</b></a>, 
+			<a href="class-Rule.html#_isDecryptionRule"><b>isDecryptionRule()</b></a>, 
+			<a href="class-Rule.html#_isDisabled"><b>isDisabled()</b></a>, 
+			<a href="class-Rule.html#_isEnabled"><b>isEnabled()</b></a>, 
+			<a href="class-Rule.html#_isNatRule"><b>isNatRule()</b></a>, 
+			<a href="class-Rule.html#_isPbfRule"><b>isPbfRule()</b></a>, 
+			<a href="class-Rule.html#_isPostRule"><b>isPostRule()</b></a>, 
+			<a href="class-Rule.html#_isPreRule"><b>isPreRule()</b></a>, 
+			<a href="class-Rule.html#_isSecurityRule"><b>isSecurityRule()</b></a>, 
+			<a href="class-Rule.html#_load_destination"><b>load_destination()</b></a>, 
+			<a href="class-Rule.html#_load_from"><b>load_from()</b></a>, 
+			<a href="class-Rule.html#_load_source"><b>load_source()</b></a>, 
+			<a href="class-Rule.html#_load_tags"><b>load_tags()</b></a>, 
+			<a href="class-Rule.html#_load_to"><b>load_to()</b></a>, 
+			<a href="class-Rule.html#_name"><b>name()</b></a>, 
+			<a href="class-Rule.html#_rewriteSDisabled_XML"><b>rewriteSDisabled_XML()</b></a>, 
+			<a href="class-Rule.html#_setDisabled"><b>setDisabled()</b></a>, 
+			<a href="class-Rule.html#_setEnabled"><b>setEnabled()</b></a>, 
+			<a href="class-Rule.html#_setName"><b>setName()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -363,6 +438,33 @@
 		</code></td>
 	</tr>
 	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralServiceStoreUser.html#methods">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#_findParentServiceStore"><b>findParentServiceStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-centralAddressStoreUser.html#methods">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#_findParentAddressStore"><b>findParentAddressStore()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-ObjectWithDescription.html#methods">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#_API_setDescription"><b>API_setDescription()</b></a>, 
+			<a href="class-ObjectWithDescription.html#__load_description_from_domxml"><b>_load_description_from_domxml()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_description"><b>description()</b></a>, 
+			<a href="class-ObjectWithDescription.html#_setDescription"><b>setDescription()</b></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
@@ -370,44 +472,35 @@
 
 
 
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-RuleWithUserID.html#constants">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#__UserIDType_Any"><b>__UserIDType_Any</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Custom"><b>__UserIDType_Custom</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Known"><b>__UserIDType_Known</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_PreLogon"><b>__UserIDType_PreLogon</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Unknown"><b>__UserIDType_Unknown</b></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
-	<tr data-order="owner" id="$owner">
+	<tr data-order="templatexml" id="$templatexml">
 		<td class="attributes"><code>
-			public  
-			null|<code><a href="class-PANConf.html">PANConf</a></code>
-		</code></td>
-
-		<td class="name">
-<var>$owner</var>		</td>
-		<td class="value"><code></code></td>
-		<td class="description"><div>
-			<a href="#$owner" class="anchor">#</a>
-
-			<div class="description short">
-				
-			</div>
-
-			<div class="description detailed hidden">
-				
-
-			</div>
-		</div></td>
-	</tr>
-	<tr data-order="childn" id="$childn">
-		<td class="attributes"><code>
-			public static 
+			protected static 
 			string
 		</code></td>
 
 		<td class="name">
-<var>$childn</var>		</td>
-		<td class="value"><code><span class="php-quote">'VirtualRouter'</span></code></td>
+<var>$templatexml</var>		</td>
+		<td class="value"><code><span class="php-quote">'&lt;entry name=&quot;**temporarynamechangeme**&quot;&gt;&lt;from&gt;&lt;member&gt;any&lt;/member&gt;&lt;/from&gt;&lt;to&gt;&lt;member&gt;any&lt;/member&gt;&lt;/to&gt;
+&lt;source&gt;&lt;member&gt;any&lt;/member&gt;&lt;/source&gt;&lt;destination&gt;&lt;member&gt;any&lt;/member&gt;&lt;/destination&gt;&lt;/entry&gt;'</span></code></td>
 		<td class="description"><div>
-			<a href="#$childn" class="anchor">#</a>
+			<a href="#$templatexml" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -422,14 +515,27 @@
 	</table>
 
 	<table class="summary inherited">
-	<caption>Properties inherited from <a href="class-ObjStore.html#properties">ObjStore</a></caption>
+	<caption>Properties inherited from <a href="class-RuleWithUserID.html#properties">RuleWithUserID</a></caption>
 	<tr>
 		<td><code>
-			<a href="class-ObjStore.html#$classn"><var>$classn</var></a>, 
-			<a href="class-ObjStore.html#$name"><var>$name</var></a>, 
-			<a href="class-ObjStore.html#$nameIndex"><var>$nameIndex</var></a>, 
-			<a href="class-ObjStore.html#$o"><var>$o</var></a>, 
-			<a href="class-ObjStore.html#$skipEmptyXmlObjects"><var>$skipEmptyXmlObjects</var></a>
+			<a href="class-RuleWithUserID.html#$_userIDType"><var>$_userIDType</var></a>, 
+			<a href="class-RuleWithUserID.html#$_users"><var>$_users</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-Rule.html#properties">Rule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-Rule.html#$destination"><var>$destination</var></a>, 
+			<a href="class-Rule.html#$disabled"><var>$disabled</var></a>, 
+			<a href="class-Rule.html#$from"><var>$from</var></a>, 
+			<a href="class-Rule.html#$name"><var>$name</var></a>, 
+			<a href="class-Rule.html#$owner"><var>$owner</var></a>, 
+			<a href="class-Rule.html#$services"><var>$services</var></a>, 
+			<a href="class-Rule.html#$source"><var>$source</var></a>, 
+			<a href="class-Rule.html#$tags"><var>$tags</var></a>, 
+			<a href="class-Rule.html#$to"><var>$to</var></a>
 		</code></td>
 	</tr>
 	</table>
@@ -442,35 +548,31 @@
 		</code></td>
 	</tr>
 	</table>
-
-	<table class="summary" id="magicProperties">
-	<caption>Magic properties summary</caption>
-	<tr data-order="o" id="m$o">
-		<td class="attributes"><code>
-			public  
-			mixed
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralServiceStoreUser.html#properties">centralServiceStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralServiceStoreUser.html#$parentServiceStore"><var>$parentServiceStore</var></a>
 		</code></td>
-
-		<td class="name">
-<var>$o</var>		</td>
-		<td class="description"><div>
-			<a href="#m$o" class="anchor">#</a>
-
-			<div class="description short">
-				
-<p>IPsecTunnel[]</p>
-
-			</div>
-
-			<div class="description detailed hidden">
-				
-<p>IPsecTunnel[]</p>
-
-
-			</div>
-		</div></td>
 	</tr>
 	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-centralAddressStoreUser.html#properties">centralAddressStoreUser</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-centralAddressStoreUser.html#$parentAddressStore"><var>$parentAddressStore</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#$_description"><var>$_description</var></a>
+		</code></td>
+	</tr>
+	</table>
+
 
 
 	<table class="summary used">
@@ -479,6 +581,14 @@
 		<td><code>
 			<a href="class-PathableName.html#m$name"><var>$name</var></a>, 
 			<a href="class-PathableName.html#m$owner"><var>$owner</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Magic properties used from <a href="class-ObjectWithDescription.html#properties">ObjectWithDescription</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-ObjectWithDescription.html#m$xmlroot"><var>$xmlroot</var></a>
 		</code></td>
 	</tr>
 	</table>
