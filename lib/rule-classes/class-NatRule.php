@@ -94,12 +94,10 @@ class NatRule extends Rule
 		$this->name = DH::findAttribute('name', $xml);
 		if( $this->name === FALSE )
 			derr("name not found\n");
-		
+
+        $this->load_common_from_domxml();
 		//print "found rule name '".$this->name."'\n";
 
-        $this->extract_disabled_from_domxml();
-        $this->extract_description_from_domxml();
-        $this->load_tags();
 		$this->load_from();
 		$this->load_to();
 		$this->load_source();

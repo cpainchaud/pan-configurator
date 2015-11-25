@@ -50,12 +50,10 @@ class PbfRule extends RuleWithUserID
         if ($this->name === FALSE)
             derr("name not found\n");
 
-        $this->extract_disabled_from_domxml();
-        $this->extract_description_from_domxml();
+        $this->load_common_from_domxml();
 
         $this->load_source();
         $this->load_destination();
-        $this->load_tags();
         $this->load_from();
         $this->load_to();
 

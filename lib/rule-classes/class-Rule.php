@@ -135,7 +135,7 @@ class Rule
 
 
     /**
-     * For developper use only
+     * For developer use only
      */
     protected function load_source()
     {
@@ -144,7 +144,7 @@ class Rule
     }
 
     /**
-     * For developper use only
+     * For developer use only
      */
     protected function load_destination()
     {
@@ -153,7 +153,7 @@ class Rule
     }
 
 	/**
-	* For developper use only
+	* For developer use only
 	*
 	*/
 	protected function extract_disabled_from_domxml()
@@ -172,9 +172,40 @@ class Rule
 		}
 	}
 
+    /**
+     * For developer use only
+     *
+     */
+    protected function load_common_from_domxml()
+    {
+        foreach($this->xmlroot->childNodes as $node)
+        {
+            /** @var DOMElement $node */
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            if( $node->nodeName == 'disabled' )
+            {
+                $lstate = strtolower($node->textContent);
+                if( $lstate == 'yes' )
+                {
+                    $this->disabled = true;
+                }
+            }
+            else if( $node->nodeName == 'tag' )
+            {
+                $this->tags->load_from_domxml($node);
+            }
+            else if( $node->nodeName == 'description' )
+            {
+                $this->_description = $node->textContent;
+            }
+        }
+    }
+
 
 	/**
-	* For developper use only
+	* For developer use only
 	*
 	*/
 	protected function extract_description_from_domxml()
@@ -184,7 +215,7 @@ class Rule
 	
 
 	/**
-	* For developper use only
+	* For developer use only
 	*
 	*/
 	protected function rewriteSDisabled_XML()

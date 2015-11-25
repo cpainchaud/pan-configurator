@@ -124,22 +124,11 @@ class SecurityRule extends RuleWithUserID
 		
 		//print "found rule name '".$this->name."'\n";
 		
-		//  											//
-		//	Begin of <disabled> extraction				//
-		//												//
-		$this->extract_disabled_from_domxml();
-		// End of <disabled> properties extraction		//
-		
-		//  											//
-		//	Begin of <description> extraction			//
-		//												//
-		$this->extract_description_from_domxml();
-		// End of <description> extraction 				//
+		$this->load_common_from_domxml();
 		
 		
 		$this->load_source();
 		$this->load_destination();
-		$this->load_tags();
         $this->load_from();
 		$this->load_to();
 		
@@ -150,7 +139,6 @@ class SecurityRule extends RuleWithUserID
 		$tmp = DH::findFirstElementOrCreate('application', $xml);
 		$this->apps->load_from_domxml($tmp);
 		// end of <application> application extraction
-		
 		
 		
 		//										//
