@@ -113,7 +113,10 @@ class SecurityRule extends RuleWithUserID
 	}
 
 
-
+    /**
+     * @param DOMElement $xml
+     * @throws Exception
+     */
 	public function load_from_domxml($xml)
 	{
 		$this->xmlroot = $xml;
@@ -148,36 +151,23 @@ class SecurityRule extends RuleWithUserID
 		$this->services->load_from_domxml($tmp);
 		// end of <service> zone extraction
 
-		//
-		// Begin <log-setting> extraction
-		//
-		$tmp = DH::findFirstElement('log-setting', $xml);
-		if( $tmp === false )
-			$this->logSetting = false;
-		else
-		{
-			$this->logSetting = $tmp->textContent;
-		}
-		// End of <log-setting>
-		
-		
-		//
-		// Begin <log-start> extraction
-		//
-		$tmp = DH::findFirstElement('log-start', $xml, 'no');
-		if( $tmp !== false )
-            $this->logstart = yesNoBool($tmp->textContent);
-		// End of <log-start>
-		
-		
-		//
-		// Begin <log-end> extraction
-		//
-		$tmp = DH::findFirstElement('log-end', $xml, 'yes');
-        if( $tmp !== false )
-		    $this->logend = yesNoBool($tmp->textContent);
-		// End of <log-start>
-		
+        foreach($xml->childNodes as $node)
+        {
+            /** @var DOMElement $node */
+            if( $node->nodeName == 'log-setting' )
+            {
+                $this->logSetting = $node->textContent;
+            }
+            else if( $node->nodeName == 'log-start' )
+            {
+                $this->logstart = yesNoBool($node->textContent);
+            }
+            else if( $node->nodeName == 'log-end' )
+            {
+                $this->logend = yesNoBool($node->textContent);
+            }
+        }
+
 		
 		//
 		// Begin <profile-setting> extraction

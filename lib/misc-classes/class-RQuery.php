@@ -1097,6 +1097,8 @@ RQuery::$defaultFilters['rule']['action']['operators']['is.negative'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isSecurityRule() )
+            return false;
         return $object->actionIsNegative();
     },
     'arg' => false
@@ -1104,6 +1106,8 @@ RQuery::$defaultFilters['rule']['action']['operators']['is.negative'] = Array(
 RQuery::$defaultFilters['rule']['action']['operators']['is.allow'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isSecurityRule() )
+            return false;
         return $object->actionIsAllow();
     },
     'arg' => false
@@ -1111,6 +1115,8 @@ RQuery::$defaultFilters['rule']['action']['operators']['is.allow'] = Array(
 RQuery::$defaultFilters['rule']['log']['operators']['at.start'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isSecurityRule() )
+            return false;
         return $object->logStart();
     },
     'arg' => false
@@ -1118,6 +1124,8 @@ RQuery::$defaultFilters['rule']['log']['operators']['at.start'] = Array(
 RQuery::$defaultFilters['rule']['log']['operators']['at.end'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isSecurityRule() )
+            return false;
         return $object->logEnd();
     },
     'arg' => false
@@ -1126,6 +1134,9 @@ RQuery::$defaultFilters['rule']['logprof']['operators']['is.set'] = Array(
     'eval' => function($rule, &$nestedQueries)
     {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $rule */
+        if( !$rule->isSecurityRule() )
+            return false;
+
         if( $rule->logSetting() === null || $rule->logSetting() == '' )
             return false;
 
@@ -1137,6 +1148,8 @@ RQuery::$defaultFilters['rule']['logprof']['operators']['is'] = Array(
     'eval' => function($rule, &$nestedQueries, $value)
     {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $rule */
+        if( !$rule->isSecurityRule() )
+            return false;
 
         if( $rule->logSetting() === null )
             return false;
