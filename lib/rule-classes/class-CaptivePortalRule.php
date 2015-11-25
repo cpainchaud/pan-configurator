@@ -188,7 +188,7 @@ class CaptivePortalRule extends Rule
         $this->owner = null;
     }
 
-    public function isAppOverrideRule()
+    public function isCaptivePortalRule()
     {
         return true;
     }

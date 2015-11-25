@@ -92,6 +92,11 @@ class PbfRule extends RuleWithUserID
         return 'pbf';
     }
 
+    public function isPbfRule()
+    {
+        return true;
+    }
+
 
     static protected $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination></entry>';

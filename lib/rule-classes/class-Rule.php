@@ -91,17 +91,6 @@ class Rule
 		
 		return true;
 	}
-	
-	
-	/**
-	* For developper use only
-	*
-	*/
-	protected function init_from_with_store()
-	{
-		$this->from = new ZoneRuleContainer($this);
-		$this->from->setName('from');
-	}
 
     /**
      * For developper use only
@@ -126,17 +115,6 @@ class Rule
     /**
      * For developer use only
      */
-    protected function load_tags()
-    {
-        $tmp = DH::findFirstElement('tag', $this->xmlroot);
-		if( $tmp !== false )
-            $this->tags->load_from_domxml($tmp);
-    }
-
-
-    /**
-     * For developer use only
-     */
     protected function load_source()
     {
         $tmp = DH::findFirstElementOrCreate('source', $this->xmlroot);
@@ -151,26 +129,6 @@ class Rule
         $tmp = DH::findFirstElementOrCreate('destination', $this->xmlroot);
         $this->destination->load_from_domxml($tmp);
     }
-
-	/**
-	* For developer use only
-	*
-	*/
-	protected function extract_disabled_from_domxml()
-	{
-		$xml = $this->xmlroot;
-		
-		$disabledroot = DH::findFirstElement('disabled', $xml);
-
-        if($disabledroot === false )
-            return;
-
-		$lstate = strtolower($disabledroot->textContent);
-		if( $lstate == 'yes' )
-		{
-			$this->disabled = true;
-		}
-	}
 
     /**
      * For developer use only
@@ -202,17 +160,6 @@ class Rule
             }
         }
     }
-
-
-	/**
-	* For developer use only
-	*
-	*/
-	protected function extract_description_from_domxml()
-	{
-        $this->_load_description_from_domxml();
-	}
-	
 
 	/**
 	* For developer use only
