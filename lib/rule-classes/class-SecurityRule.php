@@ -719,6 +719,8 @@ class SecurityRule extends RuleWithUserID
             print $padding . "  User:  " . PH::list_to_string($users) . "\n";
         }
 		print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
+        if( strlen($this->_description) > 0 )
+            print $padding."    Desc:  ".$this->_description."\n";
 		print "\n";
 	}
 
