@@ -801,7 +801,7 @@ class RuleStore
 	/**
 	* Returns an Array with all Rules inside this store
      * @param null|string|string[] $withFilter
-	* @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+	* @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]
 	*/
 	public function &rules( $withFilter=null )
 	{
@@ -858,7 +858,7 @@ class RuleStore
 
     /**
      * Returns an Array with all Rules inside this store
-     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]
      */
     public function &resultingRuleSet()
     {
@@ -893,7 +893,7 @@ class RuleStore
 
     /**
      * Returns an Array with all Rules inside this store
-     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]
      */
     public function &resultingPreRuleSet()
     {
@@ -922,7 +922,7 @@ class RuleStore
 
     /**
      * Returns an Array with all Rules inside this store
-     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]
+     * @return SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]
      */
     public function &resultingPostRuleSet()
     {
@@ -977,7 +977,7 @@ class RuleStore
 	/**
 	* Look for a rule named $name. Return NULL if not found
      * @param string $name
-	* @return Rule|SecurityRule|NatRule|DecryptionRule
+	* @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule
 	*/
 	public function find($name)
 	{
@@ -1235,7 +1235,7 @@ class RuleStore
 
 
 	/**
-	 * @return DecryptionRule[]|AppOverrideRule[]|NatRule[]|Rule[]|SecurityRule[]
+	 * @return Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]
 	 */
 	public function preRules()
 	{
@@ -1247,7 +1247,7 @@ class RuleStore
 
 
 	/**
-	 * @return DecryptionRule[]|AppOverrideRule[]|NatRule[]|Rule[]|SecurityRule[]
+	 * @return Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]
 	 */
 	public function postRules()
 	{
@@ -1319,7 +1319,7 @@ class RuleStore
 	}
 
     /**
-     * @param string|Rule|SecurityRule|NatRule|DecryptionRule $rule
+     * @param string|Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
      * @return int
      */
     public function getRulePosition($rule)
