@@ -11,6 +11,9 @@ utils:
 rules-edit : loading of firewall configurations can now get panorama pushed config, use option 'loadPanoramaPushedConfig'
 rules-edit : added new filters for userid : 'user is.any' 'user is.unknown' 'user is.known' 'user is.prelogon'
 
+bugfixes:
+- proper XML update when an object used in DNAT is renamed
+
 
 
 1.5.5

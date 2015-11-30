@@ -292,7 +292,17 @@ class NatRule extends Rule
 	public function referencedObjectRenamed($h)
 	{
 		if( $this->service === $h )
-			$this->rewriteService_XML();
+        {
+            $this->rewriteService_XML();
+            return;
+        }
+        if( $this->dnathost === $h )
+        {
+            $this->rewriteDNAT();
+            return;
+        }
+
+        mwarning("object is not part of this nat rule : {$old->toString()}");
 	}
 	
 	public function replaceReferencedObject($old, $new )
@@ -313,10 +323,6 @@ class NatRule extends Rule
             if( $new !== null )
                 $new->addReference($this);
             return true;
-        }
-        if( $this->snathosts->has($old) )
-        {
-            derr('unexpected use case');
         }
 
         mwarning("object is not part of this nat rule : {$old->toString()}");
@@ -353,10 +359,6 @@ class NatRule extends Rule
             $connector->sendEditRequest($xpath, DH::dom_to_xml($this->dnatroot, -1, false), true);
 
             return true;
-        }
-        if( $this->snathosts->has($old) )
-        {
-            derr('unexpected use case');
         }
 
         mwarning("object is not part of this nat rule : {$old->toString()}");
@@ -497,7 +499,12 @@ class NatRule extends Rule
 		$this->dnatroot->parentNode->removeChild($this->dnatroot);
 		
 	}
-	
+
+    /**
+     * @param Address|AddressGroup $host
+     * @param null $ports
+     * @throws Exception
+     */
 	public function setDNAT( $host , $ports = null)
 	{
 		if( $host === null )
@@ -509,27 +516,34 @@ class NatRule extends Rule
 				$this->dnathost->removeReference($this);
 		}
 
-		$this->dnatroot = DH::createOrResetElement($this->xmlroot, 'destination-translation');
-		$this->subdnatTAroot = DH::createOrResetElement($this->dnatroot, 'translated-address', $host->name());
-
-		$this->subdnatTProot =  DH::createOrResetElement($this->dnatroot, 'translated-port');
-
-
-		$this->dnathost = $host;
-		$this->dnathost->addReference($this);
-		$this->dnatports = $ports;
-
-		
-		if( $ports === null )
-		{
-			DH::removeChild($this->dnatroot, $this->subdnatTProot);
-		}
-		else
-		{
-			DH::setDomNodeText($this->subdnatTProot, $ports);
-		}
-		
+		$this->rewriteDNAT();
 	}
+
+    public function rewriteDNAT()
+    {
+        $host = $this->dnathost;
+        $ports = $this->dnatports;
+
+        $this->dnatroot = DH::createOrResetElement($this->xmlroot, 'destination-translation');
+        $this->subdnatTAroot = DH::createOrResetElement($this->dnatroot, 'translated-address', $host->name());
+
+        $this->subdnatTProot =  DH::createOrResetElement($this->dnatroot, 'translated-port');
+
+
+        $this->dnathost = $host;
+        $this->dnathost->addReference($this);
+        $this->dnatports = $ports;
+
+
+        if( $ports === null )
+        {
+            DH::removeChild($this->dnatroot, $this->subdnatTProot);
+        }
+        else
+        {
+            DH::setDomNodeText($this->subdnatTProot, $ports);
+        }
+    }
 	
 	public function setNoSNAT()
 	{
