@@ -166,6 +166,18 @@ class SecurityRule extends RuleWithUserID
             {
                 $this->logend = yesNoBool($node->textContent);
             }
+            else if( $node->nodeName == 'action' )
+            {
+                $actionFound = array_search($node->textContent, self::$RuleActions);
+                if( $actionFound === false )
+                {
+                    mwarning("unsupported action '{$tmp->textContent}' found, allow assumed" , $tmp);
+                }
+                else
+                {
+                    $this->action = $actionFound;
+                }
+            }
         }
 
 		
@@ -175,33 +187,11 @@ class SecurityRule extends RuleWithUserID
 		$this->secprofroot = DH::findFirstElement('profile-setting', $xml);
         if( $this->secprofroot === false )
             $this->secprofroot = null;
-		$this->extract_security_profile_from_domxml();
+		else
+            $this->extract_security_profile_from_domxml();
 		// End of <profile-setting>
 				
         $this->_readNegationFromXml();
-
-        //
-        // Begin <action> extraction
-        //
-        $tmp = DH::findFirstElement('action', $xml);
-        if( $tmp !== false )
-        {
-            $actionFound = array_search($tmp->textContent, self::$RuleActions);
-            if( $actionFound === false )
-            {
-                mwarning("unsupported action '{$tmp->textContent}' found, allow assumed" , $tmp);
-            }
-            else
-            {
-                $this->action = $actionFound;
-            }
-        }
-        else
-        {
-            mwarning("'<action> not found, assuming 'allow'" ,$xml);
-        }
-        // End of <rule-type>
-
 
         //
         // Begin <rule-type> extraction
@@ -277,11 +267,10 @@ class SecurityRule extends RuleWithUserID
 			
 			foreach( $profilesRoot->childNodes as $prof )
 			{
-				if( $prof->nodeType != 1 ) continue;
+				if( $prof->nodeType != XML_ELEMENT_NODE ) continue;
 				$firstE = DH::firstChildElement($prof);
-				$this->secprofprofiles[$prof->nodeName] = $firstE->textContent;
-				
-				
+                if( $firstE !== false )
+				    $this->secprofprofiles[$prof->nodeName] = $firstE->textContent;
 				/* <virus>
        
                       </vulnerability>
