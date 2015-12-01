@@ -95,9 +95,9 @@ class PanAPIConnector
         if ($model === false )
             derr('cannot find <model>');
 
-        $model = $model->nodeValue;
+        $model = strtolower($model->nodeValue);
 
-        if ($model == 'Panorama')
+        if ( $model == 'panorama' || $model == 'm-100' || $model == 'm-500')
         {
             $this->info_deviceType = 'panorama';
         } else
