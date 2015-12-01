@@ -30,7 +30,7 @@ require_once("common/actions.php");
 function display_usage_and_exit($shortMessage = false)
 {
     global $argv;
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." type=panos|panorama in=inputfile.xml out=outputfile.xml location=all|shared|sub ".
+    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml out=outputfile.xml location=all|shared|sub ".
         "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
     print "php ".basename(__FILE__)." listactions   : list supported actions\n";
     print "php ".basename(__FILE__)." listfilters   : list supported filter\n";
