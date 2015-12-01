@@ -93,7 +93,7 @@ class PanAPIConnector
 
         $model = DH::findFirstElement('model', $res);
         if ($model === false )
-            derr('cannot find <model>');
+            derr('cannot find <model>', $orig);
 
         $model = strtolower($model->nodeValue);
 
@@ -115,7 +115,7 @@ class PanAPIConnector
         {
             $multi = DH::findFirstElement('multi-vsys', $res);
             if ($multi === false )
-                derr('cannot find <multi-vsys>');
+                derr('cannot find <multi-vsys>', $orig);
 
             $multi = strtolower($multi->textContent);
             if( $multi == 'on' )
@@ -133,48 +133,10 @@ class PanAPIConnector
      */
     public function getSoftwareVersion()
     {
-        $result = Array();
+        if( $this->info_PANOS_version === null )
+            $this->refreshSystemInfos();
 
-        $url = "type=op&cmd=<show><system><info></info></system></show>";
-        $res = $this->sendRequest($url, true);
-        $orig = $res;
-        $res = DH::findFirstElement('result', $res);
-        if ($res === false )
-            derr('cannot find <result>:'.DH::dom_to_xml($orig,0,true,2));
-        $res = DH::findFirstElement('system', $res);
-        if ($res === false )
-            derr('cannot find <system>');
-
-
-        $version = DH::findFirstElement('sw-version', $res);
-        if ($version === false )
-            derr("cannot find <sw-version>:\n".DH::dom_to_xml($orig,0,true,4));
-
-        $version = $version->nodeValue;
-
-        $model = DH::findFirstElement('model', $res);
-        if ($model === false )
-            derr('cannot find <model>');
-
-        $model = $model->nodeValue;
-
-        if ($model == 'Panorama')
-        {
-            $result['type'] = 'panorama';
-            //print "Panorama found!\n";
-        } else
-        {
-            $result['type'] = 'panos';
-            //print "PANOS found!\n";
-        }
-
-        $vex = explode('.', $version);
-        if (count($vex) != 3)
-            derr("ERROR! Unsupported PANOS version :  " . $version . "\n\n");
-
-        $result['version'] = $vex[0] * 10 + $vex[1] * 1;
-
-        return $result;
+        return Array( 'type' => $this->info_deviceType, 'version' => $this->info_PANOS_version_int );
     }
 
     static public function loadConnectorsFromUserHome()
