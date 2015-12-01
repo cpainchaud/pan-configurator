@@ -13,6 +13,7 @@ rules-edit : added new filters for userid : 'user is.any' 'user is.unknown' 'use
 
 bugfixes:
 - proper XML update when an object used in DNAT is renamed
+- fixed an issue where M-100 and M-500 would not be detected as Panorama
 
 
 
