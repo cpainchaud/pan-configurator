@@ -116,55 +116,51 @@ class RuleStore
 
 	/**
 	 * For developper use only
-	 * @param DOMElement $xml
-	 * @param DOMElement $xmlPost
+	 * @param DOMElement|null $xml
+	 * @param DOMElement|null $xmlPost
 	 */
 	public function load_from_domxml($xml , $xmlPost=null)
 	{
 		global $PANC_DEBUG;
 		
-		$this->xmlroot = $xml;		
-		$count = 0;
-		
-		foreach( $xml->childNodes as $node )
-		{
-			if( $node->nodeType != 1 ) continue;
-            if( $node->tagName != 'entry' )
+		if( $xml !== null )
+        {
+            $this->xmlroot = $xml;
+
+            foreach ($xml->childNodes as $node)
             {
-                mwarning("A rule entry with tag '{$node->tagName}' was found and ignored");
-                continue;
+                if ($node->nodeType != XML_ELEMENT_NODE)
+                    continue;
+                if ($node->tagName != 'entry')
+                {
+                    mwarning("A rule entry with tag '{$node->tagName}' was found and ignored");
+                    continue;
+                }
+                /** @var SecurityRule|NatRule|DecryptionRule|Rule $nr */
+                $nr = new $this->type($this);
+                $nr->load_from_domxml($node);
+                $this->_rules[] = $nr;
             }
-			$count++;
-			if( $PANC_DEBUG && $count%1000 == 0 )
-				print "Parsed $count rules so far\n";
-            /** @var SecurityRule|NatRule|DecryptionRule|Rule $nr */
-			$nr = new $this->type($this);
-			$nr->load_from_domxml($node);
-			$this->_rules[] = $nr;
-		}
+        }
 
-		// print $count." prerules found\n";
-
-		if( $this->isPreOrPost )
+		if( $this->isPreOrPost && $xmlPost !== null )
 		{
-			if( $xmlPost === null )
-				derr('no <post-rulebase> xml root provided !');
-
 			$this->postRulesRoot = $xmlPost;
-			$count = 0;
 
 			foreach ($xmlPost->childNodes as $node)
 			{
-				if ($node->nodeType != 1) continue;
-				$count++;
-				if ($PANC_DEBUG && $count % 1000 == 0)
-					print "Parsed $count rules so far\n";
+				if ($node->nodeType != XML_ELEMENT_NODE)
+                    continue;
+
+                if ($node->tagName != 'entry')
+                {
+                    mwarning("A rule entry with tag '{$node->tagName}' was found and ignored");
+                    continue;
+                }
 				$nr = new $this->type($this);
 				$nr->load_from_domxml($node);
 				$this->_postRules[] = $nr;
 			}
-
-			//print $count." postrules found\n";
 		}
 
 		$this->regen_Indexes();
@@ -198,6 +194,9 @@ class RuleStore
 				$this->fastMemToIndex[$ser] = $index;
 				$this->fastNameToIndex[$rule->name()] = $index;
 
+                if( $this->xmlroot === null )
+                    $this->createXmlRoot();
+
 				$this->xmlroot->appendChild($rule->xmlroot);
 
 				return true;
@@ -214,6 +213,9 @@ class RuleStore
 				$index = lastIndex($this->_postRules);
 				$this->fastMemToIndex_forPost[$ser] = $index;
 				$this->fastNameToIndex_forPost[$rule->name()] = $index;
+
+                if( $this->postRulesRoot === null )
+                    $this->createPostXmlRoot();
 
 				$this->postRulesRoot->appendChild($rule->xmlroot);
 
@@ -1002,11 +1004,14 @@ class RuleStore
 	*/
 	public function newSecurityRule($name, $inPost = false)
 	{
-		$rule = new SecurityRule($this,true);
+		$rule = new SecurityRule($this);
         $rule->owner = null;
 
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityRule::$templatexml);
+        $rule->load_from_domxml($xmlElement);
+        $rule->setName($name);
+
 		$this->addRule($rule, $inPost);
-		$rule->setName($name);		
 		
 		return $rule;
 	}
@@ -1019,11 +1024,14 @@ class RuleStore
      */
     public function newCaptivePortalRule($name, $inPost = false)
     {
-        $rule = new CaptivePortalRule($this,true);
+        $rule = new CaptivePortalRule($this);
         $rule->owner = null;
 
-        $this->addRule($rule, $inPost);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, CaptivePortalRule::$templatexml);
+        $rule->load_from_domxml($xmlElement);
         $rule->setName($name);
+
+        $this->addRule($rule, $inPost);
 
         return $rule;
     }
@@ -1036,10 +1044,13 @@ class RuleStore
 	 */
 	public function newNatRule($name, $inPost = false)
 	{
-		$rule = new NatRule($this,true);
+		$rule = new NatRule($this);
 
-		$this->addRule($rule, $inPost);
-		$rule->setName($name);		
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, NatRule::$templatexml);
+        $rule->load_from_domxml($xmlElement);
+        $rule->setName($name);
+
+        $this->addRule($rule, $inPost);
 		
 		return $rule;
 	}
@@ -1053,11 +1064,14 @@ class RuleStore
      */
     public function newAppOverrideRule($name, $inPostRulebase = false)
     {
-        $rule = new AppOverrideRule($this,true);
+        $rule = new AppOverrideRule($this);
         $rule->owner = null;
 
-        $this->addRule($rule, $inPostRulebase);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, AppOverrideRule::$templatexml);
+        $rule->load_from_domxml($xmlElement);
         $rule->setName($name);
+
+        $this->addRule($rule, $inPostRulebase);
 
         return $rule;
     }
@@ -1368,6 +1382,34 @@ class RuleStore
         else
             derr("rule '{$rule->name()}' not found");
 
+    }
+
+
+    public function createXmlRoot()
+    {
+        if( $this->xmlroot === null )
+        {
+            $ruleTypeForXml = self::$storeNameByType[$this->type]['xpathRoot'];
+            if( $this->owner->isVirtualSystem() )
+                $xml = DH::findFirstElementOrCreate('rulebase', $this->owner->xmlroot);
+            else
+                $xml = DH::findFirstElementOrCreate('pre-rulebase', $this->owner->xmlroot);
+
+            $xml = DH::findFirstElementOrCreate($ruleTypeForXml, $xml);
+            $this->xmlroot = DH::findFirstElementOrCreate('rules', $xml);
+        }
+    }
+
+    public function createPostXmlRoot()
+    {
+        if( $this->postRulesRoot === null )
+        {
+            $ruleTypeForXml = self::$storeNameByType[$this->type]['xpathRoot'];
+            $xml = DH::findFirstElementOrCreate('post-rulebase', $this->owner->xmlroot);
+
+            $xml = DH::findFirstElementOrCreate($ruleTypeForXml, $xml);
+            $this->postRulesRoot = DH::findFirstElementOrCreate('rules', $xml);
+        }
     }
 
 }

@@ -152,9 +152,6 @@ class VirtualSystem
         $this->importedInterfaces->load_from_domxml($tmp);
         //
 
-
-		$this->rulebaseroot = DH::findFirstElementOrCreate('rulebase', $xml);
-
         if( $this->owner->owner === null )
         {
 
@@ -212,49 +209,78 @@ class VirtualSystem
         $this->zoneStore->load_from_domxml($tmp);
         // End of Zone objects extraction
 
-        if( $this->owner->owner === null )
+
+        $this->rulebaseroot = DH::findFirstElement('rulebase', $xml);
+        if( $this->rulebaseroot === false )
+            $this->rulebaseroot = null;
+
+        if( $this->owner->owner === null && $this->rulebaseroot !== null )
         {
             //
             // Security Rules extraction
             //
-            $tmproot = DH::findFirstElementOrCreate('security', $this->rulebaseroot);
-            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-            $this->securityRules->load_from_domxml($tmprulesroot);
+            $tmproot = DH::findFirstElement('security', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->securityRules->load_from_domxml($tmprulesroot);
+            }
 
             //
             // Nat Rules extraction
             //
-            $tmproot = DH::findFirstElementOrCreate('nat', $this->rulebaseroot);
-            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-            $this->natRules->load_from_domxml($tmprulesroot);
+            $tmproot = DH::findFirstElement('nat', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->natRules->load_from_domxml($tmprulesroot);
+            }
 
             //
             // Decryption Rules extraction
             //
-            $tmproot = DH::findFirstElementOrCreate('decryption', $this->rulebaseroot);
-            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-            $this->decryptionRules->load_from_domxml($tmprulesroot);
+            $tmproot = DH::findFirstElement('decryption', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->decryptionRules->load_from_domxml($tmprulesroot);
+            }
 
             //
             // Decryption Rules extraction
             //
-            $tmproot = DH::findFirstElementOrCreate('application-override', $this->rulebaseroot);
-            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-            $this->appOverrideRules->load_from_domxml($tmprulesroot);
+            $tmproot = DH::findFirstElement('application-override', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->appOverrideRules->load_from_domxml($tmprulesroot);
+            }
 
             //
             // Captive Portal Rules extraction
             //
-            $tmproot = DH::findFirstElementOrCreate('captive-portal', $this->rulebaseroot);
-            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-            $this->appOverrideRules->load_from_domxml($tmprulesroot);
+            $tmproot = DH::findFirstElement('captive-portal', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->appOverrideRules->load_from_domxml($tmprulesroot);
+            }
 
             //
             // PBF Rules extraction
             //
-            $tmproot = DH::findFirstElementOrCreate('pbf', $this->rulebaseroot);
-            $tmprulesroot = DH::findFirstElementOrCreate('rules', $tmproot);
-            $this->pbfRules->load_from_domxml($tmprulesroot);
+            $tmproot = DH::findFirstElement('pbf', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->pbfRules->load_from_domxml($tmprulesroot);
+            }
         }
 	}
 

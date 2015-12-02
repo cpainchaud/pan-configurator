@@ -6,6 +6,7 @@ CHANGELOG
 * RuleStore : new function to get rules from parent DeviceGroups
 * AddressGroup : enhanced group loading time & consistency
 * SecurityRule|DecryptionRule : added userID support (readonly for the moment) + filters for rules-edit.php
+* changes to make XML code closer to PANOS flavor : empty rules store won't be created in XML anymore
 
 utils:
 rules-edit : loading of firewall configurations can now get panorama pushed config, use option 'loadPanoramaPushedConfig'

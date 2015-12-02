@@ -256,7 +256,7 @@ class Rule
 		if( $this->name == $name )
 			return true;
 		
-		if( isset($this->owner) )
+		if( isset($this->owner) && $this->owner !== null )
 		{
 			if( $this->owner->isRuleNameAvailable($name) )
 			{

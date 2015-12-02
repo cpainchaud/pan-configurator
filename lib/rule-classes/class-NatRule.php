@@ -44,7 +44,7 @@ class NatRule extends Rule
 	/** @ignore */
 	public $serviceroot = null;
 
-	static protected $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
+	static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination><service>any</service><disabled>no</disabled></entry>';
 	static protected $templatexmlroot = null;
 

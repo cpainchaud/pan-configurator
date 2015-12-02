@@ -324,7 +324,6 @@ $supportedActions['exporttoexcel'] = Array(
 );
 
 // TODO replaceByApp with file list
-// TODO SUPERDIFF XML : order element by tagname/nameprop/content
 
 $supportedActions['move'] = Array(
     'name' => 'move',

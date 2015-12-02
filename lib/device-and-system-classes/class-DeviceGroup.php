@@ -187,50 +187,173 @@ class DeviceGroup
 		$this->serviceStore->load_servicegroups_from_domxml($tmp);
 		//print "VirtualSystem '".$this->name."' service groups loaded\n" ;
 		// End of <service-group> extraction
-		
-		
-		
-		$prerulebase = DH::findFirstElementOrCreate('pre-rulebase', $xml);
-		$postrulebase = DH::findFirstElementOrCreate('post-rulebase', $xml);
 
-		$tmp = DH::findFirstElementOrCreate('security', $prerulebase);
-		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$tmpPost = DH::findFirstElementOrCreate('security', $postrulebase);
-		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+
+
+        //
+        // Extracting policies
+        //
+		$prerulebase = DH::findFirstElement('pre-rulebase', $xml);
+		$postrulebase = DH::findFirstElement('post-rulebase', $xml);
+
+        if( $prerulebase === false )
+            $tmp = null;
+		else
+        {
+            $tmp = DH::findFirstElement('security', $prerulebase);
+		    if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('security', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
 		$this->securityRules->load_from_domxml($tmp, $tmpPost);
 
-		$tmp = DH::findFirstElementOrCreate('nat', $prerulebase);
-		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$tmpPost = DH::findFirstElementOrCreate('nat', $postrulebase);
-		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('nat', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('nat', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
 		$this->natRules->load_from_domxml($tmp, $tmpPost);
 
 
-		$tmp = DH::findFirstElementOrCreate('decryption', $prerulebase);
-		$tmp = DH::findFirstElementOrCreate('rules', $tmp);
-		$tmpPost = DH::findFirstElementOrCreate('decryption', $postrulebase);
-		$tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+
+
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('decryption', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('decryption', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
 		$this->decryptionRules->load_from_domxml($tmp, $tmpPost);
 
 
-        $tmp = DH::findFirstElementOrCreate('application-override', $prerulebase);
-        $tmp = DH::findFirstElementOrCreate('rules', $tmp);
-        $tmpPost = DH::findFirstElementOrCreate('application-override', $postrulebase);
-        $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('application-override', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('application-override', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
         $this->appOverrideRules->load_from_domxml($tmp, $tmpPost);
 
 
-        $tmp = DH::findFirstElementOrCreate('captive-portal', $prerulebase);
-        $tmp = DH::findFirstElementOrCreate('rules', $tmp);
-        $tmpPost = DH::findFirstElementOrCreate('captive-portal', $postrulebase);
-        $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('captive-portal', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('captive-portal', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
         $this->captivePortalRules->load_from_domxml($tmp, $tmpPost);
 
-        $tmp = DH::findFirstElementOrCreate('pbf', $prerulebase);
-        $tmp = DH::findFirstElementOrCreate('rules', $tmp);
-        $tmpPost = DH::findFirstElementOrCreate('pbf', $postrulebase);
-        $tmpPost = DH::findFirstElementOrCreate('rules', $tmpPost);
+
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('pbf', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('pbf', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
         $this->pbfRules->load_from_domxml($tmp, $tmpPost);
+        //
+        // end of policies extraction
+        //
 
 
 		// Devices extraction
