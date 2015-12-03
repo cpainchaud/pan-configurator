@@ -94,7 +94,7 @@ class ServiceStore
 			//print $this->toString()." : new service '".$ns->name."' created\n";
 			$this->_serviceObjects[] = $ns;
 			$this->all[] = $ns;
-			$this->add_Obj_inIndex( $ns,lastIndex($this->all));
+			$this->add_Obj_inIndex( $ns, lastIndex($this->all));
 		}
 
 		
@@ -166,7 +166,7 @@ class ServiceStore
 			}
 			$this->_serviceGroups[] = $ns;
 			$this->all[] = $ns; 
-			$this->add_Obj_inIndex($ns,lastIndex($this->all));
+			$this->add_Obj_inIndex($ns, lastIndex($this->all));
 		}
 		
 		$this->regen_Indexes();

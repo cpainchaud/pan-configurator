@@ -633,7 +633,7 @@ foreach( $rulesLocation as $location )
     }
     else
     {
-        if( $location == 'shared' || $location == 'any'  )
+        if( $location == 'shared' || $location == 'any' || $location == 'all'  )
         {
             if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
             {

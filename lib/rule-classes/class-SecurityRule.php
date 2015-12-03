@@ -36,7 +36,7 @@ class SecurityRule extends RuleWithUserID
     /** @var null|string[]|DOMElement */
 	protected $secprofroot = null;
 	protected $secprofgroup = null;
-	protected $secprofprofiles = Array();
+	protected $secprofProfiles = Array();
 
     /** @var AppRuleContainer */
     public $apps;
@@ -270,7 +270,7 @@ class SecurityRule extends RuleWithUserID
 				if( $prof->nodeType != XML_ELEMENT_NODE ) continue;
 				$firstE = DH::firstChildElement($prof);
                 if( $firstE !== false )
-				    $this->secprofprofiles[$prof->nodeName] = $firstE->textContent;
+				    $this->secprofProfiles[$prof->nodeName] = $firstE->textContent;
 				/* <virus>
        
                       </vulnerability>
@@ -303,6 +303,14 @@ class SecurityRule extends RuleWithUserID
 		
 		return $this->secprofgroup;
 	}
+
+    public function securityProfiles()
+    {
+        if( $this->secproftype != 'profile' )
+            return Array();
+
+        return $this->secprofProfiles;
+    }
 	
 	public function removeSecurityProfile()
 	{
@@ -311,7 +319,7 @@ class SecurityRule extends RuleWithUserID
 
 		$this->secproftype = 'none';
 		$this->secprofgroup = null;
-		$this->secprofprofiles = Array();
+		$this->secprofProfiles = Array();
 		
 		$this->rewriteSecProfXML();
 
@@ -338,7 +346,7 @@ class SecurityRule extends RuleWithUserID
         //TODO : implement better 'change' detection to remove this return true
 		$this->secproftype = 'group';
 		$this->secprofgroup = $newgroup;
-		$this->secprofprofiles = Array();
+		$this->secprofProfiles = Array();
 			
 		$this->rewriteSecProfXML();
 
@@ -365,7 +373,7 @@ class SecurityRule extends RuleWithUserID
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
-		$this->secprofprofiles['virus'] = $newAVprof;
+		$this->secprofProfiles['virus'] = $newAVprof;
 		
 		$this->rewriteSecProfXML();
 	}
@@ -374,7 +382,7 @@ class SecurityRule extends RuleWithUserID
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
-		$this->secprofprofiles['vulnerability'] = $newAVprof;
+		$this->secprofProfiles['vulnerability'] = $newAVprof;
 		
 		$this->rewriteSecProfXML();
 	}
@@ -383,7 +391,7 @@ class SecurityRule extends RuleWithUserID
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
-		$this->secprofprofiles['url-filtering'] = $newAVprof;
+		$this->secprofProfiles['url-filtering'] = $newAVprof;
 		
 		$this->rewriteSecProfXML();
 	}
@@ -392,7 +400,7 @@ class SecurityRule extends RuleWithUserID
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
-		$this->secprofprofiles['data-filtering'] = $newAVprof;
+		$this->secprofProfiles['data-filtering'] = $newAVprof;
 		
 		$this->rewriteSecProfXML();
 	}
@@ -401,7 +409,7 @@ class SecurityRule extends RuleWithUserID
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
-		$this->secprofprofiles['file-blocking'] = $newAVprof;
+		$this->secprofProfiles['file-blocking'] = $newAVprof;
 		
 		$this->rewriteSecProfXML();
 	}
@@ -410,7 +418,7 @@ class SecurityRule extends RuleWithUserID
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
-		$this->secprofprofiles['spyware'] = $newAVprof;
+		$this->secprofProfiles['spyware'] = $newAVprof;
 		
 		$this->rewriteSecProfXML();
 	}
@@ -442,7 +450,7 @@ class SecurityRule extends RuleWithUserID
 			$tmp = $this->secprofroot->ownerDocument->createElement('profiles');
 			$tmp = $this->secprofroot->appendChild($tmp);
 
-			foreach($this->secprofprofiles as $index=>$value)
+			foreach($this->secprofProfiles as $index=> $value)
 			{
 				$type = $tmp->appendChild( $this->secprofroot->ownerDocument->createElement($index) );
 				$ntmp = $type->appendChild( $this->secprofroot->ownerDocument->createElement('member') );

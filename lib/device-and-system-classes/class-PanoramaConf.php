@@ -243,11 +243,11 @@ class PanoramaConf
 		$this->serviceStore->load_servicegroups_from_domxml($tmp);
 		// End of address groups extraction
 
-//
+        //
         // Extracting policies
         //
-        $prerulebase = DH::findFirstElement('pre-rulebase', $xml);
-        $postrulebase = DH::findFirstElement('post-rulebase', $xml);
+        $prerulebase = DH::findFirstElement('pre-rulebase', $this->sharedroot);
+        $postrulebase = DH::findFirstElement('post-rulebase', $this->sharedroot);
 
         if( $prerulebase === false )
             $tmp = null;
@@ -300,9 +300,6 @@ class PanoramaConf
         $this->natRules->load_from_domxml($tmp, $tmpPost);
 
 
-
-
-
         if( $prerulebase === false )
             $tmp = null;
         else
@@ -326,7 +323,6 @@ class PanoramaConf
                 $tmpPost = null;
         }
         $this->decryptionRules->load_from_domxml($tmp, $tmpPost);
-
 
 
         if( $prerulebase === false )

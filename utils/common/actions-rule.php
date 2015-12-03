@@ -1363,6 +1363,7 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             'service' => 'service',
             'application' => 'application',
             'action' => 'action',
+            'security' => 'security-profile',
             'disabled' => 'disabled',
             'log start' => 'log_start',
             'log end' => 'log_end',

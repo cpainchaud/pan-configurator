@@ -438,6 +438,25 @@ class RuleCallContext extends CallContext
             return self::enclose($rule->services->getAll(), $wrap);
         }
 
+        if( $fieldName == 'security-profile' )
+        {
+            if( !$rule->isSecurityRule() )
+                return self::enclose('');
+
+            if( $rule->securityProfileType() == 'none' )
+                return self::enclose('');
+
+            if( $rule->securityProfileType() == 'group' )
+                return self::enclose('group:'.$rule->securityProfileGroup());
+
+            $profiles = Array();
+
+            foreach( $rule->securityProfiles() as $profType => $profName )
+                $profiles[] = $profType.':'.$profName;
+
+            return self::enclose($profiles);
+        }
+
         if( $fieldName == 'action' )
         {
             if( !$rule->isSecurityRule() && !$rule->isCaptivePortalRule() )
