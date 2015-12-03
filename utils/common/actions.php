@@ -435,6 +435,8 @@ class RuleCallContext extends CallContext
             }
             if( $rule->services->isAny() )
                 return self::enclose('any');
+            if( $rule->services->isApplicationDefault() )
+                return self::enclose('application-default');
             return self::enclose($rule->services->getAll(), $wrap);
         }
 
