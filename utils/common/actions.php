@@ -438,6 +438,17 @@ class RuleCallContext extends CallContext
             return self::enclose($rule->services->getAll(), $wrap);
         }
 
+        if( $fieldName == 'application' )
+        {
+            if( !$rule->isSecurityRule() )
+                return self::enclose('');
+
+            if( $rule->apps->isAny() )
+                return self::enclose('any');
+
+            return self::enclose($rule->apps->getAll(), $wrap);
+        }
+
         if( $fieldName == 'security-profile' )
         {
             if( !$rule->isSecurityRule() )
@@ -447,14 +458,14 @@ class RuleCallContext extends CallContext
                 return self::enclose('');
 
             if( $rule->securityProfileType() == 'group' )
-                return self::enclose('group:'.$rule->securityProfileGroup());
+                return self::enclose('group:'.$rule->securityProfileGroup(), $wrap);
 
             $profiles = Array();
 
             foreach( $rule->securityProfiles() as $profType => $profName )
                 $profiles[] = $profType.':'.$profName;
 
-            return self::enclose($profiles);
+            return self::enclose($profiles, $wrap);
         }
 
         if( $fieldName == 'action' )
