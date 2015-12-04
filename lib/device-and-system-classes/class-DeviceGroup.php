@@ -145,8 +145,9 @@ class DeviceGroup
         //
         if( $this->owner->version >= 60 )
         {
-            $tmp = DH::findFirstElementOrCreate('tag', $xml);
-            $this->tagStore->load_from_domxml($tmp);
+            $tmp = DH::findFirstElement('tag', $xml);
+            if( $tmp !== false )
+                $this->tagStore->load_from_domxml($tmp);
         }
         // End of Tag objects extraction
 

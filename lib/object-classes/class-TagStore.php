@@ -79,10 +79,10 @@ class TagStore extends ObjStore
         $ret = $this->add($Obj);
         if( $ret && $rewriteXML )
         {
-            if( $this->xmlroot !== null )
-            {
-                $this->xmlroot->appendChild($Obj->xmlroot);
-            }
+            if( $this->xmlroot === null )
+                $this->xmlroot = DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
+
+            $this->xmlroot->appendChild($Obj->xmlroot);
         }
         return $ret;
     }
@@ -132,17 +132,20 @@ class TagStore extends ObjStore
 		return $this->o;
 	}
 
-
-
     function createTag($name, $ref=null)
     {
         if( $this->find($name, null, false ) !== null )
             derr('Tag named "'.$name.'" already exists, cannot create');
 
         if( $this->xmlroot === null )
-            return $this->createTmp($name, $ref);
+            $this->xmlroot = DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
 
-        $newTag = new Tag($name, $this, true);
+        $newTag = new Tag($name, $this);
+        $newTag->owner = null;
+
+        $newTagRoot = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, Tag::$templatexml);
+        $newTagRoot->setAttribute('name', $name);
+        $newTag->load_from_domxml($newTagRoot);
 
         if( $ref !== null )
             $newTag->addReference($ref);
@@ -197,8 +200,20 @@ class TagStore extends ObjStore
 	
 	public function rewriteXML()
 	{
+        if( count($this->o) > 0 )
+        {
+            if( $this->xmlroot === null )
+                return;
+
+            $this->xmlroot->parentNode->removeChild($this->xmlroot);
+            $this->xmlroot = null;
+        }
+
         if( $this->xmlroot === null )
-            return;
+        {
+            if( count($this->o) > 0 )
+                DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
+        }
 
         DH::clearDomNodeChilds($this->xmlroot);
         foreach( $this->o as $o)

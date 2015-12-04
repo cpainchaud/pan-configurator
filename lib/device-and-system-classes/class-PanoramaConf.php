@@ -39,6 +39,9 @@ class PanoramaConf
     /** @var DOMElement */
 	public $xmlroot;
 
+    /** @var DOMDocument */
+    public $xmldoc;
+
     /** @var DOMElement */
 	public $sharedroot;
 	public $devicesroot;
@@ -154,17 +157,15 @@ class PanoramaConf
         if( $xml->nodeType == XML_DOCUMENT_NODE )
         {
             $this->xmldoc = $xml;
-            $this->configroot = DH::findFirstElementOrDie('config', $this->xmldoc);
-            $this->xmlroot = $this->configroot;
+            $this->xmlroot = DH::findFirstElementOrDie('config', $this->xmldoc);
         }
         else
         {
             $this->xmldoc = $xml->ownerDocument;
-            $this->configroot = $xml;
             $this->xmlroot = $xml;
         }
 
-		$versionAttr = DH::findAttribute('version', $this->configroot);
+		$versionAttr = DH::findAttribute('version', $this->xmlroot);
 		if( $versionAttr !== false )
 		{
 			$this->version = PH::versionFromString($versionAttr);
@@ -180,7 +181,7 @@ class PanoramaConf
 		}
 
 
-		$tmp = DH::findFirstElementOrCreate('mgt-config', $this->configroot);
+		$tmp = DH::findFirstElementOrCreate('mgt-config', $this->xmlroot);
 
 		$tmp = DH::findFirstElementOrCreate('devices', $tmp);
 
@@ -195,9 +196,9 @@ class PanoramaConf
 			$this->managedFirewallsSerials[] = $s;
 		}
 
-		$this->sharedroot = DH::findFirstElementOrCreate('shared', $this->configroot);
+		$this->sharedroot = DH::findFirstElementOrCreate('shared', $this->xmlroot);
 
-		$this->devicesroot = DH::findFirstElementOrDie('devices', $this->configroot);
+		$this->devicesroot = DH::findFirstElementOrDie('devices', $this->xmlroot);
 
 		$this->localhostroot = DH::findFirstElementByNameAttrOrDie('entry', 'localhost.localdomain',$this->devicesroot);
 
@@ -209,8 +210,9 @@ class PanoramaConf
         //
         if( $this->version >= 60 )
         {
-            $tmp = DH::findFirstElementOrCreate('tag', $this->sharedroot);
-            $this->tagStore->load_from_domxml($tmp);
+            $tmp = DH::findFirstElement('tag', $this->sharedroot);
+            if( $tmp !== false )
+                $this->tagStore->load_from_domxml($tmp);
         }
         // End of Tag objects extraction
 
