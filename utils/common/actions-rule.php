@@ -324,7 +324,8 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
         "    - xxx-calculate-zones:replace\n".
         "    - xxx-calculate-zones:append,vr1\n".
         "    - xxx-calculate-zones:replace,vr3,api@0011C890C,vsys1\n".
-        "    - xxx-calculate-zones:show,vr5,Datacenter_template\n"
+        "    - xxx-calculate-zones:show,vr5,Datacenter_template\n".
+        "    - xxx-calculate-zones:replace,vr3,file@firewall.xml,vsys1\n"
 );
 
 RuleCallContext::$commonActionFunctions['zone-add'] = Array(
