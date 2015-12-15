@@ -633,18 +633,25 @@ class SecurityRule extends RuleWithUserID
 
 	/**
 	 * @param string $newLogSetting
+     * @return bool true if value changed
 	 */
 	public function setLogSetting($newLogSetting)
 	{
 		if( $newLogSetting === null || strlen($newLogSetting) < 1 )
 		{
+            if( $this->logSetting == false )
+                return false;
+
 			$this->logSetting = false;
 
 			if( $this->logsettingroot !== null )
 				$this->xmlroot->removeChild($this->logsettingroot);
 
-			return;
+			return true;
 		}
+
+        if( $this->logSetting == $newLogSetting )
+            return false;
 
 		$this->logSetting = $newLogSetting;
 
@@ -654,11 +661,14 @@ class SecurityRule extends RuleWithUserID
 		}
 		else
 			$this->logsettingroot->nodeValue = $newLogSetting;
+
+        return true;
 	}
 
 	public function API_setLogSetting($newLogSetting)
 	{
-		$this->setLogSetting($newLogSetting);
+		if( !$this->setLogSetting($newLogSetting) )
+            return false;
 
 		$con = findConnectorOrDie($this);
 
@@ -670,6 +680,8 @@ class SecurityRule extends RuleWithUserID
 		{
 			$con->sendSetRequest($this->getXPath(), "<log-setting>$newLogSetting</log-setting>");
 		}
+
+        return true;
 	}
 	
 	/**
