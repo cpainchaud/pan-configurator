@@ -529,7 +529,7 @@ class PanAPIConnector
                 }
 
                 print("API call through POST: \"".$finalUrl.$paramURl."\"\r\n");
-                print "RAW HTTP POST Content: $properParams\n\n";
+                print "RAW HTTP POST Content: {$properParams}\n\n";
             }
             else
                 print("API call: \"".$finalUrl."\"\r\n");

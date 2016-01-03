@@ -1359,6 +1359,7 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             'name' => 'name',
             'tag' => 'tags',
             'from' => 'from',
+            'to' => 'to',
             'src' => 'source',
             'dst' => 'destination',
             'service' => 'service',
