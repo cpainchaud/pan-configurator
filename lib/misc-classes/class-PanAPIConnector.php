@@ -71,6 +71,7 @@ class PanAPIConnector
     public $info_PANOS_version = null;
     public $info_PANOS_version_int = null;
     public $info_multiVSYS = null;
+    public $info_serial = null;
 
     public function refreshSystemInfos()
     {
@@ -88,8 +89,12 @@ class PanAPIConnector
         $version = DH::findFirstElement('sw-version', $res);
         if ($version === false )
             derr("cannot find <sw-version>:\n".DH::dom_to_xml($orig,0,true,4));
-
         $this->info_PANOS_version = $version->textContent;
+
+        $serial = DH::findFirstElement('serial', $res);
+        if ($serial === false )
+            derr("cannot find <serial>:\n".DH::dom_to_xml($orig,0,true,4));
+        $this->info_serial= $serial->textContent;
 
         $model = DH::findFirstElement('model', $res);
         if ($model === false )
