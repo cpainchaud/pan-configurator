@@ -16,6 +16,7 @@ rules-edit : added security profile column in ExportToExcel
 bugfixes:
 - proper XML update when an object used in DNAT is renamed
 - fixed an issue where M-100 and M-500 would not be detected as Panorama
+- fixed : mising TO field in ExportToExcel
 
 
 
