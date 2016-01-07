@@ -1367,6 +1367,7 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             'action' => 'action',
             'security' => 'security-profile',
             'disabled' => 'disabled',
+            'src user' => 'src-user',
             'log start' => 'log_start',
             'log end' => 'log_end',
             'snat type' => 'snat_type',

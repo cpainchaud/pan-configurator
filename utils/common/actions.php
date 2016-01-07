@@ -478,6 +478,19 @@ class RuleCallContext extends CallContext
             return self::enclose(Array($rule->action()));
         }
 
+        if( $fieldName == 'src-user' )
+        {
+            if( $rule->isSecurityRule() || $rule->isPbfRule() )
+            {
+                if( $rule->userID_IsCustom() )
+                    return self::enclose($rule->userID_getUsers());
+
+                return self::enclose($rule->userID_type());
+            }
+
+            return self::enclose('');
+        }
+
         if( $fieldName == 'log_start' )
         {
             if( !$rule->isSecurityRule() )
