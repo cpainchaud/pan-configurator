@@ -1370,6 +1370,7 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             'src user' => 'src-user',
             'log start' => 'log_start',
             'log end' => 'log_end',
+            'log prof' => 'log_profile',
             'snat type' => 'snat_type',
             'snat trans' => 'snat_trans',
             'dnat host' => 'dnat_host'

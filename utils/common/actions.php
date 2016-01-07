@@ -483,9 +483,9 @@ class RuleCallContext extends CallContext
             if( $rule->isSecurityRule() || $rule->isPbfRule() )
             {
                 if( $rule->userID_IsCustom() )
-                    return self::enclose($rule->userID_getUsers());
+                    return self::enclose($rule->userID_getUsers(), $wrap);
 
-                return self::enclose($rule->userID_type());
+                return self::enclose($rule->userID_type(), $wrap);
             }
 
             return self::enclose('');
@@ -502,6 +502,14 @@ class RuleCallContext extends CallContext
             if( !$rule->isSecurityRule() )
                 return self::enclose('');
             return self::enclose(boolYesNo($rule->logEnd()), $wrap);
+        }
+
+        if( $fieldName == 'log_profile')
+        {
+            if( !$rule->isSecurityRule() )
+                return self::enclose('');
+
+            return self::enclose(boolYesNo($rule->logSetting()), $wrap);
         }
 
         if( $fieldName == 'snat_type' )
