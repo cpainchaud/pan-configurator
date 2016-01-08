@@ -480,7 +480,7 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'src-user' )
         {
-            if( $rule->isSecurityRule() || $rule->isPbfRule() )
+            if( $rule->isSecurityRule() || $rule->isPbfRule() || $rule->isDecryptionRule() )
             {
                 if( $rule->userID_IsCustom() )
                     return self::enclose($rule->userID_getUsers(), $wrap);
@@ -538,17 +538,6 @@ class RuleCallContext extends CallContext
             return self::enclose( boolYesNo($rule->isDisabled()) );
         }
 
-        if( $fieldName == 'users' )
-        {
-            if( $rule->isNatRule() )
-                return self::enclose('');
-
-            if( !$rule->userID_IsCustom() )
-                return self::enclose($rule->userID_type(), $wrap);
-            if( $rule->userID_IsAny() )
-                return self::enclose('any');
-            return self::enclose($rule->userID_getUsers(), $wrap);
-        }
 
         return self::enclose('unsupported');
 
