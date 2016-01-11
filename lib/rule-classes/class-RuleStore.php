@@ -1161,7 +1161,11 @@ class RuleStore
 		}
 		if( $this->isPreOrPost )
 		{
-			DH::clearDomNodeChilds($this->postRulesRoot);
+			if( $this->postRulesRoot !== null )
+                DH::clearDomNodeChilds($this->postRulesRoot);
+            else // TODO better handling of rewrite 
+                return;
+
 			foreach($this->_postRules as $rule )
 			{
 				$this->postRulesRoot->appendChild($rule->xmlroot);
