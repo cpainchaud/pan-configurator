@@ -50,7 +50,7 @@ class EthernetInterface
 
     protected $l3ipv4Addresses;
 
-    static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group', 'log-card', 'empty' );
+    static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group', 'log-card', 'decrypt-mirror', 'empty' );
 
     /**
      * @param string $name

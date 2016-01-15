@@ -1163,7 +1163,7 @@ class RuleStore
 		{
 			if( $this->postRulesRoot !== null )
                 DH::clearDomNodeChilds($this->postRulesRoot);
-            else // TODO better handling of rewrite 
+            else // TODO better handling of rewrite
                 return;
 
 			foreach($this->_postRules as $rule )
