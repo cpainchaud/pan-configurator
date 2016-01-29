@@ -58,7 +58,7 @@ class Zone
         if( !is_string($name) )
             derr('$name must be a string');
 
- 		$this->owner = $owner;
+        $this->owner = $owner;
 
         if( $this->owner->owner->isVirtualSystem() )
         {
@@ -79,7 +79,9 @@ class Zone
             $this->xmlroot = $rootDoc->importNode($node, true);
             $this->load_from_domxml($this->xmlroot);
 
+            $this->owner = null;
             $this->setName($name);
+            $this->owner = $owner;
         }
 
 		$this->name = $name;
