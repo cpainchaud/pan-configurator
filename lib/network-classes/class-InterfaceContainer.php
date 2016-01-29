@@ -19,8 +19,8 @@
 
 /**
  * Class InterfaceContainer
- * @property VirtualSystem $owner
- * @property EthernetInterface[]|LoopbackInterface[]|IPsecTunnel[] $o
+ * @property VirtualSystem|Zone $owner
+ * @property EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|IPsecTunnel[] $o
  */
 class InterfaceContainer extends ObjRuleContainer
 {
@@ -57,13 +57,12 @@ class InterfaceContainer extends ObjRuleContainer
     }
 
     /**
-     * @return EthernetInterface[]|IPsecTunnel[]|LoopbackInterface[]
+     * @return EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|IPsecTunnel[]
      */
     public function interfaces()
     {
         return $this->o;
     }
-
 
     /**
      * @param string $ifName
@@ -73,6 +72,20 @@ class InterfaceContainer extends ObjRuleContainer
     public function hasInterfaceNamed($ifName, $caseSensitive=true)
     {
         return $this->has($ifName, $caseSensitive);
+    }
+
+    /**
+     * @param EthernetInterface|AggregateEthernetInterface|LoopbackInterface|IPsecTunnel $if
+     * @return bool
+     */
+    public function addInterface($if)
+    {
+        if( $this->has($if) )
+            return false;
+
+        $this->o[] = $if;
+
+        DH::createElement( $this->xmlroot, 'member', $if->name() );
     }
 
 }
