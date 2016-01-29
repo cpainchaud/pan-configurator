@@ -1236,8 +1236,11 @@ class mycurl
          
          curl_setopt($s,CURLOPT_SSL_VERIFYPEER,false);
          curl_setopt($s,CURLOPT_SSL_VERIFYHOST,false);
-         curl_setopt($s,CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
-         //curl_setopt($s,CURLOPT_VERBOSE, 1); 
+
+         if( defined('CURL_SSLVERSION_TLSv1') ) // for older versions of PHP/openssl bundle
+            curl_setopt($s,CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+
+         //curl_setopt($s,CURLOPT_VERBOSE, 1);
 
 
          if( $this->_infilecontent !== null )
