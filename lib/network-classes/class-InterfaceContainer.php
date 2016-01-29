@@ -86,6 +86,8 @@ class InterfaceContainer extends ObjRuleContainer
         $this->o[] = $if;
 
         DH::createElement( $this->xmlroot, 'member', $if->name() );
+
+        return true;
     }
 
 }
