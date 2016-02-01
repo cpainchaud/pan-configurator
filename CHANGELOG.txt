@@ -16,7 +16,9 @@ rules-edit : added security profile, log profile userid column in ExportToExcel
 bugfixes:
 - proper XML update when an object used in DNAT is renamed
 - fixed an issue where M-100 and M-500 would not be detected as Panorama
-- fixed : mising TO field in ExportToExcel
+- fixed missing TO field in ExportToExcel
+- fixed an issue where a zone would have wrong name after its creation
+- fixed an issue with users of old PHP (previous version of MACOSX) and OpenSSL TLS
 
 
 
