@@ -1,5 +1,8 @@
 CHANGELOG
 
+1.5.7
+
+
 1.5.6
 * introduction of CaptivePortal, Pbf type rules initial support
 * PANConf : enhanced support to load pushed panorama config
