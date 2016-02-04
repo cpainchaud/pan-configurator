@@ -1047,6 +1047,9 @@ RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
 RQuery::$defaultFilters['rule']['secprof']['operators']['not.set'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isSecurityRule() )
+            return false;
+
         return $object->securityProfileType() == "none";
     },
     'arg' => false
@@ -1054,6 +1057,8 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['not.set'] = Array(
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.set'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isSecurityRule() )
+            return false;
         return $object->securityProfileType() != "none";
     },
     'arg' => false
