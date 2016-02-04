@@ -1050,7 +1050,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['not.set'] = Array(
         if( !$object->isSecurityRule() )
             return false;
 
-        return $object->securityProfileType() == "none";
+        return $object->securityProfileIsBlank();
     },
     'arg' => false
 );
@@ -1059,7 +1059,8 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['is.set'] = Array(
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
         if( !$object->isSecurityRule() )
             return false;
-        return $object->securityProfileType() != "none";
+
+        return !$object->securityProfileIsBlank();
     },
     'arg' => false
 );

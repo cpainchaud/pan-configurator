@@ -286,6 +286,24 @@ class SecurityRule extends RuleWithUserID
 		}
 		
 	}
+
+    public function securityProfileIsBlank()
+    {
+        if( $this->secproftype == 'none' )
+            return true;
+
+        if( $this->secproftype == 'group' )
+            return false;
+
+        if( !is_array($this->secprofProfiles) )
+            return true;
+
+        if( count($this->secprofProfiles) < 1 )
+            return true;
+
+        return false;
+
+    }
 	
 	/**
 	* return profile type: 'group' or 'profile' or 'none'
