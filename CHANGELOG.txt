@@ -1,6 +1,8 @@
 CHANGELOG
 
 1.5.7
+* introduction of rules Target field support in the core lib and in utils/filters
+
 bugfixes:
 - fixed an issue where security profile filter 'is.set' and 'not.set' could return wrong value
 

@@ -17,6 +17,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/**
+ * @property string[][] $_targets
+ */
 class Rule
 {
 	
@@ -158,8 +161,118 @@ class Rule
             {
                 $this->_description = $node->textContent;
             }
+            else if( $node->nodeName == 'target' )
+            {
+                $targetDevicesNodes = DH::findFirstElement('devices', $node);
+
+                if( $targetDevicesNodes !== false )
+                {
+                    foreach( $targetDevicesNodes->childNodes as $targetDevicesNode )
+                    {
+                        if( $targetDevicesNode->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        /**  @var DOMElement $targetDevicesNode */
+
+                        $targetSerial = $targetDevicesNode->getAttribute('name');
+                        if( strlen($targetSerial) < 1)
+                        {
+                            mwarning('a target with empty serial number was found', $targetDevicesNodes);
+                            continue;
+                        }
+
+                        if( !isset($this->_targets) )
+                            $this->_targets = Array();
+
+                        $vsysNodes = DH::firstChildElement($targetDevicesNode);
+
+                        if( $vsysNodes === false )
+                        {
+                            $this->_targets[$targetSerial] = Array();
+                            //mwarning($targetSerial, $targetDevicesNode);
+                        }
+                        else
+                        {
+                            foreach($vsysNodes->childNodes as $vsysNode)
+                            {
+                                if( $vsysNode->nodeType != XML_ELEMENT_NODE )
+                                    continue;
+                                /**  @var DOMElement $vsysNode */
+                                $vsysName = $vsysNode->getAttribute('name');
+                                if( strlen($vsysName) < 1 )
+                                    continue;
+
+                                $this->_targets[$targetSerial][$vsysName] = $vsysName;
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
+
+
+    public function targets()
+    {
+        return $this->_targets;
+    }
+
+    public function targets_toString()
+    {
+        if( !isset($this->_targets) )
+            return 'any';
+
+        $str = '';
+
+        foreach($this->_targets as $device => $vsyslist)
+        {
+            if( strlen($str) > 0 )
+                $str .= ',';
+
+            if( count($vsyslist) == 0 )
+                $str .= $device;
+            else
+            {
+                $first = true;
+                foreach( $vsyslist as $vsys)
+                {
+                    if( !$first)
+                        $str .= ',';
+                    $first = false;
+                    $str .= $device.'/'.$vsys;
+                }
+            }
+
+        }
+
+        return $str;
+    }
+
+    public function target_isAny()
+    {
+        return !isset($this->_targets);
+    }
+
+    /**
+     * @param string $deviceSerial
+     * @param string $vsys
+     * @return bool
+     */
+    public function target_hasDeviceAndVsys($deviceSerial, $vsys)
+    {
+        if( !isset($this->_targets) )
+            return false;
+
+        if( !isset($this->_targets[$deviceSerial]) )
+            return false;
+
+        if( count($this->_targets[$deviceSerial]) == 0 && $vsys == 'vsys1' )
+            return true;
+
+        return isset($this->_targets[$deviceSerial][$vsys]);
+    }
+
+
 
 	/**
 	* For developer use only

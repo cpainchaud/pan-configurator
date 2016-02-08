@@ -733,11 +733,15 @@ class SecurityRule extends RuleWithUserID
         else
         {
             $users = $this->userID_getUsers();
-            print $padding . "  User:  " . PH::list_to_string($users) . "\n";
+            print $padding . " User:  " . PH::list_to_string($users) . "\n";
         }
-		print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
+		print $padding."  Tags:  ".$this->tags->toString_inline()."\n";
+
+        if( isset($this->_targets) )
+            print $padding."  Targets:  ".$this->targets_toString()."\n";
+
         if( strlen($this->_description) > 0 )
-            print $padding."    Desc:  ".$this->_description."\n";
+            print $padding."  Desc:  ".$this->_description."\n";
 		print "\n";
 	}
 

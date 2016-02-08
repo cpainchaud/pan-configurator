@@ -1420,6 +1420,40 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.prelogon'] = Array(
 );
 
 
+RQuery::$defaultFilters['rule']['target']['operators']['is.any'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return $context->object->target_isAny();
+    },
+    'arg' => false
+);
+
+RQuery::$defaultFilters['rule']['target']['operators']['has'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $object */
+
+        $vsys = 'vsys1';
+        $serial = '';
+        $ex = explode('/', $value);
+
+        if( count($ex) > 2 )
+            derr("unsupported syntax for target: '{$value}'. Expected something like : 00F120CCC/vsysX");
+
+        if( count($ex) == 1 )
+            $serial = $value;
+        else
+        {
+            $serial = $ex[0];
+            $vsys = $ex[1];
+        }
+
+        return $object->target_hasDeviceAndVsys($serial, $vsys);
+    },
+    'arg' => true
+);
+
+
 RQuery::$defaultFilters['rule']['description']['operators']['is.empty'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
