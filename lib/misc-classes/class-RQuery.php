@@ -1305,11 +1305,11 @@ RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['name']['operators']['regex'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
-    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
-        $matching = preg_match($value, $object->name());
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $matching = preg_match($context->value, $context->object->name());
         if( $matching === FALSE )
-            derr("regular expression error on '$value'");
+            derr("regular expression error on '{$context->value}'");
         if( $matching === 1 )
             return true;
         return false;
@@ -1317,17 +1317,16 @@ RQuery::$defaultFilters['rule']['name']['operators']['regex'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['name']['operators']['eq.nocase'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(RuleRQueryContext $context )
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
-        return strtolower($object->name()) == strtolower($value);
+        return strtolower($context->object->name()) == strtolower($context->value);
     },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
-    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
-        return stripos($object->name(), $value) !== false;
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return stripos($context->object->name(), $context->value) !== false;
     },
     'arg' => true
 );
@@ -1719,10 +1718,9 @@ RQuery::$defaultFilters['service']['refcount']['operators']['>,<,=,!'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
-        return $object->countReferences() == 0;
+        return $context->object->countReferences() == 0;
     },
     'arg' => false
 );
