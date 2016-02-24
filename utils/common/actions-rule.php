@@ -1011,8 +1011,8 @@ RuleCallContext::$supportedActions['logend-enable'] = Array(
     }
 );
 
-RuleCallContext::$supportedActions['logend-Disable'] = Array(
-    'name' => 'logEnd-disable',
+RuleCallContext::$supportedActions['logend-disable'] = Array(
+    'name' => 'logEnd-Disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
     {

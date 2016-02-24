@@ -200,14 +200,20 @@ class ServiceRuleContainer extends ObjRuleContainer
 
             if( $lower == 'any' )
             {
+                if( count($this->o) != 0 )
+                    mwarning('rule has a bad combination of services');
+
                 $this->o = Array();
-                return;
+                continue;
             }
             else if($lower == 'application-default')
             {
+                if( count($this->o) != 0 )
+                    mwarning('rule has a bad combination of services');
+
                 $this->o = Array();
                 $this->appDef = true;
-                return;
+                continue;
             }
 
             if( strlen($node->textContent) < 1 )
