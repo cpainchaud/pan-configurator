@@ -147,17 +147,13 @@ class ServiceGroup
 				{
 					$membersRoot = DH::findFirstElement('members', $this->xmlroot);
 					if( $membersRoot === false )
-					{
 						derr('<members> not found');
-					}
 
-					$tmpElement = $membersRoot->appendChild($this->xmlroot->ownerDocument->createElement('member'));
-					$tmpElement->nodeValue = $newObject->name();
+                    DH::createElement($membersRoot, 'member', $newObject->name());
 				}
 				else
 				{
-					$tmpElement = $this->xmlroot->appendChild($this->xmlroot->ownerDocument->createElement('member'));
-					$tmpElement->nodeValue = $newObject->name();
+                    DH::createElement($this->xmlroot, 'member', $newObject->name());
 				}
 			}
 			

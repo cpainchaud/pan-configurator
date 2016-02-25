@@ -185,8 +185,7 @@ class Address
 		{
 
 			$valueRoot = DH::findFirstElementOrDie(self::$AddressTypes[$this->type], $this->xmlroot);
-			$valueRoot->nodeValue = $this->value;
-
+			DH::setDomNodeText($valueRoot, $this->value);
 		}
 
 		return true;

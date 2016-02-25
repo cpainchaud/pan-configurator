@@ -66,7 +66,7 @@ class Tag
         if( $this->xmlroot === null )
             return $ret;
 
-        $this->xmlroot->getAttributeNode('name')->nodeValue = $newName;
+        $this->xmlroot->setAttribute('name', $newName);
 
         return $ret;
     }
