@@ -678,7 +678,7 @@ class SecurityRule extends RuleWithUserID
 			$this->logsettingroot = DH::createElement($this->xmlroot, 'log-setting', $newLogSetting);
 		}
 		else
-			$this->logsettingroot->nodeValue = $newLogSetting;
+			DH::setDomNodeText($this->logsettingroot, $newLogSetting);
 
         return true;
 	}
