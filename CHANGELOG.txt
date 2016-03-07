@@ -5,6 +5,7 @@ CHANGELOG
 
 utils:
 rules-edit : new filters 'target is.any' 'target has xxxxx/vsysX'
+rules-edit : new actions 'name-Append' and 'name-Prepend'
 
 bugfixes:
 - fixed an issue where security profile filter 'is.set' and 'not.set' could return wrong value

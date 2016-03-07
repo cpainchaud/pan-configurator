@@ -1264,6 +1264,71 @@ RuleCallContext::$supportedActions['delete'] = Array(
             $rule->owner->remove($rule);
     }
 );
+
+
+RuleCallContext::$supportedActions['name-prepend'] = Array(
+    'name' => 'name-Prepend',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $newName = $context->arguments['text'].$rule->name();
+
+        if( strlen($newName) > 31 )
+        {
+            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+            return;
+        }
+
+        if( !$rule->owner->isRuleNameAvailable($newName) )
+        {
+            print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
+            return;
+        }
+
+        if( $context->isAPI )
+        {
+            $rule->API_setName($newName);
+        }
+        else
+        {
+            $rule->setName($newName);
+        }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+);
+RuleCallContext::$supportedActions['name-append'] = Array(
+    'name' => 'name-Append',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $newName = $rule->name().$context->arguments['text'];
+
+        if( strlen($newName) > 31 )
+        {
+            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+            return;
+        }
+
+        if( !$rule->owner->isRuleNameAvailable($newName) )
+        {
+            print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
+            return;
+        }
+
+        if( $context->isAPI )
+        {
+            $rule->API_setName($newName);
+        }
+        else
+        {
+            $rule->setName($newName);
+        }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+);
+
 RuleCallContext::$supportedActions['display'] = Array(
     'name' => 'display',
     'MainFunction' => function(RuleCallContext $context) { $context->object->display(7); }
