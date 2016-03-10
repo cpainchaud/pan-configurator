@@ -660,7 +660,7 @@ class NatRule extends Rule
 		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$s."\n";
 
-        if( $this->natType() == 'static' )
+        if( $this->natType() == 'static-ip' )
             print $padding."  SNAT Type: ".$this->natType()."   BiDir: ".$this->_snatbidir."\n";
         else
             print $padding."  SNAT Type: ".$this->natType()."\n";
