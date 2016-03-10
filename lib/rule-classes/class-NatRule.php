@@ -686,7 +686,11 @@ class NatRule extends Rule
 
 		print "\n";
 	}
-	
+
+    /**
+     * @deprecated
+     * @return string
+     */
 	public function natType()
 	{
 		return $this->snattype;
@@ -699,6 +703,26 @@ class NatRule extends Rule
 	{
 		return $this->snattype;
 	}
+
+    public function sourceNatTypeIs_None()
+    {
+        return $this->snattype == 'none';
+    }
+
+    public function sourceNatTypeIs_Dynamic()
+    {
+        return $this->snattype == 'dynamic';
+    }
+
+    public function sourceNatTypeIs_DIPP()
+    {
+        return $this->snattype == 'dynamic-ip-and-port';
+    }
+
+    public function sourceNatTypeIs_Static()
+    {
+        return $this->snattype == 'static-ip';
+    }
 
     public function isNatRule()
     {
