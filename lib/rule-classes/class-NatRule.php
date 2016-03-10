@@ -302,13 +302,22 @@ class NatRule extends Rule
             return;
         }
 
-        mwarning("object is not part of this nat rule : {$old->toString()}");
+        mwarning("object is not part of this nat rule : {$h->toString()}");
 	}
-	
+
+    /**
+     * @param ReferencableObject $old
+     * @param ReferencableObject $new
+     * @return bool
+     * @throws Exception
+     */
 	public function replaceReferencedObject($old, $new )
 	{
 		if( $this->service === $old )
         {
+            /** @var Service|ServiceGroup $old */
+            /** @var Service|ServiceGroup $new */
+
             $this->service = $new;
             $this->rewriteService_XML();
             $old->removeReference($this);
@@ -317,6 +326,9 @@ class NatRule extends Rule
         }
         if( $this->dnathost === $old )
         {
+            /** @var Address|AddressGroup $old */
+            /** @var Address|AddressGroup $new */
+
             $found = true;
             $this->setDNAT($new, $this->dnatports);
             $old->removeReference($this);
