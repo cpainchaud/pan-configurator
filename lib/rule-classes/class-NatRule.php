@@ -646,7 +646,20 @@ class NatRule extends Rule
 		print $padding."  Source: ".$this->source->toString_inline()."\n";
 		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$s."\n";
+        print $padding."  SNAT Type: ".$this->natType()."\n";
+        if( $this->natType() != 'none' )
+            print $padding."   SNAT HOSTS: ".$this->snathosts->toString_inline();
+
+        if( $this->dnathost === null )
+            print $padding."  DNAT: none\n";
+        else
+            print $padding."  DNAT: ".$this->dnathost->name()."\n";
+
 		print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
+
+        if( isset($this->_targets) )
+            print $padding."  Targets:  ".$this->targets_toString()."\n";
+
 		print "\n";
 	}
 	

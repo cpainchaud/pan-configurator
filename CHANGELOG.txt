@@ -2,6 +2,7 @@ CHANGELOG
 
 1.5.7
 * introduction of rules Target field support in the core lib and in utils/filters
+* NatRule display() outputs more informations, directly benefits to rules-edit.php
 
 utils:
 rules-edit : new filters 'target is.any' 'target has xxxxx/vsysX'
