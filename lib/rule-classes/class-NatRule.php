@@ -653,12 +653,18 @@ class NatRule extends Rule
 		if( $this->service )
 			$s = $this->service->name();
 		
-		print $padding."*Rule named '".$this->name."  $dis\n";
+		print $padding."*Rule named {$this->name}  $dis\n";
 		print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
 		print $padding."  Source: ".$this->source->toString_inline()."\n";
 		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$s."\n";
-        print $padding."  SNAT Type: ".$this->natType()."\n";
+
+        if( $this->natType() == 'static' )
+            print $padding."  SNAT Type: ".$this->natType()."   BiDir: ".$this->_snatbidir."\n";
+        else
+            print $padding."  SNAT Type: ".$this->natType()."\n";
+
+
         if( $this->natType() != 'none' )
             print $padding."   SNAT HOSTS: ".$this->snathosts->toString_inline();
 
