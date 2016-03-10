@@ -27,6 +27,7 @@ class NatRule extends Rule
 
     /** @var AddressRuleContainer|null */
 	public $snathosts = null;
+    /** @var null|string  */
 	public $snatinterface = null;
 	
 	private $_snatbidir = 'no';
@@ -666,7 +667,12 @@ class NatRule extends Rule
 
 
         if( $this->natType() != 'none' )
-            print $padding."   SNAT HOSTS: ".$this->snathosts->toString_inline();
+        {
+            if( $this->snatinterface !== null )
+                print $padding . "   SNAT HOSTS: {$this->snatinterface}/{$this->snathosts->toString_inline()}\n";
+            else
+                print $padding . "   SNAT HOSTS: {$this->snathosts->toString_inline()}\n";
+        }
 
         if( $this->dnathost === null )
             print $padding."  DNAT: none\n";
