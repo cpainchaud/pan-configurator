@@ -12,6 +12,7 @@ bugfixes:
 - fixed an issue where security profile filter 'is.set' and 'not.set' could return wrong value
 - fixed an issue where log fowarding profile change would not update the XML
 - rules-edit 'logEnd-Disable' was not available due to a typo in the name
+- RuleStore::moveRuleAfter/Before fix for post-rulebase would not work
 
 
 1.5.6

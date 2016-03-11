@@ -27,6 +27,7 @@ class NatRule extends Rule
 
     /** @var AddressRuleContainer|null */
 	public $snathosts = null;
+
     /** @var null|string  */
 	public $snatinterface = null;
 	
@@ -34,6 +35,8 @@ class NatRule extends Rule
 
     /** @var null|Address|AddressGroup */
 	public $dnathost = null;
+
+    /** @var null|string  */
 	public $dnatports = null;
 
 	/** @var null|DOMElement */
@@ -124,7 +127,9 @@ class NatRule extends Rule
 					$this->subdnatTProot = DH::findFirstElement('translated-port', $this->dnatroot);
 					if( $this->subdnatTProot !== FALSE  )
 					{
-						$this->subdnatport = $this->subdnatTProot->textContent;
+						$this->dnatports = $this->subdnatTProot->textContent;
+                        if( strlen($this->dnatports) < 0 )
+                            $this->dnatports = null;
 					}
 					
 				}
@@ -753,12 +758,6 @@ class NatRule extends Rule
         {
             $this->dnathost->removeReference($this);
             unset($this->dnathost);
-        }
-
-        if( $this->dnatports !== null )
-        {
-            $this->dnatports->removeReference($this);
-            unset($this->dnatports);
         }
 
     }

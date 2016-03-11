@@ -592,6 +592,7 @@ class RuleStore
 
         $rtbmSerial = spl_object_hash($ruleToBeMoved);
         $refSerial = spl_object_hash($ruleRef);
+        $refIsPost = false;
 
         if( !$this->isPreOrPost )
         {
@@ -626,29 +627,55 @@ class RuleStore
                 $this->addRule($ruleToBeMoved, $refIsPost);
             }
         }
-		
-		$i = 0;
-		$newArray = Array();
 
-		foreach($this->_rules as $rule)
-		{
-			if( $rule === $ruleToBeMoved )
-			{
-				continue;
-			}
-			
-			$newArray[$i] = $rule;
-			
-			$i++;
-			
-			if( $rule === $ruleRef )
-			{
-				$newArray[$i] = $ruleToBeMoved;
-				$i++;
-			}
-		}
-		
-		$this->_rules = &$newArray;
+        if( ! $this->isPreOrPost || ($this->isPreOrPost && !$refIsPost) )
+        {
+            $i = 0;
+            $newArray = Array();
+
+            foreach ($this->_rules as $rule)
+            {
+                if ($rule === $ruleToBeMoved)
+                {
+                    continue;
+                }
+
+                $newArray[$i] = $rule;
+
+                $i++;
+
+                if ($rule === $ruleRef)
+                {
+                    $newArray[$i] = $ruleToBeMoved;
+                    $i++;
+                }
+            }
+
+            $this->_rules = &$newArray;
+        }
+        elseif( ! $this->isPreOrPost )
+        {
+            $i = 0;
+            $newArray = Array();
+            foreach ($this->_postRules as $rule)
+            {
+                if ($rule === $ruleToBeMoved)
+                {
+                    continue;
+                }
+
+                $newArray[$i] = $rule;
+
+                $i++;
+
+                if ($rule === $ruleRef)
+                {
+                    $newArray[$i] = $ruleToBeMoved;
+                    $i++;
+                }
+            }
+            $this->_postRules = &$newArray;
+        }
 		
 		$this->regen_Indexes();
 		
@@ -721,6 +748,7 @@ class RuleStore
 
         $rtbmSerial = spl_object_hash($ruleToBeMoved);
         $refSerial = spl_object_hash($ruleRef);
+        $refIsPost = false;
 
         if( !$this->isPreOrPost )
         {
@@ -756,27 +784,54 @@ class RuleStore
             }
         }
 
-        $i = 0;
-        $newArray = Array();
-
-        foreach($this->_rules as $rule)
+        if( ! $this->isPreOrPost || ($this->isPreOrPost && !$refIsPost) )
         {
-            if( $rule === $ruleToBeMoved )
-            {
-                continue;
-            }
+            $i = 0;
+            $newArray = Array();
 
-            if( $rule === $ruleRef )
+            foreach ($this->_rules as $rule)
             {
-                $newArray[$i] = $ruleToBeMoved;
+                if ($rule === $ruleToBeMoved)
+                {
+                    continue;
+                }
+
+                $newArray[$i] = $rule;
+
                 $i++;
+
+                if ($rule === $ruleRef)
+                {
+                    $newArray[$i] = $ruleToBeMoved;
+                    $i++;
+                }
             }
 
-            $newArray[$i] = $rule;
-            $i++;
+            $this->_rules = &$newArray;
         }
+        elseif( ! $this->isPreOrPost )
+        {
+            $i = 0;
+            $newArray = Array();
+            foreach ($this->_postRules as $rule)
+            {
+                if ($rule === $ruleToBeMoved)
+                {
+                    continue;
+                }
 
-        $this->_rules = &$newArray;
+                $newArray[$i] = $rule;
+
+                $i++;
+
+                if ($rule === $ruleRef)
+                {
+                    $newArray[$i] = $ruleToBeMoved;
+                    $i++;
+                }
+            }
+            $this->_postRules = &$newArray;
+        }
 
         $this->regen_Indexes();
 
