@@ -1100,6 +1100,7 @@ class RuleStore
 	public function newNatRule($name, $inPost = false)
 	{
 		$rule = new NatRule($this);
+        $rule->owner = null;
 
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, NatRule::$templatexml);
         $rule->load_from_domxml($xmlElement);
