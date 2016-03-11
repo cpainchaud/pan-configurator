@@ -165,6 +165,11 @@ class NatRule extends Rule
 				if( $isbidrx !== FALSE )
 				{
 					$this->_snatbidir = $isbidrx->textContent;
+                    if( $this->_snatbidir != 'yes' && $this->_snatbidir != 'no' )
+                    {
+                        mwarning("unsupported bi-directional value: {$this->_snatbidir}, assumed 'no' as a fix", $this->xmlroot);
+                        $this->_snatbidir = 'no';
+                    }
 				}
 				$transladx = DH::findFirstElement('translated-address', $firstE);
 				
