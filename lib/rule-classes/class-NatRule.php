@@ -539,6 +539,9 @@ class NatRule extends Rule
 				$this->dnathost->removeReference($this);
 		}
 
+        $this->dnathost = $host;
+        $host->addReference($this);
+
 		$this->rewriteDNAT();
 	}
 
