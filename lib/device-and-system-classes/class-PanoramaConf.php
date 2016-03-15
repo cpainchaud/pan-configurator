@@ -180,6 +180,10 @@ class PanoramaConf
 			$this->version = $version['version'];
 		}
 
+        $panoramaRoot = $tmp = DH::findFirstElement('panorama', $this->xmlroot);
+        if( $panoramaRoot === false )
+            derr("cannot find /config/panorama , is it a firewall configuration?");
+
 
 		$tmp = DH::findFirstElementOrCreate('mgt-config', $this->xmlroot);
 
