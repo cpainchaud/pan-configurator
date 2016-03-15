@@ -313,6 +313,34 @@ class PH
         }
     }
 
+    /**
+     * @param string $filename
+     * @return PANConf|PanoramaConf
+     */
+    public static function getPanObjectFromConf($filename)
+    {
+        if( !file_exists($filename) )
+            derr("cannot find file '{$filename}'");
+
+        $doc = new DOMDocument();
+
+        if( $doc->load($filename) !== TRUE )
+            derr('Invalid XML file found');
+
+        $xpathResults = DH::findXPath('/config/panorama', $doc);
+
+        $panObject = null;
+
+        if( $xpathResults->length > 0 )
+            $panObject = new PanoramaConf();
+        else
+            $panObject = new PANConf();
+
+        $panObject->load_from_domxml($doc);
+
+        return $panObject;
+    }
+
 }
 
 foreach( $argv as $argIndex => &$arg )
