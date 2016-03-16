@@ -48,6 +48,9 @@ class NatRule extends Rule
 	/** @ignore */
 	public $serviceroot = null;
 
+    /** @var null|EthernetInterface|AggregateEthernetInterface|IPsecTunnel|LoopbackInterface|TmpInterface  */
+    protected $_destinationInterface = null;
+
 	static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination><service>any</service><disabled>no</disabled></entry>';
 	static protected $templatexmlroot = null;

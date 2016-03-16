@@ -95,6 +95,7 @@ $supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "fi
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['stats'] = Array('niceName' => 'Stats', 'shortHelp' => 'display stats after changes');
 $supportedArguments['apitimeout'] = Array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
+$supportedArguments['loadplugin'] = Array('niceName' => 'loadPlugin', 'shortHelp' => 'a PHP file which contains a plugin to expand capabilities of this script');
 $supportedArguments['loadpanoramapushedconfig'] = Array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules' );
 
 
@@ -102,6 +103,14 @@ $supportedArguments['loadpanoramapushedconfig'] = Array('niceName' => 'loadPanor
 PH::processCliArgs();
 
 $nestedQueries = Array();
+
+if( isset(PH::$args['loadplugin']) )
+{
+    $pluginFile = PH::$args['loadplugin'];
+    print " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
+    require_once $pluginFile;
+    print "OK!\n";
+}
 
 
 if( isset(PH::$args['help']) )

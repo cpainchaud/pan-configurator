@@ -452,6 +452,7 @@ class DH
 
 
     /**
+     * return
      * @param string $xpathString
      * @param DOMDocument|DOMNode $contextNode
      * @return DOMNodeList|bool
