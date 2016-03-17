@@ -610,6 +610,33 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
 );
 
 //                                              //
+//                NAT Dst/Src Based Actions            //
+//                                              //
+RQuery::$defaultFilters['rule']['snathost']['operators']['has'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $object */
+        if (!$object->isNatRule()) return false;
+
+        return $object->snathosts->has($value) === true;
+
+    },
+    'arg' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->owner->owner->addressStore->find('!value!');"
+
+);
+RQuery::$defaultFilters['rule']['dnathost']['operators']['has'] = Array(
+    'eval' => function($object, &$nestedQueries, $value) {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $object */
+        if (!$object->isNatRule()) return false;
+        if ($object->dnathost === null) return false;
+
+        return $object->dnathost === $value;
+    },
+    'arg' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->owner->owner->addressStore->find('!value!');"
+);
+//                                              //
 //                Dst/Src Based Actions            //
 //                                              //
 RQuery::$defaultFilters['rule']['src']['operators']['has'] = Array(
