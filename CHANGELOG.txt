@@ -7,10 +7,9 @@ CHANGELOG
 * introduced plugin system for address/rules/services-edit.php
 
 utils:
-rules-edit : new filters 'target is.any' 'target has xxxxx/vsysX'
+rules-edit : new filters 'target is.any' 'target has xxxxx/vsysX' 'snathost has xxxx' 'dnathost has xxxx'
 rules-edit : new actions 'name-Append' and 'name-Prepend'
-rules-edit : new filters 'snathost has xxxx'
-rules-edit : new filters 'dnathost has xxxx'
+
 
 bugfixes:
 - fixed an issue where security profile filter 'is.set' and 'not.set' could return wrong value
