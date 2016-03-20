@@ -732,7 +732,7 @@ class NatRule extends Rule
 	}
 
 	/**
-	 * @return string options are : 'none' , 'dynamic', 'dynamic-ip-and-port', 'static'
+	 * @return string options are : 'none' , 'dynamic-ip', 'dynamic-ip-and-port', 'static'
 	 */
 	public function SourceNat_Type()
 	{
@@ -746,7 +746,7 @@ class NatRule extends Rule
 
     public function sourceNatTypeIs_Dynamic()
     {
-        return $this->snattype == 'dynamic';
+        return $this->snattype == 'dynamic-ip';
     }
 
     public function sourceNatTypeIs_DIPP()
