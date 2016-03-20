@@ -109,8 +109,23 @@ class NatRule extends Rule
 		$this->load_to();
 		$this->load_source();
 		$this->load_destination();
-		
-		
+
+
+
+
+		//						//
+		// to-interface properties Extraction	//
+		//						//
+		$toInterface = DH::findFirstElement('to-interface', $xml);
+		if( $toInterface !== FALSE ) {
+			$this->_destinationInterface = $toInterface->textContent;
+			#print "has to-interface set: ". $this->_destinationInterface;
+		}
+		// end of to-interface extraction
+
+
+
+
 		//						//
 		// Destination NAT properties Extraction	//
 		//						//
@@ -673,6 +688,10 @@ class NatRule extends Rule
 		print $padding."*Rule named {$this->name}  $dis\n";
 		print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
 		print $padding."  Source: ".$this->source->toString_inline()."\n";
+
+		if( $this->_destinationInterface !== null )
+			print $padding."  Destination Interface: ".$this->_destinationInterface."\n";
+
 		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$s."\n";
 

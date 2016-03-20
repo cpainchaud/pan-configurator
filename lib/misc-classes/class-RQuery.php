@@ -1212,6 +1212,42 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['rule']['operators']['is.snatbidir'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isNatRule() )
+            return false;
+
+        return $object->isBiDirectional();
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['rule']['rule']['operators']['is.snat'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isNatRule() )
+            return false;
+
+        if( $object->natType() != 'none' )
+            return true;
+
+        return false;
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['rule']['rule']['operators']['is.dnat'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isNatRule() )
+            return false;
+
+        if( $object->natType() != 'none' )
+            return false;
+
+        return true;
+    },
+    'arg' => false
+);
 
 RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
