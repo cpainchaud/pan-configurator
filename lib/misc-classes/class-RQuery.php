@@ -673,7 +673,7 @@ RQuery::$defaultFilters['rule']['snat']['operators']['is.dynamic-ip-and-port'] =
 //                                              //
 //                SNAT interface Based Actions            //
 //                                              //
-RQuery::$defaultFilters['rule']['snatinterface']['operators']['is.set'] = Array(
+RQuery::$defaultFilters['rule']['natdstinterface']['operators']['is.set'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
         if( !$object->isNatRule() ) return false;
