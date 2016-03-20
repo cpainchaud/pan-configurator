@@ -759,6 +759,12 @@ class NatRule extends Rule
         return $this->snattype == 'static-ip';
     }
 
+	public function destinationinterfaceIs_set()
+	{
+		if( $this->_destinationInterface == null) return false;
+		return true;
+	}
+
     public function isNatRule()
     {
         return true;
