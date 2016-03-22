@@ -594,13 +594,15 @@ class AddressRuleContainer extends ObjRuleContainer
 
     public function copy(AddressRuleContainer $other)
     {
-        if( $other->count() == 0 && $this->count() != 0 )
-            $this->removeAll();
+        $this->removeAll();
 
-        foreach( $other->o as $member )
-        {
-            $this->addObject($member);
-        }
+        if( count($other->o)  == 0 )
+            $this->rewriteXML();
+        else
+           foreach( $other->o as $member )
+            {
+                $this->addObject($member);
+            }
     }
 
 
