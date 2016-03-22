@@ -1264,7 +1264,45 @@ RuleCallContext::$supportedActions['delete'] = Array(
             $rule->owner->remove($rule);
     }
 );
+RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
+    'name' => 'split-bidirectionalnat',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
 
+        $newName = $context->arguments['text'].$rule->name();
+
+        if( strlen($newName) > 31 )
+        {
+            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+            return;
+        }
+
+        if( !$rule->owner->isRuleNameAvailable($newName) )
+        {
+            print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            print "action: 'splitBiDirectionalNat' is not prepared for API ";
+        else {
+            if ($rule->isNatRule()) {
+                if ($rule->isBiDirectional()) {
+                    $rule->setBiDirectional( false );
+
+                    $newrule_dstnat = $rule->owner->newNatRule( $newName );
+                    $rule->owner->moveRuleAfter($newrule_dstnat,$rule);
+                    $newrule_dstnat->destination->copy($rule->snathosts);
+                    $newrule_dstnat->setService( $rule->service );
+                    $test = $rule->source->members();
+                    $newrule_dstnat->setDNAT( reset( $test ) );
+                }
+            }
+        }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => 'DST-'  ), )
+);
 
 RuleCallContext::$supportedActions['name-prepend'] = Array(
     'name' => 'name-Prepend',
