@@ -596,13 +596,12 @@ class AddressRuleContainer extends ObjRuleContainer
     {
         $this->removeAll();
 
-        if( count($other->o)  == 0 )
-            $this->rewriteXML();
-        else
-           foreach( $other->o as $member )
-            {
-                $this->addObject($member);
-            }
+        foreach( $other->o as $member )
+        {
+            $this->addObject($member);
+        }
+
+        $this->rewriteXML();
     }
 
 
