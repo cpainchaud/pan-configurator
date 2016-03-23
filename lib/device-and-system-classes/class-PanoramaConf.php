@@ -857,6 +857,18 @@ class PanoramaConf
 
         $this->deviceGroups[] = $newDG;
 
+        if( $this->version >= 70 )
+        {
+            $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/max-dg-id', $this->xmlroot);
+            $dgMaxID = $dgMetaDataNode->textContent;
+            $dgMaxID++;
+            DH::setDomNodeText($dgMetaDataNode, "{$dgMaxID}");
+
+            $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/dg-info', $this->xmlroot);
+            $newXmlNode = DH::importXmlStringOrDie($this->xmldoc, "<entry name=\"{$name}\"><dg-id>{$dgMaxID}</dg-id></entry>");
+            $dgMetaDataNode->appendChild($newXmlNode);
+        }
+
 		return $newDG;
 	}
 
