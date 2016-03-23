@@ -1269,49 +1269,40 @@ RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
-        if( $context->isAPI )
+
+        if( ! $rule->isNatRule() )
+        {
+            print $context->padding." * SKIPPED it's not a NAT rule\n";
+            return;
+        }
+        /** @var NatRule $rule */
+
+        if( ! $rule->isBiDirectional() )
+        {
+            print $context->padding." * SKIPPED because NAT rule is not bi-directional\n";
+            return;
+        }
+
+        if( $context->isAPI ) // TODO : work on API enabled version
             print "action: 'split-bidirectionalnat' is not prepared for API ";
-        else {
-            if ($rule->isNatRule()) {
-                if ($rule->isBiDirectional()) {
-                    $newName = $context->arguments['text'].$rule->name();
+        else
+        {
+            $newName = $rule->owner->findAvailableName($rule->name(), $context->arguments['suffix']);
 
-                    if( strlen($newName) > 31 )
-                    {
-                        print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
-                        return;
-                    }
+            $rule->setBiDirectional( false );
 
-                    if( !$rule->owner->isRuleNameAvailable($newName) )
-                    {
-                        print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
-                        return;
-                    }
-
-                    #print "\n**********************************************************************\n";
-                    #print "******** original rule at beginning of 'split-bidirectionalnat' ********\n\n";
-                    #$rule->display(0);
-
-                    $rule->setBiDirectional( false );
-
-                    $newrule_dstnat = $rule->owner->newNatRule( $newName );
-                    $rule->owner->moveRuleAfter($newrule_dstnat,$rule);
-                    $newrule_dstnat->destination->copy($rule->snathosts);
-                    $newrule_dstnat->setService( $rule->service );
-                    $test = $rule->source->members();
-                    $newrule_dstnat->setDNAT( reset( $test ) );
-                    $newrule_dstnat->tags->copy( $rule->tags );
-
-                    #print "******** after 'split-bidirectionalnat' ********\n\n";
-                    #$rule->display(6);
-                    #$newrule_dstnat->display(6);
-                    #print "******** end 'split-bidirectionalnat' ********\n";
-                    #print "********************************************\n";
-                }
-            }
+            // Now creating the reverse NAT rule
+            $newRule = $rule->owner->newNatRule( $newName );
+            $rule->owner->moveRuleAfter($newRule,$rule);
+            $newRule->destination->copy($rule->snathosts);
+            $newRule->setService( $rule->service );
+            $test = $rule->source->members();
+            $newRule->setDNAT( reset( $test ) );
+            $newRule->tags->copy( $rule->tags );
+            // TODO : add support for destination interface
         }
     },
-    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => 'DST-'  ), )
+    'args' => Array(  'suffix' => Array( 'type' => 'string', 'default' => '-DST'  ), )
 );
 
 RuleCallContext::$supportedActions['name-prepend'] = Array(
