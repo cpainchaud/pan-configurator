@@ -1269,26 +1269,29 @@ RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
-
-        $newName = $context->arguments['text'].$rule->name();
-
-        if( strlen($newName) > 31 )
-        {
-            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
-            return;
-        }
-
-        if( !$rule->owner->isRuleNameAvailable($newName) )
-        {
-            print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
-            return;
-        }
-
         if( $context->isAPI )
-            print "action: 'splitBiDirectionalNat' is not prepared for API ";
+            print "action: 'split-bidirectionalnat' is not prepared for API ";
         else {
             if ($rule->isNatRule()) {
                 if ($rule->isBiDirectional()) {
+                    $newName = $context->arguments['text'].$rule->name();
+
+                    if( strlen($newName) > 31 )
+                    {
+                        print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+                        return;
+                    }
+
+                    if( !$rule->owner->isRuleNameAvailable($newName) )
+                    {
+                        print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
+                        return;
+                    }
+
+                    #print "\n**********************************************************************\n";
+                    #print "******** original rule at beginning of 'split-bidirectionalnat' ********\n\n";
+                    #$rule->display(0);
+
                     $rule->setBiDirectional( false );
 
                     $newrule_dstnat = $rule->owner->newNatRule( $newName );
@@ -1297,6 +1300,14 @@ RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
                     $newrule_dstnat->setService( $rule->service );
                     $test = $rule->source->members();
                     $newrule_dstnat->setDNAT( reset( $test ) );
+                    #tags copy is not available: fix needed
+                    #$newrule_dstnat->tags->copy( $rule->tags );
+
+                    #print "******** after 'split-bidirectionalnat' ********\n\n";
+                    #$rule->display(6);
+                    #$newrule_dstnat->display(6);
+                    #print "******** end 'split-bidirectionalnat' ********\n";
+                    #print "********************************************\n";
                 }
             }
         }
