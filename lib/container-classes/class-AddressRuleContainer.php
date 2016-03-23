@@ -598,7 +598,7 @@ class AddressRuleContainer extends ObjRuleContainer
 
         foreach( $other->o as $member )
         {
-            $this->addObject($member);
+            $this->add($member);
         }
 
         $this->rewriteXML();

@@ -265,7 +265,7 @@ class TagRuleContainer extends ObjRuleContainer
 
         foreach( $other->o as $member )
         {
-            $this->addTag($member);
+            $this->add($member);
         }
 
         $this->rewriteXML();
