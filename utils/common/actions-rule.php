@@ -1300,8 +1300,7 @@ RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
                     $newrule_dstnat->setService( $rule->service );
                     $test = $rule->source->members();
                     $newrule_dstnat->setDNAT( reset( $test ) );
-                    #tags copy is not available: fix needed
-                    #$newrule_dstnat->tags->copy( $rule->tags );
+                    $newrule_dstnat->tags->copy( $rule->tags );
 
                     #print "******** after 'split-bidirectionalnat' ********\n\n";
                     #$rule->display(6);

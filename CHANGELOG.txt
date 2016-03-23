@@ -5,6 +5,7 @@ CHANGELOG
 * NatRule display() outputs more informations, directly benefits to rules-edit.php
 * PH::getPanObjectFromconfig() new helper function to load Panorama or Firewall conf
 * introduced plugin system for address/rules/services-edit.php
+* TagRuleContainer::copy new helper function to copy tags from one Rule to another
 
 utils:
 rules-edit : new filters 'target is.any' 'target has xxxxx/vsysX' 'snathost has xxxx' 'dnathost has xxxx' 'rule is.snat' 'rule is.dnat' 'rule is.snatbidir' 'snat is.static' 'snat is.dynamic-ip' 'snat is.dynamic-ip-and-port' 'natdstinterface is.set'

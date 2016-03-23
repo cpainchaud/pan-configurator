@@ -259,6 +259,18 @@ class TagRuleContainer extends ObjRuleContainer
 
     }
 
+    public function copy(TagRuleContainer $other)
+    {
+        $this->removeAll();
+
+        foreach( $other->o as $member )
+        {
+            $this->addTag($member);
+        }
+
+        $this->rewriteXML();
+    }
+
 }
 
 
