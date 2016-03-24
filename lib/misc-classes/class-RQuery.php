@@ -1297,6 +1297,54 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.dnat'] = Array(
     'arg' => false
 );
 
+RQuery::$defaultFilters['rule']['rule']['operators']['is.universal'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->isSecurityRule() )
+            return false;
+
+        if( !$object->type() == 'universal' )
+            return false;
+
+        return true;
+    },
+    'arg' => false
+);
+
+RQuery::$defaultFilters['rule']['rule']['operators']['is.intrazone'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->owner->owner->owner->version >= 61 )
+            return false;
+
+        if( !$object->isSecurityRule() )
+            return false;
+
+        if( !$object->type() == 'intrazone' )
+            return false;
+
+        return true;
+    },
+    'arg' => false
+);
+
+RQuery::$defaultFilters['rule']['rule']['operators']['is.interzone'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+        if( !$object->owner->owner->owner->version >= 61 )
+            return false;
+
+        if( !$object->isSecurityRule() )
+            return false;
+
+        if( !$object->type() == 'interzone' )
+            return false;
+
+        return true;
+    },
+    'arg' => false
+);
+
 RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
