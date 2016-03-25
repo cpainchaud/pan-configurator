@@ -1301,7 +1301,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.universal'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
         if( !$object->isSecurityRule() )
-            return false;
+            return true;
 
         if( !$object->type() == 'universal' )
             return false;
