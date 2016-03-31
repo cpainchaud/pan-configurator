@@ -1303,7 +1303,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.universal'] = Array(
         if( !$object->isSecurityRule() )
             return true;
 
-        if( !$object->type() == 'universal' )
+        if( $object->type() != 'universal' )
             return false;
 
         return true;
