@@ -18,6 +18,7 @@ bugfixes:
 - RuleStore : fixed an issue where creating a NatRule would generate an error
 - rules-edit 'logEnd-Disable' was not available due to a typo in the name
 - RuleStore::moveRuleAfter/Before fix for post-rulebase would not work
+- Source Nat could be improperly written in some cases
 
 
 1.5.6

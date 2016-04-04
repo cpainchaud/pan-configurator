@@ -431,27 +431,20 @@ class NatRule extends Rule
 			if( $this->snatinterface === null )
 			{
 				$subsubroot = DH::createOrResetElement($subroot, 'translated-address');
+                $translatedObjects = $this->snathosts->all();
 
-				$this->snathosts->xmlroot = $subsubroot;
-				$this->snathosts->rewriteXML();
+                DH::Hosts_to_xmlDom($subsubroot, $translatedObjects, 'member', false);
 			}
 			else
 			{
 				$subsubroot = DH::createOrResetElement($subroot, 'interface-address');
 
-				derr("not supported yet");
-
-				/*$subsubroot['children'][] = Array('name' => 'interface', 'content' => $this->snatinterface);
-				
-				if( count($this->snathosts) > 0 )
-				{
-					$tmpA = Array();
-					
-					Hosts_to_xmlA($tmpA, $this->snathosts, 'ip');
-					$tmpAk = array_keys($tmpA);
-					
-					$subsubroot['children'][] = &$tmpA[$tmpAk[0]]; 
-				}*/
+                DH::createOrResetElement($subsubroot, 'interface', $this->snatinterface);
+                $snatIP = $this->snathosts->all();
+                if( count($snatIP) > 0)
+                {
+                    DH::createOrResetElement($subsubroot, 'ip', reset($snatIP)->name() );
+                }
 				
 			}
 		}
@@ -544,12 +537,16 @@ class NatRule extends Rule
     /**
      * @param Address|AddressGroup $host
      * @param null $ports
+     * @return bool
      * @throws Exception
      */
 	public function setDNAT( $host , $ports = null)
 	{
 		if( $host === null )
 			derr(" Host cannot be NULL");
+
+        if( $host === $this->dnathost && $ports === $this->dnatports )
+            return false;
 
 		if( $this->dnathost !== null )
 		{
@@ -561,7 +558,27 @@ class NatRule extends Rule
         $host->addReference($this);
 
 		$this->rewriteDNAT();
+
+        return true;
 	}
+
+    public function API_setDNAT( $host , $ports = null)
+    {
+        $ret = $this->setDNAT($host, $ports);
+        if( $ret )
+        {
+            $connector = findConnectorOrDie($this);
+            $xpath = $this->getXPath().'/destination-translation';
+
+            if( $host === null && ($ports === null | $ports == '') )
+                $connector->sendDeleteRequest($xpath);
+            else
+                $connector->sendEditRequest($xpath, $this->dnatroot);
+
+        }
+
+        return $ret;
+    }
 
     public function rewriteDNAT()
     {
@@ -732,7 +749,7 @@ class NatRule extends Rule
 	}
 
 	/**
-	 * @return string options are : 'none' , 'dynamic-ip', 'dynamic-ip-and-port', 'static'
+	 * @return string options are : 'none' , 'dynamic-ip', 'dynamic-ip-and-port', 'static-ip'
 	 */
 	public function SourceNat_Type()
 	{

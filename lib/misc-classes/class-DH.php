@@ -178,6 +178,8 @@ class DH
 			return DH::createElement($parent, $tagName, $withText);
 
 		DH::clearDomNodeChilds($ret);
+        if( $withText !== null )
+            DH::setDomNodeText($ret, $withText);
 
 		return $ret;
 	}

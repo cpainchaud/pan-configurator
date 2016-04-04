@@ -249,6 +249,16 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
                     /** @var AddressRuleContainer $objectRef */
                     print $context->padding."     - replacing in {$objectRef->toString()}\n";
 
+                    if( $objectRef->owner->isNatRule()
+                        && $objectRef->name == 'snathosts'
+                        && $objectRef->owner->sourceNatTypeIs_DIPP()
+                        && $objectRef->owner->snatinterface !== null )
+                    {
+                        print $context->padding."        -  SKIPPED because it's a SNAT with Interface IP address\n";
+                        continue;
+                    }
+
+
                     if( $context->isAPI )
                         $objectRef->API_add($objToReplace);
                     else
@@ -265,7 +275,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
                     print $context->padding."     - replacing in {$objectRef->toString()}\n";
 
                     if( $context->isAPI )
-                        derr("not supported in API mode yet");
+                        $objectRef->API_setDNAT($objToReplace, $objectRef->dnatports);
                     else
                         $objectRef->replaceReferencedObject($object, $objToReplace);
                 }

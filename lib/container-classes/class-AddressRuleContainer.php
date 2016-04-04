@@ -58,6 +58,9 @@ class AddressRuleContainer extends ObjRuleContainer
             {
                 $this->rewriteXML();
             }
+
+            if( $this->name == 'snathosts' )
+                $this->owner->rewriteSNAT_XML();
         }
 
         return $ret;
@@ -71,15 +74,24 @@ class AddressRuleContainer extends ObjRuleContainer
     {
         if( $this->addObject($Obj) )
         {
-            $xpath = &$this->getXPath();
             $con = findConnectorOrDie($this);
 
-            if( count($this->o) == 1 )
+            if( $this->name == 'snathosts' )
             {
-                $con->sendEditRequest($xpath, $this->getXmlText_inline() );
+                $xpath = $this->owner->getXPath().'/source-translation';
+                $sourceNatRoot = DH::findFirstElementOrDie('source-translation', $this->owner->xmlroot);
+                $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, false) );
             }
             else
-                $con->sendSetRequest($xpath, "<member>{$Obj->name()}</member>");
+            {
+                $xpath = $this->getXPath();
+
+                if (count($this->o) == 1)
+                {
+                    $con->sendEditRequest($xpath, $this->getXmlText_inline());
+                } else
+                    $con->sendSetRequest($xpath, "<member>{$Obj->name()}</member>");
+            }
 
             return true;
         }
@@ -104,7 +116,7 @@ class AddressRuleContainer extends ObjRuleContainer
         if( $ret && $count == 1 && !$forceAny  )
         {
             derr("you are trying to remove last Object from a rule which will set it to ANY, please use forceAny=true for object: "
-                .$this->toString() ) ;
+                . $this->toString());
         }
 
         if( $ret && $rewriteXml )
@@ -123,17 +135,27 @@ class AddressRuleContainer extends ObjRuleContainer
     {
         if( $this->remove($Obj, true, $forceAny) )
         {
-            $xpath = &$this->getXPath();
             $con = findConnectorOrDie($this);
 
-            if( count($this->o) == 0 )
+            if( $this->name == 'snathosts' )
             {
-                $con->sendEditRequest($xpath, $this->getXmlText_inline());
-                return true;
+                $xpath = $this->owner->getXPath().'/source-translation';
+                $sourceNatRoot = DH::findFirstElementOrDie('source-translation', $this->owner->xmlroot);
+                $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, false) );
             }
+            else
+            {
+                $xpath = $this->getXPath();
 
-            $xpath = $xpath."/member[text()='".$Obj->name()."']";
-            $con->sendDeleteRequest($xpath);
+                if (count($this->o) == 0)
+                {
+                    $con->sendEditRequest($xpath, $this->getXmlText_inline());
+                    return true;
+                }
+
+                $xpath = $xpath . "/member[text()='" . $Obj->name() . "']";
+                $con->sendDeleteRequest($xpath);
+            }
 
             return true;
         }
@@ -230,26 +252,16 @@ class AddressRuleContainer extends ObjRuleContainer
 
     public function rewriteXML()
     {
+        if( $this->name == 'snathosts' )
+        {
+            $this->owner->rewriteSNAT_XML();
+            return;
+        }
+
         if( $this->xmlroot === null )
             return;
 
-        if( $this->name == 'snathosts' )
-        {
-            if (count($this->o) == 0 )
-                DH::clearDomNodeChilds($this->xmlroot);
-            else
-            {
-                if( $this->owner->natType() == 'static-ip' )
-                {
-                    DH::clearDomNodeChilds($this->xmlroot);
-                    DH::setDomNodeText($this->xmlroot, reset($this->o)->name());
-                }
-                else
-                    DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
-            }
-        }
-        else
-            DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
+        DH::Hosts_to_xmlDom($this->xmlroot, $this->o, 'member', false);
     }
 
     public function toString_inline()
