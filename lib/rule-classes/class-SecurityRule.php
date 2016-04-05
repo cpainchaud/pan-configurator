@@ -239,7 +239,7 @@ class SecurityRule extends RuleWithUserID
             derr("unsupported rule-type '{$type}', universal assumed");
 
         if( $this->ruleType == $typefound )
-            return;
+            return false;
 
         $this->ruleType = $typefound;
 
@@ -247,6 +247,21 @@ class SecurityRule extends RuleWithUserID
         DH::setDomNodeText($find, $type);
 
         return true;
+    }
+
+    public function API_setType( $type )
+    {
+        $ret = $this->setType( $type);
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath() . '/rule-type';
+            $con = findConnectorOrDie($this);
+
+            $con->sendEditRequest( $xpath, "<rule-type>{$this->type()}</rule-type>" );
+        }
+
+        return $ret;
     }
 
 	/**

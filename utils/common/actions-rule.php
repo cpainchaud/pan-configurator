@@ -1264,8 +1264,8 @@ RuleCallContext::$supportedActions['delete'] = Array(
             $rule->owner->remove($rule);
     }
 );
-RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
-    'name' => 'split-BiDirectionalNat',
+RuleCallContext::$supportedActions['bidirnat-split'] = Array(
+    'name' => 'biDirNat-Split',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
@@ -1300,7 +1300,7 @@ RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
             $newRule->setDNAT( reset( $test ) );
             $newRule->tags->copy( $rule->tags );
             // TODO : add support for destination interface
-            // TODO : $newRule->setDestinationInterface( $rule->destinationInterface() );
+            $newRule->setDestinationInterface( $rule->destinationInterface() );
         }
     },
     'args' => Array(  'suffix' => Array( 'type' => 'string', 'default' => '-DST'  ), )
@@ -1368,8 +1368,8 @@ RuleCallContext::$supportedActions['name-append'] = Array(
     },
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
-RuleCallContext::$supportedActions['change-ruletype'] = Array(
-    'name' => 'change-RuleType',
+RuleCallContext::$supportedActions['ruletype-change'] = Array(
+    'name' => 'ruleType-Change',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
@@ -1381,8 +1381,14 @@ RuleCallContext::$supportedActions['change-ruletype'] = Array(
             return;
         }
 
-        $rule->setType($newType);
-
+        if( $context->isAPI )
+        {
+            $rule->API_setType($newType);
+        }
+        else
+        {
+            $rule->setType($newType);
+        }
 
     },
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
