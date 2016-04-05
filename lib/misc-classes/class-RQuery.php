@@ -662,8 +662,11 @@ RQuery::$defaultFilters['rule']['snat']['operators']['is.dynamic-ip'] = Array(
 RQuery::$defaultFilters['rule']['snat']['operators']['is.dynamic-ip-and-port'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
-        if( !$object->isNatRule() ) return false;
-        if( !$object->sourceNatTypeIs_DIPP() ) return false;
+        if( !$object->isNatRule() )
+            return false;
+
+        if( !$object->sourceNatTypeIs_DIPP() )
+            return false;
 
         return true;
     },
@@ -673,13 +676,13 @@ RQuery::$defaultFilters['rule']['snat']['operators']['is.dynamic-ip-and-port'] =
 //                                              //
 //                SNAT interface Based Actions            //
 //                                              //
-RQuery::$defaultFilters['rule']['natdstinterface']['operators']['is.set'] = Array(
+RQuery::$defaultFilters['rule']['dst-interface']['operators']['is.set'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
-        if( !$object->isNatRule() ) return false;
-        if( !$object->destinationinterfaceIs_set() ) return false;
+        if( !$object->isNatRule() )
+            return false;
 
-        return true;
+        return $object->hasDestinationInterface();
     },
     'arg' => false
 );

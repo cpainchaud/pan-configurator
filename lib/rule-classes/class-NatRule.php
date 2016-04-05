@@ -614,6 +614,19 @@ class NatRule extends Rule
 		
 	}
 
+    public function setDestinationInterface($newDestinationInterface)
+    {
+        if( $this->_destinationInterface === $newDestinationInterface )
+            return false;
+
+        $this->_destinationInterface = $newDestinationInterface;
+
+        $find = DH::findFirstElementOrCreate('to-interface', $this->xmlroot);
+        DH::setDomNodeText($find, $newDestinationInterface);
+
+        return true;
+    }
+
     /**
      * @param $newServiceObject Service|ServiceGroup|null use null to set ANY
      * @return bool return true if any change was made
@@ -707,7 +720,7 @@ class NatRule extends Rule
 		print $padding."  Source: ".$this->source->toString_inline()."\n";
 
 		if( $this->_destinationInterface !== null )
-			print $padding."  Destination Interface: ".$this->_destinationInterface."\n";
+            print $padding . "  Destination Interface: " . $this->destinationInterface() . "\n";
 
 		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$s."\n";
@@ -748,6 +761,11 @@ class NatRule extends Rule
 		return $this->snattype;
 	}
 
+    public function destinationInterface()
+    {
+        return $this->_destinationInterface;
+    }
+
 	/**
 	 * @return string options are : 'none' , 'dynamic-ip', 'dynamic-ip-and-port', 'static-ip'
 	 */
@@ -776,9 +794,11 @@ class NatRule extends Rule
         return $this->snattype == 'static-ip';
     }
 
-	public function destinationinterfaceIs_set()
+	public function hasDestinationInterface()
 	{
-		if( $this->_destinationInterface == null) return false;
+		if( $this->_destinationInterface == null)
+            return false;
+
 		return true;
 	}
 
