@@ -1320,7 +1320,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.intrazone'] = Array(
         if( !$object->isSecurityRule() )
             return false;
 
-        if( !$object->type() == 'intrazone' )
+        if( $object->type() != 'intrazone' )
             return false;
 
         return true;
@@ -1337,7 +1337,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.interzone'] = Array(
         if( !$object->isSecurityRule() )
             return false;
 
-        if( !$object->type() == 'interzone' )
+        if( $object->type() != 'interzone' )
             return false;
 
         return true;
