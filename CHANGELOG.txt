@@ -9,7 +9,7 @@ CHANGELOG
 
 utils:
 rules-edit : new filters 'target is.any' 'target has xxxxx/vsysX' 'snathost has xxxx' 'dnathost has xxxx' 'rule is.snat' 'rule is.dnat' 'rule is.snatbidir' 'snat is.static' 'snat is.dynamic-ip' 'snat is.dynamic-ip-and-port' 'natdstinterface is.set' 'rule is.universal' 'rule is.intrazone' 'rule is.interzone'
-rules-edit : new actions 'name-Append' and 'name-Prepend' 'split-bidirectionalnat'
+rules-edit : new actions 'name-Append' and 'name-Prepend' 'split-bidirectionalnat' 'change-ruleType'
 address-edit : improved filter 'name regex' to allow external regular expression reference, permitting expression with parenthesis without the need to escape. ie: 'filter=(name regex %subquery1)' 'subquery1=/^(az)/'
 
 

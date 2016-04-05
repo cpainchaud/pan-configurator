@@ -227,6 +227,28 @@ class SecurityRule extends RuleWithUserID
     }
 
 
+    public function setType( $type )
+    {
+        if( $this->owner->owner->version < 61 )
+            derr( 'ruletype is introduce in PAN-OS 6.1' );
+
+        $type = strtolower($type);
+
+        $typefound = array_search($type, self::$RuleTypes);
+        if( $typefound === false )
+            derr("unsupported rule-type '{$type}', universal assumed");
+
+        if( $this->ruleType == $typefound )
+            return;
+
+        $this->ruleType = $typefound;
+
+        $find = DH::findFirstElementOrCreate('rule-type', $this->xmlroot);
+        DH::setDomNodeText($find, $type);
+
+        return true;
+    }
+
 	/**
 	*
 	* @ignore

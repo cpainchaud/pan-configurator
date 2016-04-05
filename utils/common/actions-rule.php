@@ -1265,7 +1265,7 @@ RuleCallContext::$supportedActions['delete'] = Array(
     }
 );
 RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
-    'name' => 'split-bidirectionalnat',
+    'name' => 'split-BiDirectionalNat',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
@@ -1300,6 +1300,7 @@ RuleCallContext::$supportedActions['split-bidirectionalnat'] = Array(
             $newRule->setDNAT( reset( $test ) );
             $newRule->tags->copy( $rule->tags );
             // TODO : add support for destination interface
+            // TODO : $newRule->setDestinationInterface( $rule->destinationInterface() );
         }
     },
     'args' => Array(  'suffix' => Array( 'type' => 'string', 'default' => '-DST'  ), )
@@ -1364,6 +1365,25 @@ RuleCallContext::$supportedActions['name-append'] = Array(
         {
             $rule->setName($newName);
         }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+);
+RuleCallContext::$supportedActions['change-ruletype'] = Array(
+    'name' => 'change-RuleType',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $newType = $context->arguments['text'];
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding." * SKIPPED it's not a security rule\n";
+            return;
+        }
+
+        $rule->setType($newType);
+
+
     },
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );

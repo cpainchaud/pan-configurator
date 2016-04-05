@@ -1314,7 +1314,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.universal'] = Array(
 RQuery::$defaultFilters['rule']['rule']['operators']['is.intrazone'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
-        if( !$object->owner->owner->owner->version >= 61 )
+        if( $object->owner->owner->version < 61 )
             return false;
 
         if( !$object->isSecurityRule() )
@@ -1331,7 +1331,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.intrazone'] = Array(
 RQuery::$defaultFilters['rule']['rule']['operators']['is.interzone'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
-        if( !$object->owner->owner->owner->version >= 61 )
+        if( $object->owner->owner->version < 61 )
             return false;
 
         if( !$object->isSecurityRule() )
