@@ -88,7 +88,7 @@ class RQuery
         {
             /** @var string[] $nestedQueries */
             $nestedQueries = Array();
-            /** @var SecurityRule|Address|AddressGroup|service|ServiceGroup $object */
+            /** @var SecurityRule|Address|AddressGroup|Service|ServiceGroup $object */
             $object = $queryContext;
             $queryContext = Array('object' => $object, 'nestedQueries' => $nestedQueries);
         }
@@ -98,7 +98,7 @@ class RQuery
             // print $this->padded."about to eval\n";
             if( isset($this->refOperator['Function'] ) )
             {
-                $boolReturn =  $this->contextObject->execute($object);
+                $boolReturn =  $this->contextObject->execute($object, $nestedQueries);
                 if( $this->inverted )
                     return !$boolReturn;
                 return $boolReturn;
@@ -1704,13 +1704,26 @@ RQuery::$defaultFilters['address']['name']['operators']['contains'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
-    {   /** @var Address|AddressGroup  $object */
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        $value = $context->value;
+        if( strlen($value) > 0 && $value[0] == '%')
+        {
+            $value = substr($value, 1);
+            if( !isset($context->nestedQueries[$value]) )
+                derr("regular expression filter makes reference to unknown string alias '{$value}'");
+
+            $value = $context->nestedQueries[$value];
+        }
+
         $matching = preg_match($value, $object->name());
         if( $matching === FALSE )
-            derr("regular expression error on '$value'");
+            derr("regular expression error on '{$value}'");
         if( $matching === 1 )
             return true;
+
         return false;
     },
     'arg' => true

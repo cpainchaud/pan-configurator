@@ -881,10 +881,17 @@ $supportedActions['display'] = Array(
 
 PH::processCliArgs();
 
+$nestedQueries = Array();
+
 foreach ( PH::$args as $index => &$arg )
 {
     if( !isset($supportedArguments[$index]) )
     {
+        if( strpos($index,'subquery') === 0 )
+        {
+            $nestedQueries[$index] = &$arg;
+            continue;
+        }
         //var_dump($supportedArguments);
         display_error_usage_exit("unsupported argument provided: '$index'");
     }
@@ -1307,7 +1314,7 @@ foreach( $objectsToProcess as &$objectsRecord )
         /** @var Address|AddressGroup $object */
         if( $objectFilterRQuery !== null )
         {
-            $queryResult = $objectFilterRQuery->matchSingleObject($object);
+            $queryResult = $objectFilterRQuery->matchSingleObject(Array('object' =>$object, 'nestedQueries'=>&$nestedQueries));
             if( !$queryResult )
                 continue;
         }
