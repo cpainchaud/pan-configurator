@@ -118,8 +118,8 @@ class NatRule extends Rule
 		//						//
 		$toInterface = DH::findFirstElement('to-interface', $xml);
 		if( $toInterface !== FALSE ) {
-			$this->_destinationInterface = $toInterface->textContent;
-			#print "has to-interface set: ". $this->_destinationInterface;
+            if( strtolower($toInterface->textContent) != 'any' )
+                $this->_destinationInterface = $toInterface->textContent;
 		}
 		// end of to-interface extraction
 
@@ -796,7 +796,7 @@ class NatRule extends Rule
 
 	public function hasDestinationInterface()
 	{
-		if( $this->_destinationInterface == null)
+		if( $this->_destinationInterface === null)
             return false;
 
 		return true;
