@@ -23,10 +23,11 @@ class CsvParser
      * @param string $fileName
      * @param string $errorMessage
      * @param bool $hasHeaders
+     * @param bool $skipEmptyLines
      * @param null|string[] $customHeaders
      * @return false|string[]
      */
-    static public function &parseFile( $fileName, &$errorMessage, $hasHeaders = true, $customHeaders = null)
+    static public function &parseFile( $fileName, &$errorMessage, $hasHeaders = true, $skipEmptyLines = false,$customHeaders = null)
     {
         $ret = false;
 
@@ -44,7 +45,7 @@ class CsvParser
             return $ret;
         }
 
-        $ret = CsvParser::parseString($content, $errorMessage, $hasHeaders, $customHeaders);
+        $ret = CsvParser::parseString($content, $errorMessage, $hasHeaders, $skipEmptyLines, $customHeaders);
 
         return $ret;
     }
@@ -53,10 +54,11 @@ class CsvParser
      * @param string $content
      * @param string $errorMessage
      * @param bool $hasHeaders
+     * @param bool $skipEmptyLines
      * @param null|string[] $customHeaders
      * @return false|string[]
      */
-    static public function &parseString( $content, &$errorMessage, $hasHeaders = true, $customHeaders = null)
+    static public function &parseString( $content, &$errorMessage, $hasHeaders = true, $skipEmptyLines = false, $customHeaders = null)
     {
         $ret = false;
 
@@ -149,7 +151,10 @@ class CsvParser
 
             if( strlen($line) < 1 )
             {
-                $errorMessage = 'one line is empty';
+                if( $skipEmptyLines == true )
+                    continue;
+                
+                $errorMessage = "line #{$countLines} is empty";
                 return $ret;
             }
 
