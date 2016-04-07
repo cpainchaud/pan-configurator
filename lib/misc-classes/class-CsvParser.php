@@ -24,7 +24,7 @@ class CsvParser
      * @param string $errorMessage
      * @param bool $hasHeaders
      * @param null|string[] $customHeaders
-     * @return false|Array
+     * @return false|string[]
      */
     static public function &parseFile( $fileName, &$errorMessage, $hasHeaders = true, $customHeaders = null)
     {
@@ -42,6 +42,18 @@ class CsvParser
             return false;
         }
 
+        return CsvParser::parseString($content, $errorMessage, $hasHeaders, $customHeaders);
+    }
+
+    /**
+     * @param string $content
+     * @param string $errorMessage
+     * @param bool $hasHeaders
+     * @param null|string[] $customHeaders
+     * @return false|string[]
+     */
+    static public function &parseString( $content, &$errorMessage, $hasHeaders = true, $customHeaders = null)
+    {
         $content = explode("\n", $content);
 
         if( $hasHeaders )
