@@ -28,10 +28,12 @@ class CsvParser
      */
     static public function &parseFile( $fileName, &$errorMessage, $hasHeaders = true, $customHeaders = null)
     {
+        $ret = false;
+
         if( !file_exists($fileName) )
         {
             $errorMessage = "file '$fileName' doesn't exists";
-            return false;
+            return $ret;
         }
 
         $content = file_get_contents($fileName);
@@ -39,10 +41,12 @@ class CsvParser
         if( $content === FALSE )
         {
             $errorMessage = "file '$fileName' could not be open (permission problem?)";
-            return false;
+            return $ret;
         }
 
-        return CsvParser::parseString($content, $errorMessage, $hasHeaders, $customHeaders);
+        $ret = CsvParser::parseString($content, $errorMessage, $hasHeaders, $customHeaders);
+
+        return $ret;
     }
 
     /**
@@ -54,6 +58,8 @@ class CsvParser
      */
     static public function &parseString( $content, &$errorMessage, $hasHeaders = true, $customHeaders = null)
     {
+        $ret = false;
+
         $content = explode("\n", $content);
 
         if( $hasHeaders )
@@ -64,7 +70,7 @@ class CsvParser
                 if( count($content) < 1 )
                 {
                     $errorMessage = 'file is empty, no header to parse';
-                    return false;
+                    return $ret;
                 }
 
                 $headerLine = $content[0];
@@ -73,14 +79,14 @@ class CsvParser
                 if( strlen($headerLine) < 1 )
                 {
                     $errorMessage = 'header is empty line';
-                    return false;
+                    return $ret;
                 }
 
                 $headers = explode(',', $headerLine);
                 if( count($headers) < 1 )
                 {
                     $errorMessage = 'file is empty or header malformed';
-                    return false;
+                    return $ret;
                 }
 
                 $uniqueCheck = Array();
@@ -90,12 +96,12 @@ class CsvParser
                     if( strlen($h) < 1 )
                     {
                         $errorMessage = 'one of the header column name is empty';
-                        return false;
+                        return $ret;
                     }
                     if( isset($uniqueCheck[$h]) )
                     {
                         $errorMessage = "two or more headers columns have same name '$h'";
-                        return false;
+                        return $ret;
                     }
 
                     $uniqueCheck[$h] = true;
@@ -106,8 +112,8 @@ class CsvParser
             {
                 if( !is_array($customHeaders) )
                 {
-                    $errorMessage = "two or more headers columns have same name '$h'";
-                    return false;
+                    $errorMessage = "two or more headers columns have same name";
+                    return $ret;
                 }
 
                 $headers = Array();
@@ -117,7 +123,7 @@ class CsvParser
                     if( strlen($h) < 1 )
                     {
                         $errorMessage = 'one of the header column name is empty';
-                        return false;
+                        return $ret;
                     }
 
                     $headers[] = $h;
@@ -144,7 +150,7 @@ class CsvParser
             if( strlen($line) < 1 )
             {
                 $errorMessage = 'one line is empty';
-                return false;
+                return $ret;
             }
 
             //$explodedLine = explode(',', $line);
