@@ -153,13 +153,12 @@ class CsvParser
             {
                 if( $skipEmptyLines == true )
                     continue;
-                
+
                 $errorMessage = "line #{$countLines} is empty";
                 return $ret;
             }
 
-            //$explodedLine = explode(',', $line);
-            preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\,+/', $line, $explodedLine);
+            $explodedLine = str_getcsv($line);
 
 
             for($i=0; $i < count($explodedLine); $i++)
