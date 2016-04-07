@@ -81,6 +81,7 @@ class DeviceGroup
 	/** @var Array */
 	private $devices = Array();
 
+    public $version = null;
 	
 	
 	public function __construct($owner)

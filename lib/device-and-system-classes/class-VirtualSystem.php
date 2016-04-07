@@ -75,6 +75,8 @@ class VirtualSystem
     /** @var DeviceGroup $parentDeviceGroup in case it load as part of Panorama */
     public $parentDeviceGroup = null;
 
+    public $version = null;
+
 
 	public function __construct(PANConf $owner, DeviceGroup $applicableDG=null)
 	{

@@ -1164,7 +1164,101 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['rule']['secprof']['operators']['av-profile.is'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
 
+        if( $object->securityProfileIsBlank() )
+            return false;
+
+        if( $object->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $object->securityProfiles();
+        if( !isset($profiles['virus']) )
+            return false;
+
+        return $profiles['virus'] == $value;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['as-profile.is'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+
+        if( $object->securityProfileIsBlank() )
+            return false;
+
+        if( $object->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $object->securityProfiles();
+        if( !isset($profiles['spyware']) )
+            return false;
+
+        return $profiles['spyware'] == $value;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['url-profile.is'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+
+        if( $object->securityProfileIsBlank() )
+            return false;
+
+        if( $object->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $object->securityProfiles();
+        if( !isset($profiles['url-filtering']) )
+            return false;
+
+        return $profiles['url-filtering'] == $value;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['wf-profile.is'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+
+        if( $object->securityProfileIsBlank() )
+            return false;
+
+        if( $object->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $object->securityProfiles();
+        if( !isset($profiles['wildfire-analysis']) )
+            return false;
+
+        return $profiles['wildfire-analysis'] == $value;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AppOverrideRule $object */
+
+        if( $object->securityProfileIsBlank() )
+            return false;
+
+        if( $object->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $object->securityProfiles();
+        if( !isset($profiles['vulnerability']) )
+            return false;
+
+        return $profiles['vulnerability'] == $value;
+    },
+    'arg' => true
+);
 
 //                                              //
 //                Other properties              //

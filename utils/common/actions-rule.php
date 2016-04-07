@@ -1177,7 +1177,7 @@ RuleCallContext::$supportedActions['description-append'] = Array(
 //                Other property Based Actions       //
 //                                                   //
 RuleCallContext::$supportedActions['enabled-set'] = Array(
-    'name' => 'enable-Set',
+    'name' => 'enabled-Set',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
