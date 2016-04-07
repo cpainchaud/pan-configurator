@@ -135,7 +135,10 @@ class CsvParser
                 return false;
             }
 
-            $explodedLine = explode(',', $line);
+            //$explodedLine = explode(',', $line);
+            preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\,+/', $line, $explodedLine);
+
+
             for($i=0; $i < count($explodedLine); $i++)
             {
                 if( isset($headers[$i]) )
