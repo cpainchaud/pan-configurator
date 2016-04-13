@@ -204,6 +204,23 @@ trait ReferencableObject
     {
         return $this->refrules;
     }
+
+    /**
+     * @param string $className
+     * @return array
+     */
+    public function & findReferencesWithClass($className)
+    {
+        $ret = Array();
+
+        foreach($this->refrules as $reference)
+        {
+            if( get_class($reference) == $className )
+                $ret[] = $reference;
+        }
+
+        return $ret;
+    }
 	
 	
 	public function name()

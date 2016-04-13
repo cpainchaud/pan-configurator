@@ -13,7 +13,7 @@ rules-edit : new filters 'target is.any' 'target has xxxxx/vsysX' 'snathost has 
 rules-edit : new filters for security profiles: 'secprof av-profile.is' 'secprof as-profile.is' 'secprof vuln-profile.is' 'secprof wf-profile.is'
 rules-edit : new actions 'name-Append' and 'name-Prepend' 'split-bidirectionalnat' 'change-ruleType'
 address-edit : improved filter 'name regex' to allow external regular expression reference, permitting expression with parenthesis without the need to escape. ie: 'filter=(name regex %subquery1)' 'subquery1=/^(az)/'
-
+address-edit: new filters 'object is.unused.recursive' to check if an object is used in groups/nested groups which are not used either
 
 bugfixes:
 - fixed an issue where security profile filter 'is.set' and 'not.set' could return wrong value

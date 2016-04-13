@@ -1760,6 +1760,40 @@ RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['address']['object']['operators']['is.unused.recursive'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Address|AddressGroup $object */
+
+        $f = function($ref) use (&$f)
+        {
+            /** @var Address|AddressGroup $ref */
+            if($ref->countReferences() == 0 )
+                return true;
+
+            $groups = $ref->findReferencesWithClass('AddressGroup');
+
+            if( count($groups) != $ref->countReferences() )
+                return false;
+
+            if( count($groups) == 0 )
+                return true;
+
+            foreach( $groups as $group )
+            {
+                /** @var AddressGroup $group */
+                if( $f($group) == false )
+                    return false;
+            }
+
+            return true;
+        };
+
+        return $f($object);
+
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['address']['object']['operators']['is.group'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
