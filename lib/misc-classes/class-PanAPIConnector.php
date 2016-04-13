@@ -224,6 +224,8 @@ class PanAPIConnector
     {
         self::loadConnectorsFromUserHome();
 
+        /** @var PanAPIConnector $connection */
+
         $host = strtolower($host);
         $port = 443;
 
@@ -234,16 +236,38 @@ class PanAPIConnector
             $host = $hostExplode[0];
         }
 
+        $wrongLogin = false;
 
         foreach( self::$savedConnectors as $connector )
         {
             if( $connector->apihost == $host && ($port === null && $connector->port == 443 || $port !== null && $connector->port == $port) )
             {
-                return $connector;
+                $exceptionUse = PH::$useExceptions;
+                PH::$useExceptions = true;
+
+                try
+                {
+                    $connector->getSoftwareVersion();
+                }
+                catch(Exception $e)
+                {
+                    PH::$useExceptions = $exceptionUse;
+                    $wrongLogin = true;
+
+                    if( strpos($e->getMessage(), "Invalid credentials.") === false )
+                        derr($e->getMessage());
+
+                }
+                PH::$useExceptions = $exceptionUse;
+
+                if( ! $wrongLogin )
+                    return $connector;
+
+                break;
             }
         }
 
-        if( $apiKey === null && $promptForKey === false )
+        if( $apiKey === null && $promptForKey === false && $wrongLogin == true )
             derr('API host/key not found and apiKey is blank + promptForKey is disabled');
 
 
@@ -253,8 +277,14 @@ class PanAPIConnector
         }
         elseif( $promptForKey )
         {
-            print "** Request API access to host '$host' but API was not found in cache.\n".
-                "** Please enter API key or username below and hit enter:  ";
+            if( $wrongLogin )
+                print "** Request API access to host '$host' but invalid credentials were detected'\n";
+            else
+                print "** Request API access to host '$host' but API was not found in cache.\n";
+
+            print "** Please enter API key or username below and hit enter:  ";
+
+
             $handle = fopen ("php://stdin","r");
             $line = fgets($handle);
             $apiKey = trim($line);
@@ -292,18 +322,22 @@ class PanAPIConnector
 
             fclose($handle);
 
-            $connection = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
+            if( $wrongLogin )
+                $connector->apikey = $apiKey;
+            else
+                $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
 
         if( $checkConnectivity)
         {
-            $connection->testConnectivity();
-            self::$savedConnectors[] = $connection;
+            $connector->testConnectivity();
+            if( ! $wrongLogin )
+                self::$savedConnectors[] = $connection;
             self::saveConnectorsToUserHome();
         }
 
-        return $connection;
+        return $connector;
     }
 
     public function testConnectivity()
@@ -569,9 +603,8 @@ class PanAPIConnector
 
         if($statusAttr != 'success')
         {
-            var_dump($statusAttr);
-
-            derr('API reported a failure: "'.$statusAttr."\"with the following addition infos: ". $firstElement->nodeValue);
+            //var_dump($statusAttr);
+            derr('API reported a failure: "'.$statusAttr."\" with the following addition infos: ". $firstElement->nodeValue);
         }
 
         if ( $filecontent !== null )
