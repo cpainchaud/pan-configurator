@@ -1,5 +1,9 @@
 CHANGELOG
 
+1.5.8
+utils:
+service-edit: new filters 'object is.unused.recursive' to check if an object is used in groups/nested groups which are not used either
+
 1.5.7
 * introduction of rules Target field support in the core lib and in utils/filters
 * NatRule display() outputs more informations, directly benefits to rules-edit.php

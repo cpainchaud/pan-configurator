@@ -2027,6 +2027,40 @@ RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['service']['object']['operators']['is.unused.recursive'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Service|ServiceGroup $object */
+
+        $f = function($ref) use (&$f)
+        {
+            /** @var Service|ServiceGroup $ref */
+            if($ref->countReferences() == 0 )
+                return true;
+
+            $groups = $ref->findReferencesWithClass('ServiceGroup');
+
+            if( count($groups) != $ref->countReferences() )
+                return false;
+
+            if( count($groups) == 0 )
+                return true;
+
+            foreach( $groups as $group )
+            {
+                /** @var ServiceGroup $group */
+                if( $f($group) == false )
+                    return false;
+            }
+
+            return true;
+        };
+
+        return $f($object);
+
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['service']['name']['operators']['is.in.file'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
