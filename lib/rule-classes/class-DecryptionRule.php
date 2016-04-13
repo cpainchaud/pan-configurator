@@ -76,8 +76,11 @@ class DecryptionRule extends RuleWithUserID
         //										//
         // Begin <service> extraction			//
         //										//
-        $tmp = DH::findFirstElementOrCreate('service', $xml);
-        $this->services->load_from_domxml($tmp);
+        if( $this->owner->owner->version >= 61 )
+        {
+            $tmp = DH::findFirstElementOrCreate('service', $xml);
+            $this->services->load_from_domxml($tmp);
+        }
         // end of <service> zone extraction
 
     }

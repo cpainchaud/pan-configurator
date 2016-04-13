@@ -83,7 +83,7 @@ $debugAPI = false;
 
 
 $supportedArguments = Array();
-$supportedArguments['ruletype'] = Array('niceName' => 'ruleType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: ruletype=any  ruletype=security,nat', 'argDesc' => 'all|any|security|nat|decryption');
+$supportedArguments['ruletype'] = Array('niceName' => 'ruleType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: ruletype=any  ruletype=security,nat', 'argDesc' => 'all|any|security|nat|decryption|pbf');
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
@@ -453,7 +453,7 @@ else
 //
 // Determine rule types
 //
-$supportedRuleTypes = Array('all', 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal');
+$supportedRuleTypes = Array('all', 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'pbf');
 if( !isset(PH::$args['ruletype'])  )
 {
     print " - No 'ruleType' specified, using 'security' by default\n";
@@ -600,6 +600,10 @@ foreach( $rulesLocation as $location )
                     {
                         $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->resultingRuleSet());
                     }
+                    if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->resultingRuleSet());
+                    }
                     if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
                     {
                         $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->resultingRuleSet());
@@ -626,6 +630,10 @@ foreach( $rulesLocation as $location )
                     if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
                     {
                         $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->rules());
                     }
                     if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
                     {
@@ -656,6 +664,10 @@ foreach( $rulesLocation as $location )
             {
                 $rulesToProcess[] = Array('store' => $pan->decryptionRules, 'rules' => $pan->decryptionRules->rules());
             }
+            if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->pbfRules, 'rules' => $pan->pbfRules->rules());
+            }
             if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
             {
                 $rulesToProcess[] = Array('store' => $pan->appOverrideRules, 'rules' => $pan->appOverrideRules->rules());
@@ -682,6 +694,10 @@ foreach( $rulesLocation as $location )
                 if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
                 {
                     $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->rules());
                 }
                 if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
                 {

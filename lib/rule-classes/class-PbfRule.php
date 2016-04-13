@@ -3,6 +3,8 @@
 
 class PbfRule extends RuleWithUserID
 {
+    use NegatableRule;
+
     /**
      * @param RuleStore $owner
      * @param bool $fromTemplateXML
@@ -29,6 +31,10 @@ class PbfRule extends RuleWithUserID
         $this->destination = new AddressRuleContainer($this);
         $this->destination->name = 'destination';
         $this->destination->parentCentralStore = $this->parentAddressStore;
+
+        $this->services = new ServiceRuleContainer($this);
+        $this->services->name = 'service';
+
 
         if( $fromTemplateXML )
         {
@@ -58,6 +64,14 @@ class PbfRule extends RuleWithUserID
         $this->load_to();
 
         $this->userID_loadUsersFromXml();
+        $this->_readNegationFromXml();
+
+        //										//
+        // Begin <service> extraction			//
+        //										//
+        $tmp = DH::findFirstElementOrCreate('service', $xml);
+        $this->services->load_from_domxml($tmp);
+        // end of <service> zone extraction
     }
 
     /**
@@ -71,19 +85,34 @@ class PbfRule extends RuleWithUserID
         if( $this->disabled )
             $dis = '<disabled>';
 
+        $sourceNegated = '';
+        if( $this->sourceIsNegated() )
+            $sourceNegated = '*negated*';
+
+        $destinationNegated = '';
+        if( $this->destinationIsNegated() )
+            $destinationNegated = '*negated*';
+
+
         print $padding."*Rule named '{$this->name}' $dis\n";
-        print $padding."  Action: {$this->action()}    Type:{$this->type()}\n";
         print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
-        print $padding."  Source: ".$this->source->toString_inline()."\n";
-        print $padding."  Destination: ".$this->destination->toString_inline()."\n";
+        print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
+        print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
+        print $padding."  Service:  ".$this->services->toString_inline()."\n";
         if( !$this->userID_IsCustom() )
             print $padding."  User: *".$this->userID_type()."*\n";
         else
         {
             $users = $this->userID_getUsers();
-            print $padding . "  User:  " . PH::list_to_string($users) . "\n";
+            print $padding . " User:  " . PH::list_to_string($users) . "\n";
         }
-        print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
+        print $padding."  Tags:  ".$this->tags->toString_inline()."\n";
+
+        if( isset($this->_targets) )
+            print $padding."  Targets:  ".$this->targets_toString()."\n";
+
+        if( strlen($this->_description) > 0 )
+            print $padding."  Desc:  ".$this->_description."\n";
         print "\n";
     }
 

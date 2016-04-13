@@ -33,9 +33,7 @@ class RuleStore
 	 */
 	protected $_postRules = Array();
 
-    /**
-     * @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf
-     */
+    /** @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf */
 	public $owner = null;
 	public $name = 'temporaryname';
 
