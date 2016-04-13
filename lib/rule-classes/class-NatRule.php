@@ -290,8 +290,8 @@ class NatRule extends Rule
 		
 		
 		//  								//
-		//	Begin of <service> extraction				//
-		//								//
+		//	Begin of <service> extraction	//
+		//								    //
 		$this->serviceroot = DH::findFirstElementOrCreate('service', $xml, 'any');
 		if( $this->serviceroot !== FALSE )
 		{

@@ -75,7 +75,7 @@ class CsvParser
                     return $ret;
                 }
 
-                $headerLine = $content[0];
+                $headerLine = trim($content[0]);
                 unset($content[0]);
 
                 if( strlen($headerLine) < 1 )
