@@ -1753,17 +1753,16 @@ RQuery::$defaultFilters['address']['refcount']['operators']['>,<,=,!'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        return $object->countReferences() == 0;
+        return $context->object->countReferences() == 0;
     },
     'arg' => false
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.unused.recursive'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup $object */
+        $object = $context->object;
 
         $f = function($ref) use (&$f)
         {
@@ -1795,42 +1794,37 @@ RQuery::$defaultFilters['address']['object']['operators']['is.unused.recursive']
     'arg' => false
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.group'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        return $object->isGroup() == true;
+        return $context->object->isGroup() == true;
     },
     'arg' => false
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        return $object->isTmpAddr() == true;
+        return $context->object->isTmpAddr() == true;
     },
     'arg' => false
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        return $object->name() == $value;
+        return $context->object->name() == $context->value;
     },
     'arg' => true
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        return strtolower($object->name()) == strtolower($value);
+        return strtolower($context->object->name()) == strtolower($context->value);
     },
     'arg' => true
 );
 RQuery::$defaultFilters['address']['name']['operators']['contains'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup $object */
-        return strpos($object->name(), $value) !== false;
+        return strpos($context->object->name(), $context->value) !== false;
     },
     'arg' => true
 );
@@ -1899,49 +1893,43 @@ RQuery::$defaultFilters['address']['tag.count']['operators']['>,<,=,!'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        return $object->tags->hasTag($value) === true;
+        return $context->object->tags->hasTag($context->value) === true;
     },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has.nocase'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        return $object->tags->hasTag($value, false) === true;
+        return $context->object->tags->hasTag($context->value, false) === true;
     },
     'arg' => true
-    //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
-                {
-                    /** @var Address|AddressGroup $object */
-                    /** @var string $value */
-                    $owner = $object->owner->owner;
-                    if( strtolower($value) == 'shared' )
-                    {
-                        if( $owner->isPanorama() )
-                            return true;
-                        if( $owner->isFirewall() )
-                            return true;
-                        return false;
-                    }
-                    if( strtolower($value) == strtolower($owner->name()) )
-                        return true;
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $owner = $context->object->owner->owner;
+        if( strtolower($context->value) == 'shared' )
+        {
+            if( $owner->isPanorama() )
+                return true;
+            if( $owner->isFirewall() )
+                return true;
+            return false;
+        }
+        if( strtolower($context->value) == strtolower($owner->name()) )
+            return true;
 
-                    return false;
-                },
+        return false;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup $object */
-        /** @var string $value */
+        $object = $context->object;
 
         if( $object->isGroup() )
             return false;
@@ -1950,22 +1938,20 @@ RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = Array(
         {
             if( $object->type() == 'ip-range' || $object->type() == 'ip-netmask' )
             {
-                if( $object->value() == $value )
+                if( $object->value() == $context->value )
                     return true;
             }
         }
-
         return false;
     },
     'arg' => true
 );
 RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        /** @var string $value */
+        $object = $context->object;
 
-        $values = explode(',', $value);
+        $values = explode(',', $context->value);
         $mapping = new IP4Map();
 
         $count = 0;
@@ -1983,15 +1969,14 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact'] = Ar
     'arg' => true
 );
 RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(AddressRQueryContext $context )
     {
-        /** @var Address|AddressGroup  $object */
-        /** @var string $value */
+        $object = $context->object;
 
         if( $object->isAddress() && $object->type() == 'fqdn' )
             return false;
 
-        $values = explode(',', $value);
+        $values = explode(',', $context->value);
         $mapping = new IP4Map();
 
         $count = 0;
@@ -2028,9 +2013,9 @@ RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
     'arg' => false
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.unused.recursive'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
+        $object = $context->object;
 
         $f = function($ref) use (&$f)
         {
@@ -2092,51 +2077,46 @@ RQuery::$defaultFilters['service']['name']['operators']['is.in.file'] = Array(
     'arg' => true
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.group'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
-        return $object->isGroup();
+        return $context->object->isGroup();
     },
     'arg' => false
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.tmp'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
-        return $object->isTmpSrv();
+        return $context->object->isTmpSrv();
     },
     'arg' => false
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
-        return $object->name() == $value;
+        return $context->object->name() == $context->value;
     },
     'arg' => true
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq.nocase'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
-        return strtolower($object->name()) == strtolower($value);
+        return strtolower($context->object->name()) == strtolower($context->value);
     },
     'arg' => true
 );
 RQuery::$defaultFilters['service']['name']['operators']['contains'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
-        return strpos($object->name(), $value) !== false;
+        return strpos($context->object->name(), $context->value) !== false;
     },
     'arg' => true
 );
 RQuery::$defaultFilters['service']['name']['operators']['regex'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
-    {   /** @var Service|ServiceGroup $object */
-        $matching = preg_match($value, $object->name());
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $matching = preg_match($context->value, $context->object->name());
         if( $matching === FALSE )
-            derr("regular expression error on '$value'");
+            derr("regular expression error on '{$context->value}'");
         if( $matching === 1 )
             return true;
         return false;
@@ -2148,28 +2128,25 @@ RQuery::$defaultFilters['service']['members.count']['operators']['>,<,=,!'] = Ar
     'arg' => true
 );
 RQuery::$defaultFilters['service']['tag']['operators']['has'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
-        return $object->tags->hasTag($value) === true;
+        return $context->object->tags->hasTag($context->value) === true;
     },
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['service']['tag']['operators']['has.nocase'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
-    {   /** @var Service|ServiceGroup $object */
-        return $object->tags->hasTag($value, false) === true;
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        return $context->object->tags->hasTag($context->value, false) === true;
     },
     'arg' => true
 );
 RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(ServiceRQueryContext $context )
     {
-        /** @var Service|ServiceGroup $object */
-        /** @var string $value */
-        $owner = $object->owner->owner;
-        if( strtolower($value) == 'shared' )
+        $owner = $context->object->owner->owner;
+        if( strtolower($context->value) == 'shared' )
         {
             if( $owner->isPanorama() )
                 return true;
@@ -2177,7 +2154,7 @@ RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
                 return true;
             return false;
         }
-        if( strtolower($value) == strtolower($owner->name()) )
+        if( strtolower($context->value) == strtolower($owner->name()) )
             return true;
 
         return false;
