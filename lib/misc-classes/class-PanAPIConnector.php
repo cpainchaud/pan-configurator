@@ -224,7 +224,7 @@ class PanAPIConnector
     {
         self::loadConnectorsFromUserHome();
 
-        /** @var PanAPIConnector $connection */
+        /** @var PanAPIConnector $connector */
 
         $host = strtolower($host);
         $port = 443;
@@ -273,7 +273,7 @@ class PanAPIConnector
 
         if( $apiKey !== null )
         {
-            $connection = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
+            $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
         elseif( $promptForKey )
         {
@@ -333,7 +333,7 @@ class PanAPIConnector
         {
             $connector->testConnectivity();
             if( ! $wrongLogin )
-                self::$savedConnectors[] = $connection;
+                self::$savedConnectors[] = $connector;
             self::saveConnectorsToUserHome();
         }
 
