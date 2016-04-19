@@ -574,18 +574,18 @@ $pan-&gt;API_load_from_candidate();</p>
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="registerIPsWithTags" id="_registerIPsWithTags">
+	<tr data-order="register_tagIPsWithTags" id="_register_tagIPsWithTags">
 
 		<td class="attributes"><code>
 			 public 
-			
+			DomDocument
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_registerIPsWithTags">#</a>
-		<code><b>registerIPsWithTags</b>( <span>mixed <var>$ips</var></span>, <span>mixed <var>$tags</var></span>, <span>mixed <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>mixed <var>$timeout</var> = <span class="php-num">3600</span> </span> )</code>
+		<a class="anchor" href="#_register_tagIPsWithTags">#</a>
+		<code><b>register_tagIPsWithTags</b>( <span>string[] <var>$ips</var></span>, <span>string[] <var>$tags</var></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -595,7 +595,67 @@ $pan-&gt;API_load_from_candidate();</p>
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$ips</var></dt>
+					<dd><code>string[]</code><br>$ips</dd>
+					<dt><var>$tags</var></dt>
+					<dd><code>string[]</code><br>$tags</dd>
+					<dt><var>$vsys</var></dt>
+					<dd><code>string</code><br>$vsys</dd>
+					<dt><var>$timeout</var></dt>
+					<dd><code>integer</code><br>$timeout</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>DomDocument</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="register_sendUpdate" id="_register_sendUpdate">
+
+		<td class="attributes"><code>
+			 public 
+			DomDocument
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_register_sendUpdate">#</a>
+		<code><b>register_sendUpdate</b>( <span>string[][] <var>$register</var> = <span class="php-keyword1">null</span></span>, <span>string[][] <var>$unregister</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span> </span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$register</var></dt>
+					<dd><code>string[][]</code><br>$register ie: Array( '1.1.1.1' =&gt; Array('tag1', 'tag3'), '2.3.4.5' =&gt;
+Array('tag7') )</dd>
+					<dt><var>$unregister</var></dt>
+					<dd><code>string[][]</code><br>$unregister</dd>
+					<dt><var>$vsys</var></dt>
+					<dd><code>string</code><br>$vsys</dd>
+					<dt><var>$timeout</var></dt>
+					<dd><code>integer</code><br>$timeout</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>DomDocument</code><br />
+				</div>
 
 
 
