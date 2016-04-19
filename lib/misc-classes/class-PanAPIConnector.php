@@ -454,7 +454,14 @@ class PanAPIConnector
     }
 
 
-    public function registerIPsWithTags( $ips, $tags, $vsys = 'vsys1', $timeout = 3600 )
+    /**
+     * @param string[] $ips
+     * @param string[] $tags
+     * @param string $vsys
+     * @param int $timeout
+     * @return DomDocument
+     */
+    public function register_tagIPsWithTags( $ips, $tags, $vsys = 'vsys1', $timeout = 3600 )
     {
         $cmd = '<uid-message><version>1.0</version><type>update</type><payload><register>';
 
@@ -468,6 +475,63 @@ class PanAPIConnector
             $cmd .= '</tag></entry>';
         }
         $cmd .= '</register></payload></uid-message>';
+
+        $params = Array();
+        $params['type'] = 'user-id';
+        $params['action'] = 'set';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
+
+        return $this->sendRequest($params, true);
+    }
+
+    /**
+     * @param string[][] $register ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
+     * @param string[][] $unregister ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
+     * @param string $vsys
+     * @param int $timeout
+     * @return DomDocument
+     */
+    public function register_sendUpdate( $register = null, $unregister = null, $vsys = 'vsys1', $timeout = 3600 )
+    {
+        $cmd = '<uid-message><version>1.0</version><type>update</type><payload>';
+
+        if( $register !== null )
+        {
+            $cmd .= '<register>';
+            foreach ($register as $ip => &$tags )
+            {
+                $cmd .= "<entry ip=\"$ip\"><tag>";
+                foreach ($tags as $tag)
+                {
+                    $cmd .= "<member>$tag</member>";
+                }
+                $cmd .= '</tag></entry>';
+            }
+            $cmd .= '</register>';
+        }
+
+        if( $unregister !== null )
+        {
+            $cmd .= '<unregister>';
+            foreach ($unregister as $ip => &$tags )
+            {
+                $cmd .= "<entry ip=\"$ip\">";
+                if( $tags !== null && count($tags) > 0 )
+                {
+                    $cmd .= '<tag>';
+                    foreach ($tags as $tag)
+                    {
+                        $cmd .= "<member>$tag</member>";
+                    }
+                    $cmd .= '</tag>';
+                }
+                $cmd .= '</entry>';
+            }
+            $cmd .= '</unregister>';
+        }
+
+        $cmd .= '</payload></uid-message>';
 
         $params = Array();
         $params['type'] = 'user-id';
