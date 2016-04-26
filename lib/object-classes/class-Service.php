@@ -254,7 +254,8 @@ class Service
 	{
 		$this->setRefName($newName);
 
-		$this->xmlroot->setAttribute('name', $newName);
+        if( $this->xmlroot !== null )
+		    $this->xmlroot->setAttribute('name', $newName);
 	}
 
     /**
