@@ -650,7 +650,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
 
 $supportedActions['name-addprefix'] = Array(
     'name' => 'name-addPrefix',
-    'MainFunction' =>  function ( AddressCallContext $context )
+    'MainFunction' =>  function ( ServiceCallContext $context )
     {
         $object = $context->object;
         $newName = $context->arguments['prefix'].$object->name();
@@ -678,7 +678,7 @@ $supportedActions['name-addprefix'] = Array(
 );
 $supportedActions['name-addsuffix'] = Array(
     'name' => 'name-addSuffix',
-    'MainFunction' =>  function ( AddressCallContext $context )
+    'MainFunction' =>  function ( ServiceCallContext $context )
     {
         $object = $context->object;
         $newName = $object->name().$context->arguments['suffix'];

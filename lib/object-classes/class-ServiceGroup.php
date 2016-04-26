@@ -150,6 +150,21 @@ class ServiceGroup
         $this->xmlroot->setAttribute('name', $newName);
 	}
 
+    /**
+     * @param string $newName
+     */
+    public function API_setName($newName)
+    {
+        $c = findConnectorOrDie($this);
+        $path = $this->getXPath();
+
+        $url = "type=config&action=rename&xpath=$path&newname=$newName";
+
+        $c->sendRequest($url);
+
+        $this->setName($newName);
+    }
+
 	/**
 	 * @param Service|ServiceGroup $newObject
 	 * @param bool $rewriteXml
