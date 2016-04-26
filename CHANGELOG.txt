@@ -2,6 +2,7 @@ CHANGELOG
 
 1.5.8
 * PanAPIConnector::register_sendUpdate() new IP registration function
+* ServiceGroup : detect and warn when a group has several times the same object
 
 utils:
 service-edit: new filters 'object is.unused.recursive' to check if an object is used in groups/nested groups which are not used either

@@ -87,7 +87,18 @@ class ServiceGroup
                     derr('found a member with empty name !', $node);
 
 				$f = $this->owner->findOrCreate($memberName, $this, true);
-				$this->members[] = $f;
+
+                $alreadyInGroup = false;
+                foreach( $this->members as $member )
+                    if( $member === $f )
+                    {
+                        mwarning("service '{$memberName}' is already part of group '{$this->name}', you should review your your config file");
+                        $alreadyInGroup = true;
+                        break;
+                    }
+
+                if( !$alreadyInGroup )
+				    $this->members[] = $f;
 			}
 
 		}
@@ -103,6 +114,19 @@ class ServiceGroup
                     derr('found a member with empty name !', $node);
 
 				$f = $this->owner->findOrCreate($memberName, $this, true);
+
+                $alreadyInGroup = false;
+                foreach( $this->members as $member )
+                    if( $member === $f )
+                    {
+                        mwarning("service '{$memberName}' is already part of group '{$this->name}', you should review your your config file");
+                        $alreadyInGroup = true;
+                        break;
+                    }
+
+                if( !$alreadyInGroup )
+                    $this->members[] = $f;
+
 				$this->members[] = $f;
 
 			}
