@@ -1507,7 +1507,8 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             'log prof' => 'log_profile',
             'snat type' => 'snat_type',
             'snat trans' => 'snat_trans',
-            'dnat host' => 'dnat_host'
+            'dnat host' => 'dnat_host',
+            'description' => 'description'
         );
 
         $lines = '';
