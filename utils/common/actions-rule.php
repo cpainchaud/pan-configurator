@@ -252,7 +252,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
         if( count($minus) > 0 )
             print $context->padding." - missing zones: ".PH::list_to_string($minus)."\n";
         if( count($plus) > 0 )
-            print $context->padding." - uneeded zones: ".PH::list_to_string($plus)."\n";
+            print $context->padding." - unneeded zones: ".PH::list_to_string($plus)."\n";
 
         if( $mode == 'replace' )
         {
