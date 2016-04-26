@@ -1058,10 +1058,11 @@ class RuleStore
 	public function newSecurityRule($name, $inPost = false)
 	{
 		$rule = new SecurityRule($this);
-        $rule->owner = null;
 
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, SecurityRule::$templatexml);
         $rule->load_from_domxml($xmlElement);
+
+        $rule->owner = null;
         $rule->setName($name);
 
 		$this->addRule($rule, $inPost);
@@ -1078,10 +1079,11 @@ class RuleStore
     public function newCaptivePortalRule($name, $inPost = false)
     {
         $rule = new CaptivePortalRule($this);
-        $rule->owner = null;
 
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, CaptivePortalRule::$templatexml);
         $rule->load_from_domxml($xmlElement);
+
+        $rule->owner = null;
         $rule->setName($name);
 
         $this->addRule($rule, $inPost);
@@ -1098,10 +1100,11 @@ class RuleStore
 	public function newNatRule($name, $inPost = false)
 	{
 		$rule = new NatRule($this);
-        $rule->owner = null;
 
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, NatRule::$templatexml);
         $rule->load_from_domxml($xmlElement);
+
+        $rule->owner = null;
         $rule->setName($name);
 
         $this->addRule($rule, $inPost);
@@ -1119,10 +1122,11 @@ class RuleStore
     public function newAppOverrideRule($name, $inPostRulebase = false)
     {
         $rule = new AppOverrideRule($this);
-        $rule->owner = null;
 
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, AppOverrideRule::$templatexml);
         $rule->load_from_domxml($xmlElement);
+
+        $rule->owner = null;
         $rule->setName($name);
 
         $this->addRule($rule, $inPostRulebase);
