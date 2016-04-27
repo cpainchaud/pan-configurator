@@ -679,7 +679,7 @@ $supportedActions['move'] = Array(
             print $context->padding."   * moved, no conflict\n";
             if( $context->isAPI )
             {
-                derr("unsupported with API yet");
+                derr("unsupported with API yet, use offline mode instead");
             }
             else
             {
