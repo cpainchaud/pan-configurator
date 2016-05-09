@@ -387,6 +387,8 @@ RuleCallContext::$supportedActions['from-add'] = Array(
         $f($context, 'from', false);
     },
     'args' => & RuleCallContext::$commonActionFunctions['zone-add']['args'],
+    'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument.".
+                "Zone must be existing already or script will out an error. Use action from-add-force if you want to add a zone that does not not exist."
 );
 RuleCallContext::$supportedActions['from-add-force'] = Array(
     'name' => 'from-Add-Force',
@@ -397,6 +399,7 @@ RuleCallContext::$supportedActions['from-add-force'] = Array(
         $f($context, 'from', true);
     },
     'args' => &RuleCallContext::$commonActionFunctions['zone-add']['args'],
+    'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument."
 );
 RuleCallContext::$supportedActions['from-remove'] = Array(
     'name' => 'from-Remove',
@@ -455,6 +458,8 @@ RuleCallContext::$supportedActions['to-add'] = Array(
         $f($context, 'to', false);
     },
     'args' => &RuleCallContext::$commonActionFunctions['zone-add']['args'],
+    'help' =>   "Adds a zone in the 'TO' field of a rule. If TO was set to ANY then it will be replaced by zone in argument.".
+                "Zone must be existing already or script will out an error. Use action to-add-force if you want to add a zone that does not not exist."
 );
 RuleCallContext::$supportedActions['to-add-force'] = Array(
     'name' => 'to-Add-Force',
@@ -465,6 +470,7 @@ RuleCallContext::$supportedActions['to-add-force'] = Array(
         $f($context, 'to', true);
     },
     'args' => &RuleCallContext::$commonActionFunctions['zone-add']['args'],
+    'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument."
 );
 RuleCallContext::$supportedActions['to-remove'] = Array(
     'name' => 'to-Remove',
@@ -557,6 +563,7 @@ RuleCallContext::$supportedActions['src-add'] = Array(
             $rule->source->addObject($objectFind);
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+    'help' => "adds an object in the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
 );
 RuleCallContext::$supportedActions['src-remove'] = Array(
     'name' => 'src-Remove',
@@ -608,6 +615,7 @@ RuleCallContext::$supportedActions['dst-add'] = Array(
             $rule->destination->addObject($objectFind);
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+    'help' => "adds an object in the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
 );
 RuleCallContext::$supportedActions['dst-remove'] = Array(
     'name' => 'dst-Remove',
@@ -917,11 +925,19 @@ RuleCallContext::$supportedActions['logstart-enable'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule";
+            return;
+        }
+
         if( $context->isAPI )
             $rule->API_setLogStart(true);
         else
             $rule->setLogStart(true);
     },
+    'help' => 'disables "log at start" in a security rule'
 );
 RuleCallContext::$supportedActions['logstart-disable'] = Array(
     'name' => 'logStart-Disable',
@@ -929,11 +945,19 @@ RuleCallContext::$supportedActions['logstart-disable'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
+
         if( $context->isAPI )
             $rule->API_setLogStart(false);
         else
             $rule->setLogStart(false);
     },
+    'help' => 'enables "log at start" in a security rule'
 );
 RuleCallContext::$supportedActions['logstart-enable-fastapi'] = Array(
     'name' => 'logStart-Enable-FastAPI',
@@ -941,6 +965,12 @@ RuleCallContext::$supportedActions['logstart-enable-fastapi'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
 
         if( !$context->isAPI )
             derr("only supported in API mode!");
@@ -955,6 +985,7 @@ RuleCallContext::$supportedActions['logstart-enable-fastapi'] = Array(
     {
         $context->doBundled_API_Call();
     },
+    'help' => "enables 'log at start' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
 RuleCallContext::$supportedActions['logstart-disable-fastapi'] = Array(
     'name' => 'logStart-Disable-FastAPI',
@@ -962,6 +993,12 @@ RuleCallContext::$supportedActions['logstart-disable-fastapi'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
 
         if( !$context->isAPI )
             derr("only supported in API mode!");
@@ -976,39 +1013,28 @@ RuleCallContext::$supportedActions['logstart-disable-fastapi'] = Array(
     {
         $context->doBundled_API_Call();
     },
+    'help' => "disables 'log at start' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
-RuleCallContext::$supportedActions['logstart-enable-fastapi'] = Array(
-    'name' => 'logStart-Enable-FastAPI',
-    'section' => 'log',
-    'MainFunction' => function(RuleCallContext $context)
-    {
-        $rule = $context->object;
 
-        if( !$context->isAPI )
-            derr("only supported in API mode!");
-
-        if( $rule->setLogStart(true) )
-        {
-            print $context->padding." - QUEUED for bundled API call\n";
-            $context->addRuleToMergedApiChange('<log-start>yes</log-start>');
-        }
-    },
-    'GlobalFinishFunction' => function(RuleCallContext $context)
-    {
-        $context->doBundled_API_Call();
-    },
-);
 RuleCallContext::$supportedActions['logend-enable'] = Array(
     'name' => 'logEnd-Enable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
+
         if( $context->isAPI )
             $rule->API_setLogEnd(true);
         else
             $rule->setLogEnd(true);
-    }
+    },
+    'help' => "enables 'log at end' in a security rule."
 );
 
 RuleCallContext::$supportedActions['logend-disable'] = Array(
@@ -1017,11 +1043,19 @@ RuleCallContext::$supportedActions['logend-disable'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
+
         if( $context->isAPI )
             $rule->API_setLogEnd(false);
         else
             $rule->setLogEnd(false);
-    }
+    },
+    'help' => "disables 'log at end' in a security rule."
 );
 RuleCallContext::$supportedActions['logend-disable-fastapi'] = Array(
     'name' => 'logend-Disable-FastAPI',
@@ -1029,6 +1063,12 @@ RuleCallContext::$supportedActions['logend-disable-fastapi'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
 
         if( !$context->isAPI )
             derr("only supported in API mode!");
@@ -1043,6 +1083,7 @@ RuleCallContext::$supportedActions['logend-disable-fastapi'] = Array(
     {
         $context->doBundled_API_Call();
     },
+    'help' => "disables 'log at end' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
 RuleCallContext::$supportedActions['logend-enable-fastapi'] = Array(
     'name' => 'logend-Enable-FastAPI',
@@ -1050,6 +1091,12 @@ RuleCallContext::$supportedActions['logend-enable-fastapi'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
 
         if( !$context->isAPI )
             derr("only supported in API mode!");
@@ -1064,6 +1111,7 @@ RuleCallContext::$supportedActions['logend-enable-fastapi'] = Array(
     {
         $context->doBundled_API_Call();
     },
+    'help' => "enables 'log at end' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
 RuleCallContext::$supportedActions['logsetting-set'] = Array(
     'name' => 'logSetting-set',
@@ -1071,12 +1119,20 @@ RuleCallContext::$supportedActions['logsetting-set'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
+        
         if( $context->isAPI )
             $rule->API_setLogSetting($context->arguments['profName']);
         else
             $rule->setLogSetting($context->arguments['profName']);
     },
-    'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+    'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+    'help' => "Sets log setting/forwarding profile of a Security rule to the value specified."
 );
 
 
