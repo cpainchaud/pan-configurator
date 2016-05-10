@@ -171,7 +171,7 @@ class Zone
             if( $refClass == 'ZoneRuleContainer' )
             {
                 /** @var ZoneRuleContainer $ref */
-                $ownerClass = $ref->owner;
+                $ownerClass = get_class($ref->owner);
 
                 if( $ownerClass == 'SecurityRule' )
                 {
