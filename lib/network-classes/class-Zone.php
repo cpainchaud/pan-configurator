@@ -157,6 +157,36 @@ class Zone
         }
     }
 
+    /**
+     * @param $objectToAdd Zone
+     * @param $displayOutput bool
+     * @param $skipIfConflict bool
+     * @param $outputPadding string|int
+     */
+    public function addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false)
+    {
+        foreach( $this->refrules as $ref )
+        {
+            $refClass = get_class($ref);
+            if( $refClass == 'ZoneRuleContainer' )
+            {
+                /** @var ZoneRuleContainer $ref */
+                $ownerClass = $ref->owner;
+
+                if( $ownerClass == 'SecurityRule' )
+                {
+                    $ref->addZone($objectToAdd);
+                }
+                else
+                {
+                    derr("unsupported owner class '{$ownerClass}'");
+                }
+            }
+            else
+                derr("unsupported class '{$refClass}");
+        }
+    }
+
 
     public function API_setName($newname)
     {

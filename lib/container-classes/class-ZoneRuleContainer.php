@@ -18,6 +18,7 @@
 */
 /**
  * Class ZoneRuleContainer
+ * @property SecurityRule|NatRule|PbfRule|CaptivePortalRule|DecryptionRule $owner
  *
  */
 class ZoneRuleContainer extends ObjRuleContainer
