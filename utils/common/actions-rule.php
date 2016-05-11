@@ -690,7 +690,7 @@ RuleCallContext::$supportedActions['src-negate-set'] = Array(
             $rule->setSourceIsNegated($context->arguments['YESorNO']);
     },
     'args' => Array( 'YESorNO' => Array( 'type' => 'bool', 'default' => '*nodefault*' ) ),
-    'help' => "negates destination"
+    'help' => "manages Source Negation enablement"
 );
 
 RuleCallContext::$supportedActions['dst-negate-set'] = Array(
@@ -706,7 +706,7 @@ RuleCallContext::$supportedActions['dst-negate-set'] = Array(
             $rule->setDestinationIsNegated($context->arguments['YESorNO']);
     },
     'args' => Array( 'YESorNO' => Array( 'type' => 'bool', 'default' => '*nodefault*' ) ),
-    'help' => "negates destination"
+    'help' => "manages Destination Negation enablement"
 );
 
 
