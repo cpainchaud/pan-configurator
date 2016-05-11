@@ -92,7 +92,7 @@ class ServiceGroup
                 foreach( $this->members as $member )
                     if( $member === $f )
                     {
-                        mwarning("service '{$memberName}' is already part of group '{$this->name}', you should review your your config file");
+                        mwarning("service '{$memberName}' is already part of group '{$this->name}', you should review your config file");
                         $alreadyInGroup = true;
                         break;
                     }
