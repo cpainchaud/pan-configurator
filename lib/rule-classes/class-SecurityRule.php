@@ -983,7 +983,7 @@ class SecurityRule extends RuleWithUserID
         else
             $endString = date('Y/m/d H:00:00', $endTimestamp);
 
-        $query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&cmd=<type>'
+        $query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&async=yes&cmd=<type>'
             ."<{$type}><aggregate-by><member>container-of-app</member><member>app</member></aggregate-by>"
             ."<values><member>{$repeatOrCount}</member></values></{$type}></type>"
             ."<topn>{$limit}</topn><topm>50</topm><caption>rule app container usage</caption>"
