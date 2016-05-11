@@ -7,6 +7,7 @@ CHANGELOG
 
 utils:
 service-edit: new filters 'object is.unused.recursive' to check if an object is used in groups/nested groups which are not used either
+rules-edit: new actions 'src-Negate-Set','dst-Negate-Set' to enable/disable a rule Source/Destination negation
 
 bugfix:
 - typos in service-edit action prefix-add suffix-add

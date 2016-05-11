@@ -677,6 +677,39 @@ RuleCallContext::$supportedActions['dst-set-any'] = Array(
 );
 
 
+RuleCallContext::$supportedActions['src-negate-set'] = Array(
+    'name' => 'src-Negate-Set',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $context->isAPI )
+            $rule->API_setSourceIsNegated($context->arguments['YESorNO']);
+        else
+            $rule->setSourceIsNegated($context->arguments['YESorNO']);
+    },
+    'args' => Array( 'YESorNO' => Array( 'type' => 'bool', 'default' => '*nodefault*' ) ),
+    'help' => "negates destination"
+);
+
+RuleCallContext::$supportedActions['dst-negate-set'] = Array(
+    'name' => 'dst-Negate-Set',
+    'section' => 'address',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $context->isAPI )
+            $rule->API_setDestinationIsNegated($context->arguments['YESorNO']);
+        else
+            $rule->setDestinationIsNegated($context->arguments['YESorNO']);
+    },
+    'args' => Array( 'YESorNO' => Array( 'type' => 'bool', 'default' => '*nodefault*' ) ),
+    'help' => "negates destination"
+);
+
+
 //                                                 //
 //              Tag property Based Actions         //
 //                                                 //
