@@ -184,13 +184,13 @@
 			 uses 
 				<a href="class-PathableName.html"><span>PathableName</span></a>, 
 			
-				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>, 
-			
 				<a href="class-centralServiceStoreUser.html"><span>centralServiceStoreUser</span></a>, 
 			
 				<a href="class-centralAddressStoreUser.html"><span>centralAddressStoreUser</span></a>, 
 			
-				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>
+				<a href="class-ObjectWithDescription.html"><span>ObjectWithDescription</span></a>, 
+			
+				<a href="class-XmlConvertible.html"><span>XmlConvertible</span></a>
 			
 		</dd>
 		<dd style="padding-left:30px">
@@ -526,6 +526,10 @@
 			<a href="class-Rule.html#_API_setDisabled"><b>API_setDisabled()</b></a>, 
 			<a href="class-Rule.html#_API_setEnabled"><b>API_setEnabled()</b></a>, 
 			<a href="class-Rule.html#_API_setName"><b>API_setName()</b></a>, 
+			<a href="class-Rule.html#_API_target_addDevice"><b>API_target_addDevice()</b></a>, 
+			<a href="class-Rule.html#_API_target_negateSet"><b>API_target_negateSet()</b></a>, 
+			<a href="class-Rule.html#_API_target_removeDevice"><b>API_target_removeDevice()</b></a>, 
+			<a href="class-Rule.html#_API_target_setAny"><b>API_target_setAny()</b></a>, 
 			<a href="class-Rule.html#_getXPath"><b>getXPath()</b></a>, 
 			<a href="class-Rule.html#_isAppOverrideRule"><b>isAppOverrideRule()</b></a>, 
 			<a href="class-Rule.html#_isDecryptionRule"><b>isDecryptionRule()</b></a>, 
@@ -546,8 +550,14 @@
 			<a href="class-Rule.html#_setDisabled"><b>setDisabled()</b></a>, 
 			<a href="class-Rule.html#_setEnabled"><b>setEnabled()</b></a>, 
 			<a href="class-Rule.html#_setName"><b>setName()</b></a>, 
+			<a href="class-Rule.html#_target_addDevice"><b>target_addDevice()</b></a>, 
 			<a href="class-Rule.html#_target_hasDeviceAndVsys"><b>target_hasDeviceAndVsys()</b></a>, 
 			<a href="class-Rule.html#_target_isAny"><b>target_isAny()</b></a>, 
+			<a href="class-Rule.html#_target_isNegated"><b>target_isNegated()</b></a>, 
+			<a href="class-Rule.html#_target_negateSet"><b>target_negateSet()</b></a>, 
+			<a href="class-Rule.html#_target_removeDevice"><b>target_removeDevice()</b></a>, 
+			<a href="class-Rule.html#_target_rewriteXML"><b>target_rewriteXML()</b></a>, 
+			<a href="class-Rule.html#_target_setAny"><b>target_setAny()</b></a>, 
 			<a href="class-Rule.html#_targets"><b>targets()</b></a>, 
 			<a href="class-Rule.html#_targets_toString"><b>targets_toString()</b></a>
 		</code></td>
@@ -578,17 +588,6 @@
 	</tr>
 	</table>
 	<table class="summary used">
-	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-XmlConvertible.html#_API_sync"><b>API_sync()</b></a>, 
-			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
-			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
-			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
-		</code></td>
-	</tr>
-	</table>
-	<table class="summary used">
 	<caption>Methods used from <a href="class-centralServiceStoreUser.html#methods">centralServiceStoreUser</a></caption>
 	<tr>
 		<td><code>
@@ -612,6 +611,17 @@
 			<a href="class-ObjectWithDescription.html#__load_description_from_domxml"><b>_load_description_from_domxml()</b></a>, 
 			<a href="class-ObjectWithDescription.html#_description"><b>description()</b></a>, 
 			<a href="class-ObjectWithDescription.html#_setDescription"><b>setDescription()</b></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Methods used from <a href="class-XmlConvertible.html#methods">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#_API_sync"><b>API_sync()</b></a>, 
+			<a href="class-XmlConvertible.html#_getChildXmlText_inline"><b>getChildXmlText_inline()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText"><b>getXmlText()</b></a>, 
+			<a href="class-XmlConvertible.html#_getXmlText_inline"><b>getXmlText_inline()</b></a>
 		</code></td>
 	</tr>
 	</table>
@@ -738,6 +748,8 @@
 	<caption>Properties inherited from <a href="class-Rule.html#properties">Rule</a></caption>
 	<tr>
 		<td><code>
+			<a href="class-Rule.html#$_targetIsNegated"><var>$_targetIsNegated</var></a>, 
+			<a href="class-Rule.html#$_targets"><var>$_targets</var></a>, 
 			<a href="class-Rule.html#$destination"><var>$destination</var></a>, 
 			<a href="class-Rule.html#$disabled"><var>$disabled</var></a>, 
 			<a href="class-Rule.html#$from"><var>$from</var></a>, 
@@ -751,14 +763,6 @@
 	</tr>
 	</table>
 
-	<table class="summary used">
-	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
-	<tr>
-		<td><code>
-			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
-		</code></td>
-	</tr>
-	</table>
 	<table class="summary used">
 	<caption>Properties used from <a href="class-centralServiceStoreUser.html#properties">centralServiceStoreUser</a></caption>
 	<tr>
@@ -780,6 +784,14 @@
 	<tr>
 		<td><code>
 			<a href="class-ObjectWithDescription.html#$_description"><var>$_description</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-XmlConvertible.html#properties">XmlConvertible</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
 		</code></td>
 	</tr>
 	</table>
