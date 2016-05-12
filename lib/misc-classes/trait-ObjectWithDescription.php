@@ -17,7 +17,7 @@
 */
 
 /**
- * @property $xmlroot DOMElement|null
+ * @property DOMElement|null $xmlroot
  */
 trait ObjectWithDescription
 {

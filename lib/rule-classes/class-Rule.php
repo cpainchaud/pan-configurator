@@ -17,17 +17,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-/**
- * @property string[][] $_targets
- */
 class Rule
 {
 	
 	use PathableName;
-    use XmlConvertible;
 	use centralServiceStoreUser;
 	use centralAddressStoreUser;
     use ObjectWithDescription;
+    use XmlConvertible;
 	
 	protected $name = 'temporaryname';
 	protected $disabled = false;
@@ -63,6 +60,11 @@ class Rule
 	 * @var null|RuleStore
 	 */
 	public $owner = null;
+
+    /** @var null|string[][]  */
+    protected $_targets = null;
+
+    protected $_targetIsNegated = false;
 
 	
 	/**
@@ -163,6 +165,12 @@ class Rule
             }
             else if( $node->nodeName == 'target' )
             {
+                $targetNegateNode = DH::findFirstElement('negate', $node);
+                if( $targetNegateNode !== false )
+                {
+                    $this->_targetIsNegated = yesNoBool($targetNegateNode->textContent);
+                }
+
                 $targetDevicesNodes = DH::findFirstElement('devices', $node);
 
                 if( $targetDevicesNodes !== false )
@@ -181,7 +189,7 @@ class Rule
                             continue;
                         }
 
-                        if( !isset($this->_targets) )
+                        if( $this->_targets === null )
                             $this->_targets = Array();
 
                         $vsysNodes = DH::firstChildElement($targetDevicesNode);
@@ -210,6 +218,174 @@ class Rule
             }
         }
     }
+
+    /**
+     * @return bool TRUE if an update was made
+     */
+    public function target_setAny()
+    {
+        if( $this->_targets === null )
+            return false;
+
+        $this->_targets = null;
+
+        $node = DH::findFirstElement('target', $this->xmlroot);
+        if( $node !== false )
+        {
+            $deviceNode = DH::findFirstElement('device', $node);
+            if( $deviceNode !== false )
+                $node->removeChild($deviceNode);
+        }
+
+        return true;
+    }
+
+    /**
+     * @return bool TRUE if an update was made
+     */
+    public function API_target_setAny()
+    {
+        $ret = $this->target_setAny();
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $con->sendDeleteRequest($this->getXPath().'/target/devices');
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @param string $serialNumber
+     * @param null|string $vsys
+     * @return bool TRUE if a change was made
+     */
+    public function target_addDevice( $serialNumber, $vsys=null)
+    {
+        if( strlen($serialNumber) < 4 )
+            derr("unsupported serial number to be added in target: '{$serialNumber}'");
+
+        if( $vsys !== null && strlen($vsys) < 1 )
+            derr("unsupported vsys value to be added in target : '{$vsys}'");
+
+        if( $this->_targets === null )
+            $this->_targets = Array();
+
+        if( !isset($this->_targets[$serialNumber]) )
+        {
+            $this->_targets[$serialNumber] = Array();
+            if( $vsys !== null )
+                $this->_targets[$serialNumber][$vsys] = $vsys;
+
+            $this->target_rewriteXML();
+            return true;
+        }
+
+        if( count($this->_targets[$serialNumber]) == 0 )
+        {
+            if( $vsys === null )
+                return false;
+
+            derr("attempt to add a VSYS ({$vsys}) in target of a rule that is mentioning a firewall ({$serialNumber}) that is not multi-vsys");
+        }
+
+        if( $vsys === null )
+            derr("attempt to add a non multi-vsys firewall ({$serialNumber}) in a target that is multi-vsys");
+
+        $this->_targets[$serialNumber][$vsys] = $vsys;
+        $this->target_rewriteXML();
+
+        return true;
+    }
+
+    /**
+     * @param string $serialNumber
+     * @param null|string $vsys
+     * @return bool TRUE if a change was made
+     */
+    public function API_target_addDevice($serialNumber, $vsys)
+    {
+        $ret = $this->target_addDevice($serialNumber, $vsys);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $targetNode = DH::findFirstElementOrDie('target', $this->xmlroot);
+            $targetString = DH::dom_to_xml($targetNode);
+            $con->sendEditRequest($this->getXPath().'/target', $targetString);
+        }
+
+        return $ret;
+    }
+
+    public function target_rewriteXML()
+    {
+        $targetNode = DH::findFirstElementOrCreate('target', $this->xmlroot);
+
+        DH::clearDomNodeChilds($targetNode);
+        DH::createElement($targetNode, 'negate', boolYesNo($this->_targetIsNegated));
+
+        if( $this->_targets === null )
+            return;
+
+        $devicesNode = DH::createElement($targetNode, 'devices');
+
+        foreach( $this->_targets as $serial => &$vsysList )
+        {
+            $entryNode = DH::createElement($devicesNode, 'entry');
+            $entryNode->setAttribute('name', $serial);
+            if( count($vsysList) > 0 )
+            {
+                $vsysNode = DH::createElement($entryNode, 'vsys');
+                foreach ($vsysList as $vsys)
+                {
+                    $vsysEntryNode = DH::createElement($vsysNode, 'entry');
+                    $vsysEntryNode->setAttribute('name', $vsys);
+                }
+            }
+        }
+    }
+
+    /**
+     * @var bool $TRUEorFALSE
+     * @return bool TRUE if an update was made
+     */
+    public function target_negateSet($TRUEorFALSE)
+    {
+        if( $this->_targetIsNegated === $TRUEorFALSE )
+            return false;
+
+        $this->_targetIsNegated = $TRUEorFALSE;
+
+        $node = DH::findFirstElementOrCreate('target', $this->xmlroot);
+        DH::findFirstElementOrCreate('negate', $node, boolYesNo($TRUEorFALSE));
+
+        return true;
+    }
+
+    public function target_isNegated()
+    {
+        return $this->_targetIsNegated;
+    }
+
+    /**
+     * @var bool $TRUEorFALSE
+     * @return bool TRUE if an update was made
+     */
+    public function API_target_negateSet($TRUEorFALSE)
+    {
+        $ret = $this->target_negateSet($TRUEorFALSE);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $con->sendSetRequest($this->getXPath().'/target', '<negate>'.boolYesNo($TRUEorFALSE).'</negate>');
+        }
+
+        return $ret;
+    }
+
 
 
     public function targets()
@@ -250,24 +426,27 @@ class Rule
 
     public function target_isAny()
     {
-        return !isset($this->_targets);
+        return $this->_targets === null;
     }
 
     /**
      * @param string $deviceSerial
-     * @param string $vsys
+     * @param string|null $vsys
      * @return bool
      */
-    public function target_hasDeviceAndVsys($deviceSerial, $vsys)
+    public function target_hasDeviceAndVsys($deviceSerial, $vsys = null)
     {
-        if( !isset($this->_targets) )
+        if( $this->_targets === null )
             return false;
 
         if( !isset($this->_targets[$deviceSerial]) )
             return false;
 
-        if( count($this->_targets[$deviceSerial]) == 0 && $vsys == 'vsys1' )
+        if( count($this->_targets[$deviceSerial]) == 0 && $vsys === null )
             return true;
+
+        if( $vsys === null )
+            return false;
 
         return isset($this->_targets[$deviceSerial][$vsys]);
     }

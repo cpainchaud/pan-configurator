@@ -20,7 +20,7 @@
 
 trait XmlConvertible
 {
-    /** @var DOMElement $xmlroot  */
+    /** @var DOMElement|null $xmlroot  */
     public $xmlroot = null;
 
 	function &getXmlText_inline()

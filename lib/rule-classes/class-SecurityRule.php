@@ -774,7 +774,7 @@ class SecurityRule extends RuleWithUserID
         }
 		print $padding."  Tags:  ".$this->tags->toString_inline()."\n";
 
-        if( isset($this->_targets) )
+        if( $this->_targets !== null )
             print $padding."  Targets:  ".$this->targets_toString()."\n";
 
         if( strlen($this->_description) > 0 )
@@ -833,7 +833,7 @@ class SecurityRule extends RuleWithUserID
 			$dvq = '('.array_to_devicequery($devices).')';
 		}
 
-		$query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&cmd=<type>'
+		$query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&async=yes&cmd=<type>'
 		         .'<'.$type.'><aggregate-by><member>app</member></aggregate-by>'
 		         .'<values><member>sessions</member></values></'.$type.'></type><period>'.$timePeriod.'</period>'
 		         .'<topn>500</topn><topm>10</topm><caption>untitled</caption>'
@@ -900,11 +900,12 @@ class SecurityRule extends RuleWithUserID
         if( !$fastMode )
             $repeatOrCount = 'repeatcnt';
 
-		$query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&cmd=<type>'
-		         ."<{$type}><aggregate-by><member>container-of-app</member><member>app</member></aggregate-by>"
+		$query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&async=yes&cmd=<type>'
+		         ."<{$type}>\n<aggregate-by><member>container-of-app</member><member>app</member></aggregate-by>\n"
 		         ."<values><member>{$repeatOrCount}</member></values></{$type}></type><period>{$timePeriod}</period>"
-		         ."<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
-		         ."<query>(rule eq '{$this->name}') {$dvq} {$excludedAppsString}</query>";
+		         ."<topn>{$limit}</topn>\n<topm>50</topm>\n<caption>untitled</caption>\n"
+		         ."<query>(rule eq '{$this->name}') {$dvq} {$excludedAppsString}</query>\n"
+                 ."<runnow>yes</runnow>\n";
 
 		//print "Query: $query\n";
 

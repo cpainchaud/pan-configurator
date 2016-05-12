@@ -108,7 +108,7 @@ class PbfRule extends RuleWithUserID
         }
         print $padding."  Tags:  ".$this->tags->toString_inline()."\n";
 
-        if( isset($this->_targets) )
+        if( $this->_targets !== null )
             print $padding."  Targets:  ".$this->targets_toString()."\n";
 
         if( strlen($this->_description) > 0 )

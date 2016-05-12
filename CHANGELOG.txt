@@ -4,13 +4,17 @@ CHANGELOG
 * PanAPIConnector::register_sendUpdate() new IP registration function
 * ServiceGroup : detect and warn when a group has several times the same object
 * Zone : function addObjectWhereIamUsed() implemented, supports only SecurityRule so far
+* Rules : improved support of targets with new functions : target_rewriteXML, target_addDevice, target_setAny, target_setNegate, target_isNegated
 
 utils:
 service-edit: new filters 'object is.unused.recursive' to check if an object is used in groups/nested groups which are not used either
 rules-edit: new actions 'src-Negate-Set','dst-Negate-Set' to enable/disable a rule Source/Destination negation
+                        'target-Set-Any','target-Add-Device','target-Negate-Set' to manage targets
 
 bugfix:
 - typos in service-edit action prefix-add suffix-add
+- report generation on 7050 requires explicit 'async=yes'
+
 
 1.5.7
 * introduction of rules Target field support in the core lib and in utils/filters

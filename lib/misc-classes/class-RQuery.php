@@ -1781,7 +1781,7 @@ RQuery::$defaultFilters['rule']['target']['operators']['is.any'] = Array(
 RQuery::$defaultFilters['rule']['target']['operators']['has'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        $vsys = 'vsys1';
+        $vsys = null;
         $serial = '';
         $ex = explode('/', $context->value);
 
