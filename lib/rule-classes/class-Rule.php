@@ -319,6 +319,77 @@ class Rule
         return $ret;
     }
 
+
+    /**
+     * @param string $serialNumber
+     * @param null|string $vsys
+     * @return bool TRUE if a change was made
+     */
+    public function target_removeDevice( $serialNumber, $vsys=null)
+    {
+        if( strlen($serialNumber) < 4 )
+            derr("unsupported serial number to be added in target: '{$serialNumber}'");
+
+        if( $vsys !== null && strlen($vsys) < 1 )
+            derr("unsupported vsys value to be added in target : '{$vsys}'");
+
+        if( $this->_targets === null )
+            return false;
+
+        if( !isset($this->_targets[$serialNumber]) )
+            return false;
+
+        if( count($this->_targets[$serialNumber]) == 0 )
+        {
+            if( $vsys === null )
+            {
+                unset($this->_targets[$serialNumber]);
+                if( count($this->_targets) == 0 )
+                    $this->_targets = null;
+                $this->target_rewriteXML();
+                return true;
+            }
+
+            derr("attempt to remove a VSYS ({$vsys}) in target of a rule that is mentioning a firewall ({$serialNumber}) which is not multi-vsys");
+        }
+
+        if( $vsys === null )
+            derr("attempt to remove a non multi-vsys firewall ({$serialNumber}) in a target that is multi-vsys");
+
+        if( !isset($this->_targets[$serialNumber][$vsys] ) )
+            return false;
+
+        unset($this->_targets[$serialNumber][$vsys]);
+
+        if( count($this->_targets[$serialNumber]) == 0 )
+            unset($this->_targets[$serialNumber]);
+
+        $this->target_rewriteXML();
+
+        return true;
+    }
+
+    /**
+     * @param string $serialNumber
+     * @param null|string $vsys
+     * @return bool TRUE if a change was made
+     */
+    public function API_target_removeDevice($serialNumber, $vsys)
+    {
+        $ret = $this->target_removeDevice($serialNumber, $vsys);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $targetNode = DH::findFirstElementOrDie('target', $this->xmlroot);
+            $targetString = DH::dom_to_xml($targetNode);
+            $con->sendEditRequest($this->getXPath().'/target', $targetString);
+        }
+
+        return $ret;
+    }
+
+
     public function target_rewriteXML()
     {
         $targetNode = DH::findFirstElementOrCreate('target', $this->xmlroot);

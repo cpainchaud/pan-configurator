@@ -948,6 +948,105 @@ RuleCallContext::$supportedActions['app-remove-force-any'] = Array(
 );
 
 
+//                                                 //
+//               Target based Actions                 //
+//                                                 //
+RuleCallContext::$supportedActions['target-set-any'] = Array(
+    'name' => 'target-Set-Any',
+    'section' => 'target',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $rule->target_isAny() )
+        {
+            print $context->padding."   * SKIPPED : target is already ANY\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_target_setAny();
+        else
+            $rule->target_setAny();
+    },
+);
+RuleCallContext::$supportedActions['target-negate-set'] = Array(
+    'name' => 'target-Negate-Set',
+    'section' => 'target',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $rule->target_isNegated() == $context->arguments['trueOrFalse'] )
+        {
+            print $context->padding . "   * SKIPPED : target negation is already '" . boolYesNo($rule->target_isNegated()) . "''\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_target_negateSet($context->arguments['trueOrFalse']);
+        else
+            $rule->target_negateSet($context->arguments['trueOrFalse']);
+    },
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => '*nodefault*'  ) )
+);
+RuleCallContext::$supportedActions['target-add-device'] = Array(
+    'name' => 'target-Add-Device',
+    'section' => 'target',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $vsys = null;
+        if( $context->arguments['vsys'] != '*NULL*' )
+            $vsys = $context->arguments['vsys'];
+        $serial = $context->arguments['serial'];
+
+        if( $rule->target_hasDeviceAndVsys( $serial ,$vsys) )
+        {
+            print $context->padding . "   * SKIPPED : firewall/vsys is already in the target\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_target_addDevice($serial, $vsys);
+        else
+            $rule->target_addDevice($serial, $vsys);
+
+    },
+    'args' => Array(    'serial' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+                        'vsys' => Array( 'type' => 'string', 'default' => '*NULL*'  )
+                        ),
+);
+RuleCallContext::$supportedActions['target-remove-device'] = Array(
+    'name' => 'target-Remove-Device',
+    'section' => 'target',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $vsys = null;
+        if( $context->arguments['vsys'] != '*NULL*' )
+            $vsys = $context->arguments['vsys'];
+        $serial = $context->arguments['serial'];
+
+        if( ! $rule->target_hasDeviceAndVsys( $serial ,$vsys) )
+        {
+            print $context->padding . "   * SKIPPED : firewall/vsys does not have this Device/VSYS\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_target_removeDevice($serial, $vsys);
+        else
+            $rule->target_removeDevice($serial, $vsys);
+
+    },
+    'args' => Array(    'serial' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+        'vsys' => Array( 'type' => 'string', 'default' => '*NULL*'  )
+    ),
+);
+
 
 //                                                 //
 //               Log based Actions                 //
