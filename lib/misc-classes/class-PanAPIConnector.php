@@ -35,29 +35,20 @@ class PanAPIConnector
 {
     public $name = 'connector';
 
-    /**
-     * @var string
-     */
+    /** @var string */
 	public $apikey;
-    /**
-     * @var string
-     */
+    /** @var string */
 	public $apihost;
+
 	public $isPANOS = 1;
 
-    /**
-     * @var null
-     */
+    /** @var null */
     public $serial = null;
 
-    /**
-     * @var integer
-     */
+    /** @var integer */
     public $port = 443;
 
-    /**
-     * @var bool
-     */
+    /** @var bool */
     public $showApiCalls=false;
 
     /**
@@ -67,16 +58,37 @@ class PanAPIConnector
     static private $keyStoreFileName = '.panconfkeystore';
     static private $keyStoreInitialized = false;
 
+    /** @var null|string $info_deviceType can be "panorama" or "panos" (firewall) */
     public $info_deviceType = null;
+    /** @var null|string $info_PANOS_version ie: "7.1.2" */
     public $info_PANOS_version = null;
+    /** @var null|int $info_PANOS_version_int integer that represents product OS version, bugfix release is ignore. ie: 7.1.4 -> 71 , 5.0.6 -> 50  */
     public $info_PANOS_version_int = null;
+    /** @var null|bool $info_multiVSYS true if firewall multi-vsys is enabled */
     public $info_multiVSYS = null;
+    /** @var null|string $info_serial product serial number. ie: "00C734556" */
     public $info_serial = null;
 
-    public function refreshSystemInfos()
+    /**
+     * @param bool $force Force refresh instead of using cache
+     * @throws Exception
+     */
+    public function refreshSystemInfos( $force = false )
     {
-        $url = "type=op&cmd=<show><system><info></info></system></show>";
-        $res = $this->sendRequest($url, true);
+        if( $force )
+        {
+            $this->info_deviceType = null;
+            $this->info_PANOS_version = null;
+            $this->info_PANOS_version_int = null;
+            $this->info_multiVSYS = null;
+            $this->info_serial = null;
+        }
+
+        if( $this->info_serial === null )
+            return;
+
+        $cmd = '<show><system><info></info></system></show>';
+        $res = $this->sendOpRequest($cmd);
         $orig = $res;
         $res = DH::findFirstElement('result', $res);
         if ($res === false )
@@ -1072,7 +1084,7 @@ class PanAPIConnector
     }
 
     /**
-     * @param string $cmd
+     * @param string $cmd operational command string
      * @return DomDocument
      */
     public function sendOpRequest($cmd)
