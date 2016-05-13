@@ -84,7 +84,7 @@ class PanAPIConnector
             $this->info_serial = null;
         }
 
-        if( $this->info_serial === null )
+        if( $this->info_serial !== null )
             return;
 
         $cmd = '<show><system><info></info></system></show>';
