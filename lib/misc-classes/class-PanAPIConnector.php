@@ -425,7 +425,7 @@ class PanAPIConnector
      */
     public function cloneForPanoramaManagedDevice($serial)
     {
-        return new PanAPIConnector($this->apihost, $this->apikey, 'panos-via-panorama', $this->port);
+        return new PanAPIConnector($this->apihost, $this->apikey, 'panos-via-panorama', $serial, $this->port);
     }
 
 
