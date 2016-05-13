@@ -68,6 +68,8 @@ class PanAPIConnector
     public $info_multiVSYS = null;
     /** @var null|string $info_serial product serial number. ie: "00C734556" */
     public $info_serial = null;
+    /** @var string $info_model can be unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060 */
+    public $info_model = 'unknown';
 
     /**
      * @param bool $force Force refresh instead of using cache
@@ -89,7 +91,7 @@ class PanAPIConnector
 
         $cmd = '<show><system><info></info></system></show>';
         $res = $this->sendOpRequest($cmd, true);
-        
+
         $orig = $res;
         $res = DH::findFirstElement('result', $res);
         if ($res === false )
@@ -416,6 +418,15 @@ class PanAPIConnector
 		$this->apihost = $host;
         $this->port = $port;
 	}
+
+    /**
+     * @param string $serial serial of the firewall you want to reach through Panorama
+     * @return PanAPIConnector
+     */
+    public function cloneForPanoramaManagedDevice($serial)
+    {
+        return new PanAPIConnector($this->apihost, $this->apikey, 'panos-via-panorama', $this->port);
+    }
 
 
     /**
@@ -900,7 +911,7 @@ class PanAPIConnector
 
     public function getMergedConfig()
     {
-        $r = $this->sendOpRequest('<show><config><merged/></config></show>');
+        $r = $this->sendOpRequest('<show><config><merged/></config></show>', false);
 
         $configRoot = DH::findFirstElement('response', $r);
         if( $configRoot === false )
@@ -1089,14 +1100,14 @@ class PanAPIConnector
      * @param bool $stripResultTag
      * @return DomDocument
      */
-    public function sendOpRequest($cmd, $stripResultTag = true)
+    public function sendOpRequest($cmd, $stripResponseTag = true)
     {
         $params = Array();
 
         $params['type']  = 'op';
         $params['cmd']  = $cmd;
 
-        return $this->sendRequest($params, $stripResultTag);
+        return $this->sendRequest($params, $stripResponseTag);
     }
 
     public function waitForJobFinished($jobID)
