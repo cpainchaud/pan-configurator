@@ -392,6 +392,8 @@ class PANConf
 		$numInterfaces = $this->network->ipsecTunnelStore->count() + $this->network->ethernetIfStore->count();
 		$numSubInterfaces = $this->network->ethernetIfStore->countSubInterfaces();
 
+        $gTagCount = $this->tagStore->count();
+        $gTagUnusedCount = $this->tagStore->countUnused();
 
 		foreach($this->virtualSystems as $vsys )
 		{
@@ -411,6 +413,9 @@ class PANConf
 			$gnaddressGs += $vsys->addressStore->countAddressGroups();
 			$gnaddressGsUnused += $vsys->addressStore->countUnusedAddressGroups();
 			$gnTmpAddresses += $vsys->addressStore->countTmpAddresses();
+
+            $gTagCount += $vsys->tagStore->count();
+            $gTagUnusedCount += $vsys->tagStore->countUnused();
 
 		}
 
@@ -433,8 +438,8 @@ class PANConf
 
 		print "- ".$this->serviceStore->countTmpServices()." (".$gnTmpServices.") temporary service objects\n";
 
-		//print "- ".$this->zoneStore->count()." zones\n";
-		print "- ".$this->tagStore->count()." tags\n";
+        print "- ".$this->tagStore->count()." (".$gTagCount.") tags. {$gTagUnusedCount} unused\n";
+
 		print "- $numInterfaces interfaces (Ethernet:{$this->network->ethernetIfStore->count()})\n";
 		print "- $numSubInterfaces sub-interfaces (Ethernet:{$this->network->ethernetIfStore->countSubInterfaces()})\n";
 	}

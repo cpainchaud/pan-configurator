@@ -304,13 +304,10 @@ class VirtualSystem
         print "- ".$this->appOverrideRules->count()." app-override rules\n";
         print "- ".$this->captivePortalRules->count()." capt-portal rules\n";
         print "- ".$this->pbfRules->count()." pbf rules\n";
-		print "- ".$this->addressStore->countAddresses()." address objects\n";
-		print "- ".$this->addressStore->countAddressGroups()." address groups\n";
-		print "- ".$this->serviceStore->countServices()." service objects\n";
-		print "- ".$this->serviceStore->countServiceGroups()." service groups\n";
-		print "- ".$this->addressStore->countTmpAddresses()." temporary address objects\n";
-		print "- ".$this->serviceStore->countTmpServices()." temporary service objects\n";
-		print "- ".$this->tagStore->count()." tags. ".$this->tagStore->countUnused()." unused\n";
+        print "- {$this->addressStore->countAddresses()} / {$this->addressStore->countAddressGroups()} / {$this->addressStore->countTmpAddresses()} address/group/tmp/total objects\n";
+        print "- {$this->serviceStore->countServices()} / {$this->serviceStore->countServiceGroups()} / {$this->serviceStore->countTmpServices()} service/group/tmp/total objects\n";
+        print "- {$this->tagStore->count()} tags. {$this->tagStore->countUnused()} unused\n";
+
 		print "- ".$this->zoneStore->count()." zones.\n";
 		print "- ".$this->appStore->count()." apps.\n";
 	}

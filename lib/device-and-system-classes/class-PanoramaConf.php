@@ -652,6 +652,9 @@ class PanoramaConf
 		$gnaddressGsUnused = $this->addressStore->countUnusedAddressGroups();
 		$gnTmpAddresses = $this->addressStore->countTmpAddresses();
 
+        $gTagCount = $this->tagStore->count();
+        $gTagUnusedCount = $this->tagStore->countUnused();
+
 		foreach( $this->deviceGroups as $cur)
 		{
 			$gpreSecRules += $cur->securityRules->countPreRules();
@@ -679,6 +682,9 @@ class PanoramaConf
 			$gnaddressGs += $cur->addressStore->countAddressGroups();
 			$gnaddressGsUnused += $cur->addressStore->countUnusedAddressGroups();
 			$gnTmpAddresses += $cur->addressStore->countTmpAddresses();
+
+            $gTagCount += $cur->tagStore->count();
+            $gTagUnusedCount += $cur->tagStore->countUnused();
 		}
 		
 		print "Statistics for PanoramaConf '".$this->name."'\n";
@@ -711,9 +717,10 @@ class PanoramaConf
 		print "- ".$this->addressStore->countTmpAddresses()." (".$gnTmpAddresses.") temporary address objects\n";
 
 		print "- ".$this->serviceStore->countTmpServices()." (".$gnTmpServices.") temporary service objects\n";
-		
-		print "- ".$this->zoneStore->count()." zones\n";
-		print "- ".$this->tagStore->count()." tags\n";
+
+		print "- ".$this->tagStore->count()." (".$gTagCount.") tags. {$gTagUnusedCount} unused\n";
+
+        print "- ".$this->zoneStore->count()." zones\n";
 	}
 
     public function API_load_from_running( PanAPIConnector $conn )
