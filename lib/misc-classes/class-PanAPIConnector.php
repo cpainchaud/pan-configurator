@@ -88,7 +88,8 @@ class PanAPIConnector
             return;
 
         $cmd = '<show><system><info></info></system></show>';
-        $res = $this->sendOpRequest($cmd);
+        $res = $this->sendOpRequest($cmd, true);
+        
         $orig = $res;
         $res = DH::findFirstElement('result', $res);
         if ($res === false )
@@ -1085,16 +1086,17 @@ class PanAPIConnector
 
     /**
      * @param string $cmd operational command string
+     * @param bool $stripResultTag
      * @return DomDocument
      */
-    public function sendOpRequest($cmd)
+    public function sendOpRequest($cmd, $stripResultTag = true)
     {
         $params = Array();
 
         $params['type']  = 'op';
         $params['cmd']  = $cmd;
 
-        return $this->sendRequest($params);
+        return $this->sendRequest($params, $stripResultTag);
     }
 
     public function waitForJobFinished($jobID)
