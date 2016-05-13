@@ -68,7 +68,7 @@ class PanAPIConnector
     public $info_multiVSYS = null;
     /** @var null|string $info_serial product serial number. ie: "00C734556" */
     public $info_serial = null;
-    /** @var string $info_model can be unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060 */
+    /** @var string $info_model can be unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060|PA..... */
     public $info_model = 'unknown';
 
     /**
@@ -115,7 +115,9 @@ class PanAPIConnector
         if ($model === false )
             derr('cannot find <model>', $orig);
 
-        $model = strtolower($model->nodeValue);
+        $this->info_model = $model->nodeValue;
+
+        $model = strtolower($this->info_model);
 
         if ( $model == 'panorama' || $model == 'm-100' || $model == 'm-500')
         {
