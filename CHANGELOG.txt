@@ -1,7 +1,7 @@
 CHANGELOG
 
 1.5.8
-* PanAPIConnector::register_sendUpdate() new IP registration function
+* PanAPIConnector::register_sendUpdate() new IP registration function; PanAPIConnector::getRegisteredIP() new get registered IP function
 * ServiceGroup : detect and warn when a group has several times the same object
 * Zone : function addObjectWhereIamUsed() implemented, supports only SecurityRule so far
 * Rules : improved support of targets with new functions : target_rewriteXML, target_addDevice, target_setAny, target_setNegate, target_isNegated, target_removeDevice

@@ -36,11 +36,11 @@ class PanAPIConnector
     public $name = 'connector';
 
     /** @var string */
-	public $apikey;
+    public $apikey;
     /** @var string */
-	public $apihost;
+    public $apihost;
 
-	public $isPANOS = 1;
+    public $isPANOS = 1;
 
     /** @var null */
     public $serial = null;
@@ -49,7 +49,7 @@ class PanAPIConnector
     public $port = 443;
 
     /** @var bool */
-    public $showApiCalls=false;
+    public $showApiCalls = false;
 
     /**
      * @var PanAPIConnector[]
@@ -62,7 +62,7 @@ class PanAPIConnector
     public $info_deviceType = null;
     /** @var null|string $info_PANOS_version ie: "7.1.2" */
     public $info_PANOS_version = null;
-    /** @var null|int $info_PANOS_version_int integer that represents product OS version, bugfix release is ignore. ie: 7.1.4 -> 71 , 5.0.6 -> 50  */
+    /** @var null|int $info_PANOS_version_int integer that represents product OS version, bugfix release is ignore. ie: 7.1.4 -> 71 , 5.0.6 -> 50 */
     public $info_PANOS_version_int = null;
     /** @var null|bool $info_multiVSYS true if firewall multi-vsys is enabled */
     public $info_multiVSYS = null;
@@ -70,23 +70,26 @@ class PanAPIConnector
     public $info_serial = null;
     /** @var string $info_model can be unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060|PA..... */
     public $info_model = 'unknown';
+    /** @var string $info_vmlicense can be unknown|VM-100|VM-200|VM-300|VM-1000 */
+    public $info_vmlicense = null;
 
     /**
      * @param bool $force Force refresh instead of using cache
      * @throws Exception
      */
-    public function refreshSystemInfos( $force = false )
+    public function refreshSystemInfos($force = false)
     {
-        if( $force )
+        if ($force)
         {
             $this->info_deviceType = null;
             $this->info_PANOS_version = null;
             $this->info_PANOS_version_int = null;
             $this->info_multiVSYS = null;
             $this->info_serial = null;
+            $this->info_vmlicense = null;
         }
 
-        if( $this->info_serial !== null )
+        if ($this->info_serial !== null)
             return;
 
         $cmd = '<show><system><info></info></system></show>';
@@ -94,32 +97,39 @@ class PanAPIConnector
 
         $orig = $res;
         $res = DH::findFirstElement('result', $res);
-        if ($res === false )
-            derr('cannot find <result>:'.DH::dom_to_xml($orig,0,true,2));
+        if ($res === false)
+            derr('cannot find <result>:' . DH::dom_to_xml($orig, 0, true, 2));
         $res = DH::findFirstElement('system', $res);
-        if ($res === false )
+        if ($res === false)
             derr('cannot find <system>');
 
 
         $version = DH::findFirstElement('sw-version', $res);
-        if ($version === false )
-            derr("cannot find <sw-version>:\n".DH::dom_to_xml($orig,0,true,4));
+        if ($version === false)
+            derr("cannot find <sw-version>:\n" . DH::dom_to_xml($orig, 0, true, 4));
         $this->info_PANOS_version = $version->textContent;
 
         $serial = DH::findFirstElement('serial', $res);
-        if ($serial === false )
-            derr("cannot find <serial>:\n".DH::dom_to_xml($orig,0,true,4));
-        $this->info_serial= $serial->textContent;
+        if ($serial === false)
+            derr("cannot find <serial>:\n" . DH::dom_to_xml($orig, 0, true, 4));
+        $this->info_serial = $serial->textContent;
 
         $model = DH::findFirstElement('model', $res);
-        if ($model === false )
+        if ($model === false)
             derr('cannot find <model>', $orig);
-
         $this->info_model = $model->nodeValue;
 
         $model = strtolower($this->info_model);
 
-        if ( $model == 'panorama' || $model == 'm-100' || $model == 'm-500')
+        if ( $model === 'pa-vm' )
+        {
+            $vmlicense = DH::findFirstElement('vm-license', $res);
+            if ($vmlicense === false)
+                derr('cannot find <vm-license>', $orig);
+            $this->info_vmlicense = $vmlicense->nodeValue;
+        }
+
+        if ($model == 'panorama' || $model == 'm-100' || $model == 'm-500')
         {
             $this->info_deviceType = 'panorama';
         } else
@@ -133,21 +143,20 @@ class PanAPIConnector
 
         $this->info_PANOS_version_int = $vex[0] * 10 + $vex[1] * 1;
 
-        if( $this->info_deviceType == 'panos' )
+        if ($this->info_deviceType == 'panos')
         {
             $multi = DH::findFirstElement('multi-vsys', $res);
-            if ($multi === false )
+            if ($multi === false)
                 derr('cannot find <multi-vsys>', $orig);
 
             $multi = strtolower($multi->textContent);
-            if( $multi == 'on' )
+            if ($multi == 'on')
                 $this->info_multiVSYS = true;
-            elseif( $multi == 'off' )
+            elseif ($multi == 'off')
                 $this->info_multiVSYS = false;
             else
                 derr("unsupported multi-vsys mode: {$multi}");
         }
-
     }
 
     /**
@@ -155,51 +164,49 @@ class PanAPIConnector
      */
     public function getSoftwareVersion()
     {
-        if( $this->info_PANOS_version === null )
+        if ($this->info_PANOS_version === null)
             $this->refreshSystemInfos();
 
-        return Array( 'type' => $this->info_deviceType, 'version' => $this->info_PANOS_version_int );
+        return Array('type' => $this->info_deviceType, 'version' => $this->info_PANOS_version_int);
     }
 
     static public function loadConnectorsFromUserHome()
     {
-        if( self::$keyStoreInitialized )
+        if (self::$keyStoreInitialized)
             return;
 
         self::$keyStoreInitialized = true;
 
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
         {
-            if( strlen(getenv('USERPROFILE')) > 0)
+            if (strlen(getenv('USERPROFILE')) > 0)
                 $file = getenv('USERPROFILE') . "\\" . self::$keyStoreFileName;
-            elseif( strlen(getenv('HOMEDRIVE')) > 0)
+            elseif (strlen(getenv('HOMEDRIVE')) > 0)
                 $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
             else
                 $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
-        }
-        else
-            $file = getenv('HOME').'/'.self::$keyStoreFileName;
+        } else
+            $file = getenv('HOME') . '/' . self::$keyStoreFileName;
 
-        if( file_exists($file) )
+        if (file_exists($file))
         {
             $content = file_get_contents($file);
             $content = explode("\n", $content);
-            foreach( $content as &$line )
+            foreach ($content as &$line)
             {
-                if( strlen($line) < 1 ) continue;
+                if (strlen($line) < 1) continue;
 
                 $parts = explode(':', $line);
-                if( count($parts) != 2 )
+                if (count($parts) != 2)
                     continue;
 
                 $host = explode('%', $parts[0]);
 
-                if( count($host) > 1 )
+                if (count($host) > 1)
                 {
-                    self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1], 'panos', null, $host[1] );
-                }
-                else
-                    self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1] );
+                    self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1], 'panos', null, $host[1]);
+                } else
+                    self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1]);
             }
         }
     }
@@ -207,25 +214,24 @@ class PanAPIConnector
     static public function saveConnectorsToUserHome()
     {
         $content = '';
-        foreach( self::$savedConnectors as $conn )
+        foreach (self::$savedConnectors as $conn)
         {
-            if( $conn->port != 443 )
-                $content = $content.$conn->apihost.'%'.$conn->port.':'.$conn->apikey."\n";
+            if ($conn->port != 443)
+                $content = $content . $conn->apihost . '%' . $conn->port . ':' . $conn->apikey . "\n";
             else
-                $content = $content.$conn->apihost.':'.$conn->apikey."\n";
+                $content = $content . $conn->apihost . ':' . $conn->apikey . "\n";
         }
 
         if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
         {
-            if( strlen(getenv('USERPROFILE')) > 0)
+            if (strlen(getenv('USERPROFILE')) > 0)
                 $file = getenv('USERPROFILE') . "\\" . self::$keyStoreFileName;
-            elseif( strlen(getenv('HOMEDRIVE')) > 0)
+            elseif (strlen(getenv('HOMEDRIVE')) > 0)
                 $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
             else
                 $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
-        }
-        else
-            $file = getenv('HOME').'/'.self::$keyStoreFileName;
+        } else
+            $file = getenv('HOME') . '/' . self::$keyStoreFileName;
 
         file_put_contents($file, $content);
     }
@@ -247,7 +253,7 @@ class PanAPIConnector
         $port = 443;
 
         $hostExplode = explode(':', $host);
-        if( count($hostExplode) > 1 )
+        if (count($hostExplode) > 1)
         {
             $port = $hostExplode[1];
             $host = $hostExplode[0];
@@ -255,9 +261,9 @@ class PanAPIConnector
 
         $wrongLogin = false;
 
-        foreach( self::$savedConnectors as $connector )
+        foreach (self::$savedConnectors as $connector)
         {
-            if( $connector->apihost == $host && ($port === null && $connector->port == 443 || $port !== null && $connector->port == $port) )
+            if ($connector->apihost == $host && ($port === null && $connector->port == 443 || $port !== null && $connector->port == $port))
             {
                 $exceptionUse = PH::$useExceptions;
                 PH::$useExceptions = true;
@@ -265,36 +271,34 @@ class PanAPIConnector
                 try
                 {
                     $connector->getSoftwareVersion();
-                }
-                catch(Exception $e)
+                } catch (Exception $e)
                 {
                     PH::$useExceptions = $exceptionUse;
                     $wrongLogin = true;
 
-                    if( strpos($e->getMessage(), "Invalid credentials.") === false )
+                    if (strpos($e->getMessage(), "Invalid credentials.") === false)
                         derr($e->getMessage());
 
                 }
                 PH::$useExceptions = $exceptionUse;
 
-                if( ! $wrongLogin )
+                if (!$wrongLogin)
                     return $connector;
 
                 break;
             }
         }
 
-        if( $apiKey === null && $promptForKey === false && $wrongLogin == true )
+        if ($apiKey === null && $promptForKey === false && $wrongLogin == true)
             derr('API host/key not found and apiKey is blank + promptForKey is disabled');
 
 
-        if( $apiKey !== null )
+        if ($apiKey !== null)
         {
             $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
-        }
-        elseif( $promptForKey )
+        } elseif ($promptForKey)
         {
-            if( $wrongLogin )
+            if ($wrongLogin)
                 print "** Request API access to host '$host' but invalid credentials were detected'\n";
             else
                 print "** Request API access to host '$host' but API was not found in cache.\n";
@@ -302,11 +306,11 @@ class PanAPIConnector
             print "** Please enter API key or username below and hit enter:  ";
 
 
-            $handle = fopen ("php://stdin","r");
+            $handle = fopen("php://stdin", "r");
             $line = fgets($handle);
             $apiKey = trim($line);
 
-            if( strlen($apiKey) < 19)
+            if (strlen($apiKey) < 19)
             {
                 $user = $apiKey;
                 print "* you input user '$user' , please enter password now: ";
@@ -316,7 +320,7 @@ class PanAPIConnector
                 print "* Now generating an API key from '$host'...";
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
 
-                $url = "type=keygen&user=".urlencode($user)."&password=".urlencode($password);
+                $url = "type=keygen&user=" . urlencode($user) . "&password=" . urlencode($password);
                 $res = $con->sendRequest($url);
 
                 $res = DH::findFirstElement('response', $res);
@@ -339,17 +343,17 @@ class PanAPIConnector
 
             fclose($handle);
 
-            if( $wrongLogin )
+            if ($wrongLogin)
                 $connector->apikey = $apiKey;
             else
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
 
-        if( $checkConnectivity)
+        if ($checkConnectivity)
         {
             $connector->testConnectivity();
-            if( ! $wrongLogin )
+            if (!$wrongLogin)
                 self::$savedConnectors[] = $connector;
             self::saveConnectorsToUserHome();
         }
@@ -367,42 +371,40 @@ class PanAPIConnector
 
     }
 
-	
-	public function toString()
-	{
-        if( $this->serial !== null )
-            $ret = get_class($this).':'.$this->apihost.'@'.$this->serial;
-        else
-            $ret = get_class($this).':'.$this->apihost;
 
-		return $ret;
-	}
+    public function toString()
+    {
+        if ($this->serial !== null)
+            $ret = get_class($this) . ':' . $this->apihost . '@' . $this->serial;
+        else
+            $ret = get_class($this) . ':' . $this->apihost;
+
+        return $ret;
+    }
 
     public function setShowApiCalls($yes)
     {
         $this->showApiCalls = $yes;
     }
 
-    public function setType($type, $serial=null)
+    public function setType($type, $serial = null)
     {
         $type = strtolower($type);
 
-        if( $type == 'panos' || $type == 'panos-via-panorama' )
+        if ($type == 'panos' || $type == 'panos-via-panorama')
         {
             $this->isPANOS = 1;
-           if( $type == 'panos-via-panorama' )
-           {
-               if( $serial === null )
-                   derr('panos-via-panorama type requires a serial number' );
-               $this->serial = $serial;
-           }
-        }
-        elseif($type == 'panorama')
+            if ($type == 'panos-via-panorama')
+            {
+                if ($serial === null)
+                    derr('panos-via-panorama type requires a serial number');
+                $this->serial = $serial;
+            }
+        } elseif ($type == 'panorama')
         {
             $this->isPANOS = 0;
-        }
-        else
-            derr('unsupported type: '.$type);
+        } else
+            derr('unsupported type: ' . $type);
     }
 
     /**
@@ -412,14 +414,14 @@ class PanAPIConnector
      * @param integer $port
      * @param string|null $serial
      */
-	public function __construct( $host, $key, $type = 'panos', $serial = null, $port = 443)
-	{
-		$this->setType($type, $serial);
-		
-		$this->apikey = $key;
-		$this->apihost = $host;
+    public function __construct($host, $key, $type = 'panos', $serial = null, $port = 443)
+    {
+        $this->setType($type, $serial);
+
+        $this->apikey = $key;
+        $this->apihost = $host;
         $this->port = $port;
-	}
+    }
 
     /**
      * @param string $serial serial of the firewall you want to reach through Panorama
@@ -438,22 +440,19 @@ class PanAPIConnector
      * @param int $timeout
      * @return mixed
      */
-    public function userIDLogin( $ips, $users, $vsys = 'vsys1', $timeout = 3600 )
+    public function userIDLogin($ips, $users, $vsys = 'vsys1', $timeout = 3600)
     {
-        if( is_string($ips) && is_string($users) )
+        if (is_string($ips) && is_string($users))
         {
             $ips = Array($ips);
             $users = Array($users);
-        }
-        elseif( is_string($ips) )
+        } elseif (is_string($ips))
         {
             derr('single IP provided but several users');
-        }
-        elseif( is_string($ips) )
+        } elseif (is_string($ips))
         {
             derr('single user provided but several IPs');
-        }
-        elseif( count($ips) != count($users) )
+        } elseif (count($ips) != count($users))
         {
             derr('IPs and Users are not same numbers');
         }
@@ -463,9 +462,9 @@ class PanAPIConnector
 
         $cmd = '<uid-message><version>1.0</version><type>update</type><payload><login>';
 
-        for( $i=0; $i<count($ips); $i++ )
+        for ($i = 0; $i < count($ips); $i++)
         {
-            $cmd .= '<entry name="'.$users[$usersIndex[$i]].'" ip="'.$ips[$ipsIndex[$i]].'" timeout="'.$timeout.'"></entry>';;
+            $cmd .= '<entry name="' . $users[$usersIndex[$i]] . '" ip="' . $ips[$ipsIndex[$i]] . '" timeout="' . $timeout . '"></entry>';;
         }
         $cmd .= '</login></payload></uid-message>';
 
@@ -487,14 +486,14 @@ class PanAPIConnector
      * @param int $timeout
      * @return DomDocument
      */
-    public function register_tagIPsWithTags( $ips, $tags, $vsys = 'vsys1', $timeout = 3600 )
+    public function register_tagIPsWithTags($ips, $tags, $vsys = 'vsys1', $timeout = 3600)
     {
         $cmd = '<uid-message><version>1.0</version><type>update</type><payload><register>';
 
-        foreach($ips as $ip)
+        foreach ($ips as $ip)
         {
             $cmd .= "<entry ip=\"$ip\"><tag>";
-            foreach($tags as $tag)
+            foreach ($tags as $tag)
             {
                 $cmd .= "<member>$tag</member>";
             }
@@ -518,14 +517,14 @@ class PanAPIConnector
      * @param int $timeout
      * @return DomDocument
      */
-    public function register_sendUpdate( $register = null, $unregister = null, $vsys = 'vsys1', $timeout = 3600 )
+    public function register_sendUpdate($register = null, $unregister = null, $vsys = 'vsys1', $timeout = 3600)
     {
         $cmd = '<uid-message><version>1.0</version><type>update</type><payload>';
 
-        if( $register !== null )
+        if ($register !== null)
         {
             $cmd .= '<register>';
-            foreach ($register as $ip => &$tags )
+            foreach ($register as $ip => &$tags)
             {
                 $cmd .= "<entry ip=\"$ip\"><tag>";
                 foreach ($tags as $tag)
@@ -537,13 +536,13 @@ class PanAPIConnector
             $cmd .= '</register>';
         }
 
-        if( $unregister !== null )
+        if ($unregister !== null)
         {
             $cmd .= '<unregister>';
-            foreach ($unregister as $ip => &$tags )
+            foreach ($unregister as $ip => &$tags)
             {
                 $cmd .= "<entry ip=\"$ip\">";
-                if( $tags !== null && count($tags) > 0 )
+                if ($tags !== null && count($tags) > 0)
                 {
                     $cmd .= '<tag>';
                     foreach ($tags as $tag)
@@ -566,6 +565,40 @@ class PanAPIConnector
         $params['cmd'] = &$cmd;
 
         return $this->sendRequest($params, true);
+    }
+
+    /**
+     * @param string $vsys
+     * @param int $timeout
+     * @return string[][] $registered ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
+     */
+    public function getRegisteredIp( $vsys = 'vsys1', $timeout = 3600)
+    {
+        $cmd = "<show><object><registered-ip><all></all></registered-ip></object></show>";
+
+        $params = Array();
+        $params['type'] = 'op';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
+
+        $r = $this->sendRequest($params, true);
+
+        $configRoot = DH::findFirstElement('result', $r);
+        if( $configRoot === false )
+            derr("<result> was not found", $r);
+
+        $ip_array = array();
+        foreach( $configRoot->childNodes as $node)
+        {
+            if( $node->nodeType != 1 ) continue;
+            $members = $node->getElementsByTagName('member');
+
+            foreach( $members as $member)
+            {
+                $ip_array[$node->getAttribute('ip')][] = $member->nodeValue;
+            }
+        }
+        return $ip_array;
     }
 
 
