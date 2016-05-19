@@ -582,7 +582,7 @@ class PanAPIConnector
      * @param int $timeout
      * @return string[][] $registered ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
      */
-    public function getRegisteredIp($vsys = 'vsys1', $timeout = 3600)
+    public function register_getIp($vsys = 'vsys1', $timeout = 3600)
     {
         $cmd = "<show><object><registered-ip><all></all></registered-ip></object></show>";
 
