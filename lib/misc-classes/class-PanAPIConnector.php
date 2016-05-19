@@ -49,14 +49,14 @@ class PanAPIConnector
     public $port = 443;
 
     /** @var bool */
-    public $showApiCalls = false;
+    public $showApiCalls = FALSE;
 
     /**
      * @var PanAPIConnector[]
      */
     static private $savedConnectors = Array();
     static private $keyStoreFileName = '.panconfkeystore';
-    static private $keyStoreInitialized = false;
+    static private $keyStoreInitialized = FALSE;
 
     /** @var null|string $info_deviceType can be "panorama" or "panos" (firewall) */
     public $info_deviceType = null;
@@ -77,9 +77,9 @@ class PanAPIConnector
      * @param bool $force Force refresh instead of using cache
      * @throws Exception
      */
-    public function refreshSystemInfos($force = false)
+    public function refreshSystemInfos($force = FALSE)
     {
-        if ($force)
+        if( $force )
         {
             $this->info_deviceType = null;
             $this->info_PANOS_version = null;
@@ -89,71 +89,72 @@ class PanAPIConnector
             $this->info_vmlicense = null;
         }
 
-        if ($this->info_serial !== null)
+        if( $this->info_serial !== null )
             return;
 
         $cmd = '<show><system><info></info></system></show>';
-        $res = $this->sendOpRequest($cmd, true);
+        $res = $this->sendOpRequest($cmd, TRUE);
 
         $orig = $res;
         $res = DH::findFirstElement('result', $res);
-        if ($res === false)
-            derr('cannot find <result>:' . DH::dom_to_xml($orig, 0, true, 2));
+        if( $res === FALSE )
+            derr('cannot find <result>:' . DH::dom_to_xml($orig, 0, TRUE, 2));
         $res = DH::findFirstElement('system', $res);
-        if ($res === false)
+        if( $res === FALSE )
             derr('cannot find <system>');
 
 
         $version = DH::findFirstElement('sw-version', $res);
-        if ($version === false)
-            derr("cannot find <sw-version>:\n" . DH::dom_to_xml($orig, 0, true, 4));
+        if( $version === FALSE )
+            derr("cannot find <sw-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
         $this->info_PANOS_version = $version->textContent;
 
         $serial = DH::findFirstElement('serial', $res);
-        if ($serial === false)
-            derr("cannot find <serial>:\n" . DH::dom_to_xml($orig, 0, true, 4));
+        if( $serial === FALSE )
+            derr("cannot find <serial>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
         $this->info_serial = $serial->textContent;
 
         $model = DH::findFirstElement('model', $res);
-        if ($model === false)
+        if( $model === FALSE )
             derr('cannot find <model>', $orig);
         $this->info_model = $model->nodeValue;
 
         $model = strtolower($this->info_model);
 
-        if ( $model === 'pa-vm' )
+        if( $model === 'pa-vm' )
         {
             $vmlicense = DH::findFirstElement('vm-license', $res);
-            if ($vmlicense === false)
+            if( $vmlicense === FALSE )
                 derr('cannot find <vm-license>', $orig);
             $this->info_vmlicense = $vmlicense->nodeValue;
         }
 
-        if ($model == 'panorama' || $model == 'm-100' || $model == 'm-500')
+        if( $model == 'panorama' || $model == 'm-100' || $model == 'm-500' )
         {
             $this->info_deviceType = 'panorama';
-        } else
+        }
+        else
         {
             $this->info_deviceType = 'panos';
         }
 
         $vex = explode('.', $this->info_PANOS_version);
-        if (count($vex) != 3)
+        if( count($vex) != 3 )
             derr("ERROR! Unsupported PANOS version :  " . $version . "\n\n");
 
         $this->info_PANOS_version_int = $vex[0] * 10 + $vex[1] * 1;
 
-        if ($this->info_deviceType == 'panos')
+        if( $this->info_deviceType == 'panos' )
         {
             $multi = DH::findFirstElement('multi-vsys', $res);
-            if ($multi === false)
+            if( $multi === FALSE )
                 derr('cannot find <multi-vsys>', $orig);
 
             $multi = strtolower($multi->textContent);
-            if ($multi == 'on')
-                $this->info_multiVSYS = true;
-            elseif ($multi == 'off')
-                $this->info_multiVSYS = false;
+            if( $multi == 'on' )
+                $this->info_multiVSYS = TRUE;
+            elseif( $multi == 'off' )
+                $this->info_multiVSYS = FALSE;
             else
                 derr("unsupported multi-vsys mode: {$multi}");
         }
@@ -164,7 +165,7 @@ class PanAPIConnector
      */
     public function getSoftwareVersion()
     {
-        if ($this->info_PANOS_version === null)
+        if( $this->info_PANOS_version === null )
             $this->refreshSystemInfos();
 
         return Array('type' => $this->info_deviceType, 'version' => $this->info_PANOS_version_int);
@@ -172,40 +173,42 @@ class PanAPIConnector
 
     static public function loadConnectorsFromUserHome()
     {
-        if (self::$keyStoreInitialized)
+        if( self::$keyStoreInitialized )
             return;
 
-        self::$keyStoreInitialized = true;
+        self::$keyStoreInitialized = TRUE;
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
         {
-            if (strlen(getenv('USERPROFILE')) > 0)
+            if( strlen(getenv('USERPROFILE')) > 0 )
                 $file = getenv('USERPROFILE') . "\\" . self::$keyStoreFileName;
-            elseif (strlen(getenv('HOMEDRIVE')) > 0)
+            elseif( strlen(getenv('HOMEDRIVE')) > 0 )
                 $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
             else
                 $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
-        } else
+        }
+        else
             $file = getenv('HOME') . '/' . self::$keyStoreFileName;
 
-        if (file_exists($file))
+        if( file_exists($file) )
         {
             $content = file_get_contents($file);
             $content = explode("\n", $content);
-            foreach ($content as &$line)
+            foreach( $content as &$line )
             {
-                if (strlen($line) < 1) continue;
+                if( strlen($line) < 1 ) continue;
 
                 $parts = explode(':', $line);
-                if (count($parts) != 2)
+                if( count($parts) != 2 )
                     continue;
 
                 $host = explode('%', $parts[0]);
 
-                if (count($host) > 1)
+                if( count($host) > 1 )
                 {
                     self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1], 'panos', null, $host[1]);
-                } else
+                }
+                else
                     self::$savedConnectors[] = new PanAPIConnector($host[0], $parts[1]);
             }
         }
@@ -214,23 +217,24 @@ class PanAPIConnector
     static public function saveConnectorsToUserHome()
     {
         $content = '';
-        foreach (self::$savedConnectors as $conn)
+        foreach( self::$savedConnectors as $conn )
         {
-            if ($conn->port != 443)
+            if( $conn->port != 443 )
                 $content = $content . $conn->apihost . '%' . $conn->port . ':' . $conn->apikey . "\n";
             else
                 $content = $content . $conn->apihost . ':' . $conn->apikey . "\n";
         }
 
-        if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+        if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
         {
-            if (strlen(getenv('USERPROFILE')) > 0)
+            if( strlen(getenv('USERPROFILE')) > 0 )
                 $file = getenv('USERPROFILE') . "\\" . self::$keyStoreFileName;
-            elseif (strlen(getenv('HOMEDRIVE')) > 0)
+            elseif( strlen(getenv('HOMEDRIVE')) > 0 )
                 $file = getenv('HOMEDRIVE') . "\\\\" . getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
             else
                 $file = getenv('HOMEPATH') . "\\" . self::$keyStoreFileName;
-        } else
+        }
+        else
             $file = getenv('HOME') . '/' . self::$keyStoreFileName;
 
         file_put_contents($file, $content);
@@ -243,7 +247,7 @@ class PanAPIConnector
      * @param bool $checkConnectivity
      * @return PanAPIConnector
      */
-    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = true, $checkConnectivity = true)
+    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE)
     {
         self::loadConnectorsFromUserHome();
 
@@ -253,52 +257,53 @@ class PanAPIConnector
         $port = 443;
 
         $hostExplode = explode(':', $host);
-        if (count($hostExplode) > 1)
+        if( count($hostExplode) > 1 )
         {
             $port = $hostExplode[1];
             $host = $hostExplode[0];
         }
 
-        $wrongLogin = false;
+        $wrongLogin = FALSE;
 
-        foreach (self::$savedConnectors as $connector)
+        foreach( self::$savedConnectors as $connector )
         {
-            if ($connector->apihost == $host && ($port === null && $connector->port == 443 || $port !== null && $connector->port == $port))
+            if( $connector->apihost == $host && ($port === null && $connector->port == 443 || $port !== null && $connector->port == $port) )
             {
                 $exceptionUse = PH::$useExceptions;
-                PH::$useExceptions = true;
+                PH::$useExceptions = TRUE;
 
                 try
                 {
                     $connector->getSoftwareVersion();
-                } catch (Exception $e)
+                } catch(Exception $e)
                 {
                     PH::$useExceptions = $exceptionUse;
-                    $wrongLogin = true;
+                    $wrongLogin = TRUE;
 
-                    if (strpos($e->getMessage(), "Invalid credentials.") === false)
+                    if( strpos($e->getMessage(), "Invalid credentials.") === FALSE )
                         derr($e->getMessage());
 
                 }
                 PH::$useExceptions = $exceptionUse;
 
-                if (!$wrongLogin)
+                if( !$wrongLogin )
                     return $connector;
 
                 break;
             }
         }
 
-        if ($apiKey === null && $promptForKey === false && $wrongLogin == true)
+        if( $apiKey === null && $promptForKey === FALSE && $wrongLogin == TRUE )
             derr('API host/key not found and apiKey is blank + promptForKey is disabled');
 
 
-        if ($apiKey !== null)
+        if( $apiKey !== null )
         {
             $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
-        } elseif ($promptForKey)
+        }
+        elseif( $promptForKey )
         {
-            if ($wrongLogin)
+            if( $wrongLogin )
                 print "** Request API access to host '$host' but invalid credentials were detected'\n";
             else
                 print "** Request API access to host '$host' but API was not found in cache.\n";
@@ -310,7 +315,7 @@ class PanAPIConnector
             $line = fgets($handle);
             $apiKey = trim($line);
 
-            if (strlen($apiKey) < 19)
+            if( strlen($apiKey) < 19 )
             {
                 $user = $apiKey;
                 print "* you input user '$user' , please enter password now: ";
@@ -324,15 +329,15 @@ class PanAPIConnector
                 $res = $con->sendRequest($url);
 
                 $res = DH::findFirstElement('response', $res);
-                if ($res === false)
+                if( $res === FALSE )
                     derr('missing <response> from API answer');
 
                 $res = DH::findFirstElement('result', $res);
-                if ($res === false)
+                if( $res === FALSE )
                     derr('missing <result> from API answer');
 
                 $res = DH::findFirstElement('key', $res);
-                if ($res === false)
+                if( $res === FALSE )
                     derr('unsupported response from PANOS API');
 
                 $apiKey = $res->textContent;
@@ -343,17 +348,17 @@ class PanAPIConnector
 
             fclose($handle);
 
-            if ($wrongLogin)
+            if( $wrongLogin )
                 $connector->apikey = $apiKey;
             else
                 $connector = new PanAPIConnector($host, $apiKey, 'panos', null, $port);
         }
 
 
-        if ($checkConnectivity)
+        if( $checkConnectivity )
         {
             $connector->testConnectivity();
-            if (!$wrongLogin)
+            if( !$wrongLogin )
                 self::$savedConnectors[] = $connector;
             self::saveConnectorsToUserHome();
         }
@@ -374,7 +379,7 @@ class PanAPIConnector
 
     public function toString()
     {
-        if ($this->serial !== null)
+        if( $this->serial !== null )
             $ret = get_class($this) . ':' . $this->apihost . '@' . $this->serial;
         else
             $ret = get_class($this) . ':' . $this->apihost;
@@ -391,19 +396,21 @@ class PanAPIConnector
     {
         $type = strtolower($type);
 
-        if ($type == 'panos' || $type == 'panos-via-panorama')
+        if( $type == 'panos' || $type == 'panos-via-panorama' )
         {
             $this->isPANOS = 1;
-            if ($type == 'panos-via-panorama')
+            if( $type == 'panos-via-panorama' )
             {
-                if ($serial === null)
+                if( $serial === null )
                     derr('panos-via-panorama type requires a serial number');
                 $this->serial = $serial;
             }
-        } elseif ($type == 'panorama')
+        }
+        elseif( $type == 'panorama' )
         {
             $this->isPANOS = 0;
-        } else
+        }
+        else
             derr('unsupported type: ' . $type);
     }
 
@@ -442,17 +449,20 @@ class PanAPIConnector
      */
     public function userIDLogin($ips, $users, $vsys = 'vsys1', $timeout = 3600)
     {
-        if (is_string($ips) && is_string($users))
+        if( is_string($ips) && is_string($users) )
         {
             $ips = Array($ips);
             $users = Array($users);
-        } elseif (is_string($ips))
+        }
+        elseif( is_string($ips) )
         {
             derr('single IP provided but several users');
-        } elseif (is_string($ips))
+        }
+        elseif( is_string($ips) )
         {
             derr('single user provided but several IPs');
-        } elseif (count($ips) != count($users))
+        }
+        elseif( count($ips) != count($users) )
         {
             derr('IPs and Users are not same numbers');
         }
@@ -462,7 +472,7 @@ class PanAPIConnector
 
         $cmd = '<uid-message><version>1.0</version><type>update</type><payload><login>';
 
-        for ($i = 0; $i < count($ips); $i++)
+        for( $i = 0; $i < count($ips); $i++ )
         {
             $cmd .= '<entry name="' . $users[$usersIndex[$i]] . '" ip="' . $ips[$ipsIndex[$i]] . '" timeout="' . $timeout . '"></entry>';;
         }
@@ -474,7 +484,7 @@ class PanAPIConnector
         $params['vsys'] = $vsys;
         $params['cmd'] = &$cmd;
 
-        return $this->sendRequest($params, true);
+        return $this->sendRequest($params, TRUE);
 
     }
 
@@ -490,10 +500,10 @@ class PanAPIConnector
     {
         $cmd = '<uid-message><version>1.0</version><type>update</type><payload><register>';
 
-        foreach ($ips as $ip)
+        foreach( $ips as $ip )
         {
             $cmd .= "<entry ip=\"$ip\"><tag>";
-            foreach ($tags as $tag)
+            foreach( $tags as $tag )
             {
                 $cmd .= "<member>$tag</member>";
             }
@@ -507,7 +517,7 @@ class PanAPIConnector
         $params['vsys'] = $vsys;
         $params['cmd'] = &$cmd;
 
-        return $this->sendRequest($params, true);
+        return $this->sendRequest($params, TRUE);
     }
 
     /**
@@ -521,13 +531,13 @@ class PanAPIConnector
     {
         $cmd = '<uid-message><version>1.0</version><type>update</type><payload>';
 
-        if ($register !== null)
+        if( $register !== null )
         {
             $cmd .= '<register>';
-            foreach ($register as $ip => &$tags)
+            foreach( $register as $ip => &$tags )
             {
                 $cmd .= "<entry ip=\"$ip\"><tag>";
-                foreach ($tags as $tag)
+                foreach( $tags as $tag )
                 {
                     $cmd .= "<member>$tag</member>";
                 }
@@ -536,16 +546,16 @@ class PanAPIConnector
             $cmd .= '</register>';
         }
 
-        if ($unregister !== null)
+        if( $unregister !== null )
         {
             $cmd .= '<unregister>';
-            foreach ($unregister as $ip => &$tags)
+            foreach( $unregister as $ip => &$tags )
             {
                 $cmd .= "<entry ip=\"$ip\">";
-                if ($tags !== null && count($tags) > 0)
+                if( $tags !== null && count($tags) > 0 )
                 {
                     $cmd .= '<tag>';
-                    foreach ($tags as $tag)
+                    foreach( $tags as $tag )
                     {
                         $cmd .= "<member>$tag</member>";
                     }
@@ -564,7 +574,7 @@ class PanAPIConnector
         $params['vsys'] = $vsys;
         $params['cmd'] = &$cmd;
 
-        return $this->sendRequest($params, true);
+        return $this->sendRequest($params, TRUE);
     }
 
     /**
@@ -572,7 +582,7 @@ class PanAPIConnector
      * @param int $timeout
      * @return string[][] $registered ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
      */
-    public function getRegisteredIp( $vsys = 'vsys1', $timeout = 3600)
+    public function getRegisteredIp($vsys = 'vsys1', $timeout = 3600)
     {
         $cmd = "<show><object><registered-ip><all></all></registered-ip></object></show>";
 
@@ -581,19 +591,19 @@ class PanAPIConnector
         $params['vsys'] = $vsys;
         $params['cmd'] = &$cmd;
 
-        $r = $this->sendRequest($params, true);
+        $r = $this->sendRequest($params, TRUE);
 
         $configRoot = DH::findFirstElement('result', $r);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<result> was not found", $r);
 
         $ip_array = array();
-        foreach( $configRoot->childNodes as $node)
+        foreach( $configRoot->childNodes as $node )
         {
             if( $node->nodeType != 1 ) continue;
             $members = $node->getElementsByTagName('member');
 
-            foreach( $members as $member)
+            foreach( $members as $member )
             {
                 $ip_array[$node->getAttribute('ip')][] = $member->nodeValue;
             }
@@ -610,31 +620,31 @@ class PanAPIConnector
      * @param Array $moreOptions
      * @return DomDocument
      */
-	public function sendRequest(&$parameters, $checkResultTag=false, &$filecontent=null, $filename = '', $moreOptions=Array())
-	{
+    public function sendRequest(&$parameters, $checkResultTag = FALSE, &$filecontent = null, $filename = '', $moreOptions = Array())
+    {
 
-        $sendThroughPost = false;
+        $sendThroughPost = FALSE;
 
         if( is_array($parameters) )
-            $sendThroughPost = true;
+            $sendThroughPost = TRUE;
 
         $host = $this->apihost;
         if( $this->port != 443 )
-            $host .= ':'.$this->port;
+            $host .= ':' . $this->port;
 
         if( isset($this->serial) && $this->serial !== null )
         {
-            if($this->port == 80 )
-                $finalUrl = 'http://'.$host.'/api/';
+            if( $this->port == 80 )
+                $finalUrl = 'http://' . $host . '/api/';
             else
-                $finalUrl = 'https://'.$host.'/api/';
+                $finalUrl = 'https://' . $host . '/api/';
 
             if( !$sendThroughPost )
-             $finalUrl .= '?key='.urlencode($this->apikey).'&target='.$this->serial;
+                $finalUrl .= '?key=' . urlencode($this->apikey) . '&target=' . $this->serial;
         }
         else
         {
-            if($this->port == 80 )
+            if( $this->port == 80 )
                 $finalUrl = 'http://' . $host . '/api/';
             else
                 $finalUrl = 'https://' . $host . '/api/';
@@ -644,8 +654,8 @@ class PanAPIConnector
 
         if( !$sendThroughPost )
         {
-            $url = str_replace('#', '%23',$parameters);
-            $finalUrl .= '&'.$parameters;
+            $url = str_replace('#', '%23', $parameters);
+            $finalUrl .= '&' . $parameters;
         }
 
 
@@ -654,9 +664,9 @@ class PanAPIConnector
         else
             $timeout = 7;
 
-        $c = new mycurl($finalUrl, false, $timeout);
+        $c = new mycurl($finalUrl, FALSE, $timeout);
 
-        if( array_key_exists('lowSpeedTime', $moreOptions ) )
+        if( array_key_exists('lowSpeedTime', $moreOptions) )
         {
             $c->_lowspeedtime = $moreOptions['lowSpeedTime'];
         }
@@ -682,59 +692,59 @@ class PanAPIConnector
 
         if( $this->showApiCalls )
         {
-            if( $sendThroughPost)
+            if( $sendThroughPost )
             {
                 $paramURl = '?';
                 foreach( $parameters as $paramIndex => &$param )
                 {
-                    $paramURl .= '&'.$paramIndex.'='.str_replace('#', '%23',$param);
+                    $paramURl .= '&' . $paramIndex . '=' . str_replace('#', '%23', $param);
                 }
 
-                print("API call through POST: \"".$finalUrl.$paramURl."\"\r\n");
+                print("API call through POST: \"" . $finalUrl . $paramURl . "\"\r\n");
                 print "RAW HTTP POST Content: {$properParams}\n\n";
             }
             else
-                print("API call: \"".$finalUrl."\"\r\n");
+                print("API call: \"" . $finalUrl . "\"\r\n");
         }
 
 
-		if( ! $c->createCurl() )
-		{
-			derr('Could not retrieve URL: '.$finalUrl.' because of the following error: '.$c->last_error);
-		}
+        if( !$c->createCurl() )
+        {
+            derr('Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . $c->last_error);
+        }
 
 
         if( $c->getHttpStatus() != 200 )
         {
-            derr("HTTP API ret (code : {$c->getHttpStatus()})".$c->__tostring());
+            derr("HTTP API ret (code : {$c->getHttpStatus()})" . $c->__tostring());
         }
 
         $xmlDoc = new DOMDocument();
-        if( ! $xmlDoc->loadXML($c->__tostring(), LIBXML_PARSEHUGE) )
-            derr('Invalid xml input :'.$c->__tostring() );
+        if( !$xmlDoc->loadXML($c->__tostring(), LIBXML_PARSEHUGE) )
+            derr('Invalid xml input :' . $c->__tostring());
 
         $firstElement = DH::firstChildElement($xmlDoc);
-        if( $firstElement === false )
+        if( $firstElement === FALSE )
             derr('cannot find any child Element in xml');
 
         $statusAttr = DH::findAttribute('status', $firstElement);
 
-        if( $statusAttr === false )
+        if( $statusAttr === FALSE )
         {
             derr('XML response has no "status" field: ' . DH::dom_to_xml($firstElement));
         }
 
-        if($statusAttr != 'success')
+        if( $statusAttr != 'success' )
         {
             //var_dump($statusAttr);
-            derr('API reported a failure: "'.$statusAttr."\" with the following addition infos: ". $firstElement->nodeValue);
+            derr('API reported a failure: "' . $statusAttr . "\" with the following addition infos: " . $firstElement->nodeValue);
         }
 
-        if ( $filecontent !== null )
+        if( $filecontent !== null )
         {
             return $xmlDoc;
         }
-        if (!$checkResultTag)
+        if( !$checkResultTag )
         {
             return $xmlDoc;
         }
@@ -742,28 +752,28 @@ class PanAPIConnector
         //$cursor = &searchForName('name', 'result', $xmlarr['children']);
         $cursor = DH::findFirstElement('result', $firstElement);
 
-        if(  $cursor === false )
+        if( $cursor === FALSE )
         {
             derr('XML API response has no <result> field', $xmlDoc);
         }
 
         DH::makeElementAsRoot($cursor, $xmlDoc);
         return $xmlDoc;
-	}
+    }
 
     public function &sendExportRequest($category)
     {
-        $sendThroughPost = false;
+        $sendThroughPost = FALSE;
 
         $host = $this->apihost;
         if( $this->port != 443 )
-            $host .= ':'.$this->port;
+            $host .= ':' . $this->port;
 
         if( isset($this->serial) && $this->serial !== null )
         {
-            $finalUrl = 'https://'.$host.'/api/';
+            $finalUrl = 'https://' . $host . '/api/';
             if( !$sendThroughPost )
-                $finalUrl .= '?key='.$this->apikey.'&target='.$this->serial;
+                $finalUrl .= '?key=' . $this->apikey . '&target=' . $this->serial;
         }
         else
         {
@@ -774,11 +784,11 @@ class PanAPIConnector
 
         if( !$sendThroughPost )
         {
-            $finalUrl .= '&type=export&category='.$category;
+            $finalUrl .= '&type=export&category=' . $category;
         }
 
 
-        $c = new mycurl($finalUrl, false);
+        $c = new mycurl($finalUrl, FALSE);
 
 
         if( $sendThroughPost )
@@ -796,30 +806,30 @@ class PanAPIConnector
 
         if( $this->showApiCalls )
         {
-            if( $sendThroughPost)
+            if( $sendThroughPost )
             {
                 $paramURl = '?';
                 foreach( $parameters as $paramIndex => &$param )
                 {
-                    $paramURl .= '&'.$paramIndex.'='.str_replace('#', '%23',$param);
+                    $paramURl .= '&' . $paramIndex . '=' . str_replace('#', '%23', $param);
                 }
 
-                print("API call through POST: \"".$finalUrl.'?'.$paramURl."\"\r\n");
+                print("API call through POST: \"" . $finalUrl . '?' . $paramURl . "\"\r\n");
             }
             else
-                print("API call: \"".$finalUrl."\"\r\n");
+                print("API call: \"" . $finalUrl . "\"\r\n");
         }
 
 
-        if( ! $c->createCurl() )
+        if( !$c->createCurl() )
         {
-            derr('Could not retrieve URL: '.$finalUrl.' because of the following error: '.$c->last_error);
+            derr('Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . $c->last_error);
         }
 
 
         if( $c->getHttpStatus() != 200 )
         {
-            derr('HTTP API ret: '.$c->__tostring());
+            derr('HTTP API ret: ' . $c->__tostring());
         }
 
         $string = $c->__tostring();
@@ -837,14 +847,14 @@ class PanAPIConnector
         $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
         $cursor = DH::findFirstElement('result', $cursor);
 
-        if( $cursor === false )
+        if( $cursor === FALSE )
         {
             $cursor = DH::findFirstElement('report', DH::findXPathSingleEntryOrDie('/response', $ret));
-            if( $cursor === false )
+            if( $cursor === FALSE )
                 derr("unsupported API answer");
 
             $report = DH::findFirstElement('result', $cursor);
-            if( $report === false )
+            if( $report === FALSE )
                 derr("unsupported API answer");
 
         }
@@ -854,34 +864,34 @@ class PanAPIConnector
 
             $cursor = DH::findFirstElement('job', $cursor);
 
-            if( $cursor === false )
+            if( $cursor === FALSE )
                 derr("unsupported API answer, no JOB ID found");
 
             $jobid = $cursor->textContent;
 
-            while( true )
+            while( TRUE )
             {
                 sleep(1);
-                $query = '&type=report&action=get&job-id='.$jobid;
+                $query = '&type=report&action=get&job-id=' . $jobid;
                 $ret = $this->sendRequest($query);
                 //print DH::dom_to_xml($ret, 0, true, 5);
 
                 $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
-                
-                if( $cursor === false )
+
+                if( $cursor === FALSE )
                     derr("unsupported API answer", $ret);
 
                 $jobcur = DH::findFirstElement('job', $cursor);
 
-                if( $jobcur === false )
+                if( $jobcur === FALSE )
                     derr("unsupported API answer", $ret);
 
                 $percent = DH::findFirstElement('percent', $jobcur);
 
-                if( $percent == false )
+                if( $percent == FALSE )
                     derr("unsupported API answer", $cursor);
 
-                if( $percent->textContent != '100')
+                if( $percent->textContent != '100' )
                 {
                     sleep(9);
                     continue;
@@ -889,7 +899,7 @@ class PanAPIConnector
 
                 $cursor = DH::findFirstElement('report', $cursor);
 
-                if( $cursor === false )
+                if( $cursor === FALSE )
                     derr("unsupported API answer", $ret);
 
                 $report = $cursor;
@@ -923,41 +933,41 @@ class PanAPIConnector
 
         return $ret;
     }
-	
-	
-	public function getRunningConfig()
-	{
-		$url = 'action=show&type=config&xpath=/config';
 
-        $r = $this->sendRequest($url, true);
+
+    public function getRunningConfig()
+    {
+        $url = 'action=show&type=config&xpath=/config';
+
+        $r = $this->sendRequest($url, TRUE);
 
         $configRoot = DH::findFirstElement('result', $r);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<result> was not found", $r);
 
         $configRoot = DH::findFirstElement('config', $configRoot);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<config> was not found", $r);
 
         DH::makeElementAsRoot($configRoot, $r);
 
         return $r;
-	}
+    }
 
     public function getMergedConfig()
     {
-        $r = $this->sendOpRequest('<show><config><merged/></config></show>', false);
+        $r = $this->sendOpRequest('<show><config><merged/></config></show>', FALSE);
 
         $configRoot = DH::findFirstElement('response', $r);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<response> was not found", $r);
 
         $configRoot = DH::findFirstElement('result', $configRoot);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<result> was not found", $r);
 
         $configRoot = DH::findFirstElement('config', $configRoot);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<config> was not found", $r);
 
         DH::makeElementAsRoot($configRoot, $r);
@@ -969,14 +979,14 @@ class PanAPIConnector
     {
         $url = 'action=get&type=config&xpath=/config/panorama';
 
-        $r = $this->sendRequest($url, true);
+        $r = $this->sendRequest($url, TRUE);
 
         $configRoot = DH::findFirstElement('result', $r);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<result> was not found", $r);
 
         $configRoot = DH::findFirstElement('panorama', $configRoot);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<panorama> was not found", $r);
 
         DH::makeElementAsRoot($configRoot, $r);
@@ -984,7 +994,7 @@ class PanAPIConnector
         return $r;
     }
 
-    public function getCandidateConfig($apiTimeOut=60)
+    public function getCandidateConfig($apiTimeOut = 60)
     {
         return $this->getSavedConfig('candidate-config', $apiTimeOut);
     }
@@ -996,19 +1006,19 @@ class PanAPIConnector
         return $doc;
     }
 
-    public function getSavedConfig($configurationName, $apiTimeOut=60)
+    public function getSavedConfig($configurationName, $apiTimeOut = 60)
     {
         //$url = 'action=get&type=config&xpath=/config';
         $url = "<show><config><saved>$configurationName</saved></config></show>";
 
-        $r = $this->sendCmdRequest($url, true, $apiTimeOut);
+        $r = $this->sendCmdRequest($url, TRUE, $apiTimeOut);
 
         $configRoot = DH::findFirstElement('result', $r);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<result> was not found", $r);
 
         $configRoot = DH::findFirstElement('config', $configRoot);
-        if( $configRoot === false )
+        if( $configRoot === FALSE )
             derr("<config> was not found", $r);
 
         DH::makeElementAsRoot($configRoot, $r);
@@ -1023,10 +1033,10 @@ class PanAPIConnector
      * @param $useChildNodes bool if $element is an object then don't use its root but its childNodes to generate xml
      * @return DomDocument
      */
-    public function sendSetRequest($xpath, $element, $useChildNodes=false, $timeout = 30)
+    public function sendSetRequest($xpath, $element, $useChildNodes = FALSE, $timeout = 30)
     {
         $params = Array();
-        $moreOptions = Array( 'timeout' => $timeout, 'lowSpeedTime' => 0);
+        $moreOptions = Array('timeout' => $timeout, 'lowSpeedTime' => 0);
 
         if( is_string($element) )
         {
@@ -1040,19 +1050,19 @@ class PanAPIConnector
                 $element = &$element->getXmlText_inline();
         }
 
-        $params['type']  = 'config';
-        $params['action']  = 'set';
-        $params['xpath']  = &$xpath;
-        $params['element']  = &$element;
+        $params['type'] = 'config';
+        $params['action'] = 'set';
+        $params['xpath'] = &$xpath;
+        $params['element'] = &$element;
 
         return $this->sendSimpleRequest($params, $moreOptions);
     }
 
 
-    public function sendSimpleRequest(&$request, $options=Array())
+    public function sendSimpleRequest(&$request, $options = Array())
     {
         $file = null;
-        return $this->sendRequest($request, false, $file, '', $options);
+        return $this->sendRequest($request, FALSE, $file, '', $options);
     }
 
     /**
@@ -1061,10 +1071,10 @@ class PanAPIConnector
      * @param $useChildNodes bool if $element is an object then don't use its root but its childNodes to generate xml
      * @return DomDocument
      */
-    public function sendEditRequest($xpath, $element, $useChildNodes=false, $timeout = 30)
+    public function sendEditRequest($xpath, $element, $useChildNodes = FALSE, $timeout = 30)
     {
         $params = Array();
-        $moreOptions = Array( 'timeout' => $timeout, 'lowSpeedTime' => 0);
+        $moreOptions = Array('timeout' => $timeout, 'lowSpeedTime' => 0);
 
         if( is_object($xpath) )
             derr('unsupported yet');
@@ -1080,24 +1090,24 @@ class PanAPIConnector
             if( $elementClass === 'DOMElement' )
             {
                 /** @var DOMElement $element */
-                if ($useChildNodes)
-                    $element = DH::domlist_to_xml($element->childNodes, -1, false);
+                if( $useChildNodes )
+                    $element = DH::domlist_to_xml($element->childNodes, -1, FALSE);
                 else
-                    $element = DH::dom_to_xml($element, -1, false);
+                    $element = DH::dom_to_xml($element, -1, FALSE);
             }
             else
             {
-                if ($useChildNodes)
+                if( $useChildNodes )
                     $element = $element->getChildXmlText_inline();
                 else
                     $element = $element->getXmlText_inline();
             }
         }
 
-        $params['type']  = 'config';
-        $params['action']  = 'edit';
-        $params['xpath']  = &$xpath;
-        $params['element']  = &$element;
+        $params['type'] = 'config';
+        $params['action'] = 'edit';
+        $params['xpath'] = &$xpath;
+        $params['element'] = &$element;
 
         return $this->sendSimpleRequest($params, $moreOptions);
     }
@@ -1106,9 +1116,9 @@ class PanAPIConnector
     {
         $params = Array();
 
-        $params['type']  = 'config';
-        $params['action']  = 'delete';
-        $params['xpath']  = &$xpath;
+        $params['type'] = 'config';
+        $params['action'] = 'delete';
+        $params['xpath'] = &$xpath;
 
         return $this->sendRequest($params);
     }
@@ -1122,10 +1132,10 @@ class PanAPIConnector
     {
         $params = Array();
 
-        $params['type']  = 'config';
-        $params['action']  = 'rename';
-        $params['xpath']  = &$xpath;
-        $params['newname']  = &$newname;
+        $params['type'] = 'config';
+        $params['action'] = 'rename';
+        $params['xpath'] = &$xpath;
+        $params['newname'] = &$newname;
 
         return $this->sendRequest($params);
     }
@@ -1135,12 +1145,12 @@ class PanAPIConnector
      * @param bool $stripResultTag
      * @return DomDocument
      */
-    public function sendOpRequest($cmd, $stripResponseTag = true)
+    public function sendOpRequest($cmd, $stripResponseTag = TRUE)
     {
         $params = Array();
 
-        $params['type']  = 'op';
-        $params['cmd']  = $cmd;
+        $params['type'] = 'op';
+        $params['cmd'] = $cmd;
 
         return $this->sendRequest($params, $stripResponseTag);
     }
@@ -1166,7 +1176,7 @@ class PanAPIConnector
      * @param $maxWaitTime integer
      * @return DomDocument|string[]
      */
-    public function sendCmdRequest($cmd, $checkResultTag = true, $maxWaitTime = -1)
+    public function sendCmdRequest($cmd, $checkResultTag = TRUE, $maxWaitTime = -1)
     {
         $req = "type=op&cmd=$cmd";
         if( $maxWaitTime == -1 )
@@ -1185,7 +1195,7 @@ class PanAPIConnector
     {
         $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
         $ret = $this->sendRequest($req);
-        
+
 
         $found = &searchForName('name', 'result', $ret);
 
@@ -1232,7 +1242,7 @@ class PanAPIConnector
         }
 
         else return $found['content'];
-        
+
     }
 
     /**
@@ -1244,14 +1254,14 @@ class PanAPIConnector
      * @param bool $verbose
      * @return DOMNode
      */
-    public function uploadConfiguration( $configDomXml, $configName = 'stage0.xml', $verbose = true )
+    public function uploadConfiguration($configDomXml, $configName = 'stage0.xml', $verbose = TRUE)
     {
         if( $verbose )
             print "Uploadig config to device {$this->apihost}/{$configName}....";
 
         $url = "&type=import&category=configuration&category=configuration";
 
-        $answer = $this->sendRequest($url, false, DH::dom_to_xml($configDomXml), $configName, Array('timeout'=>7) );
+        $answer = $this->sendRequest($url, FALSE, DH::dom_to_xml($configDomXml), $configName, Array('timeout' => 7));
 
         if( $verbose )
             print "OK!\n";
@@ -1262,193 +1272,201 @@ class PanAPIConnector
 
 
 /**
-* @ignore
-*/
+ * @ignore
+ */
 class mycurl
-{ 
-     protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1'; 
-     protected $_url; 
-     protected $_followlocation; 
-     protected $_timeout; 
-     protected $_maxRedirects; 
-     protected $_cookieFileLocation = './cookie.txt'; 
-     protected $_post; 
-     protected $_postFields; 
-     protected $_referer ="http://panapiconnector"; 
+{
+    protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
+    protected $_url;
+    protected $_followlocation;
+    protected $_timeout;
+    protected $_maxRedirects;
+    protected $_cookieFileLocation = './cookie.txt';
+    protected $_post;
+    protected $_postFields;
+    protected $_referer = "http://panapiconnector";
 
-     protected $_session; 
-     protected $_webpage; 
-     protected $_includeHeader; 
-     protected $_noBody; 
-     protected $_status; 
-     protected $_binaryTransfer;
+    protected $_session;
+    protected $_webpage;
+    protected $_includeHeader;
+    protected $_noBody;
+    protected $_status;
+    protected $_binaryTransfer;
 
-     protected $_infilecontent;
-     protected $_infilename;
+    protected $_infilecontent;
+    protected $_infilename;
 
-     public $_lowspeedtime = 60;
+    public $_lowspeedtime = 60;
 
-     public    $authentication = 0; 
-     public    $auth_name      = ''; 
-     public    $auth_pass      = ''; 
+    public $authentication = 0;
+    public $auth_name = '';
+    public $auth_pass = '';
 
-     public function useAuth($use){ 
-       $this->authentication = 0; 
-       if($use == true) $this->authentication = 1; 
-     } 
+    public function useAuth($use)
+    {
+        $this->authentication = 0;
+        if( $use == TRUE ) $this->authentication = 1;
+    }
 
-     public function setName($name){ 
-       $this->auth_name = $name; 
-     } 
-     public function setPass($pass){ 
-       $this->auth_pass = $pass; 
-     } 
+    public function setName($name)
+    {
+        $this->auth_name = $name;
+    }
 
-     public function __construct($url,$followlocation = false,$timeOut = 30,$maxRedirecs = 4,$binaryTransfer = false,$includeHeader = false,$noBody = false) 
-     { 
-         $this->_url = $url; 
-         $this->_followlocation = $followlocation; 
-         $this->_timeout = $timeOut; 
-         $this->_maxRedirects = $maxRedirecs; 
-         $this->_noBody = $noBody; 
-         $this->_includeHeader = $includeHeader; 
-         $this->_binaryTransfer = $binaryTransfer; 
-         $this->_infilecontent = null;
+    public function setPass($pass)
+    {
+        $this->auth_pass = $pass;
+    }
 
-         $this->_cookieFileLocation = dirname(__FILE__).'/cookie.txt'; 
+    public function __construct($url, $followlocation = FALSE, $timeOut = 30, $maxRedirecs = 4, $binaryTransfer = FALSE, $includeHeader = FALSE, $noBody = FALSE)
+    {
+        $this->_url = $url;
+        $this->_followlocation = $followlocation;
+        $this->_timeout = $timeOut;
+        $this->_maxRedirects = $maxRedirecs;
+        $this->_noBody = $noBody;
+        $this->_includeHeader = $includeHeader;
+        $this->_binaryTransfer = $binaryTransfer;
+        $this->_infilecontent = null;
 
-     } 
+        $this->_cookieFileLocation = dirname(__FILE__) . '/cookie.txt';
 
-     public function setReferer($referer){ 
-       $this->_referer = $referer; 
-     } 
+    }
 
-     public function setCookiFileLocation($path) 
-     { 
-         $this->_cookieFileLocation = $path; 
-     } 
+    public function setReferer($referer)
+    {
+        $this->_referer = $referer;
+    }
 
-     public function setPost (&$postFields) 
-     { 
-        $this->_post = true; 
-        $this->_postFields = &$postFields; 
-     } 
+    public function setCookiFileLocation($path)
+    {
+        $this->_cookieFileLocation = $path;
+    }
 
-     public function setUserAgent($userAgent) 
-     { 
-         $this->_useragent = $userAgent; 
-     } 
+    public function setPost(&$postFields)
+    {
+        $this->_post = TRUE;
+        $this->_postFields = &$postFields;
+    }
 
-     public function createCurl(&$url = 'nul') 
-     { 
-        if($url != 'nul'){ 
-          $this->_url = $url; 
-        } 
+    public function setUserAgent($userAgent)
+    {
+        $this->_useragent = $userAgent;
+    }
 
-         $s = curl_init(); 
+    public function createCurl(&$url = 'nul')
+    {
+        if( $url != 'nul' )
+        {
+            $this->_url = $url;
+        }
 
-         curl_setopt($s,CURLOPT_URL, str_replace(' ', '%20',$this->_url) ); 
-         //curl_setopt($s,CURLOPT_HTTPHEADER,array('Expect:')); 
-         curl_setopt($s,CURLOPT_CONNECTTIMEOUT,$this->_timeout);
-         curl_setopt($s,CURLOPT_TIMEOUT,3600);
+        $s = curl_init();
 
-         if( $this->_lowspeedtime !== null )
-         {
-             curl_setopt($s,CURLOPT_LOW_SPEED_LIMIT,500);
-             curl_setopt($s, CURLOPT_LOW_SPEED_TIME, $this->_lowspeedtime);
-         }
+        curl_setopt($s, CURLOPT_URL, str_replace(' ', '%20', $this->_url));
+        //curl_setopt($s,CURLOPT_HTTPHEADER,array('Expect:'));
+        curl_setopt($s, CURLOPT_CONNECTTIMEOUT, $this->_timeout);
+        curl_setopt($s, CURLOPT_TIMEOUT, 3600);
 
-         curl_setopt($s,CURLOPT_MAXREDIRS,$this->_maxRedirects); 
-         curl_setopt($s,CURLOPT_RETURNTRANSFER,true); 
-         curl_setopt($s,CURLOPT_FOLLOWLOCATION,$this->_followlocation);
-        
-         //curl_setopt($s,CURLOPT_COOKIEJAR,$this->_cookieFileLocation); 
-         //curl_setopt($s,CURLOPT_COOKIEFILE,$this->_cookieFileLocation); 
+        if( $this->_lowspeedtime !== null )
+        {
+            curl_setopt($s, CURLOPT_LOW_SPEED_LIMIT, 500);
+            curl_setopt($s, CURLOPT_LOW_SPEED_TIME, $this->_lowspeedtime);
+        }
 
-         if($this->authentication == 1){ 
-           curl_setopt($s, CURLOPT_USERPWD, $this->auth_name.':'.$this->auth_pass); 
-         } 
-         if($this->_post) 
-         { 
-            curl_setopt($s,CURLOPT_POSTFIELDS,$this->_postFields); 
-         } 
+        curl_setopt($s, CURLOPT_MAXREDIRS, $this->_maxRedirects);
+        curl_setopt($s, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($s, CURLOPT_FOLLOWLOCATION, $this->_followlocation);
 
-         if($this->_includeHeader) 
-         { 
-               curl_setopt($s,CURLOPT_HEADER,true); 
-         } 
+        //curl_setopt($s,CURLOPT_COOKIEJAR,$this->_cookieFileLocation);
+        //curl_setopt($s,CURLOPT_COOKIEFILE,$this->_cookieFileLocation);
 
-         if($this->_noBody) 
-         { 
-             curl_setopt($s,CURLOPT_NOBODY,true); 
-         } 
-         /* 
-         if($this->_binary) 
-         { 
-             curl_setopt($s,CURLOPT_BINARYTRANSFER,true); 
-         } 
-         */ 
-         curl_setopt($s,CURLOPT_USERAGENT,$this->_useragent); 
-         curl_setopt($s,CURLOPT_REFERER,$this->_referer); 
-         
-         curl_setopt($s,CURLOPT_SSL_VERIFYPEER,false);
-         curl_setopt($s,CURLOPT_SSL_VERIFYHOST,false);
+        if( $this->authentication == 1 )
+        {
+            curl_setopt($s, CURLOPT_USERPWD, $this->auth_name . ':' . $this->auth_pass);
+        }
+        if( $this->_post )
+        {
+            curl_setopt($s, CURLOPT_POSTFIELDS, $this->_postFields);
+        }
 
-         if( defined('CURL_SSLVERSION_TLSv1') ) // for older versions of PHP/openssl bundle
-            curl_setopt($s,CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+        if( $this->_includeHeader )
+        {
+            curl_setopt($s, CURLOPT_HEADER, TRUE);
+        }
 
-         //curl_setopt($s,CURLOPT_VERBOSE, 1);
+        if( $this->_noBody )
+        {
+            curl_setopt($s, CURLOPT_NOBODY, TRUE);
+        }
+        /*
+        if($this->_binary)
+        {
+            curl_setopt($s,CURLOPT_BINARYTRANSFER,true);
+        }
+        */
+        curl_setopt($s, CURLOPT_USERAGENT, $this->_useragent);
+        curl_setopt($s, CURLOPT_REFERER, $this->_referer);
+
+        curl_setopt($s, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($s, CURLOPT_SSL_VERIFYHOST, FALSE);
+
+        if( defined('CURL_SSLVERSION_TLSv1') ) // for older versions of PHP/openssl bundle
+            curl_setopt($s, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
+
+        //curl_setopt($s,CURLOPT_VERBOSE, 1);
 
 
-         if( $this->_infilecontent !== null )
-         {
+        if( $this->_infilecontent !== null )
+        {
 
-            $content =  "----ABC1234\r\n"
-                        . "Content-Disposition: form-data; name=\"file\"; filename=\"".$this->_infilename."\"\r\n"
-                        . "Content-Type: application/xml\r\n"
-                        . "\r\n"
-                        . $this->_infilecontent . "\r\n"
-                        . "----ABC1234--\r\n";
+            $content = "----ABC1234\r\n"
+                . "Content-Disposition: form-data; name=\"file\"; filename=\"" . $this->_infilename . "\"\r\n"
+                . "Content-Type: application/xml\r\n"
+                . "\r\n"
+                . $this->_infilecontent . "\r\n"
+                . "----ABC1234--\r\n";
 
             //print "content length = ".strlen($content)."\n";            
-            curl_setopt($s, CURLOPT_HTTPHEADER, Array('Content-Type: multipart/form-data; boundary=--ABC1234') );
-            curl_setopt($s, CURLOPT_POST, true); 
+            curl_setopt($s, CURLOPT_HTTPHEADER, Array('Content-Type: multipart/form-data; boundary=--ABC1234'));
+            curl_setopt($s, CURLOPT_POST, TRUE);
             curl_setopt($s, CURLOPT_POSTFIELDS, $content);
 
-         }
+        }
 
-         $er = curl_exec($s);
-         
-         if( $er === FALSE )
-         {
-         	 $this->last_error = curl_error($s);
-         	 return false;
-         }
-         
-         $this->_webpage = $er; 
-         
-         
-         $this->_status = curl_getinfo($s,CURLINFO_HTTP_CODE); 
-         curl_close($s); 
-         
-         return true;
+        $er = curl_exec($s);
 
-     } 
+        if( $er === FALSE )
+        {
+            $this->last_error = curl_error($s);
+            return FALSE;
+        }
 
-   public function getHttpStatus() 
-   { 
-       return $this->_status; 
-   } 
+        $this->_webpage = $er;
 
-   public function setInfile( &$fc, $filename )
-   {
+
+        $this->_status = curl_getinfo($s, CURLINFO_HTTP_CODE);
+        curl_close($s);
+
+        return TRUE;
+
+    }
+
+    public function getHttpStatus()
+    {
+        return $this->_status;
+    }
+
+    public function setInfile(&$fc, $filename)
+    {
         $this->_infilecontent = &$fc;
         $this->_infilename = $filename;
-   }
+    }
 
-   public function __tostring(){ 
-      return $this->_webpage; 
-   }
+    public function __tostring()
+    {
+        return $this->_webpage;
+    }
 }
 
 
