@@ -41,7 +41,6 @@ $ak = array_keys($addresses);
 for( $i=0; $i < 1500; $i++ )
 {
 	$newRules[$i] = $v->securityRules->newSecurityRule('autogen-'.$i);
-	$newRules[$i]->setName('autogen2-'.$i);
 
 	$r = rand(1,10);
 	if( $r > 3 )
