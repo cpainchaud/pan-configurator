@@ -36,7 +36,7 @@ class RQuery
 
     static public $defaultFilters = Array();
 
-    static public $mathOps = Array( '>' => '>', '<' => '<', '=' => '==', '==' => '==', '!=' => '!=', '<=' => '<=', '>=' => '>=', 'eq' => '==' );
+    static public $mathOps = Array( '>' => '>', '<' => '<', '=' => '==', '==' => '==', '!=' => '!=', '<=' => '<=', '>=' => '>=' );
 
     public $objectType = null;
 
