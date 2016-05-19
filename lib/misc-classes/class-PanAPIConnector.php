@@ -579,10 +579,9 @@ class PanAPIConnector
 
     /**
      * @param string $vsys
-     * @param int $timeout
      * @return string[][] $registered ie: Array( '1.1.1.1' => Array('tag1', 'tag3'), '2.3.4.5' => Array('tag7') )
      */
-    public function register_getIp($vsys = 'vsys1', $timeout = 3600)
+    public function register_getIp($vsys = 'vsys1')
     {
         $cmd = "<show><object><registered-ip><all></all></registered-ip></object></show>";
 
@@ -600,12 +599,17 @@ class PanAPIConnector
         $ip_array = array();
         foreach( $configRoot->childNodes as $node )
         {
-            if( $node->nodeType != 1 ) continue;
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            /** @var DOMElement $node */
+            $ip = $node->getAttribute('ip');
             $members = $node->getElementsByTagName('member');
 
             foreach( $members as $member )
             {
-                $ip_array[$node->getAttribute('ip')][] = $member->nodeValue;
+                /** @var DOMElement $member */
+                $ip_array[$ip][$member->nodeValue] = $member->nodeValue;
             }
         }
         return $ip_array;
