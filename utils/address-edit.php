@@ -353,6 +353,60 @@ $supportedActions['replacewithobject'] = Array(
     'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 
+$supportedActions['z_beta_summarize'] = Array(
+    'name' => 'z_BETA_summarize',
+    'MainFunction' => function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+
+        if( !$object->isGroup() )
+        {
+            print $context->padding."    - SKIPPED because object is not a group\n";
+            return;
+        }
+        if( $object->isDynamic() )
+        {
+            print $context->padding."    - SKIPPED because group is dynamic\n";
+            return;
+        }
+
+        /** @var AddressGroup $object */
+        $members = $object->expand();
+        $mapping = new IP4Map();
+
+        $listOfNotConvertibleObjects = Array();
+
+        foreach($members as $member )
+        {
+            if( $member->isGroup() )
+                derr('this is not supported');
+            if( $member->type() == 'fqdn' )
+            {
+                $listOfNotConvertibleObjects[] = $member;
+            }
+
+            $mapping->addMap( $member->getIP4Mapping(), true );
+        }
+        $mapping->sortAndRecalculate();
+
+        $object->removeAll();
+        foreach($listOfNotConvertibleObjects as $obj )
+            $object->addMember($obj);
+
+        foreach($mapping->getMapArray() as $entry )
+        {
+            $objectName = 'R-'.long2ip($entry['start']).'-'.long2ip($entry['start']);
+            $newObject = $object->owner->find($objectName);
+            if( $newObject === null )
+                $newObject = $object->owner->newAddress($objectName, 'ip-range', long2ip($entry['start']).'-'.long2ip($entry['start']));
+            $object->addMember($newObject);
+        }
+
+        print $context->padding."  - group had ".count($members)." expanded members vs {$mapping->count()} IP4 entries and ".count($listOfNotConvertibleObjects)." unsupported objects\n";
+
+    },
+);
+
 
 $supportedActions['exporttoexcel'] = Array(
     'name' => 'exportToExcel',

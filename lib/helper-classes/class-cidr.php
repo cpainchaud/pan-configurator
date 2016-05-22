@@ -57,6 +57,36 @@ class cidr
         return $bits;
     }
 
+    /**
+     * @param int $start
+     * @param int $end
+     * @return bool|int[]
+     */
+    static public function range2network($start,$end)
+    {
+        $diff = $end - $start + 1;
+
+        $int2pow = Array();
+
+        for($i=0; $i<32; $i++)
+            $int2pow[pow(2, $i)] = $i;
+
+        if( !isset($int2pow[$diff]) )
+            return false;
+
+        $string  = long2ip($start).'/'.$int2pow[$diff];
+
+        $tmp = self::stringToStartEnd($string);
+
+        if( $tmp['start'] != $start )
+            return false;
+
+        if( $tmp['end'] != $end )
+            return false;
+
+        return Array('network' => $start, 'mask' => $int2pow[$diff] );
+    }
+
     // is ip in subnet
     // e.g. is 10.5.21.30 in 10.5.16.0/20 == true
     //      is 192.168.50.2 in 192.168.30.0/23 == false
