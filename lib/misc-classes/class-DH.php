@@ -311,7 +311,7 @@ class DH
         if( get_class($node) != 'DOMDocument' )
             foreach($node->attributes as $at)
             {
-                $firstTag .= ' '.$at->name.'="'.$at->value.'"';
+                $firstTag .= ' '.$at->name.'="'.str_replace( self::$charsToConvert, self::$charsToConvertInto, $at->value).'"';
             }
 		
 		//$firsttag .= '>';
