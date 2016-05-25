@@ -60,10 +60,15 @@ class cidr
     /**
      * @param int $start
      * @param int $end
-     * @return bool|int[]
+     * @return bool|int[] FALSE if start/end do not match a network/mask. Otherwise : Array( 'network' => '10.0.0.0', 'mask' => 8, 'string' => '10.0.0.0/8')
      */
     static public function range2network($start,$end)
     {
+        if( is_string($start) )
+            derr("'start' cannot be a string");
+        if( is_string($end) )
+            derr("'end' cannot be a string");
+
         $diff = $end - $start + 1;
 
         $int2pow = Array();
@@ -74,7 +79,9 @@ class cidr
         if( !isset($int2pow[$diff]) )
             return false;
 
-        $string  = long2ip($start).'/'.$int2pow[$diff];
+        $netmask = 32 - $int2pow[$diff];
+
+        $string  = long2ip($start).'/'.$netmask;
 
         $tmp = self::stringToStartEnd($string);
 
@@ -84,7 +91,7 @@ class cidr
         if( $tmp['end'] != $end )
             return false;
 
-        return Array('network' => $start, 'mask' => $int2pow[$diff] );
+        return Array('network' => $start, 'mask' => $netmask, 'string' => $string );
     }
 
     // is ip in subnet

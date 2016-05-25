@@ -368,7 +368,7 @@ class PanAPIConnector
 
     public function testConnectivity()
     {
-        print " Testing API connectivity: ";
+        print " Testing API connectivity... ";
 
         $this->refreshSystemInfos();
 

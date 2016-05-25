@@ -30,6 +30,10 @@ class IP4Map
         return $this->_map;
     }
 
+    /**
+     * @param $text
+     * @return IP4Map
+     */
     static public function mapFromText($text)
     {
         $map = new IP4Map();

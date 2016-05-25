@@ -86,15 +86,6 @@ class Address
 		
 	}
 
-	public function API_delete()
-	{
-		if($this->isTmpAddr())
-			derr('cannot be called on a Tmp address object');
-
-
-        return $this->owner->API_remove($this);
-	}
-
 
 	/**
 	* @ignore
@@ -339,6 +330,26 @@ class Address
 
 		return false;
 	}
+
+    public function isType_ipNetmask()
+    {
+        return $this->type == self::TypeIpNetmask;
+    }
+
+    public function  isType_ipRange()
+    {
+        return $this->type == self::TypeIpRange;
+    }
+
+    public function isType_FQDN()
+    {
+        return $this->type == self::TypeFQDN;
+    }
+
+    public function isType_TMP()
+    {
+        return $this->type == self::TypeTmp;
+    }
 
     /**
      * @param $otherObject Address|AddressGroup
