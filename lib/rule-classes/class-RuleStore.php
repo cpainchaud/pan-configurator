@@ -511,7 +511,7 @@ class RuleStore
      * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
      * @param string $newName
 	 * @param null|bool $inPostRuleBase
-     * @return SecurityRule|NatRule
+     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule
      */
 	public function cloneRule($rule, $newName = null, $inPostRuleBase=null)
 	{

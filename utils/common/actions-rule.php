@@ -1754,6 +1754,38 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
     'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
 );
 
+RuleCallContext::$supportedActions['clone'] = Array(
+    'name' => 'clone',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $newName = $rule->owner->findAvailableName($rule->name(), $context->arguments['suffix']);
+
+        print $context->padding."   - cloned rule name will be '{$newName}'\n";
+
+        if( $context->isAPI )
+        {
+            $newRule = $rule->owner->API_cloneRule($rule, $newName);
+            if( $context->arguments['before'] )
+                $rule->owner->API_moveRuleBefore($newRule, $rule);
+            else
+                $rule->owner->API_moveRuleAfter($newRule, $rule);
+        }
+        else
+        {
+            $newRule = $rule->owner->cloneRule($rule, $newName);
+            if( $context->arguments['before'] )
+                $rule->owner->moveRuleBefore($newRule, $rule);
+            else
+                $rule->owner->moveRuleAfter($newRule, $rule);
+        }
+
+    },
+    'args' => Array(    'before' => Array( 'type' => 'bool', 'default' => 'yes'  ),
+                        'suffix' =>  Array( 'type' => 'string', 'default' => '-cloned' )
+                    )
+);
 RuleCallContext::$supportedActions['cloneforappoverride'] = Array(
     'name' => 'cloneForAppOverride',
     'MainFunction' => function(RuleCallContext $context)
