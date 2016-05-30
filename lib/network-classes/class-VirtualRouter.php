@@ -113,6 +113,45 @@ class VirtualRouter
 
         $ipv4sort = Array();
 
+        foreach( $this->attachedInterfaces->interfaces() as $if )
+        {
+            if( ! $contextVSYS->importedInterfaces->hasInterfaceNamed($if->name()) )
+                continue;
+
+            if( ($if->isEthernetType() || $if->isAggregateType()) && $if->type() == 'layer3' )
+            {
+                $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
+                if( $findZone === null )
+                    continue;
+
+                $ipAddresses = $if->getLayer3IPv4Addresses();
+
+                foreach( $ipAddresses as $interfaceIP )
+                {
+                    $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
+                    $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
+                    $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
+                    unset($record);
+                }
+            }
+            elseif( $if->isLoopbackType() )
+            {
+                $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
+                if( $findZone === null )
+                    continue;
+
+                $ipAddresses = $if->getIPv4Addresses();
+
+                foreach( $ipAddresses as $interfaceIP )
+                {
+                    $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
+                    $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
+                    $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
+                    unset($record);
+                }
+            }
+        }
+
         foreach( $this->staticRoutes() as $route )
         {
             $ipv4Mapping = $route->destinationIP4Mapping();
@@ -218,45 +257,6 @@ class VirtualRouter
             {
                 mwarning("route {$route->name()}/{$route->destination()} ignored because of unknown type '{$nextHopType}'");
                 continue;
-            }
-        }
-
-        foreach( $this->attachedInterfaces->interfaces() as $if )
-        {
-            if( ! $contextVSYS->importedInterfaces->hasInterfaceNamed($if->name()) )
-                continue;
-
-            if( ($if->isEthernetType() || $if->isAggregateType()) && $if->type() == 'layer3' )
-            {
-                $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
-                if( $findZone === null )
-                    continue;
-
-                $ipAddresses = $if->getLayer3IPv4Addresses();
-
-                foreach( $ipAddresses as $interfaceIP )
-                {
-                    $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
-                    $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
-                    $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
-                    unset($record);
-                }
-            }
-            elseif( $if->isLoopbackType() )
-            {
-                $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
-                if( $findZone === null )
-                    continue;
-
-                $ipAddresses = $if->getIPv4Addresses();
-
-                foreach( $ipAddresses as $interfaceIP )
-                {
-                    $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
-                    $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
-                    $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
-                    unset($record);
-                }
             }
         }
 
