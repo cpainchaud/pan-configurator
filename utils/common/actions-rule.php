@@ -258,16 +258,69 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
         {
             print $context->padding." - REPLACE MODE, syncing with (".count($resolvedZones).") resolved zones.";
             if( $addressContainer->isAny() )
-                print " *** IGNORED because value is 'ANY' ***\n";
+                echo $context->padding." *** IGNORED because value is 'ANY' ***\n";
             elseif(count($resolvedZones) == 0)
-                print " *** IGNORED because no zone was resolved ***\n";
+                echo $context->padding." *** IGNORED because no zone was resolved ***\n";
             elseif( count($minus) == 0 && count($plus) == 0 )
             {
-                print " *** IGNORED because there is no diff ***\n";
+                echo $context->padding." *** IGNORED because there is no diff ***\n";
             }
             else
             {
                 print "\n";
+
+                if( $rule->isNatRule() && $fromOrTo == 'to' )
+                {
+                    if( count($common) > 0 )
+                    {
+                        foreach( $minus as $zoneToAdd )
+                        {
+                            $newRuleName = $rule->owner->findAvailableName($rule->name());
+                            $newRule = $rule->owner->cloneRule($rule, $newRuleName);
+                            $newRule->to->setAny();
+                            $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
+                            echo $context->padding." - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                            if( $context->isAPI )
+                            {
+                                $newRule->API_sync();
+                                $newRule->owner->API_moveRuleAfter($newRule, $rule);
+                            }
+                            else
+                                $newRule->owner->moveRuleAfter($newRule, $rule);
+                        }
+                        return;
+                    }
+
+                    $first = true;
+                    foreach( $minus as $zoneToAdd )
+                    {
+                        if( $first )
+                        {
+                            $rule->to->setAny();
+                            $rule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
+                            echo $context->padding." - changed original NAT 'TO' zone='{$zoneToAdd}'\n";
+                            if( $context->isAPI )
+                                $rule->to->API_sync();
+                            $first = false;
+                            continue;
+                        }
+                        $newRuleName = $rule->owner->findAvailableName($rule->name());
+                        $newRule = $rule->owner->cloneRule($rule, $newRuleName);
+                        $newRule->to->setAny();
+                        $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
+                        echo $context->padding." - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                        if( $context->isAPI )
+                        {
+                            $newRule->API_sync();
+                            $newRule->owner->API_moveRuleAfter($newRule, $rule);
+                        }
+                        else
+                            $newRule->owner->moveRuleAfter($newRule, $rule);
+                    }
+
+                    return;
+                }
+
                 $zoneContainer->setAny();
                 foreach( $resolvedZones as $zone )
                     $zoneContainer->addZone($zoneContainer->parentCentralStore->findOrCreate($zone));
@@ -278,6 +331,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
         elseif( $mode == 'append' )
         {
             print $context->padding." - APPEND MODE: adding missing (".count($minus).") zones only.";
+
             if( $addressContainer->isAny() )
                 print " *** IGNORED because value is 'ANY' ***\n";
             elseif(count($minus) == 0)
@@ -285,6 +339,27 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
             else
             {
                 print "\n";
+
+                if( $rule->isNatRule() && $fromOrTo == 'to' )
+                {
+                    foreach( $minus as $zoneToAdd )
+                    {
+                        $newRuleName = $rule->owner->findAvailableName($rule->name());
+                        $newRule = $rule->owner->cloneRule($rule, $newRuleName);
+                        $newRule->to->setAny();
+                        $newRule->to->addZone($zoneContainer->parentCentralStore->findOrCreate($zoneToAdd));
+                        echo $context->padding . " - cloned NAT rule with name '{$newRuleName}' and TO zone='{$zoneToAdd}'\n";
+                        if( $context->isAPI )
+                        {
+                            $newRule->API_sync();
+                            $newRule->owner->API_moveRuleAfter($newRule, $rule);
+                        }
+                        else
+                            $newRule->owner->moveRuleAfter($newRule, $rule);
+                    }
+                    return;
+                }
+                
                 foreach( $minus as $zone )
                     $zoneContainer->addZone($zoneContainer->parentCentralStore->findOrCreate($zone));
                 if( $context->isAPI )

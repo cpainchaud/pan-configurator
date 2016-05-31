@@ -11,10 +11,12 @@ service-edit: new filters 'object is.unused.recursive' to check if an object is 
 rules-edit: new actions 'src-Negate-Set','dst-Negate-Set' to enable/disable a rule Source/Destination negation
                         'target-Set-Any','target-Add-Device','target-Negate-Set','target-RemoveDevice' to manage targets
                         'clone' to clone rules before/after another rule and add a suffix
+rules-edit: improved 'calculate-zones' with NAT rules which will be cloned if several destination zones are found
 
 bugfix:
 - typos in service-edit action prefix-add suffix-add
 - report generation on 7050 requires explicit 'async=yes'
+- calculate-zones now considers directly connected with better priority than static ones
 
 
 1.5.7
