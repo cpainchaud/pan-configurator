@@ -17,8 +17,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-print "\n***********************************************\n";
-print   "*********** ADDRESS-EDIT UTILITY **************\n\n";
+echo "\n***********************************************\n";
+echo   "*********** ADDRESS-EDIT UTILITY **************\n\n";
 
 set_include_path( dirname(__FILE__).'/../'. PATH_SEPARATOR . get_include_path() );
 require_once("lib/panconfigurator.php");
@@ -28,34 +28,34 @@ require_once("common/actions.php");
 function display_usage_and_exit($shortMessage = false)
 {
     global $argv;
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml out=outputfile.xml location=all|shared|sub ".
+    echo PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml out=outputfile.xml location=all|shared|sub ".
         "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
-    print "php ".basename(__FILE__)." listactions   : list supported actions\n";
-    print "php ".basename(__FILE__)." listfilters   : list supported filter\n";
-    print "php ".basename(__FILE__)." help          : more help messages\n";
-    print PH::boldText("\nExamples:\n");
-    print " - php ".basename(__FILE__)." type=panorama in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'\n";
-    print " - php ".basename(__FILE__)." type=panos in=config.xml out=output.xml location=any actions=delete\n";
+    echo "php ".basename(__FILE__)." listactions   : list supported actions\n";
+    echo "php ".basename(__FILE__)." listfilters   : list supported filter\n";
+    echo "php ".basename(__FILE__)." help          : more help messages\n";
+    echo PH::boldText("\nExamples:\n");
+    echo " - php ".basename(__FILE__)." type=panorama in=api://192.169.50.10 location=DMZ-Firewall-Group actions=displayReferences 'filter=(name eq Mail-Host1)'\n";
+    echo " - php ".basename(__FILE__)." type=panos in=config.xml out=output.xml location=any actions=delete\n";
 
     if( !$shortMessage )
     {
-        print PH::boldText("\nListing available arguments\n\n");
+        echo PH::boldText("\nListing available arguments\n\n");
 
         global $supportedArguments;
 
         ksort($supportedArguments);
         foreach( $supportedArguments as &$arg )
         {
-            print " - ".PH::boldText($arg['niceName']);
+            echo " - ".PH::boldText($arg['niceName']);
             if( isset( $arg['argDesc']))
-                print '='.$arg['argDesc'];
+                echo '='.$arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']))
-                print "\n     ".$arg['shortHelp'];
-            print "\n\n";
+                echo "\n     ".$arg['shortHelp'];
+            echo "\n\n";
         }
 
-        print "\n\n";
+        echo "\n\n";
     }
 
     exit(1);
@@ -68,7 +68,7 @@ function display_error_usage_exit($msg)
 }
 
 
-print "\n";
+echo "\n";
 
 $configType = null;
 $configInput = null;
@@ -137,7 +137,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
 
         if( !$object->isTmpAddr() )
         {
-            print $context->padding."     *  SKIPPED because object is not temporary or not an IP address/netmask\n";
+            echo $context->padding."     *  SKIPPED because object is not temporary or not an IP address/netmask\n";
             return;
         }
 
@@ -145,7 +145,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
 
         if( !$object->nameIsValidRuleIPEntry() )
         {
-            print $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
+            echo $context->padding . "     *  SKIPPED because object is not an IP address/netmask or range\n";
             return;
         }
 
@@ -157,7 +157,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
             if( $class != 'AddressRuleContainer' && $class != 'NatRule' )
             {
                 $clearForAction = false;
-                print $context->padding."     *  SKIPPED because its used in unsupported class $class\n";
+                echo $context->padding."     *  SKIPPED because its used in unsupported class $class\n";
                 return;
             }
         }
@@ -181,13 +181,13 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
 
             if( $mask > 32 || $mask < 0 )
             {
-                print $context->padding."    * SKIPPED because of invalid mask detected : '$mask'\n";
+                echo $context->padding."    * SKIPPED because of invalid mask detected : '$mask'\n";
                 return;
             }
 
             if( filter_var($name, FILTER_VALIDATE_IP) === FALSE )
             {
-                print $context->padding."    * SKIPPED because of invalid IP detected : '$name'\n";
+                echo $context->padding."    * SKIPPED because of invalid IP detected : '$name'\n";
                 return;
             }
 
@@ -207,7 +207,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
             $newName = "R-".$explode[0].'-'.$explode[1];
         }
 
-        print $context->padding."    * new object name will be $newName\n";
+        echo $context->padding."    * new object name will be $newName\n";
 
         $objToReplace = $object->owner->find($newName);
         if( $objToReplace === null )
@@ -232,7 +232,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
             $objMap = IP4Map::mapFromText($name.'/'.$mask);
             if( !$objMap->equals($objToReplace->getIP4Mapping()) )
             {
-                print "    * SKIPPED because an object with same name exists but has different value\n";
+                echo "    * SKIPPED because an object with same name exists but has different value\n";
                 return;
             }
         }
@@ -247,14 +247,14 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
                 if( $class == 'AddressRuleContainer' )
                 {
                     /** @var AddressRuleContainer $objectRef */
-                    print $context->padding."     - replacing in {$objectRef->toString()}\n";
+                    echo $context->padding."     - replacing in {$objectRef->toString()}\n";
 
                     if( $objectRef->owner->isNatRule()
                         && $objectRef->name == 'snathosts'
                         && $objectRef->owner->sourceNatTypeIs_DIPP()
                         && $objectRef->owner->snatinterface !== null )
                     {
-                        print $context->padding."        -  SKIPPED because it's a SNAT with Interface IP address\n";
+                        echo $context->padding."        -  SKIPPED because it's a SNAT with Interface IP address\n";
                         continue;
                     }
 
@@ -272,7 +272,7 @@ $supportedActions['replace-ip-by-mt-like-object'] = Array(
                 elseif( $class == 'NatRule' )
                 {
                     /** @var NatRule $objectRef */
-                    print $context->padding."     - replacing in {$objectRef->toString()}\n";
+                    echo $context->padding."     - replacing in {$objectRef->toString()}\n";
 
                     if( $context->isAPI )
                         $objectRef->API_setDNAT($objToReplace, $objectRef->dnatports);
@@ -342,7 +342,7 @@ $supportedActions['replacewithobject'] = Array(
 
         foreach ($objectRefs as $objectRef)
         {
-            print $context->padding." * replacing in {$objectRef->toString()}\n";
+            echo $context->padding." * replacing in {$objectRef->toString()}\n";
             if( $context->isAPI )
                 $objectRef->API_replaceReferencedObject($object, $foundObject);
             else
@@ -361,12 +361,12 @@ $supportedActions['z_beta_summarize'] = Array(
 
         if( !$object->isGroup() )
         {
-            print $context->padding."    - SKIPPED because object is not a group\n";
+            echo $context->padding."    - SKIPPED because object is not a group\n";
             return;
         }
         if( $object->isDynamic() )
         {
-            print $context->padding."    - SKIPPED because group is dynamic\n";
+            echo $context->padding."    - SKIPPED because group is dynamic\n";
             return;
         }
 
@@ -402,7 +402,7 @@ $supportedActions['z_beta_summarize'] = Array(
             $object->addMember($newObject);
         }
 
-        print $context->padding."  - group had ".count($members)." expanded members vs {$mapping->count()} IP4 entries and ".count($listOfNotConvertibleObjects)." unsupported objects\n";
+        echo $context->padding."  - group had ".count($members)." expanded members vs {$mapping->count()} IP4 entries and ".count($listOfNotConvertibleObjects)." unsupported objects\n";
 
     },
 );
@@ -538,13 +538,13 @@ $supportedActions['replacebymembersanddelete'] = Array(
 
         if( !$object->isGroup() )
         {
-            print $context->padding." - SKIPPED : it's not a group\n";
+            echo $context->padding." - SKIPPED : it's not a group\n";
             return;
         }
 
         if( $object->owner === null )
         {
-            print $context->padding." -  SKIPPED : object was previously removed\n";
+            echo $context->padding." -  SKIPPED : object was previously removed\n";
             return;
         }
 
@@ -556,7 +556,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
             if( $class != 'AddressRuleContainer' && $class != 'AddressGroup' )
             {
                 $clearForAction = false;
-                print "- SKIPPED : it's used in unsupported class $class\n";
+                echo "- SKIPPED : it's used in unsupported class $class\n";
                 return;
             }
         }
@@ -569,11 +569,11 @@ $supportedActions['replacebymembersanddelete'] = Array(
 
                 if( $objectRef->owner === null )
                 {
-                    print $context->padding."  - SKIPPED because object already removed ({$objectRef->toString()})\n";
+                    echo $context->padding."  - SKIPPED because object already removed ({$objectRef->toString()})\n";
                     continue;
                 }
 
-                print $context->padding."  - adding members in {$objectRef->toString()}\n";
+                echo $context->padding."  - adding members in {$objectRef->toString()}\n";
 
                 if( $class == 'AddressRuleContainer' )
                 {
@@ -585,7 +585,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
                         else
                             $objectRef->addObject($objectMember);
 
-                        print $context->padding."     -> {$objectMember->toString()}\n";
+                        echo $context->padding."     -> {$objectMember->toString()}\n";
                     }
                     if( $context->isAPI )
                         $objectRef->API_remove($object);
@@ -601,7 +601,7 @@ $supportedActions['replacebymembersanddelete'] = Array(
                             $objectRef->API_addMember($objectMember);
                         else
                             $objectRef->addMember($objectMember);
-                        print $context->padding."     -> {$objectMember->toString()}\n";
+                        echo $context->padding."     -> {$objectMember->toString()}\n";
                     }
                     if( $context->isAPI )
                         $objectRef->API_removeMember($object);
@@ -629,10 +629,10 @@ $supportedActions['name-addprefix'] = Array(
     {
         $object = $context->object;
         $newName = $context->arguments['prefix'].$object->name();
-        print $context->padding." - new name will be '{$newName}'\n";
+        echo $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
         {
-            print " *** SKIPPED : resulting name is too long\n";
+            echo " *** SKIPPED : resulting name is too long\n";
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -640,7 +640,7 @@ $supportedActions['name-addprefix'] = Array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            echo " *** SKIPPED : an object with same name already exists\n";
             return;
         }
         if( $context->isAPI )
@@ -657,10 +657,10 @@ $supportedActions['name-addsuffix'] = Array(
     {
         $object = $context->object;
         $newName = $object->name().$context->arguments['suffix'];
-        print $context->padding." - new name will be '{$newName}'\n";
+        echo $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
         {
-            print " *** SKIPPED : resulting name is too long\n";
+            echo " *** SKIPPED : resulting name is too long\n";
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -668,7 +668,7 @@ $supportedActions['name-addsuffix'] = Array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
         {
-            print " *** SKIPPED : an object with same name already exists\n";
+            echo " *** SKIPPED : an object with same name already exists\n";
             return;
         }
         if( $context->isAPI )
@@ -696,7 +696,7 @@ $supportedActions['move'] = Array(
 
         if( $localLocation == $targetLocation )
         {
-            print $context->padding." * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            echo $context->padding." * SKIPPED because original and target destinations are the same: $targetLocation\n";
             return;
         }
 
@@ -717,23 +717,33 @@ $supportedActions['move'] = Array(
 
         if( $localLocation == 'shared' )
         {
-            print $context->padding."   * SKIPPED : moving from SHARED to sub-level is not yet supported\n";
+            echo $context->padding."   * SKIPPED : moving from SHARED to sub-level is not yet supported\n";
             return;
         }
 
         if( $localLocation != 'shared' && $targetLocation != 'shared' )
         {
-            print $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
+            if( $context->baseObject->isFirewall() )
+            {
+                echo $context->padding."   * SKIPPED : moving between VSYS is not supported\n";
+                return;
+            }
+
+            echo $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
             return;
         }
 
         $conflictObject = $targetStore->find($object->name() ,null, false);
         if( $conflictObject === null )
         {
-            print $context->padding."   * moved, no conflict\n";
+            echo $context->padding."   * moved, no conflict\n";
             if( $context->isAPI )
             {
-                derr("unsupported with API yet, use offline mode instead");
+                $oldXpath = $object->getXPath();
+                $object->owner->remove($object);
+                $targetStore->add($object);
+                $object->API_sync();
+                $context->connector->sendDeleteRequest($oldXpath);
             }
             else
             {
@@ -745,19 +755,19 @@ $supportedActions['move'] = Array(
 
         if( $context->arguments['mode'] == 'skipifconflict' )
         {
-            print $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
+            echo $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
             return;
         }
 
-        print $context->padding."   - there is a conflict with type ";
+        echo $context->padding."   - there is a conflict with type ";
         if( $conflictObject->isGroup() )
-            print "Group\n";
+            echo "Group\n";
         else
-            print $conflictObject->type()."\n";
+            echo $conflictObject->type()."\n";
 
         if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
         {
-            print $context->padding."   * SKIPPED because conflict has mismatching types\n";
+            echo $context->padding."   * SKIPPED because conflict has mismatching types\n";
             return;
         }
 
@@ -769,7 +779,7 @@ $supportedActions['move'] = Array(
 
         if( $object->isTmpAddr() )
         {
-            print $context->padding."   * SKIPPED because this object is Tmp\n";
+            echo $context->padding."   * SKIPPED because this object is Tmp\n";
             return;
         }
 
@@ -777,7 +787,7 @@ $supportedActions['move'] = Array(
         {
             if( $object->equals($conflictObject) )
             {
-                print "    * Removed because target has same content\n";
+                echo "    * Removed because target has same content\n";
 
                 $object->replaceMeGlobally($conflictObject);
                 if($context->isAPI)
@@ -792,7 +802,7 @@ $supportedActions['move'] = Array(
                 $object->displayValueDiff($conflictObject, 9);
                 if( $context->arguments['mode'] == 'removeifmatch')
                 {
-                    print $context->padding."    * SKIPPED because of mismatching group content\n";
+                    echo $context->padding."    * SKIPPED because of mismatching group content\n";
                     return;
                 }
 
@@ -801,11 +811,11 @@ $supportedActions['move'] = Array(
 
                 if( !$localMap->equals($targetMap) )
                 {
-                    print $context->padding."    * SKIPPED because of mismatching group content and numerical values\n";
+                    echo $context->padding."    * SKIPPED because of mismatching group content and numerical values\n";
                     return;
                 }
 
-                print $context->padding."    * Removed because it has same numerical value\n";
+                echo $context->padding."    * Removed because it has same numerical value\n";
 
                 $object->replaceMeGlobally($conflictObject);
                 if($context->isAPI)
@@ -820,7 +830,7 @@ $supportedActions['move'] = Array(
 
         if( $object->equals($conflictObject) )
         {
-            print "    * Removed because target has same content\n";
+            echo "    * Removed because target has same content\n";
             $object->replaceMeGlobally($conflictObject);
 
             if($context->isAPI)
@@ -838,11 +848,11 @@ $supportedActions['move'] = Array(
 
         if( !$localMap->equals($targetMap) )
         {
-            print $context->padding."    * SKIPPED because of mismatching content and numerical values\n";
+            echo $context->padding."    * SKIPPED because of mismatching content and numerical values\n";
             return;
         }
 
-        print "    * Removed because target has same numerical value\n";
+        echo "    * Removed because target has same numerical value\n";
 
         $object->replaceMeGlobally($conflictObject);
         if($context->isAPI)
@@ -867,14 +877,14 @@ $supportedActions['showip4mapping'] = Array(
                     if( $object->isGroup() )
                     {
                         $resolvMap=$object->getIP4Mapping();
-                        print $context->padding."* {$resolvMap->count()} entries\n";
+                        echo $context->padding."* {$resolvMap->count()} entries\n";
                         foreach($resolvMap->getMapArray() as &$resolvRecord)
                         {
-                            print $context->padding." - ".str_pad(long2ip($resolvRecord['start']), 14)." - ".long2ip($resolvRecord['end'])."\n";
+                            echo $context->padding." - ".str_pad(long2ip($resolvRecord['start']), 14)." - ".long2ip($resolvRecord['end'])."\n";
                         }
                         /*foreach($resolvMap['unresolved'] as &$resolvRecord)
                         {
-                            print "     * UNRESOLVED: {$resolvRecord->name()}\n";
+                            echo "     * UNRESOLVED: {$resolvRecord->name()}\n";
                         }*/
 
                     }
@@ -886,9 +896,9 @@ $supportedActions['showip4mapping'] = Array(
                         {
                             $resolvMap = $object->getIP4Mapping()->getMapArray();
                             $resolvMap = reset($resolvMap);
-                            print $context->padding." - ".str_pad(long2ip($resolvMap['start']), 14)." - ".long2ip($resolvMap['end'])."\n";
+                            echo $context->padding." - ".str_pad(long2ip($resolvMap['start']), 14)." - ".long2ip($resolvMap['end'])."\n";
                         }
-                        else print $context->padding." - UNSUPPORTED \n";
+                        else echo $context->padding." - UNSUPPORTED \n";
                     }
                 }
 );
@@ -914,20 +924,20 @@ $supportedActions['display'] = Array(
         {
             if( $object->isDynamic() )
             {
-                print $context->padding."* " . get_class($object) . " '{$object->name()}' (DYNAMIC)\n";
+                echo $context->padding."* " . get_class($object) . " '{$object->name()}' (DYNAMIC)\n";
             }
             else
             {
-                print $context->padding."* " . get_class($object) . " '{$object->name()}' ({$object->count()} members)\n";
+                echo $context->padding."* " . get_class($object) . " '{$object->name()}' ({$object->count()} members)\n";
 
                 foreach ($object->members() as $member)
-                    print "          - {$member->name()}\n";
+                    echo "          - {$member->name()}\n";
             }
         }
         else
-            print $context->padding."* ".get_class($object)." '{$object->name()}'  value: '{$object->value()}'\n";
+            echo $context->padding."* ".get_class($object)." '{$object->name()}'  value: '{$object->value()}'\n";
 
-        print "\n";
+        echo "\n";
     },
 );
 // </editor-fold>
@@ -959,9 +969,9 @@ if( isset(PH::$args['help']) )
 if( isset(PH::$args['loadplugin']) )
 {
     $pluginFile = PH::$args['loadplugin'];
-    print " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
+    echo " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
     require_once $pluginFile;
-    print "OK!\n";
+    echo "OK!\n";
 }
 
 
@@ -969,12 +979,12 @@ if( isset(PH::$args['listactions']) )
 {
     ksort($supportedActions);
 
-    print "Listing of supported actions:\n\n";
+    echo "Listing of supported actions:\n\n";
 
-    print str_pad('', 100, '-')."\n";
-    print str_pad('Action name', 28, ' ', STR_PAD_BOTH)."|".str_pad("Argument:Type",24, ' ', STR_PAD_BOTH)." |".
+    echo str_pad('', 100, '-')."\n";
+    echo str_pad('Action name', 28, ' ', STR_PAD_BOTH)."|".str_pad("Argument:Type",24, ' ', STR_PAD_BOTH)." |".
         str_pad("Def. Values",12, ' ', STR_PAD_BOTH)."|   Choices\n";
-    print str_pad('', 100, '-')."\n";
+    echo str_pad('', 100, '-')."\n";
 
     foreach($supportedActions as &$action )
     {
@@ -1004,11 +1014,11 @@ if( isset(PH::$args['listactions']) )
         }
 
 
-        print $output."\n";
+        echo $output."\n";
 
-        print str_pad('', 100, '=')."\n";
+        echo str_pad('', 100, '=')."\n";
 
-        //print "\n";
+        //echo "\n";
     }
 
     exit(0);
@@ -1018,11 +1028,11 @@ if( isset(PH::$args['listfilters']) )
 {
     ksort(RQuery::$defaultFilters['address']);
 
-    print "Listing of supported filters:\n\n";
+    echo "Listing of supported filters:\n\n";
 
     foreach(RQuery::$defaultFilters['address'] as $index => &$filter )
     {
-        print "* ".$index."\n";
+        echo "* ".$index."\n";
         ksort( $filter['operators'] );
 
         foreach( $filter['operators'] as $oindex => &$operator)
@@ -1030,9 +1040,9 @@ if( isset(PH::$args['listfilters']) )
             //if( $operator['arg'] )
             $output = "    - $oindex";
 
-            print $output."\n";
+            echo $output."\n";
         }
-        print "\n";
+        echo "\n";
     }
 
     exit(0);
@@ -1106,9 +1116,9 @@ elseif ( $configInput['type'] == 'api'  )
 {
     if($debugAPI)
         $configInput['connector']->setShowApiCalls(true);
-    print " - Downloading config from API... ";
+    echo " - Downloading config from API... ";
     $xmlDoc = $configInput['connector']->getCandidateConfig();
-    print "OK!\n";
+    echo "OK!\n";
 }
 else
     derr('not supported yet');
@@ -1131,7 +1141,7 @@ if( $configType == 'panos' )
 else
     $pan = new PanoramaConf();
 
-print " - Detected platform type is '{$configType}'\n";
+echo " - Detected platform type is '{$configType}'\n";
 
 if( $configInput['type'] == 'api' )
     $pan->connector = $configInput['connector'];
@@ -1170,12 +1180,12 @@ else
 {
     if( $configType == 'panos' )
     {
-        print " - No 'location' provided so using default ='vsys1'\n";
+        echo " - No 'location' provided so using default ='vsys1'\n";
         $objectsLocation = 'vsys1';
     }
     else
     {
-        print " - No 'location' provided so using default ='shared'\n";
+        echo " - No 'location' provided so using default ='shared'\n";
         $objectsLocation = 'shared';
     }
 }
@@ -1234,7 +1244,7 @@ if( $objectsFilter !== null )
         exit(1);
     }
 
-    print " - filter after sanitization : ".$objectFilterRQuery->sanitizedString()."\n";
+    echo " - filter after sanitization : ".$objectFilterRQuery->sanitizedString()."\n";
 }
 // --------------------
 
@@ -1242,7 +1252,7 @@ if( $objectsFilter !== null )
 //
 // load the config
 //
-print " - Loading configuration through PAN-Configurator library... ";
+echo " - Loading configuration through PAN-Configurator library... ";
 $loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
 $pan->load_from_domxml($xmlDoc);
@@ -1250,7 +1260,7 @@ $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
 $loadUsedMem = convert($loadEndMem - $loadStartMem);
-print "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+echo "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 
@@ -1318,23 +1328,23 @@ foreach( $objectsLocation as $location )
 
     if( !$locationFound )
     {
-        print "ERROR: location '$location' was not found. Here is a list of available ones:\n";
-        print " - shared\n";
+        echo "ERROR: location '$location' was not found. Here is a list of available ones:\n";
+        echo " - shared\n";
         if( $configType == 'panos' )
         {
             foreach( $pan->getVirtualSystems() as $sub )
             {
-                print " - ".$sub->name()."\n";
+                echo " - ".$sub->name()."\n";
             }
         }
         else
         {
             foreach( $pan->getDeviceGroups() as $sub )
             {
-                print " - ".$sub->name()."\n";
+                echo " - ".$sub->name()."\n";
             }
         }
-        print "\n\n";
+        echo "\n\n";
         exit(1);
     }
 }
@@ -1360,7 +1370,7 @@ foreach( $objectsToProcess as &$objectsRecord )
         $doAction->subSystem = $store->owner;
     }
 
-    print "\n* processing store '".PH::boldText($store->toString())." that holds ".count($objects)." objects\n";
+    echo "\n* processing store '".PH::boldText($store->toString())." that holds ".count($objects)." objects\n";
 
 
     foreach($objects as $object )
@@ -1382,11 +1392,11 @@ foreach( $objectsToProcess as &$objectsRecord )
         {
             $doAction->padding = '     ';
             $doAction->executeAction($object);
-            print "\n";
+            echo "\n";
         }
     }
 
-    print "\n* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed\n\n";
+    echo "\n* objects processed in DG/Vsys '{$store->owner->name()}' : $subObjectsProcessed\n\n";
 }
 // </editor-fold>
 
@@ -1402,18 +1412,18 @@ foreach( $doActions as $doAction )
 }
 
 
-print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS DONE **** \n\n";
+echo "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS DONE **** \n\n";
 
 if( isset(PH::$args['stats']) )
 {
     $pan->display_statistics();
-    print "\n";
+    echo "\n";
     foreach( $objectsToProcess as &$record )
     {
         if( get_class($record['store']->owner) != 'PanoramaConf' && get_class($record['store']->owner) != 'PANConf' )
         {
             $record['store']->owner->display_statistics();
-            print "\n";
+            echo "\n";
         }
     }
 }
@@ -1428,9 +1438,9 @@ if( $configOutput !== null )
     }
 }
 
-print "\n\n********** END OF ADDRESS-EDIT UTILITY ***********\n";
-print     "**************************************************\n";
-print "\n\n";
+echo "\n\n********** END OF ADDRESS-EDIT UTILITY ***********\n";
+echo     "**************************************************\n";
+echo "\n\n";
 
 
 
