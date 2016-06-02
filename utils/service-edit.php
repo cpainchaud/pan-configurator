@@ -1057,8 +1057,9 @@ foreach( $objectsLocation as &$location )
     else if( strtolower($location) == 'all' )
         $location = 'any';
 }
-$objectsLocation = array_unique($objectsLocation);
+unset($location);
 
+$objectsLocation = array_unique($objectsLocation);
 $objectsToProcess = Array();
 
 foreach( $objectsLocation as $location )

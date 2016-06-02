@@ -573,6 +573,8 @@ foreach( $rulesLocation as &$location )
     else if( strtolower($location) == 'all' )
         $location = 'any';
 }
+unset($location);
+
 $rulesLocation = array_unique($rulesLocation);
 $rulesToProcess = Array();
 
