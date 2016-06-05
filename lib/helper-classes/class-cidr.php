@@ -94,6 +94,181 @@ class cidr
         return Array('network' => $start, 'mask' => $netmask, 'string' => $string );
     }
 
+    /**
+     * @param int $start    e.g. 2839055104 [169.56.139.0]
+     * @param int $end      e.g. 2839056512 [169.56.144.128]
+     * @return bool|int[] Array( '2839055104m24' => Array( 'network' => '2839055104', 'mask' => '24', 'string' => 169.56.139.0/24' )
+     *      '2839055360m22' => Array( 'network' => '2839055360', 'mask' => '22', 'string' => 169.56.140.0/22' )
+     *      '2839056384m25' => Array( 'network' => '2839056384', 'mask' => '25', 'string' => '169.56.144.0/25')
+     *      '2839056512m32' => Array( 'network' => '2839056512', 'mask' => '32', 'string' => '169.56.144.128/32'))
+     */
+    static public function range2network_all($start,$end)
+    {
+        if( is_string($start) )
+            derr("'start' cannot be a string");
+        if( is_string($end) )
+            derr("'end' cannot be a string");
+
+        $diff = $end - $start + 1;
+        $int2pow = Array();
+
+        for( $i = 0; $i < 32; $i++ )
+            $int2pow[pow(2, $i)] = $i;
+
+        $networks = array();
+
+        $netmask = 0;
+        $netmask_id = 0;
+        if( !isset($int2pow[$diff]) )
+        {
+            foreach( $int2pow as $id => $check_mask )
+            {
+                if( $id > $diff )
+                {
+                    $netmask = 32 - $check_mask;
+                    $netmask_id = $id;
+                    break;
+                }
+            }
+            $string = long2ip($start) . '/' . $netmask;
+            $tmp = self::stringToStartEnd($string);
+
+            if( ($tmp['start'] != $start) || ($tmp['end'] != $end) )
+            {
+                $netmask_new = $netmask + 1;
+                $checkstring = $start;
+
+                if( ($tmp['start'] === $start) && ($tmp['end'] <= $end) )
+                {
+                    $string = long2ip($start) . '/' . $netmask;
+                    $networks[$start."m".$netmask] = Array('network' => $start, 'mask' => $netmask, 'string' => $string );
+                    $checkstring = $tmp['end'] + 1;
+                }
+
+                $end_of_start = FALSE;
+                do
+                {
+                    $string = long2ip($checkstring) . '/' . $netmask_new;
+                    $tmp = self::stringToStartEnd($string);
+                    $checkstring_start = $checkstring;
+
+                    if( ($tmp['start'] < $start) || ($tmp['end'] > $end) )
+                    {
+                        $netmask_new++;
+
+                        if( $tmp['start'] === $start )
+                        {
+                            $checkstring = $tmp['start'];
+                            $checkstring_start = $checkstring;
+                        }
+                    }
+                    elseif( (($tmp['start'] === $start) && ($tmp['end'] <= $end)) || ($tmp['start'] === $checkstring && $tmp['end'] <= $end) )
+                    {
+                        $string = long2ip($checkstring) . '/' . $netmask_new;
+                        $networks[$checkstring."m".$netmask_new] = Array('network' => $checkstring, 'mask' => $netmask_new, 'string' => $string );
+                        $checkstring_start = $checkstring;
+                        $checkstring = $tmp['end'] + 1;
+
+                        $netmask_tmp = $netmask_id/2;
+                        $netmask_new = 32-$int2pow[$netmask_tmp];
+                    }
+
+                    if( $end_of_start === FALSE )
+                    {
+                        if( ($tmp['start'] !== $start) )
+                            $go = TRUE;
+                        elseif( $tmp['end'] > $end )
+                            $go = TRUE;
+                        else
+                        {
+                            $end_of_start = TRUE;
+                            $go = TRUE;
+                            $netmask_new = $netmask;
+                        }
+                    }
+                    else
+                    {
+                        if( ($tmp['end'] !== $end) )
+                            $go = TRUE;
+                        elseif( $tmp['start'] !== $checkstring_start )
+                            $go = TRUE;
+                        else
+                            $go = FALSE;
+                    }
+
+                } while( $go );
+            }
+        }
+        else{
+            $netmask = 32 - $int2pow[$diff];
+            $string = long2ip($start) . '/' . $netmask;
+            $tmp = self::stringToStartEnd($string);
+
+            if( ($tmp['start'] != $start) || ($tmp['end'] != $end) )
+            {
+                $netmask_new = $netmask + 1;
+
+                if( $tmp['start'] != $start )
+                    $checkstring = $start;
+                elseif( $tmp['end'] != $end )
+                    $checkstring = $tmp['end'] + 1;
+
+                $end_of_start = FALSE;
+                do
+                {
+                    $string = long2ip($checkstring) . '/' . $netmask_new;
+                    $tmp = self::stringToStartEnd($string);
+                    $checkstring_start = $checkstring;#not needed yet
+
+                    if( $tmp['start'] < $start )
+                    {
+                        $netmask_new++;
+                        $checkstring = $start;
+                    }
+                    else if( $tmp['end'] > $end )
+                    {
+                        $netmask_new++;
+                        $checkstring = $tmp['start'];
+                    }
+                    else
+                    {
+                        $string = long2ip($checkstring) . '/' . $netmask_new;
+                        $networks[$checkstring."m".$netmask_new] = Array('network' => $checkstring, 'mask' => $netmask_new, 'string' => $string );
+                        $checkstring_start = $checkstring;#not needed yet
+                        $checkstring = $tmp['end'] + 1;
+                        $netmask_new = $netmask-1;
+                    }
+
+                    if( $end_of_start === FALSE )
+                    {
+                        if($tmp['start'] < $start)
+                            $go = TRUE;
+                        else
+                        {
+                            $end_of_start = TRUE;
+                            $go = TRUE;
+                            $netmask_new = $netmask;
+                        }
+                    }
+                    else
+                    {
+                        if( ($tmp['end'] !== $end) )
+                            $go = TRUE;
+                        else
+                            $go = FALSE;
+                    }
+
+                } while( $go );
+            }
+            else
+            {
+                $string = long2ip($start) . '/' . $netmask;
+                $networks[$start."m".$netmask] = Array('network' => $start, 'mask' => $netmask, 'string' => $string );
+            }
+        }
+        return $networks;
+    }
+
     // is ip in subnet
     // e.g. is 10.5.21.30 in 10.5.16.0/20 == true
     //      is 192.168.50.2 in 192.168.30.0/23 == false
