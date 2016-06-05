@@ -73,6 +73,9 @@ class PanAPIConnector
     /** @var string $info_vmlicense can be unknown|VM-100|VM-200|VM-300|VM-1000 */
     public $info_vmlicense = null;
 
+    private $_curl_handle = null;
+    private $_curl_count = 0;
+
     /**
      * @param bool $force Force refresh instead of using cache
      * @throws Exception
@@ -626,11 +629,21 @@ class PanAPIConnector
      */
     public function sendRequest(&$parameters, $checkResultTag = FALSE, &$filecontent = null, $filename = '', $moreOptions = Array())
     {
-
         $sendThroughPost = FALSE;
 
         if( is_array($parameters) )
             $sendThroughPost = TRUE;
+
+        if( $this->_curl_handle === null )
+            $this->_curl_handle = curl_init();
+        else
+            curl_reset($this->_curl_handle);
+
+        curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if( defined('CURL_SSLVERSION_TLSv1') ) // for older versions of PHP/openssl bundle
+            curl_setopt($this->_curl_handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
 
         $host = $this->apihost;
         if( $this->port != 443 )
@@ -658,28 +671,22 @@ class PanAPIConnector
 
         if( !$sendThroughPost )
         {
-            $url = str_replace('#', '%23', $parameters);
+            //$url = str_replace('#', '%23', $parameters);
             $finalUrl .= '&' . $parameters;
         }
 
-
+        curl_setopt($this->_curl_handle, CURLOPT_URL, str_replace(' ', '%20', $finalUrl));
         if( isset($moreOptions['timeout']) )
-            $timeout = $moreOptions['timeout'];
+            curl_setopt($this->_curl_handle, CURLOPT_CONNECTTIMEOUT, $moreOptions['timeout']);
         else
-            $timeout = 7;
+            curl_setopt($this->_curl_handle, CURLOPT_CONNECTTIMEOUT, 7);
 
-        $c = new mycurl($finalUrl, FALSE, $timeout);
+        curl_setopt($this->_curl_handle, CURLOPT_LOW_SPEED_LIMIT, 500);
+        if( isset($moreOptions['lowSpeedTime']) )
+            curl_setopt($this->_curl_handle, CURLOPT_LOW_SPEED_TIME, $moreOptions['lowSpeedTime']);
+        else
+            curl_setopt($this->_curl_handle, CURLOPT_LOW_SPEED_TIME, 60);
 
-        if( array_key_exists('lowSpeedTime', $moreOptions) )
-        {
-            $c->_lowspeedtime = $moreOptions['lowSpeedTime'];
-        }
-
-
-        if( $filecontent !== null )
-        {
-            $c->setInfile($filecontent, $filename);
-        }
 
         if( $sendThroughPost )
         {
@@ -689,11 +696,25 @@ class PanAPIConnector
             }
             $parameters['key'] = $this->apikey;
             $properParams = http_build_query($parameters);
-            $c->setPost($properParams);
+            curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $properParams);
+        }
+
+        if( $filecontent !== null )
+        {
+            $encodedContent = "----ABC1234\r\n"
+                . "Content-Disposition: form-data; name=\"file\"; filename=\"" . $filename . "\"\r\n"
+                . "Content-Type: application/xml\r\n"
+                . "\r\n"
+                . $filecontent . "\r\n"
+                . "----ABC1234--\r\n";
+
+            //print "content length = ".strlen($content)."\n";
+            curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, Array('Content-Type: multipart/form-data; boundary=--ABC1234'));
+            curl_setopt($this->_curl_handle, CURLOPT_POST, TRUE);
+            curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $encodedContent);
         }
 
         //$this->showApiCalls = true;
-
         if( $this->showApiCalls )
         {
             if( $sendThroughPost )
@@ -711,21 +732,21 @@ class PanAPIConnector
                 print("API call: \"" . $finalUrl . "\"\r\n");
         }
 
-
-        if( !$c->createCurl() )
+        $httpReplyContent = curl_exec($this->_curl_handle);
+        if( $httpReplyContent === false )
         {
-            derr('Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . $c->last_error);
+            derr('Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . curl_error($this->_curl_handle));
         }
 
-
-        if( $c->getHttpStatus() != 200 )
+        $curlHttpStatusCode = curl_getinfo($this->_curl_handle, CURLINFO_HTTP_CODE);
+        if( $curlHttpStatusCode != 200 )
         {
-            derr("HTTP API ret (code : {$c->getHttpStatus()})" . $c->__tostring());
+            derr("HTTP API returned (code : {$curlHttpStatusCode}); " . curl_exec($this->_curl_handle));
         }
 
         $xmlDoc = new DOMDocument();
-        if( !$xmlDoc->loadXML($c->__tostring(), LIBXML_PARSEHUGE) )
-            derr('Invalid xml input :' . $c->__tostring());
+        if( !$xmlDoc->loadXML($httpReplyContent, LIBXML_PARSEHUGE) )
+            derr('Invalid xml input :' . $httpReplyContent);
 
         $firstElement = DH::firstChildElement($xmlDoc);
         if( $firstElement === FALSE )
@@ -1146,7 +1167,7 @@ class PanAPIConnector
 
     /**
      * @param string $cmd operational command string
-     * @param bool $stripResultTag
+     * @param bool $stripResponseTag
      * @return DomDocument
      */
     public function sendOpRequest($cmd, $stripResponseTag = TRUE)
@@ -1252,7 +1273,6 @@ class PanAPIConnector
     /**
      *   send a config to the firewall and save under name $config_name
      *
-     *
      * @param DOMNode $configDomXml
      * @param string $configName
      * @param bool $verbose
@@ -1272,205 +1292,8 @@ class PanAPIConnector
 
         return $answer;
     }
+    
 }
 
-
-/**
- * @ignore
- */
-class mycurl
-{
-    protected $_useragent = 'Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1';
-    protected $_url;
-    protected $_followlocation;
-    protected $_timeout;
-    protected $_maxRedirects;
-    protected $_cookieFileLocation = './cookie.txt';
-    protected $_post;
-    protected $_postFields;
-    protected $_referer = "http://panapiconnector";
-
-    protected $_session;
-    protected $_webpage;
-    protected $_includeHeader;
-    protected $_noBody;
-    protected $_status;
-    protected $_binaryTransfer;
-
-    protected $_infilecontent;
-    protected $_infilename;
-
-    public $_lowspeedtime = 60;
-
-    public $authentication = 0;
-    public $auth_name = '';
-    public $auth_pass = '';
-
-    public function useAuth($use)
-    {
-        $this->authentication = 0;
-        if( $use == TRUE ) $this->authentication = 1;
-    }
-
-    public function setName($name)
-    {
-        $this->auth_name = $name;
-    }
-
-    public function setPass($pass)
-    {
-        $this->auth_pass = $pass;
-    }
-
-    public function __construct($url, $followlocation = FALSE, $timeOut = 30, $maxRedirecs = 4, $binaryTransfer = FALSE, $includeHeader = FALSE, $noBody = FALSE)
-    {
-        $this->_url = $url;
-        $this->_followlocation = $followlocation;
-        $this->_timeout = $timeOut;
-        $this->_maxRedirects = $maxRedirecs;
-        $this->_noBody = $noBody;
-        $this->_includeHeader = $includeHeader;
-        $this->_binaryTransfer = $binaryTransfer;
-        $this->_infilecontent = null;
-
-        $this->_cookieFileLocation = dirname(__FILE__) . '/cookie.txt';
-
-    }
-
-    public function setReferer($referer)
-    {
-        $this->_referer = $referer;
-    }
-
-    public function setCookiFileLocation($path)
-    {
-        $this->_cookieFileLocation = $path;
-    }
-
-    public function setPost(&$postFields)
-    {
-        $this->_post = TRUE;
-        $this->_postFields = &$postFields;
-    }
-
-    public function setUserAgent($userAgent)
-    {
-        $this->_useragent = $userAgent;
-    }
-
-    public function createCurl(&$url = 'nul')
-    {
-        if( $url != 'nul' )
-        {
-            $this->_url = $url;
-        }
-
-        $s = curl_init();
-
-        curl_setopt($s, CURLOPT_URL, str_replace(' ', '%20', $this->_url));
-        //curl_setopt($s,CURLOPT_HTTPHEADER,array('Expect:'));
-        curl_setopt($s, CURLOPT_CONNECTTIMEOUT, $this->_timeout);
-        curl_setopt($s, CURLOPT_TIMEOUT, 3600);
-
-        if( $this->_lowspeedtime !== null )
-        {
-            curl_setopt($s, CURLOPT_LOW_SPEED_LIMIT, 500);
-            curl_setopt($s, CURLOPT_LOW_SPEED_TIME, $this->_lowspeedtime);
-        }
-
-        curl_setopt($s, CURLOPT_MAXREDIRS, $this->_maxRedirects);
-        curl_setopt($s, CURLOPT_RETURNTRANSFER, TRUE);
-        curl_setopt($s, CURLOPT_FOLLOWLOCATION, $this->_followlocation);
-
-        //curl_setopt($s,CURLOPT_COOKIEJAR,$this->_cookieFileLocation);
-        //curl_setopt($s,CURLOPT_COOKIEFILE,$this->_cookieFileLocation);
-
-        if( $this->authentication == 1 )
-        {
-            curl_setopt($s, CURLOPT_USERPWD, $this->auth_name . ':' . $this->auth_pass);
-        }
-        if( $this->_post )
-        {
-            curl_setopt($s, CURLOPT_POSTFIELDS, $this->_postFields);
-        }
-
-        if( $this->_includeHeader )
-        {
-            curl_setopt($s, CURLOPT_HEADER, TRUE);
-        }
-
-        if( $this->_noBody )
-        {
-            curl_setopt($s, CURLOPT_NOBODY, TRUE);
-        }
-        /*
-        if($this->_binary)
-        {
-            curl_setopt($s,CURLOPT_BINARYTRANSFER,true);
-        }
-        */
-        curl_setopt($s, CURLOPT_USERAGENT, $this->_useragent);
-        curl_setopt($s, CURLOPT_REFERER, $this->_referer);
-
-        curl_setopt($s, CURLOPT_SSL_VERIFYPEER, FALSE);
-        curl_setopt($s, CURLOPT_SSL_VERIFYHOST, FALSE);
-
-        if( defined('CURL_SSLVERSION_TLSv1') ) // for older versions of PHP/openssl bundle
-            curl_setopt($s, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
-
-        //curl_setopt($s,CURLOPT_VERBOSE, 1);
-
-
-        if( $this->_infilecontent !== null )
-        {
-
-            $content = "----ABC1234\r\n"
-                . "Content-Disposition: form-data; name=\"file\"; filename=\"" . $this->_infilename . "\"\r\n"
-                . "Content-Type: application/xml\r\n"
-                . "\r\n"
-                . $this->_infilecontent . "\r\n"
-                . "----ABC1234--\r\n";
-
-            //print "content length = ".strlen($content)."\n";            
-            curl_setopt($s, CURLOPT_HTTPHEADER, Array('Content-Type: multipart/form-data; boundary=--ABC1234'));
-            curl_setopt($s, CURLOPT_POST, TRUE);
-            curl_setopt($s, CURLOPT_POSTFIELDS, $content);
-
-        }
-
-        $er = curl_exec($s);
-
-        if( $er === FALSE )
-        {
-            $this->last_error = curl_error($s);
-            return FALSE;
-        }
-
-        $this->_webpage = $er;
-
-
-        $this->_status = curl_getinfo($s, CURLINFO_HTTP_CODE);
-        curl_close($s);
-
-        return TRUE;
-
-    }
-
-    public function getHttpStatus()
-    {
-        return $this->_status;
-    }
-
-    public function setInfile(&$fc, $filename)
-    {
-        $this->_infilecontent = &$fc;
-        $this->_infilename = $filename;
-    }
-
-    public function __tostring()
-    {
-        return $this->_webpage;
-    }
-}
 
 
