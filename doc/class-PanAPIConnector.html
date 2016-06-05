@@ -219,7 +219,7 @@ $pan-&gt;API_load_from_candidate();</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_refreshSystemInfos">#</a>
-		<code><b>refreshSystemInfos</b>( <span>boolean <var>$force</var> = <span class="php-keyword1">false</span> </span> )</code>
+		<code><b>refreshSystemInfos</b>( <span>boolean <var>$force</var> = <span class="php-keyword1">FALSE</span></span> )</code>
 
 		<div class="description short">
 			
@@ -348,7 +348,7 @@ $pan-&gt;API_load_from_candidate();</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_findOrCreateConnectorFromHost">#</a>
-		<code><b>findOrCreateConnectorFromHost</b>( <span>string <var>$host</var></span>, <span>string <var>$apiKey</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$promptForKey</var> = <span class="php-keyword1">true</span></span>, <span>boolean <var>$checkConnectivity</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><b>findOrCreateConnectorFromHost</b>( <span>string <var>$host</var></span>, <span>string <var>$apiKey</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$promptForKey</var> = <span class="php-keyword1">TRUE</span></span>, <span>boolean <var>$checkConnectivity</var> = <span class="php-keyword1">TRUE</span></span> )</code>
 
 		<div class="description short">
 			
@@ -588,7 +588,7 @@ $pan-&gt;API_load_from_candidate();</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_userIDLogin">#</a>
-		<code><b>userIDLogin</b>( <span>string|string[] <var>$ips</var></span>, <span>string|string[] <var>$users</var></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span> </span> )</code>
+		<code><b>userIDLogin</b>( <span>string|string[] <var>$ips</var></span>, <span>string|string[] <var>$users</var></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span></span> )</code>
 
 		<div class="description short">
 			
@@ -632,7 +632,7 @@ $pan-&gt;API_load_from_candidate();</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_register_tagIPsWithTags">#</a>
-		<code><b>register_tagIPsWithTags</b>( <span>string[] <var>$ips</var></span>, <span>string[] <var>$tags</var></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span> </span> )</code>
+		<code><b>register_tagIPsWithTags</b>( <span>string[] <var>$ips</var></span>, <span>string[] <var>$tags</var></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span></span> )</code>
 
 		<div class="description short">
 			
@@ -676,7 +676,7 @@ $pan-&gt;API_load_from_candidate();</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_register_sendUpdate">#</a>
-		<code><b>register_sendUpdate</b>( <span>string[][] <var>$register</var> = <span class="php-keyword1">null</span></span>, <span>string[][] <var>$unregister</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span> </span> )</code>
+		<code><b>register_sendUpdate</b>( <span>string[][] <var>$register</var> = <span class="php-keyword1">null</span></span>, <span>string[][] <var>$unregister</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span>, <span>integer <var>$timeout</var> = <span class="php-num">3600</span></span> )</code>
 
 		<div class="description short">
 			
@@ -711,6 +711,45 @@ Array('tag7') )</dd>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="register_getIp" id="_register_getIp">
+
+		<td class="attributes"><code>
+			 public 
+			string[][]
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_register_getIp">#</a>
+		<code><b>register_getIp</b>( <span>string <var>$vsys</var> = <span class="php-quote">'vsys1'</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$vsys</var></dt>
+					<dd><code>string</code><br>$vsys</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>string[][]</code><br>$registered ie: Array( '1.1.1.1' =&gt; Array('tag1', 'tag3'), '2.3.4.5' =&gt;
+Array('tag7') )<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="sendRequest" id="_sendRequest">
 
 		<td class="attributes"><code>
@@ -722,7 +761,7 @@ Array('tag7') )</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_sendRequest">#</a>
-		<code><b>sendRequest</b>( <span>string <var>&amp; $parameters</var></span>, <span>boolean <var>$checkResultTag</var> = <span class="php-keyword1">false</span></span>, <span>string|null <var>&amp; $filecontent</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$filename</var> = <span class="php-quote">''</span></span>, <span>Array <var>$moreOptions</var> = <span class="php-keyword1">Array</span>()</span> )</code>
+		<code><b>sendRequest</b>( <span>string <var>&amp; $parameters</var></span>, <span>boolean <var>$checkResultTag</var> = <span class="php-keyword1">FALSE</span></span>, <span>string|null <var>&amp; $filecontent</var> = <span class="php-keyword1">null</span></span>, <span>string <var>$filename</var> = <span class="php-quote">''</span></span>, <span>Array <var>$moreOptions</var> = <span class="php-keyword1">Array</span>()</span> )</code>
 
 		<div class="description short">
 			
@@ -1000,7 +1039,7 @@ Array('tag7') )</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_sendSetRequest">#</a>
-		<code><b>sendSetRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$element</var></span>, <span>mixed <var>$useChildNodes</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$timeout</var> = <span class="php-num">30</span></span> )</code>
+		<code><b>sendSetRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$element</var></span>, <span>mixed <var>$useChildNodes</var> = <span class="php-keyword1">FALSE</span></span>, <span>mixed <var>$timeout</var> = <span class="php-num">30</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1074,7 +1113,7 @@ childNodes to generate xml</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_sendEditRequest">#</a>
-		<code><b>sendEditRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$element</var></span>, <span>mixed <var>$useChildNodes</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$timeout</var> = <span class="php-num">30</span></span> )</code>
+		<code><b>sendEditRequest</b>( <span>mixed <var>$xpath</var></span>, <span>mixed <var>$element</var></span>, <span>mixed <var>$useChildNodes</var> = <span class="php-keyword1">FALSE</span></span>, <span>mixed <var>$timeout</var> = <span class="php-num">30</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1188,7 +1227,7 @@ childNodes to generate xml</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_sendOpRequest">#</a>
-		<code><b>sendOpRequest</b>( <span>string <var>$cmd</var></span>, <span>boolean <var>$stripResponseTag</var> = <span class="php-keyword1">true</span></span> )</code>
+		<code><b>sendOpRequest</b>( <span>string <var>$cmd</var></span>, <span>boolean <var>$stripResponseTag</var> = <span class="php-keyword1">TRUE</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1203,7 +1242,7 @@ childNodes to generate xml</dd>
 					<dt><var>$cmd</var></dt>
 					<dd><code>string</code><br>$cmd operational command string</dd>
 					<dt><var>$stripResponseTag</var></dt>
-					<dd><code>boolean</code><br>$stripResultTag</dd>
+					<dd><code>boolean</code><br>$stripResponseTag</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -1257,7 +1296,7 @@ childNodes to generate xml</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_sendCmdRequest">#</a>
-		<code><b>sendCmdRequest</b>( <span>mixed <var>$cmd</var></span>, <span>mixed <var>$checkResultTag</var> = <span class="php-keyword1">true</span></span>, <span>mixed <var>$maxWaitTime</var> = -<span class="php-num">1</span></span> )</code>
+		<code><b>sendCmdRequest</b>( <span>mixed <var>$cmd</var></span>, <span>mixed <var>$checkResultTag</var> = <span class="php-keyword1">TRUE</span></span>, <span>mixed <var>$maxWaitTime</var> = -<span class="php-num">1</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1357,7 +1396,7 @@ childNodes to generate xml</dd>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_uploadConfiguration">#</a>
-		<code><b>uploadConfiguration</b>( <span><code><a href="class-DOMNode.html">DOMNode</a></code> <var>$configDomXml</var></span>, <span>string <var>$configName</var> = <span class="php-quote">'stage0.xml'</span></span>, <span>boolean <var>$verbose</var> = <span class="php-keyword1">true</span> </span> )</code>
+		<code><b>uploadConfiguration</b>( <span><code><a href="class-DOMNode.html">DOMNode</a></code> <var>$configDomXml</var></span>, <span>string <var>$configName</var> = <span class="php-quote">'stage0.xml'</span></span>, <span>boolean <var>$verbose</var> = <span class="php-keyword1">TRUE</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1547,7 +1586,7 @@ childNodes to generate xml</dd>
 
 		<td class="name">
 <var>$showApiCalls</var>		</td>
-		<td class="value"><code><span class="php-keyword1">false</span></code></td>
+		<td class="value"><code><span class="php-keyword1">FALSE</span></code></td>
 		<td class="description"><div>
 			<a href="#$showApiCalls" class="anchor">#</a>
 
@@ -1708,14 +1747,40 @@ release is ignore. ie: 7.1.4 -&gt; 71 , 5.0.6 -&gt; 50</p>
 			<div class="description short">
 				
 <p>$info_model can be
-unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060</p>
+unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060|PA.....</p>
 
 			</div>
 
 			<div class="description detailed hidden">
 				
 <p>$info_model can be
-unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060</p>
+unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060|PA.....</p>
+
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="info_vmlicense" id="$info_vmlicense">
+		<td class="attributes"><code>
+			public  
+			string
+		</code></td>
+
+		<td class="name">
+<var>$info_vmlicense</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$info_vmlicense" class="anchor">#</a>
+
+			<div class="description short">
+				
+<p>$info_vmlicense can be unknown|VM-100|VM-200|VM-300|VM-1000</p>
+
+			</div>
+
+			<div class="description detailed hidden">
+				
+<p>$info_vmlicense can be unknown|VM-100|VM-200|VM-300|VM-1000</p>
 
 
 			</div>
