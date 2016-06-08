@@ -94,10 +94,6 @@ function my_shutdown()
 
 $basedir = dirname(__FILE__);
 
-require_once $basedir.'/helper-classes/class-IP4Map.php';
-require_once $basedir.'/helper-classes/class-ServiceDstPortMapping.php';
-require_once $basedir.'/helper-classes/class-cidr.php';
-
 require_once $basedir.'/misc-classes/trait-ReferenceableObject.php';
 require_once $basedir.'/misc-classes/trait-XmlConvertible.php';
 require_once $basedir.'/misc-classes/trait-ObjectWithDescription.php';
@@ -108,6 +104,10 @@ require_once $basedir.'/misc-classes/class-RQuery.php';
 require_once $basedir.'/misc-classes/class-CsvParser.php';
 require_once $basedir.'/misc-classes/trait-PanSubHelperTrait.php';
 require_once $basedir.'/misc-classes/class-PanAPIConnector.php';
+
+require_once $basedir.'/helper-classes/class-IP4Map.php';
+require_once $basedir.'/helper-classes/class-ServiceDstPortMapping.php';
+require_once $basedir.'/helper-classes/class-cidr.php';
 
 require_once $basedir.'/container-classes/class-ObjRuleContainer.php';
 require_once $basedir.'/container-classes/class-ZoneRuleContainer.php';

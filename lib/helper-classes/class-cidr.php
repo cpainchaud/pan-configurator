@@ -57,6 +57,9 @@ class cidr
         return $bits;
     }
 
+    private static $_int2pow = null;
+    private static $_cidr2maskInt = null;
+
     /**
      * @param int $start
      * @param int $end
@@ -71,33 +74,42 @@ class cidr
 
         $diff = $end - $start + 1;
 
-        $int2pow = Array();
+        if( self::$_int2pow === null )
+        {
+            self::$_int2pow = Array();
+            for($i=0; $i<32; $i++)
+                self::$_int2pow[pow(2, $i)] = $i;
+        }
+        if( self::$_cidr2maskInt === null )
+        {
+            self::$_cidr2maskInt= Array();
+            self::$_cidr2maskInt[0] = 0;
+            for($i=1; $i<=31; $i++)
+                self::$_cidr2maskInt[$i] = self::$_cidr2maskInt[$i-1] + pow(2, 32-$i);
+        }
 
-        for($i=0; $i<32; $i++)
-            $int2pow[pow(2, $i)] = $i;
-
-        if( !isset($int2pow[$diff]) )
+        if( !isset(self::$_int2pow[$diff]) )
             return false;
 
-        $netmask = 32 - $int2pow[$diff];
+        $netmask = 32 - self::$_int2pow[$diff];
+        $calculatedNetworkStart = $start & self::$_cidr2maskInt[$netmask];
 
-        $string  = long2ip($start).'/'.$netmask;
-
-        $tmp = self::stringToStartEnd($string);
-
-        if( $tmp['start'] != $start )
+        if( $start != $calculatedNetworkStart )
             return false;
 
-        if( $tmp['end'] != $end )
-            return false;
-
-        return Array('network' => $start, 'mask' => $netmask, 'string' => $string );
+        return Array('network' => $start, 'mask' => $netmask, 'string' => long2ip($start).'/'.$netmask );
     }
 
 
     // is ip in subnet
     // e.g. is 10.5.21.30 in 10.5.16.0/20 == true
     //      is 192.168.50.2 in 192.168.30.0/23 == false
+    /**
+     * @param string $ip
+     * @param string $network
+     * @param int $cidr
+     * @return bool
+     */
     static public function cidr_match($ip, $network, $cidr)
     {
         if ((ip2long($ip) & ~((1 << (32 - $cidr)) - 1) ) == ip2long($network))
@@ -215,3 +227,4 @@ class cidr
 
 
 }
+
