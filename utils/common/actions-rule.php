@@ -818,7 +818,11 @@ RuleCallContext::$supportedActions['tag-add-force'] = Array(
                 $objectFind = $rule->tags->parentCentralStore->API_createTag($context->arguments['tagName']);
         }
         else
+        {
             $objectFind = $rule->tags->parentCentralStore->find($context->arguments['tagName']);
+            if( $objectFind === null)
+                $objectFind = $rule->tags->parentCentralStore->createTag($context->arguments['tagName']);
+        }
 
         if( $objectFind === null )
             derr("tag named '{$context->arguments['tagName']}' not found");
@@ -1728,6 +1732,55 @@ RuleCallContext::$supportedActions['copy'] = Array(
             $ruleStore->API_cloneRule($rule, null, $preORpost);
         else
             $ruleStore->cloneRule($rule, null, $preORpost);
+    },
+    'args' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+        'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
+);
+
+RuleCallContext::$supportedActions['move'] = Array(
+    'name' => 'move',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $args = &$context->arguments;
+        $location = $args['location'];
+        $pan = PH::findRootObjectOrDie($rule);;
+
+        if( $args['preORpost'] == "post" )
+            $preORpost = true;
+        else
+            $preORpost = false;
+
+
+        /** @var RuleStore $ruleStore */
+        $ruleStore = null;
+        $variableName = $rule->storeVariableName();
+
+        if( strtolower($location) == 'shared' )
+        {
+            if( $pan->isFirewall() )
+                derr("Rules cannot be copied to SHARED location on a firewall, only in Panorama");
+
+            $ruleStore = $pan->$variableName;
+        }
+        else
+        {
+            $sub = $pan->findSubSystemByName($location);
+            if( $sub === null )
+                derr("cannot find vsys or device group named '{$location}'");
+            $ruleStore = $sub->$variableName;
+        }
+        if( $context->isAPI )
+        {
+            $ruleStore->API_cloneRule($rule, null, $preORpost);
+            $rule->owner->API_remove($rule);
+        }
+        else
+        {
+            $ruleStore->cloneRule($rule, null, $preORpost);
+            $rule->owner->remove($rule);
+        }
+
     },
     'args' => Array(    'location' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
         'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
