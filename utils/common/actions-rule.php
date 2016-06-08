@@ -818,14 +818,7 @@ RuleCallContext::$supportedActions['tag-add-force'] = Array(
                 $objectFind = $rule->tags->parentCentralStore->API_createTag($context->arguments['tagName']);
         }
         else
-        {
-            $objectFind = $rule->tags->parentCentralStore->find($context->arguments['tagName']);
-            if( $objectFind === null)
-                $objectFind = $rule->tags->parentCentralStore->createTag($context->arguments['tagName']);
-        }
-
-        if( $objectFind === null )
-            derr("tag named '{$context->arguments['tagName']}' not found");
+            $objectFind = $rule->tags->parentCentralStore->findOrCreate($context->arguments['tagName']);
 
         if( $context->isAPI )
             $rule->tags->API_addTag($objectFind);
