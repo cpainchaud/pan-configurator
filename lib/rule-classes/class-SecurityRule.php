@@ -103,13 +103,13 @@ class SecurityRule extends RuleWithUserID
 
 		$this->apps = new AppRuleContainer($this);
 		$this->apps->name = 'apps';
-		
+
 		if( $fromTemplateXML )
 		{
 			$xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
 			$this->load_from_domxml($xmlElement);
 		}
-		
+
 	}
 
 
@@ -120,30 +120,30 @@ class SecurityRule extends RuleWithUserID
 	public function load_from_domxml($xml)
 	{
 		$this->xmlroot = $xml;
-		
+
 		$this->name = DH::findAttribute('name', $xml);
 		if( $this->name === FALSE )
 			derr("name not found\n");
-		
+
 		//print "found rule name '".$this->name."'\n";
-		
+
 		$this->load_common_from_domxml();
-		
-		
+
+
 		$this->load_source();
 		$this->load_destination();
         $this->load_from();
 		$this->load_to();
-		
-		
+
+
 		//														//
 		// Begin <application> application extraction			//
 		//														//
 		$tmp = DH::findFirstElementOrCreate('application', $xml);
 		$this->apps->load_from_domxml($tmp);
 		// end of <application> application extraction
-		
-		
+
+
 		//										//
 		// Begin <service> extraction			//
 		//										//
@@ -180,7 +180,7 @@ class SecurityRule extends RuleWithUserID
             }
         }
 
-		
+
 		//
 		// Begin <profile-setting> extraction
 		//
@@ -190,7 +190,7 @@ class SecurityRule extends RuleWithUserID
 		else
             $this->extract_security_profile_from_domxml();
 		// End of <profile-setting>
-				
+
         $this->_readNegationFromXml();
 
         //
@@ -278,12 +278,12 @@ class SecurityRule extends RuleWithUserID
         }
 
 		$xml = $this->secprofroot;
-		
+
 		//print "Now trying to extract associated security profile associated to '".$this->name."'\n";
-		
+
 		$groupRoot = DH::findFirstElement('group', $xml);
 		$profilesRoot = DH::findFirstElement('profiles', $xml);
-		
+
 		if( $groupRoot !== FALSE )
 		{
 			//print "Found SecProf <group> tag\n";
@@ -293,7 +293,7 @@ class SecurityRule extends RuleWithUserID
 			{
 				$this->secprofgroup = $firstE->textContent;
 				$this->secproftype = 'group';
-				
+
 				//print "Group name: ".$this->secprofgroup."\n";
 			}
 		}
@@ -301,7 +301,7 @@ class SecurityRule extends RuleWithUserID
 		{
 			//print "Found SecProf <profiles> tag\n";
 			$this->secproftype = 'profile';
-			
+
 			foreach( $profilesRoot->childNodes as $prof )
 			{
 				if( $prof->nodeType != XML_ELEMENT_NODE ) continue;
@@ -309,7 +309,7 @@ class SecurityRule extends RuleWithUserID
                 if( $firstE !== false )
 				    $this->secprofProfiles[$prof->nodeName] = $firstE->textContent;
 				/* <virus>
-       
+
                       </vulnerability>
                       <url-filtering>
 
@@ -319,9 +319,9 @@ class SecurityRule extends RuleWithUserID
                       </spyware>*/
 
 			}
-			
+
 		}
-		
+
 	}
 
     public function securityProfileIsBlank()
@@ -341,21 +341,21 @@ class SecurityRule extends RuleWithUserID
         return false;
 
     }
-	
+
 	/**
 	* return profile type: 'group' or 'profile' or 'none'
-	* @return string 
+	* @return string
 	*/
 	public function securityProfileType()
 	{
 		return $this->secproftype;
 	}
-	
+
 	public function securityProfileGroup()
 	{
 		if( $this->secproftype != 'group' )
 			derr('Cannot be called on a rule that is of security type ='.$this->secproftype);
-		
+
 		return $this->secprofgroup;
 	}
 
@@ -366,7 +366,7 @@ class SecurityRule extends RuleWithUserID
 
         return $this->secprofProfiles;
     }
-	
+
 	public function removeSecurityProfile()
 	{
         if( $this->secproftype == 'none' )
@@ -375,7 +375,7 @@ class SecurityRule extends RuleWithUserID
 		$this->secproftype = 'none';
 		$this->secprofgroup = null;
 		$this->secprofProfiles = Array();
-		
+
 		$this->rewriteSecProfXML();
 
         return true;
@@ -395,14 +395,14 @@ class SecurityRule extends RuleWithUserID
 
         return $ret;
     }
-	
+
 	public function setSecurityProfileGroup( $newgroup )
 	{
         //TODO : implement better 'change' detection to remove this return true
 		$this->secproftype = 'group';
 		$this->secprofgroup = $newgroup;
 		$this->secprofProfiles = Array();
-			
+
 		$this->rewriteSecProfXML();
 
         return true;
@@ -423,61 +423,61 @@ class SecurityRule extends RuleWithUserID
         return $ret;
 	}
 
-	
+
 	public function setSecProf_AV( $newAVprof )
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
 		$this->secprofProfiles['virus'] = $newAVprof;
-		
+
 		$this->rewriteSecProfXML();
 	}
-	
+
 	public function setSecProf_Vuln( $newAVprof )
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
 		$this->secprofProfiles['vulnerability'] = $newAVprof;
-		
+
 		$this->rewriteSecProfXML();
 	}
-	
+
 	public function setSecProf_URL( $newAVprof )
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
 		$this->secprofProfiles['url-filtering'] = $newAVprof;
-		
+
 		$this->rewriteSecProfXML();
 	}
-	
+
 	public function setSecProf_DataFilt( $newAVprof )
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
 		$this->secprofProfiles['data-filtering'] = $newAVprof;
-		
+
 		$this->rewriteSecProfXML();
 	}
-	
+
 	public function setSecProf_FileBlock( $newAVprof )
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
 		$this->secprofProfiles['file-blocking'] = $newAVprof;
-		
+
 		$this->rewriteSecProfXML();
 	}
-	
+
 	public function setSecProf_Spyware( $newAVprof )
 	{
 		$this->secproftype = 'profiles';
 		$this->secprofgroup = null;
 		$this->secprofProfiles['spyware'] = $newAVprof;
-		
+
 		$this->rewriteSecProfXML();
 	}
-	
+
 	public function rewriteSecProfXML()
 	{
 
@@ -516,8 +516,8 @@ class SecurityRule extends RuleWithUserID
 			DH::removeChild($this->xmlroot, $this->secprofroot);
 
 	}
-	
-	
+
+
 	public function action()
 	{
 		return self::$RuleActions[$this->action];
@@ -557,7 +557,7 @@ class SecurityRule extends RuleWithUserID
     {
         return $this->action != self::ActionAllow;
     }
-	
+
 	public function setAction($newAction)
 	{
 		$newAction = strtolower($newAction);
@@ -585,8 +585,8 @@ class SecurityRule extends RuleWithUserID
         $connector = findConnectorOrDie($this);
         $connector->sendSetRequest($this->getXPath(), $domNode);
     }
-	
-	
+
+
 	/**
 	* return true if rule is set to Log at Start
 	* @return bool
@@ -595,7 +595,7 @@ class SecurityRule extends RuleWithUserID
 	{
 		return $this->logstart;
 	}
-	
+
 	/**
 	* enabled or disabled logging at start
 	* @param bool $yes
@@ -614,7 +614,7 @@ class SecurityRule extends RuleWithUserID
 		}
 		return false;
 	}
-	
+
 	/**
 	* return true if rule is set to Log at End
 	* @return bool
@@ -623,7 +623,7 @@ class SecurityRule extends RuleWithUserID
 	{
 		return $this->logend;
 	}
-	
+
 	/**
 	* enable or disabled logging at end
 	* @param bool $yes
@@ -676,7 +676,7 @@ class SecurityRule extends RuleWithUserID
 
 		$con->sendSetRequest($this->getXPath(), "<log-start>".boolYesNo($yes)."</log-start>");
 	}
-	
+
 	/**
 	* return log forwarding profile if any
 	* @return string
@@ -738,7 +738,7 @@ class SecurityRule extends RuleWithUserID
 
         return true;
 	}
-	
+
 	/**
 	* Helper function to quickly print a function properties to CLI
 	*/
@@ -758,7 +758,7 @@ class SecurityRule extends RuleWithUserID
         if( $this->destinationIsNegated() )
             $destinationNegated = '*negated*';
 
-		
+
 		print $padding."*Rule named '{$this->name}' $dis\n";
         print $padding."  Action: {$this->action()}    Type:{$this->type()}\n";
 		print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
@@ -770,7 +770,7 @@ class SecurityRule extends RuleWithUserID
         else
         {
             $users = $this->userID_getUsers();
-            print $padding . " User:  " . PH::list_to_string($users) . "\n";
+            print $padding . "  User:  " . PH::list_to_string($users) . "\n";
         }
 		print $padding."  Tags:  ".$this->tags->toString_inline()."\n";
 
@@ -779,6 +779,19 @@ class SecurityRule extends RuleWithUserID
 
         if( strlen($this->_description) > 0 )
             print $padding."  Desc:  ".$this->_description."\n";
+
+        if( !$this->securityProfileIsBlank() )
+        {
+            if( $this->securityProfileType() == "group" )
+                print $padding."  SecurityProfil: [SECGROUP] => '".$this->securityProfileGroup()."'\n";
+            else
+            {
+                print $padding."  SecurityProfil: ";
+                foreach( $this->securityProfiles() as $id => $profile )
+                    print "[".$id."] => '".$profile."'  ";
+                print "\n";
+            }
+        }
 		print "\n";
 	}
 

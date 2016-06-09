@@ -1407,6 +1407,7 @@ RuleCallContext::$supportedActions['securityprofile-group-set-fastapi'] = Array(
     {
         $context->doBundled_API_Call();
     },
+    'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 
 RuleCallContext::$supportedActions['description-append'] = Array(
@@ -1752,7 +1753,7 @@ RuleCallContext::$supportedActions['move'] = Array(
         if( strtolower($location) == 'shared' )
         {
             if( $pan->isFirewall() )
-                derr("Rules cannot be copied to SHARED location on a firewall, only in Panorama");
+                derr("Rules cannot be moved to SHARED location on a firewall, only in Panorama");
 
             $ruleStore = $pan->$variableName;
         }
