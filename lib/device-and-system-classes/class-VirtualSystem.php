@@ -271,7 +271,7 @@ class VirtualSystem
             {
                 $tmprulesroot = DH::findFirstElement('rules', $tmproot);
                 if( $tmprulesroot !== false )
-                    $this->appOverrideRules->load_from_domxml($tmprulesroot);
+                    $this->captivePortalRules->load_from_domxml($tmprulesroot);
             }
 
             //
