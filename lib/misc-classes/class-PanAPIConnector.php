@@ -634,10 +634,14 @@ class PanAPIConnector
         if( is_array($parameters) )
             $sendThroughPost = TRUE;
 
-        if( $this->_curl_handle === null )
+        if( $this->_curl_handle === null || $this->_curl_count > 100 )
+        {
             $this->_curl_handle = curl_init();
+            $this->_curl_count = 0;
+        }
         else
             curl_reset($this->_curl_handle);
+            $this->_curl_count++;
 
         curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
