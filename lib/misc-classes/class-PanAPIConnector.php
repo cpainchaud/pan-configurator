@@ -640,8 +640,10 @@ class PanAPIConnector
             $this->_curl_count = 0;
         }
         else
+        {
             curl_reset($this->_curl_handle);
             $this->_curl_count++;
+        }
 
         curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
