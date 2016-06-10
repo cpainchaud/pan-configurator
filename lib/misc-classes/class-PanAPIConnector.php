@@ -164,7 +164,7 @@ class PanAPIConnector
     }
 
     /**
-     * @return string[]  Array('type'=> pano|panorama,  'version'=>61 ) (if PANOS=6.1)
+     * @return string[]  Array('type'=> panos|panorama,  'version'=>61 ) (if PANOS=6.1)
      */
     public function getSoftwareVersion()
     {

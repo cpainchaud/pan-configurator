@@ -745,12 +745,15 @@ foreach( $rulesLocation as $location )
 
 // <editor-fold desc="Rule Processing" defaultstate="collapsed" >
 $totalObjectsProcessed = 0;
+$totalObjectsOfSelectedStores = 0;
+
 foreach( $rulesToProcess as &$rulesRecord )
 {
     /** @var RuleStore $store */
     $store = $rulesRecord['store'];
     $rules = &$rulesRecord['rules'];
     $subObjectsProcessed = 0;
+    $totalObjectsOfSelectedStores += $store->count();
 
     foreach($doActions as $doAction )
     {
@@ -813,9 +816,6 @@ if( isset(PH::$args['stats']) )
     }
 }
 
-$totalObjectsOfSelectedStores = 0;
-foreach( $rulesToProcess as &$record )
-    $totalObjectsOfSelectedStores += $record['store']->count();
 print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS PROCESSED over {$totalObjectsOfSelectedStores} available **** \n\n";
 
 // save our work !!!

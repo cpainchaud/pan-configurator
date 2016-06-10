@@ -1157,9 +1157,7 @@ class RuleStore
 			$rule->owner = null;
 
 			if( $deleteForever )
-			{
 				$rule->cleanForDestruction();
-			}
 		}
 		elseif( $this->isPreOrPost )
 		{
@@ -1173,9 +1171,7 @@ class RuleStore
 				$rule->owner = null;
 
 				if( $deleteForever )
-				{
 					$rule->cleanForDestruction();
-				}
 			}
 		}
 		
