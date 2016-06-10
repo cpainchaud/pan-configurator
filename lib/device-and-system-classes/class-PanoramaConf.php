@@ -703,8 +703,8 @@ class PanoramaConf
         print "- ".$this->captivePortalRules->countPreRules()." (".$gpreCPRules.") pre-CaptivePortal Rules\n";
         print "- ".$this->captivePortalRules->countPostRules()." (".$gpostCPRules.") post-CaptivePortal Rules\n";
 
-        print "- ".$this->pbfRules->countPreRules()." (".$gprePbfRules.") pre-CaptivePortal Rules\n";
-        print "- ".$this->pbfRules->countPostRules()." (".$gpostPbfRules.") post-CaptivePortal Rules\n";
+        print "- ".$this->pbfRules->countPreRules()." (".$gprePbfRules.") pre-PBF Rules\n";
+        print "- ".$this->pbfRules->countPostRules()." (".$gpostPbfRules.") post-PBF Rules\n";
 
 		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects. {$gnaddresssUnused} unused\n";
 
