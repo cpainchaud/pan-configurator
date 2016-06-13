@@ -18,6 +18,7 @@ bugfix:
 - typos in service-edit action prefix-add suffix-add
 - report generation on 7050 requires explicit 'async=yes'
 - calculate-zones now considers directly connected with better priority than static ones
+- fix issue in VirtualSystems where Captive-Portal rules were loaded as AppOverride
 
 
 1.5.7
