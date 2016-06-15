@@ -33,6 +33,47 @@ class PH
 
     public static $outputFormattingEnabled = true;
 
+    private static $library_version_major = 1;
+    private static $library_version_sub = 5;
+    private static $library_version_bugfix = 8;
+
+    static public function frameworkVersion()
+    {
+        return self::$library_version_major . '.' . self::$library_version_sub . '.' . self::$library_version_bugfix;
+    }
+
+    /**
+     * @param string $versionString ie: '1.2.3' or '1.5'
+     * @return bool
+     */
+    static public function frameworkVersion_isGreaterThan($versionString)
+    {
+        $numbers = explode('.',$versionString);
+        if( count($numbers) < 2 || count($numbers) > 3)
+            derr("'{$versionString}' is not a valid version syntax ( 'X.Y' or 'X.Y.Z' is accepted)");
+
+        if( !is_int($numbers[0]) )
+            derr("'{$numbers[0]}' is not a valid integer");
+
+        if( !is_int($numbers[1]) )
+            derr("'{$numbers[1]}' is not a valid integer");
+
+        if( count($numbers) == 3 || !is_int($numbers[2]) )
+            derr("'{$numbers[2]}' is not a valid integer");
+
+        if( $numbers[0] > self::$library_version_major )
+            return true;
+
+        if( $numbers[1] > self::$library_version_sub )
+            return true;
+
+        if( count($numbers) == 3 && $numbers[2] > self::$library_version_bugfix )
+            return true;
+
+        return false;
+    }
+
+
     /**
      * will throw Exceptions instead of print errors (useful for web embeded or scrips that want
      * to support errors handling without quiting.
