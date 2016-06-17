@@ -806,12 +806,18 @@ if( isset(PH::$args['stats']) )
 {
     $pan->display_statistics();
     print "\n";
+    $processedLocations = Array();
     foreach( $rulesToProcess as &$record )
     {
         if( get_class($record['store']->owner) != 'PanoramaConf' && get_class($record['store']->owner) != 'PANConf' )
         {
-            $record['store']->owner->display_statistics();
-            print "\n";
+            /** @var DeviceGroup|VirtualSystem $sub */
+            $sub = $record['store']->owner;
+            if( isset($processedLocations[$sub->name()]) )
+                continue;
+            $processedLocations[$sub->name()] = true;
+            $sub->display_statistics();
+            echo "\n";
         }
     }
 }
