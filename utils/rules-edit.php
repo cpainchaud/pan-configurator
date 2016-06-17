@@ -815,7 +815,7 @@ if( isset(PH::$args['stats']) )
             $sub = $record['store']->owner;
             if( isset($processedLocations[$sub->name()]) )
                 continue;
-
+            $processedLocations[$sub->name()] = true;
             $sub->display_statistics();
             echo "\n";
         }
