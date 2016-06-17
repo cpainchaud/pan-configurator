@@ -19,6 +19,7 @@ bugfix:
 - report generation on 7050 requires explicit 'async=yes'
 - calculate-zones now considers directly connected with better priority than static ones
 - fix issue in VirtualSystems where Captive-Portal rules were loaded as AppOverride
+- fix 'stats' output for rules-edit.php, address-edit.php and service-edit.php
 
 
 1.5.7

@@ -1192,12 +1192,18 @@ if( isset(PH::$args['stats']) )
 {
     $pan->display_statistics();
     print "\n";
+    $processedLocations = Array();
     foreach( $objectsToProcess as &$record )
     {
         if( get_class($record['store']->owner) != 'PanoramaConf' && get_class($record['store']->owner) != 'PANConf' )
         {
-            $record['store']->owner->display_statistics();
-            print "\n";
+            /** @var DeviceGroup|VirtualSystem $sub */
+            $sub = $record['store']->owner;
+            if( isset($processedLocations[$sub->name()]) )
+                continue;
+
+            $sub->display_statistics();
+            echo "\n";
         }
     }
 }
