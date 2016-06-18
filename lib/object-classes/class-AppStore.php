@@ -19,12 +19,12 @@
 
 class AppStore extends ObjStore
 {
-    /** @var array|App[] */
+    /** @var array|Application[] */
 	public $apps=Array();
 	
 	public $parentCentralStore = null;
 	
-	public static $childn = 'App';
+	public static $childn = 'Application';
 
 
     /** @var null|AppStore  */
@@ -58,7 +58,7 @@ class AppStore extends ObjStore
     /**
      * @param $name string
      * @param $ref
-     * @return null|App
+     * @return null|Application
      */
 	public function find($name, $ref=null)
 	{
@@ -116,7 +116,7 @@ class AppStore extends ObjStore
             if( $appName === FALSE )
                 derr("app name not found\n");
 
-            $app = new App($appName, $this);
+            $app = new Application($appName, $this);
             $app->type = 'predefined';
             $this->add($app);
 
@@ -267,7 +267,7 @@ class AppStore extends ObjStore
 		{
 			if( $appx->nodeType != 1 ) continue;
 
-			$app = new App($appx->tagName, $this);
+			$app = new Application($appx->tagName, $this);
 			$app->type = 'predefined';
 			$this->add($app);
 

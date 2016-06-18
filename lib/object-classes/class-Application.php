@@ -18,7 +18,7 @@
 */
 
 
-class App
+class Application
 {
 
 	use ReferencableObject;
@@ -149,7 +149,7 @@ class App
 
 	/**
 	 * will return a list of dependencies and remove the 'implicit' ones
-	 * @return App[]
+	 * @return Application[]
 	 */
 	public function &calculateDependencies()
 	{

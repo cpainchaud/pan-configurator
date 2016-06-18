@@ -19,12 +19,12 @@
 
 /**
  * Class AppRuleContainer
- * @property App[] $o
+ * @property Application[] $o
  *
  */
 class AppRuleContainer extends ObjRuleContainer
 {
-    public static $childn = 'App';
+    public static $childn = 'Application';
 
     /** @var null|AppStore */
     public $parentCentralStore = null;
@@ -45,10 +45,10 @@ class AppRuleContainer extends ObjRuleContainer
 
 
     /**
-     * add a App to this store
+     * add a Application to this store
      *
      */
-    public function addApp( App $Obj, $rewritexml = true )
+    public function addApp(Application $Obj, $rewritexml = true )
     {
         $fasthashcomp=null;
 
@@ -64,10 +64,10 @@ class AppRuleContainer extends ObjRuleContainer
 
 
     /**
-     * add a App to this store
+     * add a Application to this store
      *
      */
-    public function API_addApp( App $Obj, $rewritexml = true )
+    public function API_addApp(Application $Obj, $rewritexml = true )
     {
         if( ! $this->addApp($Obj, $rewritexml) )
             return false;
@@ -79,14 +79,14 @@ class AppRuleContainer extends ObjRuleContainer
 
 
     /**
-     * remove an App to this store. Be careful if you remove last zone as
+     * remove an Application to this store. Be careful if you remove last zone as
      * it would become 'any' and won't let you do so.
-     * @param App $Object
+     * @param Application $Object
      * @param bool $rewritexml
      * @param bool $forceAny
      * @return bool
      */
-    public function removeApp( App $Object, $rewritexml = true, $forceAny = false )
+    public function removeApp(Application $Object, $rewritexml = true, $forceAny = false )
     {
         $count = count($this->o);
 
@@ -94,7 +94,7 @@ class AppRuleContainer extends ObjRuleContainer
 
         if( $ret && $count == 1 && !$forceAny )
         {
-            derr("you are trying to remove last App from a rule which will set it to ANY, please use forceAny=true for object: "
+            derr("you are trying to remove last Application from a rule which will set it to ANY, please use forceAny=true for object: "
                 .$this->toString() ) ;
         }
 
@@ -106,14 +106,14 @@ class AppRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * remove an App to this store. Be careful if you remove last zone as
+     * remove an Application to this store. Be careful if you remove last zone as
      * it would become 'any' and won't let you do so.
-     * @param App $Object
+     * @param Application $Object
      * @param bool $rewritexml
      * @param bool $forceAny
      * @return bool
      */
-    public function API_removeApp( App $Object, $rewritexml = true, $forceAny = false )
+    public function API_removeApp(Application $Object, $rewritexml = true, $forceAny = false )
     {
         if( ! $this->removeApp($Object, $rewritexml, $forceAny) )
             return false;
@@ -260,7 +260,7 @@ class AppRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @param App|string can be Tag object or tag name (string). this is case sensitive
+     * @param Application|string can be Tag object or tag name (string). this is case sensitive
      * @param bool
      * @return bool
      */

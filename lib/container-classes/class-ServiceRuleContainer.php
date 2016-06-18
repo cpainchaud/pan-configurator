@@ -340,7 +340,7 @@ class ServiceRuleContainer extends ObjRuleContainer
     }
 
     /**
-     * @return bool true if not already App Default
+     * @return bool true if not already Application Default
      */
     public function API_setApplicationDefault()
     {

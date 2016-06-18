@@ -953,7 +953,7 @@ RuleCallContext::$supportedActions['service-remove-force-any'] = Array(
 
 
 //                                                   //
-//                App Based Actions                  //
+//                Application Based Actions                  //
 //                                                   //
 RuleCallContext::$supportedActions['app-set-any'] = Array(
     'name' => 'app-Set-Any',

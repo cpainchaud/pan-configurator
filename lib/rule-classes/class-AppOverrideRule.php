@@ -31,7 +31,7 @@ class AppOverrideRule extends Rule
     public $_protocol = '';
     public $_ports = '';
 
-    /** @var  App|null */
+    /** @var  Application|null */
     protected $_app;
 
     public function __construct($owner, $fromTemplateXML=false)
@@ -176,7 +176,7 @@ class AppOverrideRule extends Rule
         return $this->application();
     }
 
-    /** @param App|null $app
+    /** @param Application|null $app
      * @return bool */
     public function setApplication($app)
     {
