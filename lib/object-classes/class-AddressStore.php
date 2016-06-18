@@ -21,52 +21,34 @@
 /**
  * Class AddressStore
  * @property string $name
- * @property PanAPIConnector $con
  */
 class AddressStore
 {
 	use PathableName;
 
-    /**
-     * @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null
-     */
+    /** @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null */
 	public $owner;
 
-	/**
-	 * @var null|AddressStore
-	 */
+	/** @var null|AddressStore */
 	public $parentCentralStore = null;
 
-    /**
-     * @var Address[]|AddressGroup[]
-     */
+    /** @var Address[]|AddressGroup[] */
 	protected $all = Array();
 
-	/**
-	 * @var Address[]
-	 */
+	/** @var Address[] */
 	protected $_addressObjects = Array();
 
-
-	/**
-	 * @var Address[]
-	 */
+	/**@var Address[] */
 	protected $_tmpAddresses = Array();
 
 
-	/**
-	 * @var AddressGroup[]
-	 */
+	/** @var AddressGroup[] */
 	protected $_addressGroups = Array();
 
-    /**
-     * @var DOMElement
-     */
+    /** @var DOMElement */
 	public $addressRoot;
 
-    /**
-     * @var DOMElement
-     */
+    /** @var DOMElement */
 	public $addressGroupRoot;
 
 
@@ -150,12 +132,12 @@ class AddressStore
 		
 		$this->regen_Indexes();
 	}*/
-	
-	/**
-	* Returns an Array with all Address , AddressGroups, TmpAddress objects in this store
-	* @param $withFilter string|null
-	 * @return Address[]|AddressGroup[]
-	*/
+
+    /**
+     * Returns an Array with all Address , AddressGroups, TmpAddress objects in this store
+     * @param $withFilter string|null
+     * @return Address[]|AddressGroup[]
+     */
 	public function all($withFilter=null)
 	{
 		$query = null;
@@ -208,8 +190,6 @@ class AddressStore
             $name = $node->getAttribute('name');
             $ns = $this->_addressGroups[$name];
 			$ns->load_from_domxml($node);
-
-            $objectName = $ns->name();
 		}
 	}
 
@@ -233,12 +213,11 @@ class AddressStore
 		}
 
 		return false;
-
 	}
 	
 	
 	/**
-	*
+	* This count all objects in the store, including Tmp,Address and Groups
 	*
 	*/
 	public function count()
