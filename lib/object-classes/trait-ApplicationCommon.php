@@ -17,5 +17,29 @@
 
 trait ApplicationCommon
 {
+    public function isApplication()
+    {
+        return false;
+    }
+
+    public function isGroup()
+    {
+        return false;
+    }
+
+    public function isFilter()
+    {
+        return false;
+    }
+
+    public function isContainer()
+    {
+        return false;
+    }
+
+    public function isTmp()
+    {
+        return false;
+    }
 
 }

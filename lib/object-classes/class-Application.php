@@ -23,6 +23,7 @@ class Application
 
 	use ReferencableObject;
 	use PathableName;
+    use ApplicationCommon;
 
 	public $type = 'tmp';
 

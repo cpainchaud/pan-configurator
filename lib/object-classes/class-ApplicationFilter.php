@@ -19,4 +19,5 @@ class ApplicationFilter
 {
     use ReferencableObject;
     use PathableName;
+    use ApplicationCommon;
 }

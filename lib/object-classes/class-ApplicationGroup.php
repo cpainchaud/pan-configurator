@@ -20,6 +20,7 @@ class ApplicationGroup
 {
     use ReferencableObject;
     use PathableName;
+    use ApplicationCommon;
 
     /** @var Application[]|ApplicationGroup  */
     protected $_members = Array();
