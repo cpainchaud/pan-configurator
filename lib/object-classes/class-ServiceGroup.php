@@ -22,25 +22,16 @@ class ServiceGroup
 	use XmlConvertible;
     use ServiceCommon;
 
-    /**
-     * @var Service[]|ServiceGroup[]
-     */
+    /** @var Service[]|ServiceGroup[] */
 	public $members = Array();
 
-
-	/**
-	 * @var null|ServiceStore
-	 */
+	/** @var null|ServiceStore */
 	public $owner = null;
 
-
-    /**
-     * @var TagRuleContainer
-     */
+    /** @var TagRuleContainer */
     public $tags;
 
-	
-	
+    
 	public function __construct($name,$owner=null)
 	{
 		$this->owner = $owner;

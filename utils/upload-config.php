@@ -26,7 +26,6 @@ require_once("lib/panconfigurator.php");
 
 function display_usage_and_exit($shortMessage = false)
 {
-    global $argv;
     print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=file.xml|api://... out=file.xml|api://... [more arguments]".
         "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
     print "php ".basename(__FILE__)." help          : more help messages\n";

@@ -98,13 +98,14 @@ class AddressStore
 		$path = $this->getBaseXPath().'/address-group';
 		return $path;
 	}
-	
-	
-	
-	/**
-	* For developper use only
-	*
-	*/
+
+
+
+    /**
+     * For developper use only
+     * @param DOMElement $xml
+     *
+     */
 	public function load_addresses_from_domxml($xml)
 	{
         $this->addressRoot = $xml;
@@ -272,15 +273,12 @@ class AddressStore
 				$curo = $curo->owner;
 			}
 		}
-		
-		//print $this->toString().": no parent store found\n";
-
 	}
 	
 	/**
 	* Should only be called from a CentralStore or give unpredictable results
      * @param string $objectName
-	 * @param ReferenceableObject $ref
+	 * @param ReferencableObject $ref
 	 * @param bool $nested
      * @return Address|AddressGroup|null
 	*/
@@ -333,6 +331,8 @@ class AddressStore
 
     /**
      * @param string $name
+     * @param ReferencableObject $ref
+     * @param bool $nested
      * @return Address|null
      */
 	public function findTmpAddress($name, $ref=null, $nested = true)
@@ -342,6 +342,9 @@ class AddressStore
 
         if( !isset($this->_tmpAddresses[$name]) )
             return null;
+
+        if( $ref !== null )
+            $this->_tmpAddresses[$name]->addReference($ref);
 
         return $this->_tmpAddresses[$name];
 	}
@@ -677,12 +680,15 @@ class AddressStore
 	{
 		return $this->_addressObjects;
 	}
-	
-	/**
-	* Used to create an object that is 'temporary' : means that is not supported (like Regions) 
-	* or that is on Panorama. This is a trick to play with objects that don't exist in the conf.
-	*
-	*/
+
+    /**
+     * Used to create an object that is 'temporary' : means that is not supported (like Regions)
+     * or that is on Panorama. This is a trick to play with objects that don't exist in the conf.
+     *
+     * @param string $name
+     * @param ReferencableObject $ref
+     * @return Address
+     */
 	function createTmp($name, $ref=null)
 	{
 		$f = new Address($name,$this);

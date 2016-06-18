@@ -21,34 +21,23 @@ class ServiceStore
 	use PathableName;
     use XmlConvertible;
 
-    /**
-     * @var PanoramaConf|PANConf|VirtualSystem|DeviceGroup
-     */
+    /** @var PanoramaConf|PANConf|VirtualSystem|DeviceGroup */
 	public $owner;
 
-	/**
-	 * @var null|ServiceStore
-	 */
+	/** @var null|ServiceStore */
 	public $parentCentralStore = null;
 	
 	protected $appdef = false;
 
-	/**
-	 * @var Service[]|ServiceGroup[]
-	 */
+	/** @var Service[]|ServiceGroup[] */
 	protected $all = Array();
 
-	/**
-	 * @var Service[]
-	 */
+	/** @var Service[] */
 	protected $_serviceObjects = Array();
-	/**
-	 * @var ServiceGroup[]
-	 */
+
+    /** @var ServiceGroup[] */
 	protected $_serviceGroups = Array();
-	/**
-	 * @var Service[]
-	 */
+	/** @var Service[] */
 	protected $_tmpServices = Array();
 	
 	protected $fast = Array(); 

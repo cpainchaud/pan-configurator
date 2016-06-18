@@ -41,11 +41,11 @@ trait AddressCommon
     }
 
     /**
-     * @param $objectToAdd Address|AddressGroup
-     * @param $displayOutput bool
-     * @param $skipIfConflict bool
-     * @param $outputPadding string|int
-     * @param $skipNatRules bool
+     * @param Address|AddressGroup $objectToAdd
+     * @param bool $displayOutput
+     * @param bool $skipIfConflict
+     * @param string|int $outputPadding
+     * @param bool $skipNatRules
      */
     public function addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false, $skipNatRules = false)
     {
@@ -112,11 +112,11 @@ trait AddressCommon
     }
 
     /**
-     * @param $objectToAdd Address|AddressGroup
-     * @param $displayOutput bool
-     * @param $skipIfConflict bool
-     * @param $outputPadding string|int
-     * @param $skipNatRules bool
+     * @param Address|AddressGroup $objectToAdd
+     * @param bool $displayOutput
+     * @param bool $skipIfConflict
+     * @param string|int $outputPadding
+     * @param bool $skipNatRules
      */
     public function API_addObjectWhereIamUsed($objectToAdd, $displayOutput = false, $outputPadding = '', $skipIfConflict = false, $skipNatRules = false)
     {
@@ -184,10 +184,10 @@ trait AddressCommon
     }
 
     /**
-     * @param $displayOutput bool
-     * @param $apiMode bool
-     * @param $actionIfLastInRule string can be delete|setany|disable
-     * @param $outputPadding string|int
+     * @param bool $displayOutput
+     * @param bool $apiMode
+     * @param string $actionIfLastInRule can be delete|setany|disable
+     * @param string|int $outputPadding
      */
     private function __removeWhereIamUsed($apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
@@ -291,9 +291,9 @@ trait AddressCommon
     }
 
     /**
-     * @param $displayOutput bool
-     * @param $actionIfLastInRule string can be delete|setany|disable
-     * @param $outputPadding string|int
+     * @param bool $displayOutput
+     * @param string $actionIfLastInRule can be delete|setany|disable
+     * @param string|int $outputPadding
      */
     public function removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
@@ -302,9 +302,9 @@ trait AddressCommon
     }
 
     /**
-     * @param $displayOutput bool
-     * @param $actionIfLastInRule string can be delete|setany|disable
-     * @param $outputPadding string|int
+     * @param bool $displayOutput
+     * @param string $actionIfLastInRule can be delete|setany|disable
+     * @param string|int $outputPadding
      */
     public function API_removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
