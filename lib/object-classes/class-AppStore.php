@@ -17,18 +17,32 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class AppStore extends ObjStore
+class AppStore
 {
-    /** @var array|Application[] */
-	public $apps=Array();
+    use PathableName;
+
+    /** @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null */
+    public $owner;
+
+    /** @var Application[] */
+	protected $_all = Array();
+
+    /** @var Application[] */
+    protected $_applications = Array();
+
+    /** @var ApplicationGroup[] */
+    protected $_groups = Array();
+
+    /** @var ApplicationFilter[] */
+    protected $_filters = Array();
+
+    /** @var Application[] */
+    protected $_tmpApplications = Array();
 	
 	public $parentCentralStore = null;
-	
-	public static $childn = 'Application';
-
 
     /** @var null|AppStore  */
-    public static $predefinedStore = null;
+    protected static $predefinedStore = null;
 
     /**
      * @return AppStore|null
@@ -47,12 +61,7 @@ class AppStore extends ObjStore
 	
 	public function __construct($owner)
 	{
-		$this->classn = &self::$childn;
-		
 		$this->owner = $owner;
-		$this->o = &$this->apps;
-		
-		$this->findParentCentralStore();
 	}
 
     /**
@@ -72,7 +81,7 @@ class AppStore extends ObjStore
 	*/
 	public function apps()
 	{
-		return $this->o;
+		return $this->_all;
 	}
 
 

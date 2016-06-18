@@ -102,7 +102,7 @@ class SecurityRule extends RuleWithUserID
 		$this->services->name = 'service';
 
 		$this->apps = new AppRuleContainer($this);
-		$this->apps->name = 'apps';
+		$this->apps->name = '_all';
 
 		if( $fromTemplateXML )
 		{
