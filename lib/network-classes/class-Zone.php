@@ -23,9 +23,7 @@ class Zone
 	use PathableName;
     use XmlConvertible;
 
-    /**
-     * @var null|ZoneStore
-     */
+    /** @var null|ZoneStore */
     public $owner = null;
 	
 	private $isTmp = true;
@@ -51,7 +49,7 @@ class Zone
 
     /**
      * @param string $name
-     * @param ZoneStore|null $owner
+     * @param ZoneStore $owner
      */
  	public function __construct($name, $owner, $fromXmlTemplate = false)
  	{

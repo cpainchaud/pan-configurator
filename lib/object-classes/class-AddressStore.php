@@ -21,52 +21,34 @@
 /**
  * Class AddressStore
  * @property string $name
- * @property PanAPIConnector $con
  */
 class AddressStore
 {
 	use PathableName;
 
-    /**
-     * @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null
-     */
+    /** @var VirtualSystem|DeviceGroup|PanoramaConf|PANConf|null */
 	public $owner;
 
-	/**
-	 * @var null|AddressStore
-	 */
+	/** @var null|AddressStore */
 	public $parentCentralStore = null;
 
-    /**
-     * @var Address[]|AddressGroup[]
-     */
+    /** @var Address[]|AddressGroup[] */
 	protected $all = Array();
 
-	/**
-	 * @var Address[]
-	 */
+	/** @var Address[] */
 	protected $_addressObjects = Array();
 
-
-	/**
-	 * @var Address[]
-	 */
+	/**@var Address[] */
 	protected $_tmpAddresses = Array();
 
 
-	/**
-	 * @var AddressGroup[]
-	 */
+	/** @var AddressGroup[] */
 	protected $_addressGroups = Array();
 
-    /**
-     * @var DOMElement
-     */
+    /** @var DOMElement */
 	public $addressRoot;
 
-    /**
-     * @var DOMElement
-     */
+    /** @var DOMElement */
 	public $addressGroupRoot;
 
 
@@ -116,13 +98,14 @@ class AddressStore
 		$path = $this->getBaseXPath().'/address-group';
 		return $path;
 	}
-	
-	
-	
-	/**
-	* For developper use only
-	*
-	*/
+
+
+
+    /**
+     * For developper use only
+     * @param DOMElement $xml
+     *
+     */
 	public function load_addresses_from_domxml($xml)
 	{
         $this->addressRoot = $xml;
@@ -150,12 +133,12 @@ class AddressStore
 		
 		$this->regen_Indexes();
 	}*/
-	
-	/**
-	* Returns an Array with all Address , AddressGroups, TmpAddress objects in this store
-	* @param $withFilter string|null
-	 * @return Address[]|AddressGroup[]
-	*/
+
+    /**
+     * Returns an Array with all Address , AddressGroups, TmpAddress objects in this store
+     * @param $withFilter string|null
+     * @return Address[]|AddressGroup[]
+     */
 	public function all($withFilter=null)
 	{
 		$query = null;
@@ -208,8 +191,6 @@ class AddressStore
             $name = $node->getAttribute('name');
             $ns = $this->_addressGroups[$name];
 			$ns->load_from_domxml($node);
-
-            $objectName = $ns->name();
 		}
 	}
 
@@ -233,12 +214,11 @@ class AddressStore
 		}
 
 		return false;
-
 	}
 	
 	
 	/**
-	*
+	* This count all objects in the store, including Tmp,Address and Groups
 	*
 	*/
 	public function count()
@@ -293,15 +273,12 @@ class AddressStore
 				$curo = $curo->owner;
 			}
 		}
-		
-		//print $this->toString().": no parent store found\n";
-
 	}
 	
 	/**
 	* Should only be called from a CentralStore or give unpredictable results
      * @param string $objectName
-	 * @param ReferenceableObject $ref
+	 * @param ReferencableObject $ref
 	 * @param bool $nested
      * @return Address|AddressGroup|null
 	*/
@@ -354,6 +331,8 @@ class AddressStore
 
     /**
      * @param string $name
+     * @param ReferencableObject $ref
+     * @param bool $nested
      * @return Address|null
      */
 	public function findTmpAddress($name, $ref=null, $nested = true)
@@ -363,6 +342,9 @@ class AddressStore
 
         if( !isset($this->_tmpAddresses[$name]) )
             return null;
+
+        if( $ref !== null )
+            $this->_tmpAddresses[$name]->addReference($ref);
 
         return $this->_tmpAddresses[$name];
 	}
@@ -698,12 +680,15 @@ class AddressStore
 	{
 		return $this->_addressObjects;
 	}
-	
-	/**
-	* Used to create an object that is 'temporary' : means that is not supported (like Regions) 
-	* or that is on Panorama. This is a trick to play with objects that don't exist in the conf.
-	*
-	*/
+
+    /**
+     * Used to create an object that is 'temporary' : means that is not supported (like Regions)
+     * or that is on Panorama. This is a trick to play with objects that don't exist in the conf.
+     *
+     * @param string $name
+     * @param ReferencableObject $ref
+     * @return Address
+     */
 	function createTmp($name, $ref=null)
 	{
 		$f = new Address($name,$this);

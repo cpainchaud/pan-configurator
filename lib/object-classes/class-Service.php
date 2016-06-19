@@ -35,21 +35,15 @@ class Service
     /** @var null|DOMElement */
     protected $tcpOrUdpRoot = null;
 
-	/**
-	 * @var null|DOMElement
-	 */
+	/** @var null|DOMElement */
 	public $dportroot = null;
 	
 	public $type = '';
 
-	/**
-	 * @var ServiceStore
-	 */
+	/** @var ServiceStore */
 	public $owner=null;
 
-    /**
-     * @var TagRuleContainer
-     */
+    /** @var TagRuleContainer */
     public $tags;
 
 

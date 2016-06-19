@@ -5,45 +5,28 @@ class NetworkPropertiesContainer
 {
     use PathableName;
 
-    /**
-     * @var PANConf
-     */
+    /** @var PANConf */
     public $owner;
 
-
-    /**
-     * @var EthernetIfStore
-     */
+    /** @var EthernetIfStore */
     public $ethernetIfStore;
 
-    /**
-     * @var AggregateEthernetIfStore
-     */
+    /** @var AggregateEthernetIfStore */
     public $aggregateEthernetIfStore;
 
-    /**
-     * @var IPsecTunnelStore
-     */
+    /** @var IPsecTunnelStore */
     public $ipsecTunnelStore;
 
-    /**
-     * @var LoopbackIfStore
-     */
+    /** @var LoopbackIfStore */
     public $loopbackIfStore;
 
-    /**
-     * @var TmpInterfaceStore
-     */
+    /** @var TmpInterfaceStore */
     public $tmpInterfaceStore;
 
-    /**
-     * @var VirtualRouterStore
-     */
+    /** @var VirtualRouterStore */
     public $virtualRouterStore;
 
-    /**
-     * @var DOMElement|null
-     */
+    /** @var DOMElement|null */
     public $xmlroot = null;
 
 

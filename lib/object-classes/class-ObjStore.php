@@ -26,11 +26,10 @@ class ObjStore
 	public $owner = null;
 	public $name = '';
 
-    /**
-     * @var null|ReferenceableObject[]
-     */
+    /** @var null|ReferencableObject[] */
 	public $o = Array();
 
+    /** @var null|ReferencableObject[] */
 	protected $nameIndex = Array();
 
 	protected $classn=null;
@@ -110,6 +109,8 @@ class ObjStore
 	{
 
 		$f = new $this->classn($name,$this);
+        /** @var ReferencableObject $f */
+
 		$this->o[] = $f;
 		$this->nameIndex[$name] = $f;
 		$f->type = 'tmp';
@@ -144,6 +145,11 @@ class ObjStore
 		}
 	}
 
+    /**
+     * @param ReferencableObject $h
+     * @param string $oldName
+     * @throws Exception
+     */
 	public function referencedObjectRenamed($h, $oldName)
 	{
 		if(isset($this->nameIndex[$h->name()]))
@@ -166,11 +172,12 @@ class ObjStore
 			mwarning("object with name '{$oldName}' was not part of this store/index");
 	}
 
-	
-	/**
-	*
-	* @ignore
-	**/
+
+    /**
+     * @ignore
+     * @param ReferencableObject $Obj
+     * @return bool
+     */
 	protected function add($Obj)
 	{	
 		if( !in_array($Obj,$this->o,true) )
@@ -195,7 +202,11 @@ class ObjStore
 		$this->o = Array();
 		$this->nameIndex = Array();
 	}
-	
+
+    /**
+     * @param ReferencableObject $Obj
+     * @return bool
+     */
 	protected function remove($Obj)
 	{
 		$pos = array_search($Obj,$this->o,true);
@@ -244,7 +255,10 @@ class ObjStore
 
 		foreach( $this->xmlroot->childNodes as $node )
 		{
-			if( $node->nodeType != 1 ) continue;
+			if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            /** @var DOMElement $node */
 
             if( $this->skipEmptyXmlObjects && !$node->hasChildNodes() )
             {

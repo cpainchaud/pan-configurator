@@ -17,7 +17,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-
+/**
+ * Class IPsecTunnel
+ * @property IPsecTunnelStore $owner
+ */
 class IPsecTunnel
 {
     use InterfaceType;
@@ -25,14 +28,9 @@ class IPsecTunnel
     use PathableName;
     use ReferencableObject;
 
-
-    /**
-     * @var null|string[]|DOMElement
-     */
+    /** @var null|string[]|DOMElement */
     public $typeRoot = null;
-    /**
-     * @var null|string[]|DOMElement
-     */
+    /** @var null|string[]|DOMElement */
     public $proxyIdRoot = null;
 
     public $type = 'notfound';
@@ -40,6 +38,11 @@ class IPsecTunnel
     public $proxys = Array();
 
 
+    /**
+     * IPsecTunnel constructor.
+     * @param string $name
+     * @param IPsecTunnelStore $owner
+     */
     public function __construct($name, $owner)
     {
         $this->owner = $owner;
