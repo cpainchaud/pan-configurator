@@ -102,7 +102,7 @@ class AddressStore
 
 
     /**
-     * For developper use only
+     * For developer use only
      * @param DOMElement $xml
      *
      */
