@@ -2,6 +2,9 @@ CHANGELOG
 
 1.5.10
 
+bugfix:
+- fixed a loading error when using blank proxy-id in IPsecTunnels which implictly means 0.0.0.0/0
+
 
 1.5.9
 * PanAPIConnector::register_sendUpdate() new IP registration function; PanAPIConnector::register_getIP() new get registered IP function
