@@ -27,9 +27,6 @@ class SecurityRule extends RuleWithUserID
 	protected $logend = true;
 
 	protected $logSetting = false;
-
-	/** @var null|DOMElement */
-	protected $logsettingroot = null;
 	
 	protected $secproftype = 'none';
 
@@ -699,8 +696,10 @@ class SecurityRule extends RuleWithUserID
 
 			$this->logSetting = false;
 
-			if( $this->logsettingroot !== null )
-				$this->xmlroot->removeChild($this->logsettingroot);
+            $logXmlRoot = DH::findFirstElement('log-setting', $this->xmlroot);
+
+			if( $logXmlRoot !== false )
+				$this->xmlroot->removeChild($logXmlRoot);
 
 			return true;
 		}
@@ -709,13 +708,7 @@ class SecurityRule extends RuleWithUserID
             return false;
 
 		$this->logSetting = $newLogSetting;
-
-		if( $this->logsettingroot === null )
-		{
-			$this->logsettingroot = DH::createElement($this->xmlroot, 'log-setting', $newLogSetting);
-		}
-		else
-			DH::setDomNodeText($this->logsettingroot, $newLogSetting);
+        DH::createOrResetElement($this->xmlroot, 'log-setting', $newLogSetting);
 
         return true;
 	}
