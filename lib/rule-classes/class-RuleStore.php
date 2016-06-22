@@ -50,6 +50,9 @@ class RuleStore
 	protected $fastMemToIndex_forPost=null;
 	protected $fastNameToIndex_forPost=null;
 
+    /** @var  int */
+    public $version;
+
 
     protected $isPreOrPost = false;
 

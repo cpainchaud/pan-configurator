@@ -648,13 +648,12 @@ class SecurityRule extends RuleWithUserID
 	public function API_setLogEnd($yes)
 	{
 		if( !$this->setLogEnd($yes) )
-		{
 			return false;
-		}
 
 		$con = findConnectorOrDie($this);
-
 		$con->sendSetRequest($this->getXPath(), "<log-end>".boolYesNo($yes)."</log-end>");
+
+        return true;
 	}
 
 	/**
@@ -665,13 +664,12 @@ class SecurityRule extends RuleWithUserID
 	public function API_setLogStart($yes)
 	{
 		if( !$this->setLogStart($yes) )
-		{
 			return false;
-		}
 
 		$con = findConnectorOrDie($this);
-
 		$con->sendSetRequest($this->getXPath(), "<log-start>".boolYesNo($yes)."</log-start>");
+
+        return true;
 	}
 
 	/**
