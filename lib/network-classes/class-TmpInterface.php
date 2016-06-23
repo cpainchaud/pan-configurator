@@ -27,7 +27,7 @@ class TmpInterface
 
     /**
      * @param $name string
-     * @param $owner
+     * @param TmpInterfaceStore $owner
      */
     public function __construct($name, $owner)
     {

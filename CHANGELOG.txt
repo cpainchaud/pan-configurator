@@ -2,6 +2,10 @@ CHANGELOG
 
 1.5.10
 
+bugfix:
+- fixed a loading error when using blank proxy-id in IPsecTunnels which implictly means 0.0.0.0/0
+- fixed an issue where malformed xml could be generated when changing log-profile when it already existed
+
 
 1.5.9
 * PanAPIConnector::register_sendUpdate() new IP registration function; PanAPIConnector::register_getIP() new get registered IP function

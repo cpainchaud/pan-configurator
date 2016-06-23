@@ -98,7 +98,7 @@ class Rule
 	}
 
     /**
-     * For developper use only
+     * For developer use only
      */
     protected function load_from()
     {

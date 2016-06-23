@@ -22,9 +22,7 @@ class Tag
 	use PathableName;
     use XmlConvertible;
 
-    /**
-     * @var TagStore|null
-     */
+    /** @var TagStore|null */
 	public $owner = null;
 
 

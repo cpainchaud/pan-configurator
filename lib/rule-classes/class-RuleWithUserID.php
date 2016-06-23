@@ -71,7 +71,7 @@ class RuleWithUserID extends Rule
     }
 
     /**
-     * For developpers only
+     * For developers only
      */
     function userID_loadUsersFromXml()
     {

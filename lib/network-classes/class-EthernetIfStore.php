@@ -23,9 +23,7 @@
 class EthernetIfStore extends ObjStore
 {
 
-    /**
-     * @var PANConf
-     */
+    /** @var PANConf */
     public $owner;
 
 

@@ -22,14 +22,10 @@ class VirtualRouter
     use PathableName;
     use ReferencableObject;
 
-    /**
-     * @var VirtualRouterStore
-     */
+    /** @var VirtualRouterStore */
     public $owner;
 
-    /**
-     * @var StaticRoute[]
-     */
+    /** @var StaticRoute[] */
     protected $_staticRoutes = Array();
 
     /** @var InterfaceContainer */

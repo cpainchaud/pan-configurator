@@ -23,26 +23,25 @@ class StaticRoute
     use PathableName;
     use ReferencableObject;
 
-    /**
-     * @var string
-     */
+    /** @var string */
     protected $_destination;
 
     protected $_nexthopType = 'none';
 
     protected $_nexthopIP = null;
 
-    /**
-     * @var VirtualRouter
-     */
+    /** @var VirtualRouter */
     public $owner;
 
-    /**
-     * @var null|EthernetInterface|AggregateEthernetInterface|TmpInterface
-     */
+    /** @var null|EthernetInterface|AggregateEthernetInterface|TmpInterface */
     protected $_interface = null;
 
 
+    /**
+     * StaticRoute constructor.
+     * @param string $name
+     * @param VirtualRouter $owner
+     */
     function __construct($name, $owner)
     {
         $this->owner = $owner;
