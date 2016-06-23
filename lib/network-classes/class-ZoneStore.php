@@ -25,7 +25,9 @@
  */
 class ZoneStore extends ObjStore
 {
-	
+    /** @var DeviceGroup|PanoramaConf|VirtualSystem */
+	public $owner;
+
 	public $parentCentralStore = null;
 	
 	public static $childn = 'Zone';

@@ -148,7 +148,7 @@ class PanoramaConf
 	}
 
     /**
-     * @param $xml DOMNode
+     * @param DOMElement|DOMDocument $xml
      * @throws Exception
      */
 	public function load_from_domxml($xml)
@@ -778,6 +778,7 @@ class PanoramaConf
 
 	/**
 	*	load all managed firewalls configs from a directory
+     * @var string $fromDirectory
 	*/
 	public function loadManagedFirewallsConfigs($fromDirectory = './')
 	{
@@ -853,7 +854,7 @@ class PanoramaConf
 
 	/**
 	* Create a blank device group. Return that DV object.
-     * @param $name string
+     * @param string $name
      * @return DeviceGroup
 	**/
 	public function createDeviceGroup($name)
