@@ -82,7 +82,6 @@ class AppStore
      */
 	public function find($objectName, $ref=null, $nested)
 	{
-
         if( isset($this->_all[$objectName]) )
         {
             $foundObject = $this->_all[$objectName];
@@ -196,6 +195,89 @@ class AppStore
 	{
 		return $this->_all;
 	}
+
+    /**
+     * @param DOMElement $xml
+     */
+    public function load_applications_from_domxml($xml)
+    {
+        $this->applicationsRoot = $xml;
+
+        foreach( $xml as $node )
+        {
+            if( $node->nodeType != 1 ) continue;
+            /** @var DOMElement $node */
+
+            $ns = new Application('',$this);
+            $ns->load_from_domxml($node);
+
+            if( isset($this->_all[$ns->name()]) )
+            {
+                mwarning("object named '{$ns->name()}' appears several time in XML, please fix your configuration or you may face undesired side-effects");
+                continue;
+            }
+
+            $objectName = $ns->name();
+
+            $this->_applications[$objectName] = $ns;
+            $this->_all[$objectName] = $ns;
+        }
+    }
+
+
+    /**
+     * @param DOMElement $xml
+     */
+    public function load_applicationGroups_from_domxml($xml)
+    {
+        $this->applicationsRoot = $xml;
+
+        foreach( $xml as $node )
+        {
+            if( $node->nodeType != 1 ) continue;
+            /** @var DOMElement $node */
+
+            $ns = new ApplicationGroup('',$this);
+            $ns->load_from_domxml($node);
+
+            if( isset($this->_all[$ns->name()]) )
+            {
+                mwarning("object named '{$ns->name()}' appears several time in XML, please fix your configuration or you may face undesired side-effects");
+            }
+
+            $objectName = $ns->name();
+
+            $this->_groups[$objectName] = $ns;
+            $this->_all[$objectName] = $ns;
+        }
+    }
+
+    /**
+     * @param DOMElement $xml
+     */
+    public function load_applicationFilters_from_domxml($xml)
+    {
+        $this->filtersRoot = $xml;
+
+        foreach( $xml as $node )
+        {
+            if( $node->nodeType != 1 ) continue;
+            /** @var DOMElement $node */
+
+            $ns = new ApplicationFilter('',$this);
+            $ns->load_from_domxml($node);
+
+            if( isset($this->_all[$ns->name()]) )
+            {
+                mwarning("object named '{$ns->name()}' appears several time in XML, please fix your configuration or you may face undesired side-effects");
+            }
+
+            $objectName = $ns->name();
+
+            $this->_filters[$objectName] = $ns;
+            $this->_all[$objectName] = $ns;
+        }
+    }
 
 
 	/**
