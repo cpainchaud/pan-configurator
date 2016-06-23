@@ -401,7 +401,7 @@ class AddressStore
 	}
 
     /**
-     * @param $s Address|AddressGroup
+     * @param Address|AddressGroup $s
      * @return bool
      */
 	public function API_add($s)
@@ -629,7 +629,7 @@ class AddressStore
 	/**
 	* Creates a new Address Group named '$name' . Will exit with error if a group with that 
 	* name already exists
-	* @param $name string
+	* @param string $name
 	* @return AddressGroup
 	**/
 	public function newAddressGroup($name)
@@ -697,6 +697,12 @@ class AddressStore
      */
 	function createTmp($name, $ref=null)
 	{
+        if( isset($this->all[$name]) )
+        {
+            mwarning("cannot create a TMP object named '{$name}' because an object with that name already existed and was returned by this function");
+            return $this->all[$name];
+        }
+
 		$f = new Address($name,$this);
         $f->setValue($name);
 		//$f->type = 'tmp';
