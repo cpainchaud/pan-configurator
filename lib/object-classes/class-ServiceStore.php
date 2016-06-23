@@ -291,7 +291,7 @@ class ServiceStore
 	public function findOrCreate( $fn , $ref=null, $nested=true)
 	{
         $f = $this->find( $fn , $ref, $nested);
-        if( $f )
+        if( $f !== null )
             return $f;
 
         $f = $this->createTmp($fn,$ref);

@@ -38,11 +38,22 @@ class AppStore
 
     /** @var Application[] */
     protected $_tmpApplications = Array();
-	
+
+    /** @var AppStore */
 	public $parentCentralStore = null;
 
     /** @var null|AppStore  */
     protected static $predefinedStore = null;
+
+    /** @var DOMElement */
+    public $applicationsRoot;
+
+    /** @var DOMElement */
+    public $groupsRoot;
+
+    /** @var DOMElement */
+    public $filtersRoot;
+
 
     /**
      * @return AppStore|null
@@ -53,7 +64,7 @@ class AppStore
             return self::$predefinedStore;
 
         self::$predefinedStore = new AppStore(null);
-        self::$predefinedStore->setName('predefined Apps');
+        self::$predefinedStore->name = 'predefined Apps';
         self::$predefinedStore->load_from_predefinedfile();
 
         return self::$predefinedStore;
@@ -65,14 +76,116 @@ class AppStore
 	}
 
     /**
-     * @param $name string
+     * @param $objectName string
      * @param $ref
      * @return null|Application
      */
-	public function find($name, $ref=null)
+	public function find($objectName, $ref=null, $nested)
 	{
-		return $this->findByName($name,$ref);
+
+        if( isset($this->_all[$objectName]) )
+        {
+            $foundObject = $this->_all[$objectName];
+            $foundObject->addReference($ref);
+            return $foundObject;
+        }
+
+        if( $nested && $this->parentCentralStore !== null )
+        {
+            $f = $this->parentCentralStore->find( $objectName , $ref, $nested);
+            return $f;
+        }
+
+        return null;
 	}
+
+
+    /**
+     * @param string $objectName
+     * @param null $ref
+     * @param bool $nested
+     * @return Application|null
+     */
+    public function findOrCreate($objectName, $ref=null, $nested=true)
+    {
+        $f = $this->find( $objectName , $ref, $nested);
+
+        if( $f !== null )
+            return $f;
+
+        $f = $this->createTmp($objectName,$ref);
+
+        return $f;
+    }
+
+
+    /**
+     * @param string $objectName
+     * @param null $ref
+     * @return Application
+     */
+    public function createTmp($objectName, $ref=null)
+    {
+        if( isset($this->_all[$objectName]) )
+        {
+            mwarning("cannot create a TMP object  name '{$objectName}' in store that already exists");
+            return $this->_all[$objectName];
+        }
+
+        $f = new Application($objectName,$this);
+
+        $this->add($f);
+        $f->addReference($ref);
+
+        return $f;
+    }
+
+    /**
+     * @param Application|ApplicationGroup|ApplicationFilter $s
+     * @return bool
+     * @throws Exception
+     */
+    public function add($s)
+    {
+        $objectName = $s->name();
+
+        // there is already an object named like that
+        if( isset($this->_all[$objectName]) && $this->_all[$objectName] !== $s )
+        {
+            derr('You cannot add object with same name in a store');
+        }
+
+        $class = get_class($s);
+
+        if( $class == 'Address' )
+        {
+            if( $s->isTmp() )
+            {
+                $this->_tmpApplications[$objectName] = $s;
+            }
+            else
+            {
+                $this->_applications[$objectName] = $s;
+                $this->applicationsRoot->appendChild($s->xmlroot);
+            }
+
+            $this->_all[$objectName] = $s;
+        }
+        elseif ( $class == 'AddressGroup' )
+        {
+            $this->_groups[$objectName] = $s;
+            $this->_all[$objectName] = $s;
+            $this->groupsRoot->appendChild($s->xmlroot);
+
+        }
+        else
+            derr('invalid class found');
+
+
+        $s->owner = $this;
+
+        return true;
+    }
 
 
 	/**

@@ -316,7 +316,13 @@ class AddressStore
 
         return $f;
 	}
-	
+
+    /**
+     * @param string $fn
+     * @param null $ref
+     * @param bool $nested
+     * @return Address|AddressGroup|null
+     */
 	public function findOrCreate( $fn , $ref=null, $nested=true)
 	{
 		$f = $this->find( $fn , $ref, $nested);

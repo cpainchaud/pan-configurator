@@ -23,7 +23,7 @@ class ServiceGroup
     use ServiceCommon;
 
     /** @var Service[]|ServiceGroup[] */
-	public $members = Array();
+	protected $_members = Array();
 
 	/** @var null|ServiceStore */
 	public $owner = null;
@@ -47,7 +47,7 @@ class ServiceGroup
 	 */
 	public function count()
 	{
-		return count($this->members);
+		return count($this->_members);
 	}
 
 
@@ -56,8 +56,8 @@ class ServiceGroup
 		$this->xmlroot = $xml;
 		
 		$this->name = DH::findAttribute('name', $xml);
-		if( $this->name === FALSE )
-			derr("name not found\n");
+        if( $this->name === FALSE || strlen($this->name) < 1 )
+            derr("name not found or invalid\n", $xml);
 
 		if( $this->owner->owner->version >= 60 )
 		{
@@ -80,7 +80,7 @@ class ServiceGroup
 				$f = $this->owner->findOrCreate($memberName, $this, true);
 
                 $alreadyInGroup = false;
-                foreach( $this->members as $member )
+                foreach( $this->_members as $member )
                     if( $member === $f )
                     {
                         mwarning("service '{$memberName}' is already part of group '{$this->name}', you should review your config file");
@@ -89,7 +89,7 @@ class ServiceGroup
                     }
 
                 if( !$alreadyInGroup )
-				    $this->members[] = $f;
+				    $this->_members[] = $f;
 			}
 
 		}
@@ -107,7 +107,7 @@ class ServiceGroup
 				$f = $this->owner->findOrCreate($memberName, $this, true);
 
                 $alreadyInGroup = false;
-                foreach( $this->members as $member )
+                foreach( $this->_members as $member )
                     if( $member === $f )
                     {
                         mwarning("service '{$memberName}' is already part of group '{$this->name}', you should review your your config file");
@@ -116,9 +116,9 @@ class ServiceGroup
                     }
 
                 if( !$alreadyInGroup )
-                    $this->members[] = $f;
+                    $this->_members[] = $f;
 
-				$this->members[] = $f;
+				$this->_members[] = $f;
 
 			}
 		}
@@ -167,9 +167,9 @@ class ServiceGroup
 		if( !is_object($newObject) )
 			derr("Only objects can be passed to this function");
 		
-		if( ! in_array($newObject, $this->members, true) )
+		if( ! in_array($newObject, $this->_members, true) )
 		{
-			$this->members[] = $newObject;
+			$this->_members[] = $newObject;
 			$newObject->addReference($this);
 			if( $rewriteXml )
 			{
@@ -253,14 +253,14 @@ class ServiceGroup
 		
 		
 		$found = false;
-		$pos = array_search($old, $this->members, TRUE);
+		$pos = array_search($old, $this->_members, TRUE);
 		
 		if( $pos === FALSE )
 			return false;
 		else
 		{
 			$found = true;
-			unset($this->members[$pos]);
+			unset($this->_members[$pos]);
 			$old->removeReference($this);
 			if($rewritexml)
 				$this->rewriteXML();
@@ -288,7 +288,7 @@ class ServiceGroup
 		if( $old === null )
 			derr("\$old cannot be null");
 
-		if( in_array($old, $this->members, true) )
+		if( in_array($old, $this->_members, true) )
 		{
 			if( $new !== null )
 			{
@@ -329,10 +329,10 @@ class ServiceGroup
             {
                 derr('<members> not found');
             }
-            DH::Hosts_to_xmlDom($membersRoot, $this->members, 'member', false);
+            DH::Hosts_to_xmlDom($membersRoot, $this->_members, 'member', false);
         }
         else
-            DH::Hosts_to_xmlDom($this->xmlroot, $this->members, 'member', false);
+            DH::Hosts_to_xmlDom($this->xmlroot, $this->_members, 'member', false);
 	}
 	
 	/**
@@ -342,7 +342,7 @@ class ServiceGroup
 	public function referencedObjectRenamed($h)
 	{
 		//derr("****  SG referencedObjectRenamed was called  ****\n");
-		if( in_array($h, $this->members, true) )
+		if( in_array($h, $this->_members, true) )
 			$this->rewriteXML();
 	}
 
@@ -385,13 +385,13 @@ class ServiceGroup
 		$lO = Array();
 		$oO = Array();
 
-		foreach($this->members as $a)
+		foreach( $this->_members as $a)
 		{
 			$lO[] = $a->name();
 		}
 		sort($lO);
 
-		foreach($otherObject->members as $a)
+		foreach( $otherObject->_members as $a)
 		{
 			$oO[] = $a->name();
 		}
@@ -414,8 +414,8 @@ class ServiceGroup
     {
         $result = Array('minus' => Array(), 'plus' => Array() );
 
-        $localObjects = $this->members;
-        $otherObjects = $otherObject->members;
+        $localObjects = $this->_members;
+        $otherObjects = $otherObject->_members;
 
 
         usort($localObjects, '__CmpObjName');
@@ -460,13 +460,13 @@ class ServiceGroup
 		$lO = Array();
 		$oO = Array();
 
-		foreach($this->members as $a)
+		foreach( $this->_members as $a)
 		{
 			$lO[] = $a->name();
 		}
 		sort($lO);
 
-		foreach($otherObject->members as $a)
+		foreach( $otherObject->_members as $a)
 		{
 			$oO[] = $a->name();
 		}
@@ -504,7 +504,7 @@ class ServiceGroup
     {
         $mapping = new ServiceDstPortMapping();
 
-        foreach( $this->members as $member)
+        foreach( $this->_members as $member)
         {
             $localMapping = $member->dstPortMapping();
             $mapping->mergeWithMapping($localMapping);
@@ -548,7 +548,7 @@ class ServiceGroup
 	{
 		$ret = Array();
 
-		foreach( $this->members as  $object )
+		foreach( $this->_members as $object )
 		{
 			if( $object->isGroup() )
 			{
@@ -570,7 +570,7 @@ class ServiceGroup
      */
 	public function members()
 	{
-		return $this->members;
+		return $this->_members;
 	}
 
 
@@ -583,7 +583,7 @@ class ServiceGroup
 		if( $object === null )
 			derr('cannot work with null objects');
 
-		foreach( $this->members as $o )
+		foreach( $this->_members as $o )
 		{
 			if( $o === $object )
 				return true;
@@ -597,11 +597,11 @@ class ServiceGroup
 
     public function removeAll($rewriteXml = true)
     {
-        foreach( $this->members as $a)
+        foreach( $this->_members as $a)
         {
             $a->removeReference($this);
         }
-        $this->members = Array();
+        $this->_members = Array();
 
 
         if( $rewriteXml )
