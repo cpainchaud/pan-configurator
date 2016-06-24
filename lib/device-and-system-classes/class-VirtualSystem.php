@@ -97,7 +97,8 @@ class VirtualSystem
 
         $this->importedInterfaces = new InterfaceContainer($this, $owner->network);
 
-		$this->appStore = $owner->appStore;
+		$this->appStore = new AppStore($this);
+        $this->appStore->parentCentralStore = $owner->appStore;
 
         $this->zoneStore = new ZoneStore($this);
         $this->zoneStore->setName('zoneStore');
@@ -181,6 +182,23 @@ class VirtualSystem
                     $this->tagStore->load_from_domxml($tmp);
             }
             // End of Tag objects extraction
+
+            //
+            // Extract Application objects
+            //
+            $tmp = DH::findFirstElement('application', $xml);
+            if( $tmp !== false )
+                $this->appStore->load_applications_from_domxml(tmp);
+
+            $tmp = DH::findFirstElement('application-group', $xml);
+            if( $tmp !== false )
+                $this->appStore->load_applicationGroups_from_domxml($tmp);
+
+            $tmp = DH::findFirstElement('application-filter', $xml);
+            if( $tmp !== false )
+                $this->appStore->load_applicationFilters_from_domxml($tmp);
+
+            // End of Application objects extraction
 
 
             //

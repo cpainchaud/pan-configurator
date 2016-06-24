@@ -105,7 +105,8 @@ class PANConf
 		$this->tagStore = new TagStore($this);
 		$this->tagStore->setName('tagStore');
 
-		$this->appStore = AppStore::getPredefinedStore();
+        $this->appStore = new AppStore($this);
+        $this->appStore->parentCentralStore = AppStore::getPredefinedStore();
 
 		$this->serviceStore = new ServiceStore($this);
 		$this->serviceStore->name = 'services';
@@ -181,6 +182,7 @@ class PANConf
         if( $this->owner === null )
         {
             $this->sharedroot = DH::findFirstElementOrDie('shared', $this->xmlroot);
+
             //
             // Extract Tag objects
             //
@@ -191,6 +193,23 @@ class PANConf
                     $this->tagStore->load_from_domxml($tmp);
             }
             // End of Tag objects extraction
+
+            //
+            // Extract Application objects
+            //
+            $tmp = DH::findFirstElement('application', $this->sharedroot);
+            if( $tmp !== false )
+                $this->appStore->load_applications_from_domxml($tmp);
+
+            $tmp = DH::findFirstElement('application-group', $this->sharedroot);
+            if( $tmp !== false )
+                $this->appStore->load_applicationGroups_from_domxml($tmp);
+
+            $tmp = DH::findFirstElement('application-filter', $this->sharedroot);
+            if( $tmp !== false )
+                $this->appStore->load_applicationFilters_from_domxml($tmp);
+
+            // End of Application objects extraction
 
 
             //
