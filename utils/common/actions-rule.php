@@ -438,6 +438,81 @@ RuleCallContext::$commonActionFunctions['zone-add'] = Array(
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 
+RuleCallContext::$commonActionFunctions['zone-replace'] = Array(
+    'function' => function (RuleCallContext $context, $fromOrTo )
+    {
+        $rule = $context->object;
+
+        $zoneNameToReplace = $context->arguments['zoneToReplaceName'];
+        $zoneNameForReplacement = $context->arguments['zoneForReplacementName'];
+        $force = $context->arguments['force'];
+
+        /** @var ZoneRuleContainer $zoneContainer */
+        $zoneContainer = null;
+
+        if( $fromOrTo == 'from' )
+        {
+            if( $rule->isPbfRule()  && $rule->isInterfaceBased()
+                || $rule->isDoSRule() && $rule->isZoneBasedFrom() )
+            {
+                echo $context->padding." * SKIPPED : TO is Interface based.\n";
+                return;
+            }
+            $zoneContainer  = $rule->from;
+        }
+        elseif( $fromOrTo == 'to' )
+        {
+            if( $rule->isPbfRule() )
+            {
+                echo $context->padding." * SKIPPED : there is no TO in PBF rules.\n";
+                return;
+            }
+            if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+            {
+                echo $context->padding." * SKIPPED : TO is Interface based.\n";
+                return;
+            }
+            $zoneContainer  = $rule->to;
+        }
+        else
+            derr('unsupported');
+
+        
+        $zoneToReplace = $zoneContainer->parentCentralStore->find($zoneNameToReplace);
+        if( $zoneToReplace === null )
+            derr("zone '{$zoneNameToReplace}' does not exist. If it's intended then please use a REGEXP instead\n");
+
+        if( !$zoneContainer->hasZone($zoneToReplace) )
+        {
+            print $context->padding." * SKIPPED : no zone with that name in the container\n";
+            return;
+        }
+
+        $zoneForReplacement = $zoneContainer->parentCentralStore->find($zoneNameForReplacement);
+        if( $zoneForReplacement === null )
+        {
+            if( !$force )
+                derr("zone '{$zoneNameForReplacement}' does not exist. If it's intended then please use option force=TRUE to bypass this safeguard\n");
+            $zoneForReplacement = $zoneContainer->parentCentralStore->createTmp($zoneNameForReplacement);
+        }
+
+        if ($context->isAPI)
+        {
+            $zoneContainer->API_addZone($zoneForReplacement);
+            $zoneContainer->API_removeZone($zoneToReplace);
+        }
+        else
+        {
+            $zoneContainer->addZone($zoneForReplacement);
+            $zoneContainer->removeZone($zoneToReplace);
+        }
+
+    },
+    'args' => Array(    'zoneToReplaceName' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+                        'zoneForReplacementName' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+                        'force' => Array( 'type' => 'boolean', 'default' => 'no')
+    )
+);
 
 /***************************************
  *
@@ -458,6 +533,14 @@ RuleCallContext::$supportedActions['from-add'] = Array(
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
     {
+        $rule = $context->object;
+        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        {
+            echo $context->padding." * SKIPPED: FROM is Zone based, not supported yet.\n";
+            return;
+        }
+
+
         $f = RuleCallContext::$commonActionFunctions['zone-add']['function'];
         $f($context, 'from', false);
     },
@@ -470,6 +553,12 @@ RuleCallContext::$supportedActions['from-add-force'] = Array(
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
     {
+        $rule = $context->object;
+        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        {
+            echo $context->padding." * SKIPPED: FROM is Zone based, not supported yet.\n";
+            return;
+        }
         $f = RuleCallContext::$commonActionFunctions['zone-add']['function'];
         $f($context, 'from', true);
     },
@@ -482,6 +571,18 @@ RuleCallContext::$supportedActions['from-remove'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        {
+            echo $context->padding." * SKIPPED: FROM is Zone based, not supported yet.\n";
+            return;
+        }
+        if( !$rule->from->hasZone($context->arguments['zoneName']) )
+        {
+            echo $context->padding." * SKIPPED : no zone with requested name was found";
+            return;
+        }
+
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null)
             derr("zone named '{$context->arguments['zoneName']}' not found");
@@ -499,6 +600,18 @@ RuleCallContext::$supportedActions['from-remove-force-any'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        {
+            echo $context->padding." * SKIPPED: FROM is Zone based, not supported yet.\n";
+            return;
+        }
+        if( !$rule->from->hasZone($context->arguments['zoneName']) )
+        {
+            echo $context->padding." * SKIPPED : no zone with requested name was found";
+            return;
+        }
+
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null)
             derr("zone named '{$context->arguments['zoneName']}' not found");
@@ -510,12 +623,28 @@ RuleCallContext::$supportedActions['from-remove-force-any'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
+RuleCallContext::$supportedActions['from-replace'] = Array(
+    'name' => 'from-Replace',
+    'section' => 'zone',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $f = RuleCallContext::$commonActionFunctions['zone-replace']['function'];
+        $f($context, 'from');
+    },
+    'args' => & RuleCallContext::$commonActionFunctions['zone-replace']['args']
+);
 RuleCallContext::$supportedActions['from-set-any'] = Array(
     'name' => 'from-Set-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        {
+            echo $context->padding." * SKIPPED: FROM is Zone based, not supported yet.\n";
+            return;
+        }
 
         if ($context->isAPI)
             $rule->from->API_setAny();
@@ -529,6 +658,18 @@ RuleCallContext::$supportedActions['to-add'] = Array(
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
     {
+        $rule = $context->object;
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            echo $context->padding." * SKIPPED: TO is Zone based, not supported yet.\n";
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            echo $context->padding." * SKIPPED: there is no TO in PBF Rules.\n";
+            return;
+        }
+
         $f = RuleCallContext::$commonActionFunctions['zone-add']['function'];
         $f($context, 'to', false);
     },
@@ -541,6 +682,18 @@ RuleCallContext::$supportedActions['to-add-force'] = Array(
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
     {
+        $rule = $context->object;
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            echo $context->padding." * SKIPPED: TO is Zone based, not supported yet.\n";
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            echo $context->padding." * SKIPPED: there is no TO in PBF Rules.\n";
+            return;
+        }
+
         $f = RuleCallContext::$commonActionFunctions['zone-add']['function'];
         $f($context, 'to', true);
     },
@@ -553,6 +706,23 @@ RuleCallContext::$supportedActions['to-remove'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            echo $context->padding." * SKIPPED: TO is Zone based, not supported yet.\n";
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            echo $context->padding." * SKIPPED: there is no TO in PBF Rules.\n";
+            return;
+        }
+        if( !$rule->to->hasZone($context->arguments['zoneName']) )
+        {
+            echo $context->padding." * SKIPPED : no zone with requested name was found";
+            return;
+        }
+
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null)
             derr("zone named '{$context->arguments['zoneName']}' not found");
@@ -570,6 +740,23 @@ RuleCallContext::$supportedActions['to-remove-force-any'] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            echo $context->padding." * SKIPPED: TO is Zone based, not supported yet.\n";
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            echo $context->padding." * SKIPPED: there is no TO in PBF Rules.\n";
+            return;
+        }
+        if( !$rule->to->hasZone($context->arguments['zoneName']) )
+        {
+            echo $context->padding." * SKIPPED : no zone with requested name was found";
+            return;
+        }
+
         $objectFind = $rule->from->parentCentralStore->find($context->arguments['zoneName']);
         if( $objectFind === null )
             derr("zone named '{$context->arguments['zoneName']}' not found");
@@ -581,12 +768,33 @@ RuleCallContext::$supportedActions['to-remove-force-any'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
+RuleCallContext::$supportedActions['to-replace'] = Array(
+    'name' => 'to-Replace',
+    'section' => 'zone',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $f = RuleCallContext::$commonActionFunctions['zone-replace']['function'];
+        $f($context, 'to');
+    },
+    'args' => & RuleCallContext::$commonActionFunctions['zone-replace']['args']
+);
 RuleCallContext::$supportedActions['to-set-any'] = Array(
     'name' => 'to-Set-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            echo $context->padding." * SKIPPED: TO is Zone based, not supported yet.\n";
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            echo $context->padding." * SKIPPED: there is no TO in PBF Rules.\n";
+            return;
+        }
 
         if( $context->isAPI )
             $rule->to->API_setAny();
@@ -600,6 +808,14 @@ RuleCallContext::$supportedActions['from-calculate-zones'] = Array(
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
     {
+        $rule = $context->object;
+
+        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        {
+            echo $context->padding." * SKIPPED: FROM is Zone based, not supported yet.\n";
+            return;
+        }
+        
         $f = RuleCallContext::$commonActionFunctions['calculate-zones']['function'];
         $f($context, 'from');
     },
@@ -611,6 +827,18 @@ RuleCallContext::$supportedActions['to-calculate-zones'] = Array(
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
     {
+        $rule = $context->object;
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            echo $context->padding." * SKIPPED: TO is Zone based, not supported yet.\n";
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            echo $context->padding." * SKIPPED: there is no TO in PBF Rules.\n";
+            return;
+        }
+
         $f = RuleCallContext::$commonActionFunctions['calculate-zones']['function'];
         $f($context, 'to');
     },

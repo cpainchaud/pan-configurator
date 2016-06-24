@@ -22,7 +22,7 @@ class CallContext
 {
     public $arguments = Array();
 
-    /** @var  Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $object  */
+    /** @var  Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object  */
     public $object;
 
     public $actionRef;
@@ -368,7 +368,7 @@ class RuleCallContext extends CallContext
     }
 
     /**
-     * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule $rule
+     * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
      * @param $fieldName
      * @return string
      */

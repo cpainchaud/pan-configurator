@@ -83,9 +83,11 @@ class SecurityRule extends RuleWithUserID
 
 		$this->from = new ZoneRuleContainer($this);
 		$this->from->name = 'from';
+        $this->from->parentCentralStore = $owner->owner->zoneStore;
 
 		$this->to = new ZoneRuleContainer($this);
 		$this->to->name = 'to';
+        $this->to->parentCentralStore = $owner->owner->zoneStore;
 
 		$this->source = new AddressRuleContainer($this);
 		$this->source->name = 'source';
@@ -106,7 +108,6 @@ class SecurityRule extends RuleWithUserID
 			$xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
 			$this->load_from_domxml($xmlElement);
 		}
-
 	}
 
 

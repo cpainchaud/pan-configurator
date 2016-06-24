@@ -22,13 +22,17 @@ class Template
     use PathableName;
     use PanSubHelperTrait;
 
-    /** @var  PanoramaConf */
+    /** @var PanoramaConf */
     public $owner;
 
     /** @var  PANConf */
     public $deviceConfiguration;
 
-
+    /**
+     * Template constructor.
+     * @param string $name
+     * @param PanoramaConf $owner
+     */
     public function __construct($name, $owner)
     {
         $this->name = $name;

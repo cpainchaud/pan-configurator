@@ -71,6 +71,7 @@ $configOutput = null;
 $errorMessage = '';
 $debugAPI = false;
 $loadConfigAfterUpload = false;
+$extraFiltersOut = null;
 
 
 
@@ -87,7 +88,7 @@ $supportedArguments['preservemgmtconfig'] = Array('niceName' => 'preserveMgmtCon
 $supportedArguments['preservemgmtusers'] = Array('niceName' => 'preserveMgmtUsers', 'shortHelp' => 'this message');
 $supportedArguments['preservemgmtsystem'] = Array('niceName' => 'preserveMgmtSystem', 'shortHelp' => 'preserves what is in /config/devices/entry/deviceconfig/system');
 $supportedArguments['injectuseradmin2'] = Array('niceName' => 'injectUserAdmin2', 'shortHelp' => 'adds user "admin2" with password "admin" in administrators');
-
+$supportedArguments['extrafiltersout'] = Array('niceName' => 'extraFiltersOut', 'shortHelp' => 'list of xpath separated by | character that will be stripped from the XML before going to output');
 
 
 PH::processCliArgs();
@@ -146,11 +147,14 @@ if( isset(PH::$args['toxpath']) )
 }
 
 if( !isset(PH::$args['apiTimeout']) )
-{
     $apiTimeoutValue = 30;
-}
 else
     $apiTimeoutValue = PH::$args['apiTimeout'];
+
+if( isset(PH::$args['extrafiltersout']) )
+{
+    $extraFiltersOut = explode('|', PH::$args['extrafiltersout']);
+}
 
 
 $doc = new DOMDocument();
@@ -199,6 +203,35 @@ else
 
 print " OK!!\n\n";
 
+
+if( $extraFiltersOut !== null )
+{
+    print " * extraFiltersOut was specified and holds '".count($extraFiltersOut)." queries'\n";
+        foreach( $extraFiltersOut as $filter )
+        {
+            print "  - processing XPath '''{$filter} ''' ";
+            $xpathQ = new DOMXPath($doc);
+            $results = $xpathQ->query($filter);
+
+            if( $results->length == 0 )
+                print " 0 results found!\n";
+            else
+            {
+                print " {$results->length} matching nodes found!\n";
+                foreach( $results as $node )
+                {
+                    /** @var DOMElement $node */
+                    $panXpath = DH::elementToPanXPath($node);
+                    print "     - deleting $panXpath\n";
+                    $node->parentNode->removeChild($node);
+                }
+
+            }
+            unset($xpathQ);
+        }
+    }
+
+
 if( isset($fromXpath) )
 {
     print " * fromXPath is specified with value '".$fromXpath."'\n";
@@ -218,7 +251,6 @@ if( isset($fromXpath) )
     }
 
     print "\n";
-
 }
 
 

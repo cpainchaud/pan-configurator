@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (c) 2014-2015 Palo Alto Networks, Inc. <info@paloaltonetworks.com>
  * Author: Christophe Painchaud <cpainchaud _AT_ paloaltonetworks.com>
@@ -17,9 +16,43 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class DecryptionRule extends RuleWithUserID
+
+class QoSRule extends RuleWithUserID
 {
     use NegatableRule;
+
+    static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
+<source><member>any</member></source><destination><member>any</member></destination>
+<source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application>
+><service><member>any</member></service>><action><class>1</class></action></entry>';
+    static protected $templatexmlroot = null;
+
+
+    const ActionClass1     = 0;
+    const ActionClass2     = 1;
+    const ActionClass3     = 2;
+    const ActionClass4     = 3;
+    const ActionClass5     = 4;
+    const ActionClass6     = 5;
+    const ActionClass7     = 6;
+    const ActionClass8     = 7;
+
+
+    static private $RuleActions = Array(
+        self::ActionClass1 => 1,
+        self::ActionClass2 => 2,
+        self::ActionClass3 => 3,
+        self::ActionClass4 => 4,
+        self::ActionClass5 => 5,
+        self::ActionClass6 => 6,
+        self::ActionClass7 => 7,
+        self::ActionClass8 => 8
+    );
+
+    protected $action = self::ActionClass1;
+
+    /** @var AppRuleContainer $apps */
+    protected $apps;
 
     /**
      * @param RuleStore $owner
@@ -53,13 +86,16 @@ class DecryptionRule extends RuleWithUserID
         $this->services = new ServiceRuleContainer($this);
         $this->services->name = 'service';
 
+        $this->apps = new AppRuleContainer($this);
+        $this->apps->name = 'apps';
+
         if( $fromTemplateXML )
         {
             $xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
             $this->load_from_domxml($xmlElement);
         }
-
     }
+
 
     public function load_from_domxml($xml)
     {
@@ -71,29 +107,64 @@ class DecryptionRule extends RuleWithUserID
 
         $this->load_common_from_domxml();
 
-        $this->load_from();
-        $this->load_to();
+
         $this->load_source();
         $this->load_destination();
+        $this->load_from();
+        $this->load_to();
 
-        $this->userID_loadUsersFromXml();
-        $this->_readNegationFromXml();
+
+        //														//
+        // Begin <application> application extraction			//
+        //														//
+        $tmp = DH::findFirstElementOrCreate('application', $xml);
+        $this->apps->load_from_domxml($tmp);
+        // end of <application> application extraction
 
         //										//
         // Begin <service> extraction			//
         //										//
-        if( $this->owner->owner->version >= 61 )
-        {
-            $tmp = DH::findFirstElementOrCreate('service', $xml);
-            $this->services->load_from_domxml($tmp);
-        }
+        $tmp = DH::findFirstElementOrCreate('service', $xml);
+        $this->services->load_from_domxml($tmp);
         // end of <service> zone extraction
 
+        $this->_readNegationFromXml();
+
+        //
+        // Begin <action> extraction
+        //
+        $tmp = DH::findFirstElement('action', $xml);
+        if( $tmp !== false )
+        {
+            $actionFound = array_search($tmp->textContent, self::$RuleActions);
+            if( $actionFound === false )
+            {
+                mwarning("unsupported action '{$tmp->textContent}' found, class 1 assumed" , $tmp);
+            }
+            else
+            {
+                $this->action = $actionFound;
+            }
+        }
+        else
+        {
+            mwarning("'<action> not found, assuming class '1'" ,$xml);
+        }
+        // End of <rule-type>
+
+        $this->userID_loadUsersFromXml();
     }
 
-    public function display($padding = 0)
+    public function action()
     {
-        $padding = str_pad('', $padding);
+        return self::$RuleActions[$this->action];
+    }
+
+
+    public function display( $padding = 0)
+    {
+        if( !is_string($padding) )
+            $padding = str_pad('', $padding);
 
         $dis = '';
         if( $this->disabled )
@@ -107,11 +178,13 @@ class DecryptionRule extends RuleWithUserID
         if( $this->destinationIsNegated() )
             $destinationNegated = '*negated*';
 
+
         print $padding."*Rule named '{$this->name}' $dis\n";
         print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
         print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
         print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
-        print $padding."  Service:  ".$this->services->toString_inline()."\n";
+
+        print $padding."  Service:  ".$this->services->toString_inline()."    Apps:  ".$this->apps->toString_inline()."\n";
         if( !$this->userID_IsCustom() )
             print $padding."  User: *".$this->userID_type()."*\n";
         else
@@ -119,30 +192,41 @@ class DecryptionRule extends RuleWithUserID
             $users = $this->userID_getUsers();
             print $padding . " User:  " . PH::list_to_string($users) . "\n";
         }
-        print $padding."  Tags:  ".$this->tags->toString_inline()."\n";
-
-        if( $this->_targets !== null )
-            print $padding."  Targets:  ".$this->targets_toString()."\n";
+        print $padding."  Class: {$this->action()}\n";
+        print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
 
         if( strlen($this->_description) > 0 )
             print $padding."  Desc:  ".$this->_description."\n";
+
         print "\n";
     }
 
+    public function cleanForDestruction()
+    {
+        $this->from->__destruct();
+        $this->to->__destruct();
+        $this->source->__destruct();
+        $this->destination->__destruct();
+        $this->tags->__destruct();
 
-    public function isDecryptionRule()
+
+        $this->from = null;
+        $this->to = null;
+        $this->source = null;
+        $this->destination = null;
+        $this->tags = null;
+
+        $this->owner = null;
+    }
+
+    public function isQoSRule()
     {
         return true;
     }
 
-    public function storeVariableName()
-    {
-        return "decryptionRules";
-    }
-
     public function ruleNature()
     {
-        return 'decryption';
+        return 'qos';
     }
 
-} 
+}

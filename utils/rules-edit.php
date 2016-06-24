@@ -83,7 +83,7 @@ $debugAPI = false;
 
 
 $supportedArguments = Array();
-$supportedArguments['ruletype'] = Array('niceName' => 'ruleType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: ruletype=any  ruletype=security,nat', 'argDesc' => 'all|any|security|nat|decryption|pbf');
+$supportedArguments['ruletype'] = Array('niceName' => 'ruleType', 'shortHelp' => 'specify which type(s) of you rule want to edit, (default is "security". ie: ruletype=any  ruletype=security,nat', 'argDesc' => 'all|any|security|nat|decryption|pbf|qos|dos');
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
@@ -453,7 +453,7 @@ else
 //
 // Determine rule types
 //
-$supportedRuleTypes = Array('all', 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'pbf');
+$supportedRuleTypes = Array('all', 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'pbf', 'qos', 'dos');
 if( !isset(PH::$args['ruletype'])  )
 {
     print " - No 'ruleType' specified, using 'security' by default\n";
@@ -598,13 +598,17 @@ foreach( $rulesLocation as $location )
                     {
                         $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->resultingRuleSet());
                     }
-                    if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                    if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
                     {
-                        $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->resultingRuleSet());
+                        $rulesToProcess[] = Array('store' => $sub->qosRules, 'rules' => $sub->qosRules->resultingRuleSet());
                     }
                     if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
                     {
                         $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->resultingRuleSet());
                     }
                     if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
                     {
@@ -613,6 +617,10 @@ foreach( $rulesLocation as $location )
                     if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
                     {
                         $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->dosRules, 'rules' => $sub->dosRules->resultingRuleSet());
                     }
                     $locationFound = true;
                 }
@@ -629,13 +637,17 @@ foreach( $rulesLocation as $location )
                     {
                         $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->rules());
                     }
-                    if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                    if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
                     {
-                        $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                        $rulesToProcess[] = Array('store' => $sub->qosRules, 'rules' => $sub->qosRules->rules());
                     }
                     if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
                     {
                         $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
                     }
                     if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
                     {
@@ -644,6 +656,10 @@ foreach( $rulesLocation as $location )
                     if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
                     {
                         $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->dosRules, 'rules' => $sub->dosRules->rules());
                     }
                     $locationFound = true;
                 }
@@ -662,13 +678,17 @@ foreach( $rulesLocation as $location )
             {
                 $rulesToProcess[] = Array('store' => $pan->natRules, 'rules' => $pan->natRules->rules());
             }
-            if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+            if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
             {
-                $rulesToProcess[] = Array('store' => $pan->decryptionRules, 'rules' => $pan->decryptionRules->rules());
+                $rulesToProcess[] = Array('store' => $pan->qosRules, 'rules' => $pan->qosRules->rules());
             }
             if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
             {
                 $rulesToProcess[] = Array('store' => $pan->pbfRules, 'rules' => $pan->pbfRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->decryptionRules, 'rules' => $pan->decryptionRules->rules());
             }
             if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
             {
@@ -677,6 +697,10 @@ foreach( $rulesLocation as $location )
             if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
             {
                 $rulesToProcess[] = Array('store' => $pan->captivePortalRules, 'rules' => $pan->captivePortalRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->dosRules, 'rules' => $pan->dosRules->rules());
             }
             $locationFound = true;
         }
@@ -693,13 +717,17 @@ foreach( $rulesLocation as $location )
                 {
                     $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->rules());
                 }
-                if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
                 {
-                    $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                    $rulesToProcess[] = Array('store' => $sub->qosRules, 'rules' => $sub->qosRules->rules());
                 }
                 if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
                 {
                     $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
                 }
                 if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
                 {
@@ -708,6 +736,10 @@ foreach( $rulesLocation as $location )
                 if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
                 {
                     $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->dosRules, 'rules' => $sub->dosRules->rules());
                 }
                 $locationFound = true;
             }
