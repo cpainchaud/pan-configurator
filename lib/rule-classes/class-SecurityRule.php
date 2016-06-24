@@ -108,7 +108,6 @@ class SecurityRule extends RuleWithUserID
 			$xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
 			$this->load_from_domxml($xmlElement);
 		}
-
 	}
 
 

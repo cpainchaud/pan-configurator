@@ -26,8 +26,6 @@ class ZoneRuleContainer extends ObjRuleContainer
     /** @var null|ZoneStore */
     public $parentCentralStore = null;
 
-
-
     public function __construct($owner)
     {
         $this->owner = $owner;

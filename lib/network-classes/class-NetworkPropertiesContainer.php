@@ -5,7 +5,7 @@ class NetworkPropertiesContainer
 {
     use PathableName;
 
-    /** @var PANConf */
+    /** @var PANConf|PanoramaConf */
     public $owner;
 
     /** @var EthernetIfStore */
@@ -30,7 +30,11 @@ class NetworkPropertiesContainer
     public $xmlroot = null;
 
 
-    function __construct(PANConf $owner)
+    /**
+     * NetworkPropertiesContainer constructor.
+     * @param PANConf|PanoramaConf $owner
+     */
+    function __construct($owner)
     {
         $this->owner = $owner;
         $this->ethernetIfStore = new EthernetIfStore('EthernetIfaces', $owner);
@@ -120,6 +124,16 @@ class NetworkPropertiesContainer
                 return $if;
 
         return null;
+    }
+
+    /**
+     * Convenient alias to findInterface
+     * @param string $interfaceName
+     * @return EthernetInterface|IPsecTunnel|TmpInterface|null
+     */
+    public function find($interfaceName)
+    {
+        return $this->findInterface($interfaceName);
     }
 
 

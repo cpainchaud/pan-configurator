@@ -374,7 +374,12 @@ class PANConf
 
 		$numSecRules = 0;
 		$numNatRules = 0;
+        $numQosRules = 0;
+        $numPbfRules = 0;
 		$numDecryptRules = 0;
+        $numAppOverrideRules = 0;
+        $numCaptivePortalRules = 0;
+        $numDosRules = 0;
 
 
 		$gnservices = $this->serviceStore->countServices();
@@ -400,7 +405,12 @@ class PANConf
 
 			$numSecRules += $vsys->securityRules->count();
 			$numNatRules += $vsys->natRules->count();
+            $numQosRules += $vsys->qosRules->count();
+            $numPbfRules += $vsys->pbfRules->count();
 			$numDecryptRules += $vsys->decryptionRules->count();
+            $numAppOverrideRules += $vsys->appOverrideRules->count();
+            $numCaptivePortalRules += $vsys->captivePortalRules->count();
+            $numDosRules += $vsys->dosRules->count();
 
 			$gnservices += $vsys->serviceStore->countServices();
 			$gnservicesUnused += $vsys->serviceStore->countUnusedServices();
@@ -424,7 +434,17 @@ class PANConf
 
 		print "- ".$numNatRules." Nat Rules\n";
 
+        print "- ".$numQosRules." Qos Rules\n";
+
+        print "- ".$numPbfRules." Pbf Rules\n";
+
 		print "- ".$numDecryptRules." Deryption Rules\n";
+
+        print "- ".$numAppOverrideRules." AppOverride Rules\n";
+
+        print "- ".$numCaptivePortalRules." CaptivePortal Rules\n";
+
+        print "- ".$numDosRules." Dos Rules\n";
 
 		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects. {$gnaddresssUnused} unused\n";
 

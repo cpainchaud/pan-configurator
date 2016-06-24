@@ -5,6 +5,46 @@ class PbfRule extends RuleWithUserID
 {
     use NegatableRule;
 
+    static public $templatexml = '<entry name="**temporarynamechangeme**"><from><zone></zone></from>
+<source><member>any</member></source><destination><member>any</member></destination></entry>';
+    static protected $templatexmlroot = null;
+
+    /** @var ZoneRuleContainer|InterfaceContainer */
+    public $from;
+
+
+    protected $_zoneBased = true;
+
+    /**
+     * For developer use only
+     */
+    protected function load_from()
+    {
+        $tmp = DH::findFirstElementOrCreate('from', $this->xmlroot);
+
+        $tmp = DH::firstChildElement($tmp);
+        if( $tmp === null )
+            derr("PBF rule has nothing inside <from> tag, please fix before going forward");
+
+        if( $tmp->tagName == 'zone' )
+        {
+            $this->_zoneBased = true;
+            $this->from = new ZoneRuleContainer($this);
+            $this->from->name = 'from';
+            $this->from->findParentCentralStore();
+            $this->from->load_from_domxml($tmp);
+        }
+        elseif( $tmp->tagName == 'interface' )
+        {
+            $this->_zoneBased = false;
+            $this->from = new InterfaceContainer($this,$this->owner->_networkStore);
+            $this->from->name = 'from';
+            $this->from->load_from_domxml($tmp);
+        }
+        else
+            derr("PBF rule has unsupported <from> type '{$tmp->tagName}'");
+    }
+
     /**
      * @param RuleStore $owner
      * @param bool $fromTemplateXML
@@ -17,14 +57,6 @@ class PbfRule extends RuleWithUserID
         $this->parentServiceStore = $this->owner->owner->serviceStore;
 
         $this->tags = new TagRuleContainer($this);
-
-        $this->from = new ZoneRuleContainer($this);
-        $this->from->name = 'from';
-        $this->from->parentCentralStore = $owner->owner->zoneStore;
-
-        $this->to = new ZoneRuleContainer($this);
-        $this->to->name = 'to';
-        $this->to->parentCentralStore = $owner->owner->zoneStore;
 
         $this->source = new AddressRuleContainer($this);
         $this->source->name = 'source';
@@ -63,7 +95,6 @@ class PbfRule extends RuleWithUserID
         $this->load_source();
         $this->load_destination();
         $this->load_from();
-        $this->load_to();
 
         $this->userID_loadUsersFromXml();
         $this->_readNegationFromXml();
@@ -97,7 +128,7 @@ class PbfRule extends RuleWithUserID
 
 
         print $padding."*Rule named '{$this->name}' $dis\n";
-        print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
+        print $padding."  From: " .$this->from->toString_inline()."\n";
         print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
         print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
         print $padding."  Service:  ".$this->services->toString_inline()."\n";
@@ -128,7 +159,16 @@ class PbfRule extends RuleWithUserID
         return true;
     }
 
+    public function isZoneBased()
+    {
+        return $this->_zoneBased;
+    }
 
-    static protected $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
-<source><member>any</member></source><destination><member>any</member></destination></entry>';
+    public function isInterfaceBased()
+    {
+        return !$this->_zoneBased;
+    }
+
+
+
 }

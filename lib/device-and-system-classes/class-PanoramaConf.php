@@ -79,6 +79,12 @@ class PanoramaConf
     /** @var RuleStore */
     public $pbfRules;
 
+    /** @var RuleStore */
+    public $qosRules;
+
+    /** @var RuleStore */
+    public $dosRules;
+    
     /** @var AddressStore */
     public $addressStore=null;
 
@@ -102,6 +108,9 @@ class PanoramaConf
     public $tagStore;
 
     public $_fakeMode = false;
+
+    /** @var NetworkPropertiesContainer */
+    public $_fakeNetworkProperties;
 	
 	public $name = '';
 
@@ -133,6 +142,13 @@ class PanoramaConf
         $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule', true);
         $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule', true);
         $this->pbfRules = new RuleStore($this, 'PbfRule', true);
+        $this->qosRules = new RuleStore($this, 'QoSRule', true);
+        $this->dosRules = new RuleStore($this, 'DoSRule', true);
+
+        $this->_fakeNetworkProperties = new NetworkPropertiesContainer($this);
+        
+        $this->dosRules->_networkStore = $this->_fakeNetworkProperties;
+        $this->pbfRules->_networkStore = $this->_fakeNetworkProperties;
 
 	}
 
@@ -402,6 +418,57 @@ class PanoramaConf
                 $tmpPost = null;
         }
         $this->pbfRules->load_from_domxml($tmp, $tmpPost);
+
+
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('qos', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('qos', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
+        $this->qosRules->load_from_domxml($tmp, $tmpPost);
+
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('dos', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('dos', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
+        $this->dosRules->load_from_domxml($tmp, $tmpPost);//
         //
         // end of policies extraction
         //
@@ -632,6 +699,8 @@ class PanoramaConf
         $gpreAppOverrideRules = $this->appOverrideRules->countPreRules();
         $gpreCPRules = $this->captivePortalRules->countPreRules();
         $gprePbfRules = $this->pbfRules->countPreRules();
+        $gpreQoSRules = $this->qosRules->countPreRules();
+        $gpreDoSRules = $this->dosRules->countPreRules();
 
 		$gpostSecRules = $this->securityRules->countPostRules();
 		$gpostNatRules = $this->natRules->countPostRules();
@@ -639,6 +708,8 @@ class PanoramaConf
         $gpostAppOverrideRules = $this->appOverrideRules->countPostRules();
         $gpostCPRules = $this->captivePortalRules->countPostRules();
         $gpostPbfRules = $this->pbfRules->countPostRules();
+        $gpostQoSRules = $this->qosRules->countPostRules();
+        $gpostDoSRules = $this->dosRules->countPostRules();
 
 		$gnservices = $this->serviceStore->countServices();
 		$gnservicesUnused = $this->serviceStore->countUnusedServices();
@@ -663,6 +734,8 @@ class PanoramaConf
             $gpreAppOverrideRules += $cur->appOverrideRules->countPreRules();
             $gpreCPRules += $cur->captivePortalRules->countPreRules();
             $gprePbfRules += $cur->pbfRules->countPreRules();
+            $gpreQoSRules += $cur->qosRules->countPreRules();
+            $gpreDoSRules += $cur->dosRules->countPreRules();
 
 			$gpostSecRules += $cur->securityRules->countPostRules();
 			$gpostNatRules += $cur->natRules->countPostRules();
@@ -670,6 +743,8 @@ class PanoramaConf
             $gpostAppOverrideRules += $cur->appOverrideRules->countPostRules();
             $gpostCPRules += $cur->captivePortalRules->countPostRules();
             $gpostPbfRules += $cur->pbfRules->countPostRules();
+            $gpostQoSRules += $cur->qosRules->countPostRules();
+            $gpostDoSRules += $cur->dosRules->countPostRules();
 
 			$gnservices += $cur->serviceStore->countServices();
 			$gnservicesUnused += $cur->serviceStore->countUnusedServices();
@@ -694,6 +769,12 @@ class PanoramaConf
 		print "- ".$this->natRules->countPreRules()." (".$gpreNatRules.") pre-Nat Rules\n";
 		print "- ".$this->natRules->countPostRules()." (".$gpostNatRules.") post-Nat Rules\n";
 
+        print "- ".$this->qosRules->countPreRules()." (".$gpreQoSRules.") pre-QoS Rules\n";
+        print "- ".$this->qosRules->countPostRules()." (".$gpostQoSRules.") post-QoS Rules\n";
+
+        print "- ".$this->pbfRules->countPreRules()." (".$gprePbfRules.") pre-PBF Rules\n";
+        print "- ".$this->pbfRules->countPostRules()." (".$gpostPbfRules.") post-PBF Rules\n";
+
         print "- ".$this->decryptionRules->countPreRules()." (".$gpreDecryptRules.") pre-Decryption Rules\n";
         print "- ".$this->decryptionRules->countPostRules()." (".$gpostDecryptRules.") post-Decryption Rules\n";
 
@@ -703,8 +784,8 @@ class PanoramaConf
         print "- ".$this->captivePortalRules->countPreRules()." (".$gpreCPRules.") pre-CaptivePortal Rules\n";
         print "- ".$this->captivePortalRules->countPostRules()." (".$gpostCPRules.") post-CaptivePortal Rules\n";
 
-        print "- ".$this->pbfRules->countPreRules()." (".$gprePbfRules.") pre-PBF Rules\n";
-        print "- ".$this->pbfRules->countPostRules()." (".$gpostPbfRules.") post-PBF Rules\n";
+        print "- ".$this->dosRules->countPreRules()." (".$gpreDoSRules.") pre-DoS Rules\n";
+        print "- ".$this->dosRules->countPostRules()." (".$gpostDoSRules.") post-DoS Rules\n";
 
 		print "- ".$this->addressStore->countAddresses()." (".$gnaddresss.") address objects. {$gnaddresssUnused} unused\n";
 

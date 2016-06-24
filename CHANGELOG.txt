@@ -1,9 +1,12 @@
 CHANGELOG
 
 1.5.10
+* DoSRule and QoSRule class introduced
+* Fixed PBF rules inconsistencies FROM and TO fields
 
 utils:
 upload-config: new argument 'extraFiltersOut' to strip unwanted XML parts out of the config before saving/uploading it.
+rules-edit: new actions 'from-replace', 'to-replace' to help replace Zones where required
 
 bugfix:
 - fixed a loading error when using blank proxy-id in IPsecTunnels which implictly means 0.0.0.0/0

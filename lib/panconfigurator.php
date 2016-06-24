@@ -165,6 +165,8 @@ require_once $basedir.'/rule-classes/class-DecryptionRule.php';
 require_once $basedir.'/rule-classes/class-AppOverrideRule.php';
 require_once $basedir.'/rule-classes/class-CaptivePortalRule.php';
 require_once $basedir.'/rule-classes/class-PbfRule.php';
+require_once $basedir.'/rule-classes/class-QoSRule.php';
+require_once $basedir.'/rule-classes/class-DoSRule.php';
 
 unset($basedir);
 

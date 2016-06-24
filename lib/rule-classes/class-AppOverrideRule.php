@@ -25,15 +25,16 @@ class AppOverrideRule extends Rule
 <source><member>any</member></source><destination><member>any</member></destination><port></port><protocol>tcp</protocol><application></application></entry>';
 
 
-    /** @var AppRuleContainer */
-    public $apps = null;
-
     public $_protocol = '';
     public $_ports = '';
 
     /** @var  App|null */
     protected $_app;
 
+    /**
+     * @param RuleStore $owner
+     * @param bool $fromTemplateXML
+     */
     public function __construct($owner, $fromTemplateXML=false)
     {
         $this->owner = $owner;
@@ -85,6 +86,12 @@ class AppOverrideRule extends Rule
 
         $this->_readNegationFromXml();
 
+        // <application> extraction
+        //
+        $applicationRoot = DH::findFirstElementOrCreate('application', $xml);
+        $this->_app = $this->owner->owner->appStore->findOrCreate($applicationRoot->textContent, $this);
+        //
+
         // <protocol> extraction
         //
         $protocolRoot = DH::findFirstElementOrCreate('protocol', $xml, 'tcp');
@@ -94,7 +101,7 @@ class AppOverrideRule extends Rule
         // <port> extraction
         //
         $portRoot = DH::findFirstElementOrCreate('port', $xml);
-        $this->port = $portRoot->textContent;
+        $this->_ports = $portRoot->textContent;
         //
 
 
@@ -121,7 +128,13 @@ class AppOverrideRule extends Rule
         print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
         print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
         print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
+        print $padding."  Application:  ".$this->_app->name()."\n";
+        print $padding."  Protocol:  ".$this->_protocol."    Port:  ".$this->_ports."\n";
         print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
+
+        if( strlen($this->_description) > 0 )
+            print $padding."  Desc:  ".$this->_description."\n";
+
         print "\n";
     }
 
