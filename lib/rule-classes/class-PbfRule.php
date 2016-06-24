@@ -20,6 +20,7 @@ class PbfRule extends RuleWithUserID
 
         $this->from = new ZoneRuleContainer($this);
         $this->from->name = 'from';
+        $this->from->parentCentralStore = $owner->owner->zoneStore;
 
         $this->to = new ZoneRuleContainer($this);
         $this->to->name = 'to';
