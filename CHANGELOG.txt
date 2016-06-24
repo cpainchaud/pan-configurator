@@ -2,6 +2,9 @@ CHANGELOG
 
 1.5.10
 
+utils:
+upload-config: new argument 'extraFiltersOut' to strip unwanted XML parts out of the config before saving/uploading it.
+
 bugfix:
 - fixed a loading error when using blank proxy-id in IPsecTunnels which implictly means 0.0.0.0/0
 - fixed an issue where malformed xml could be generated when changing log-profile when it already existed
