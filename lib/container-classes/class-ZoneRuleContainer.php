@@ -23,9 +23,7 @@
  */
 class ZoneRuleContainer extends ObjRuleContainer
 {
-    /**
-     * @var null|ZoneStore
-     */
+    /** @var null|ZoneStore */
     public $parentCentralStore = null;
 
 
@@ -33,8 +31,6 @@ class ZoneRuleContainer extends ObjRuleContainer
     public function __construct($owner)
     {
         $this->owner = $owner;
-
-        $this->findParentCentralStore();
     }
 
 
@@ -216,7 +212,7 @@ class ZoneRuleContainer extends ObjRuleContainer
      *
      * @ignore
      */
-    protected function findParentCentralStore()
+    public function findParentCentralStore()
     {
         $this->parentCentralStore = null;
 
@@ -236,9 +232,7 @@ class ZoneRuleContainer extends ObjRuleContainer
                 $curo = $curo->owner;
             }
         }
-
-        //print $this->toString().": no parent store found\n";
-
+        
     }
 
 

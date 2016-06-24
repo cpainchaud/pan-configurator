@@ -182,6 +182,12 @@ class RuleStore
 		if( $rule->owner !== null )
 			derr('Trying to add a rule that has a owner already !');
 
+        if( $rule->owner !== $this )
+        {
+            $rule->from->findParentCentralStore();
+            $rule->to->findParentCentralStore();
+        }
+
 		$ser = spl_object_hash($rule);
 
 		if( $inPost !== true )
