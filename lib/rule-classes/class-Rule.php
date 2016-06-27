@@ -57,7 +57,7 @@ class Rule
 	public $services;
 
 	/**
-	 * @var null|RuleStore
+	 * @var RuleStore
 	 */
 	public $owner = null;
 
@@ -98,7 +98,7 @@ class Rule
 	}
 
     /**
-     * For developper use only
+     * For developer use only
      */
     protected function load_from()
     {
@@ -690,6 +690,16 @@ class Rule
     }
 
     public function isPbfRule()
+    {
+        return false;
+    }
+
+    public function isQoSRule()
+    {
+        return false;
+    }
+
+    public function isDoSRule()
     {
         return false;
     }

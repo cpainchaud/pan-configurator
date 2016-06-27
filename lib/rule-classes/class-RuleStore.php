@@ -23,13 +23,13 @@ class RuleStore
     use XmlConvertible;
 
 	/**
-	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]
+	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]|QoSRule|DoSRule[]||DoSRule[]
 	 */
 	protected $_rules = Array();
 
 
 	/**
-	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]
+	 * @var Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]|QoSRule|DoSRule[]||DoSRule[]
 	 */
 	protected $_postRules = Array();
 
@@ -50,6 +50,12 @@ class RuleStore
 	protected $fastMemToIndex_forPost=null;
 	protected $fastNameToIndex_forPost=null;
 
+    /** @var NetworkPropertiesContainer|null */
+    public $_networkStore = null;
+
+    /** @var  int */
+    public $version;
+
 
     protected $isPreOrPost = false;
 
@@ -62,6 +68,8 @@ class RuleStore
         'AppOverrideRule' => Array( 'name' => 'AppOverride', 'varName' => 'appOverrideRules', 'xpathRoot' => 'application-override' ),
         'CaptivePortalRule' => Array( 'name' => 'CaptivePortal', 'varName' => 'captivePortalRules', 'xpathRoot' => 'captive-portal' ),
         'PbfRule' => Array( 'name' => 'Pbf', 'varName' => 'pbfRules', 'xpathRoot' => 'pbf' ),
+        'QoSRule' => Array( 'name' => 'QoS', 'varName' => 'qosRules', 'xpathRoot' => 'qos' ),
+        'DoSRule' => Array( 'name' => 'DoS', 'varName' => 'dosRules', 'xpathRoot' => 'dos' )
     );
  
 	public function __construct($owner, $ruleType, $isPreOrPost = false)
@@ -113,7 +121,7 @@ class RuleStore
 
 
 	/**
-	 * For developper use only
+	 * For developer use only
 	 * @param DOMElement|null $xml
 	 * @param DOMElement|null $xmlPost
 	 */
@@ -166,7 +174,7 @@ class RuleStore
 
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @param bool $inPost
 	 * @return bool
 	 */
@@ -178,6 +186,13 @@ class RuleStore
 
 		if( $rule->owner !== null )
 			derr('Trying to add a rule that has a owner already !');
+
+        if( $rule->owner !== $this )
+        {
+            $rule->from->findParentCentralStore();
+            if( !$rule->isPbfRule() )
+                $rule->to->findParentCentralStore();
+        }
 
 		$ser = spl_object_hash($rule);
 
@@ -229,7 +244,7 @@ class RuleStore
 
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @param bool $inPost
 	 * @return bool
 	 */
@@ -247,7 +262,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @return bool
 	 */
 	function inStore($rule)
@@ -263,7 +278,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @return bool
 	 */
 	public function moveRuleToPostRulebase( $rule )
@@ -286,7 +301,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @return bool
 	 */
 	public function API_moveRuleToPostRulebase( $rule )
@@ -310,7 +325,7 @@ class RuleStore
 
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @return bool
 	 */
 	public function moveRuleToPreRulebase( $rule )
@@ -333,7 +348,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @return bool
 	 */
 	public function API_moveRuleToPreRulebase( $rule )
@@ -474,7 +489,7 @@ class RuleStore
 	
 	/**
 	* Only used internally when a rule is renamed to check for it unicity and accurate indexing
-	* @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	* @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @param string $oldName
 	*/
 	public function ruleWasRenamed($rule, $oldName)
@@ -508,10 +523,10 @@ class RuleStore
 
 
     /**
-     * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+     * @param Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
      * @param string $newName
 	 * @param null|bool $inPostRuleBase
-     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule
+     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule
      */
 	public function cloneRule($rule, $newName = null, $inPostRuleBase=null)
 	{
@@ -526,7 +541,7 @@ class RuleStore
         if( $inPostRuleBase === null )
             $inPostRuleBase = $rule->isPostRule();
 
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $newRule */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $newRule */
 		$newRule = new $this->type($this);
         $xml = $rule->xmlroot->cloneNode(true);
 		$newRule->load_from_domxml($xml);
@@ -543,7 +558,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
 	 * @param string $newName
 	 * @param $inPostRuleBase null|bool
 	 * @return NatRule|SecurityRule
@@ -565,8 +580,8 @@ class RuleStore
 
 	/**
 	 * this function will move $ruleToBeMoved after $ruleRef.
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $ruleToBeMoved
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $ruleRef
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $ruleToBeMoved
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $ruleRef
 	 * @param bool $rewriteXml
 	 */
 	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
@@ -1033,7 +1048,7 @@ class RuleStore
 	/**
 	* Look for a rule named $name. Return NULL if not found
      * @param string $name
-	* @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule
+	* @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule
 	*/
 	public function find($name)
 	{
@@ -1114,6 +1129,72 @@ class RuleStore
 
 
     /**
+     * Creates a new PBFRule in this store. It will be placed at the end of the list.
+     * @param String $name name of the new Rule
+     * @param bool $inPost  create it in post or pre (if applicable)
+     * @return PBFRule
+     */
+    public function newPbfRule($name, $inPost = false)
+    {
+        $rule = new PbfRule($this);
+
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, PbfRule::$templatexml);
+        $rule->load_from_domxml($xmlElement);
+
+        $rule->owner = null;
+        $rule->setName($name);
+
+        $this->addRule($rule, $inPost);
+
+        return $rule;
+    }
+
+
+    /**
+     * Creates a new QoSRule in this store. It will be placed at the end of the list.
+     * @param String $name name of the new Rule
+     * @param bool $inPost  create it in post or pre (if applicable)
+     * @return QoSRule
+     */
+    public function newQoSRule($name, $inPost = false)
+    {
+        $rule = new QoSRule($this);
+
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, QoSRule::$templatexml);
+        $rule->load_from_domxml($xmlElement);
+
+        $rule->owner = null;
+        $rule->setName($name);
+
+        $this->addRule($rule, $inPost);
+
+        return $rule;
+    }
+
+
+    /**
+     * Creates a new DoSRule in this store. It will be placed at the end of the list.
+     * @param String $name name of the new Rule
+     * @param bool $inPost  create it in post or pre (if applicable)
+     * @return DoSRule
+     */
+    public function newDoSRule($name, $inPost = false)
+    {
+        $rule = new DoSRule($this);
+
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, DoSRule::$templatexml);
+        $rule->load_from_domxml($xmlElement);
+
+        $rule->owner = null;
+        $rule->setName($name);
+
+        $this->addRule($rule, $inPost);
+
+        return $rule;
+    }
+
+
+    /**
      * Creates a new AppOverrideRule in this store. It will be placed at the end of the list.
      * @param String $name name of the new Rule
      * @param bool $inPostRulebase  create it in post or pre (if applicable)
@@ -1137,7 +1218,7 @@ class RuleStore
 
     /**
      * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule
+     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule
      * @param bool $deleteForever
      * @return bool
      */
@@ -1181,7 +1262,7 @@ class RuleStore
 
     /**
      * Removes a rule from this store (must be passed an object, not string/name). Returns TRUE if found.
-     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule
+     * @param $rule SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule
      * @param bool $deleteForever
      * @return bool
      */
@@ -1260,7 +1341,7 @@ class RuleStore
 	}
 
 	/**
-	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $contextRule
+	 * @param SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $contextRule
 	 * @return string
 	 * @throws Exception
 	 */
@@ -1308,7 +1389,7 @@ class RuleStore
 
 
 	/**
-	 * @return Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]
+	 * @return Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]|QoSRule|DoSRule[]||DoSRule[]
 	 */
 	public function preRules()
 	{
@@ -1320,7 +1401,7 @@ class RuleStore
 
 
 	/**
-	 * @return Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]
+	 * @return Rule[]|SecurityRule[]|NatRule[]|DecryptionRule[]|AppOverrideRule[]|CaptivePortalRule[]|PbfRule[]|QoSRule|DoSRule[]||DoSRule[]
 	 */
 	public function postRules()
 	{
@@ -1397,7 +1478,7 @@ class RuleStore
 	}
 
     /**
-     * @param string|Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule $rule
+     * @param string|Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule
      * @return int
      */
     public function getRulePosition($rule)
@@ -1405,7 +1486,7 @@ class RuleStore
         if( is_string($rule) )
         {
             $rule = $this->find($rule);
-            /** @var Rule|SecurityRule|NatRule|DecryptionRule|PbfRule $rule */
+            /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule */
             if( $rule === null )
                 derr("cannot find a rule named '{$rule->name()}'");
             return $this->getRulePosition($rule);
@@ -1413,7 +1494,7 @@ class RuleStore
         elseif( !is_object($rule) )
             derr("unsupported object type");
 
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|PbfRule $rule */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $rule */
 
         if( !$this->isPreOrPost || $this->ruleIsPreRule($rule) )
         {

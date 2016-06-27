@@ -27,9 +27,6 @@ class SecurityRule extends RuleWithUserID
 	protected $logend = true;
 
 	protected $logSetting = false;
-
-	/** @var null|DOMElement */
-	protected $logsettingroot = null;
 	
 	protected $secproftype = 'none';
 
@@ -86,9 +83,11 @@ class SecurityRule extends RuleWithUserID
 
 		$this->from = new ZoneRuleContainer($this);
 		$this->from->name = 'from';
+        $this->from->parentCentralStore = $owner->owner->zoneStore;
 
 		$this->to = new ZoneRuleContainer($this);
 		$this->to->name = 'to';
+        $this->to->parentCentralStore = $owner->owner->zoneStore;
 
 		$this->source = new AddressRuleContainer($this);
 		$this->source->name = 'source';
@@ -109,7 +108,6 @@ class SecurityRule extends RuleWithUserID
 			$xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
 			$this->load_from_domxml($xmlElement);
 		}
-
 	}
 
 
@@ -651,13 +649,12 @@ class SecurityRule extends RuleWithUserID
 	public function API_setLogEnd($yes)
 	{
 		if( !$this->setLogEnd($yes) )
-		{
 			return false;
-		}
 
 		$con = findConnectorOrDie($this);
-
 		$con->sendSetRequest($this->getXPath(), "<log-end>".boolYesNo($yes)."</log-end>");
+
+        return true;
 	}
 
 	/**
@@ -668,13 +665,12 @@ class SecurityRule extends RuleWithUserID
 	public function API_setLogStart($yes)
 	{
 		if( !$this->setLogStart($yes) )
-		{
 			return false;
-		}
 
 		$con = findConnectorOrDie($this);
-
 		$con->sendSetRequest($this->getXPath(), "<log-start>".boolYesNo($yes)."</log-start>");
+
+        return true;
 	}
 
 	/**
@@ -699,8 +695,10 @@ class SecurityRule extends RuleWithUserID
 
 			$this->logSetting = false;
 
-			if( $this->logsettingroot !== null )
-				$this->xmlroot->removeChild($this->logsettingroot);
+            $logXmlRoot = DH::findFirstElement('log-setting', $this->xmlroot);
+
+			if( $logXmlRoot !== false )
+				$this->xmlroot->removeChild($logXmlRoot);
 
 			return true;
 		}
@@ -709,13 +707,7 @@ class SecurityRule extends RuleWithUserID
             return false;
 
 		$this->logSetting = $newLogSetting;
-
-		if( $this->logsettingroot === null )
-		{
-			$this->logsettingroot = DH::createElement($this->xmlroot, 'log-setting', $newLogSetting);
-		}
-		else
-			DH::setDomNodeText($this->logsettingroot, $newLogSetting);
+        DH::createOrResetElement($this->xmlroot, 'log-setting', $newLogSetting);
 
         return true;
 	}

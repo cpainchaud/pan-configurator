@@ -79,12 +79,21 @@ class IPsecTunnel
                     if( $proxyNode->nodeType != 1 )
                         continue;
 
-
-                    $local = DH::findFirstElementOrDie('local', $proxyNode);
-                    $remote = DH::findFirstElementOrDie('remote', $proxyNode);
                     $proxyName = DH::findAttribute('name', $proxyNode);
 
-                    $record = Array('name' => $proxyName ,'local' => $local->nodeValue, 'remote' => $remote->nodeValue, 'xmlroot' => $proxyNode );
+                    $local = DH::findFirstElement('local', $proxyNode);
+                    if( $local !== false )
+                        $local = $local->nodeValue;
+                    else
+                        $local = '0.0.0.0/0';
+                    
+                    $remote = DH::findFirstElement('remote', $proxyNode);
+                    if( $remote !== false )
+                        $remote = $remote->nodeValue;
+                    else
+                        $remote = '0.0.0.0/0';
+
+                    $record = Array('name' => $proxyName ,'local' => $local, 'remote' => $remote, 'xmlroot' => $proxyNode );
 
                     $this->proxys[] = &$record;
                     unset($record);

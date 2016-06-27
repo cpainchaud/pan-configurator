@@ -17,28 +17,100 @@
 */
 
 
-class CaptivePortalRule extends Rule
+class DoSRule extends RuleWithUserID
 {
     use NegatableRule;
 
-    static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
-<source><member>any</member></source><destination><member>any</member></destination><service><member>any</member></service></entry></entry>';
+    static public $templatexml = '<entry name="**temporarynamechangeme**"><from><zone></zone></from><to><zone></zone>></to>
+<protection/><source><member>any</member></source><destination><member>any</member></destination>
+<source-user><member>any</member></source-user><service><member>any</member></service><action><deny/></action></entry>';
     static protected $templatexmlroot = null;
 
-    const ActionNoCaptivePortal     = 0;
-    const ActionWebForm             = 1;
-    const ActionBrowserChallenge    = 2;
+    const ActionDeny        = 'Deny';
+    const ActionAllow       = 'Allow';
+    const ActionProtect      = 'Protect';
+
 
     static private $RuleActions = Array(
-        self::ActionNoCaptivePortal => 'no-captive-portal',
-        self::ActionWebForm => 'web-form',
-        self::ActionBrowserChallenge => 'browser-challenge'
-
+        self::ActionDeny => 'deny',
+        self::ActionAllow => 'allow',
+        self::ActionProtect => 'protect'
     );
 
-    protected $action = self::ActionNoCaptivePortal;
+    protected $action = self::ActionDeny;
+
+    /** @var ZoneRuleContainer|InterfaceContainer */
+    public $from;
+
+    /** @var ZoneRuleContainer|InterfaceContainer */
+    public $to;
+
+    protected $_zoneBasedFrom = true;
+    protected $_zoneBasedTo = true;
 
     /**
+     * For developer use only
+     */
+    protected function load_from()
+    {
+        $tmp = DH::findFirstElementOrCreate('from', $this->xmlroot);
+
+        $tmp = DH::firstChildElement($tmp);
+        if( $tmp === null )
+            derr("DOS rule has nothing inside <from> tag, please fix before going forward");
+
+        if( $tmp->tagName == 'zone' )
+        {
+            $this->_zoneBasedFrom = true;
+            $this->from = new ZoneRuleContainer($this);
+            $this->from->name = 'from';
+            $this->from->findParentCentralStore();
+            $this->from->load_from_domxml($tmp);
+        }
+        elseif( $tmp->tagName == 'interface' )
+        {
+            $this->_zoneBasedFrom = false;
+            $this->from = new InterfaceContainer($this, $this->owner->_networkStore);
+            $this->from->name = 'from';
+            $this->from->load_from_domxml($tmp);
+        }
+        else
+            derr("DOS rule has unsupported <from> type '{$tmp->tagName}'");
+    }
+
+
+    /**
+     * For developer use only
+     */
+    protected function load_to()
+    {
+        $tmp = DH::findFirstElementOrCreate('to', $this->xmlroot);
+
+        $tmp = DH::firstChildElement($tmp);
+        if( $tmp === null )
+            derr("DOS rule has nothing inside <to> tag, please fix before going forward");
+
+        if( $tmp->tagName == 'zone' )
+        {
+            $this->_zoneBasedTo = true;
+            $this->to = new ZoneRuleContainer($this);
+            $this->to->name = 'to';
+            $this->to->findParentCentralStore();
+            $this->to->load_from_domxml($tmp);
+        }
+        elseif( $tmp->tagName == 'interface' )
+        {
+            $this->_zoneBasedTo = false;
+            $this->to = new InterfaceContainer($this,$this->owner->_networkStore);
+            $this->to->name = 'to';
+            $this->to->load_from_domxml($tmp);
+        }
+        else
+            derr("DOS rule has unsupported <to> type '{$tmp->tagName}'");
+    }
+
+    /**
+     * DoSRule constructor.
      * @param RuleStore $owner
      * @param bool $fromTemplateXML
      */
@@ -50,14 +122,6 @@ class CaptivePortalRule extends Rule
         $this->parentServiceStore = $this->owner->owner->serviceStore;
 
         $this->tags = new TagRuleContainer($this);
-
-        $this->from = new ZoneRuleContainer($this);
-        $this->from->name = 'from';
-        $this->from->parentCentralStore = $owner->owner->zoneStore;
-
-        $this->to = new ZoneRuleContainer($this);
-        $this->to->name = 'to';
-        $this->to->parentCentralStore = $owner->owner->zoneStore;
 
         $this->source = new AddressRuleContainer($this);
         $this->source->name = 'source';
@@ -94,7 +158,6 @@ class CaptivePortalRule extends Rule
         $this->load_from();
         $this->load_to();
 
-
         //										//
         // Begin <service> extraction			//
         //										//
@@ -108,12 +171,13 @@ class CaptivePortalRule extends Rule
         // Begin <action> extraction
         //
         $tmp = DH::findFirstElement('action', $xml);
+        $tmp = DH::firstChildElement($tmp);
         if( $tmp !== false )
         {
-            $actionFound = array_search($tmp->textContent, self::$RuleActions);
+            $actionFound = array_search($tmp->nodeName, self::$RuleActions);
             if( $actionFound === false )
             {
-                mwarning("unsupported action '{$tmp->textContent}' found, allow assumed" , $tmp);
+                mwarning("unsupported action '{$tmp->nodeName}' found, Deny assumed" , $tmp);
             }
             else
             {
@@ -122,30 +186,16 @@ class CaptivePortalRule extends Rule
         }
         else
         {
-            mwarning("'<action> not found, assuming 'no-captive-portal'" ,$xml);
+            mwarning("'<action> not found, assuming 'Deny'" ,$xml);
         }
         // End of <rule-type>
 
+        $this->userID_loadUsersFromXml();
     }
 
     public function action()
     {
         return self::$RuleActions[$this->action];
-    }
-
-    public function actionIsNoCP()
-    {
-        return $this->action == self::ActionNoCaptivePortal;
-    }
-
-    public function actionIsNoWebForm()
-    {
-        return $this->action == self::ActionWebForm;
-    }
-
-    public function actionIsBrowserChallenge()
-    {
-        return $this->action == self::ActionBrowserChallenge;
     }
 
 
@@ -169,9 +219,18 @@ class CaptivePortalRule extends Rule
 
         print $padding."*Rule named '{$this->name}' $dis\n";
         print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
+
         print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
         print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
+
         print $padding."  Service:  ".$this->services->toString_inline()."\n";
+        if( !$this->userID_IsCustom() )
+            print $padding."  User: *".$this->userID_type()."*\n";
+        else
+        {
+            $users = $this->userID_getUsers();
+            print $padding . " User:  " . PH::list_to_string($users) . "\n";
+        }
         print $padding."  Action: {$this->action()}\n";
         print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
 
@@ -199,14 +258,34 @@ class CaptivePortalRule extends Rule
         $this->owner = null;
     }
 
-    public function isCaptivePortalRule()
+    public function isDoSRule()
     {
         return true;
     }
 
     public function ruleNature()
     {
-        return 'captive-portal';
+        return 'dos';
+    }
+
+    public function isZoneBasedFrom()
+    {
+        return $this->_zoneBasedFrom;
+    }
+
+    public function isZoneBasedTo()
+    {
+        return $this->_zoneBasedTo;
+    }
+
+    public function isInterfaceBasedFrom()
+    {
+        return !$this->_zoneBasedFrom;
+    }
+
+    public function isInterfaceBasedTo()
+    {
+        return !$this->_zoneBasedTo;
     }
 
 }

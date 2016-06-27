@@ -69,6 +69,12 @@ class DeviceGroup
     /** @var RuleStore */
     public $pbfRules;
 
+    /** @var RuleStore */
+    public $qosRules;
+
+    /** @var RuleStore */
+    public $dosRules;
+
     /**
      * @var null|DeviceGroup
      */
@@ -77,9 +83,11 @@ class DeviceGroup
     /** @var DeviceGroup[] */
     public $childDeviceGroups = Array();
 
-
 	/** @var Array */
 	private $devices = Array();
+
+    /** @var NetworkPropertiesContainer */
+    public $_fakeNetworkProperties;
 
     public $version = null;
 	
@@ -109,7 +117,12 @@ class DeviceGroup
         $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule', true);
         $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule', true);
         $this->pbfRules = new RuleStore($this, 'PbfRule', true);
+        $this->qosRules = new RuleStore($this, 'QoSRule', true);
+        $this->dosRules = new RuleStore($this, 'DoSRule', true);
 
+        $this->_fakeNetworkProperties = $this->owner->_fakeNetworkProperties;
+        $this->dosRules->_networkStore = $this->_fakeNetworkProperties;
+        $this->pbfRules->_networkStore = $this->_fakeNetworkProperties;
 	}
 
 	public function load_from_templateXml()
@@ -353,6 +366,56 @@ class DeviceGroup
                 $tmpPost = null;
         }
         $this->pbfRules->load_from_domxml($tmp, $tmpPost);
+
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('qos', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('qos', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
+        $this->qosRules->load_from_domxml($tmp, $tmpPost);
+
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('dos', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('dos', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
+        $this->dosRules->load_from_domxml($tmp, $tmpPost);
         //
         // end of policies extraction
         //
@@ -426,10 +489,12 @@ class DeviceGroup
 
         print "- {$this->securityRules->countPreRules()} / {$this->securityRules->countPostRules()} pre/post Security rules\n";
         print "- {$this->natRules->countPreRules()} / {$this->natRules->countPostRules()} pre/post Nat rules\n";
+        print "- {$this->qosRules->countPreRules()} / {$this->qosRules->countPostRules()} pre/post QoS rules\n";
+        print "- {$this->pbfRules->countPreRules()} / {$this->pbfRules->countPostRules()} pre/post PBF rules\n";
         print "- {$this->decryptionRules->countPreRules()} / {$this->decryptionRules->countPostRules()} pre/post Decrypt rules\n";
         print "- {$this->appOverrideRules->countPreRules()} / {$this->appOverrideRules->countPostRules()} pre/post AppOverride rules\n";
         print "- {$this->captivePortalRules->countPreRules()} / {$this->captivePortalRules->countPostRules()} pre/post AppOverride rules\n";
-        print "- {$this->pbfRules->countPreRules()} / {$this->pbfRules->countPostRules()} pre/post PBF rules\n";
+        print "- {$this->dosRules->countPreRules()} / {$this->dosRules->countPostRules()} pre/post DoS rules\n";
 
         print "- {$this->addressStore->count()}/{$this->addressStore->countAddresses()}/{$this->addressStore->countAddressGroups()}/{$this->addressStore->countTmpAddresses()}/{$this->addressStore->countUnused()} total/address/group/tmp/unused objects\n";
         print "- {$this->serviceStore->count()}/{$this->serviceStore->countServices()}/{$this->serviceStore->countServiceGroups()}/{$this->serviceStore->countTmpServices()}/{$this->serviceStore->countUnused()} total/service/group/tmp/unused objects\n";

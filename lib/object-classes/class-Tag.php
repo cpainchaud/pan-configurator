@@ -29,6 +29,7 @@ class Tag
     /**
      * @param string $name
      * @param TagStore|null $owner
+     * @param bool $fromXmlTemplate
      */
 	public function __construct($name, $owner, $fromXmlTemplate=false)
 	{
@@ -57,6 +58,10 @@ class Tag
 
 	}
 
+    /**
+     * @param string $newName
+     * @return bool
+     */
     public function setName($newName)
     {
         $ret = $this->setRefName($newName);
@@ -77,7 +82,7 @@ class Tag
     }
 
 
-    public function load_from_domxml(DOMNode $xml)
+    public function load_from_domxml(DOMElement $xml)
     {
         $this->xmlroot = $xml;
 

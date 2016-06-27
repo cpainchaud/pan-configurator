@@ -66,6 +66,12 @@ class VirtualSystem
     /** @var RuleStore */
     public $pbfRules;
 
+    /** @var RuleStore */
+    public $qosRules;
+
+    /** @var RuleStore */
+    public $dosRules;
+
     /** @var ZoneStore */
     public $zoneStore=null;
 
@@ -119,7 +125,15 @@ class VirtualSystem
 
         $this->pbfRules = new RuleStore($this, 'PbfRule');
         $this->pbfRules->name = 'PBF';
-		
+
+        $this->qosRules = new RuleStore($this, 'QoSRule');
+        $this->qosRules->name = 'QoS';
+
+        $this->dosRules = new RuleStore($this, 'DoSRule');
+        $this->dosRules->name = 'DoS';
+
+        $this->dosRules->_networkStore = $this->owner->network;
+        $this->pbfRules->_networkStore = $this->owner->network;
 	}
 
 
@@ -284,6 +298,28 @@ class VirtualSystem
                 if( $tmprulesroot !== false )
                     $this->pbfRules->load_from_domxml($tmprulesroot);
             }
+
+            //
+            // QoS Rules extraction
+            //
+            $tmproot = DH::findFirstElement('qos', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->qosRules->load_from_domxml($tmprulesroot);
+            }
+
+            //
+            // DoS Rules extraction
+            //
+            $tmproot = DH::findFirstElement('dos', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->dosRules->load_from_domxml($tmprulesroot);
+            }
         }
 	}
 
@@ -300,10 +336,12 @@ class VirtualSystem
 		print "Statistics for VSYS '".$this->name."'\n";
 		print "- ".$this->securityRules->count()." security rules\n";
 		print "- ".$this->natRules->count()." nat rules\n";
+        print "- ".$this->qosRules->count()." qos rules\n";
+        print "- ".$this->pbfRules->count()." pbf rules\n";
         print "- ".$this->decryptionRules->count()." decryption rules\n";
         print "- ".$this->appOverrideRules->count()." app-override rules\n";
         print "- ".$this->captivePortalRules->count()." capt-portal rules\n";
-        print "- ".$this->pbfRules->count()." pbf rules\n";
+        print "- ".$this->dosRules->count()." dos rules\n";
         print "- {$this->addressStore->count()}/{$this->addressStore->countAddresses()}/{$this->addressStore->countAddressGroups()}/{$this->addressStore->countTmpAddresses()}/{$this->addressStore->countUnused()} total/address/group/tmp/unused objects\n";
         print "- {$this->serviceStore->count()}/{$this->serviceStore->countServices()}/{$this->serviceStore->countServiceGroups()}/{$this->serviceStore->countTmpServices()}/{$this->serviceStore->countUnused()} total/service/group/tmp/unused objects\n";
         print "- {$this->tagStore->count()} tags. {$this->tagStore->countUnused()} unused\n";

@@ -19,7 +19,7 @@
 
 /**
  * Class InterfaceContainer
- * @property VirtualSystem|Zone $owner
+ * @property VirtualSystem|Zone|VirtualRouter|PbfRule|DosRule $owner
  * @property EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|IPsecTunnel[] $o
  */
 class InterfaceContainer extends ObjRuleContainer
@@ -28,7 +28,7 @@ class InterfaceContainer extends ObjRuleContainer
     public $parentCentralStore;
 
     /**
-     * @param VirtualSystem|Zone|VirtualRouter $owner
+     * @param VirtualSystem|Zone|VirtualRouter|PbfRule|DoSRule $owner
      * @param NetworkPropertiesContainer $centralStore
      */
     public function __construct($owner, $centralStore)
@@ -62,6 +62,16 @@ class InterfaceContainer extends ObjRuleContainer
     public function interfaces()
     {
         return $this->o;
+    }
+
+    /**
+     * @param EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|IPsecTunnel[] $if
+     * @param bool $caseSensitive
+     * @return bool
+     */
+    public function hasInterface($if)
+    {
+        return $this->has($if);
     }
 
     /**
