@@ -54,6 +54,8 @@ class AppStore
     /** @var DOMElement */
     public $filtersRoot;
 
+    public $isPredefinedStore = false;
+
 
     /**
      * @return AppStore|null
@@ -64,6 +66,7 @@ class AppStore
             return self::$predefinedStore;
 
         self::$predefinedStore = new AppStore(null);
+        self::$predefinedStore->isPredefinedStore = true;
         self::$predefinedStore->name = 'predefined Apps';
         self::$predefinedStore->load_from_predefinedfile();
 
@@ -146,6 +149,9 @@ class AppStore
      */
     public function add($s)
     {
+        if( $this->isPredefinedStore )
+            derr("you cannot remove or add objects from a predefined store");
+
         $objectName = $s->name();
 
         // there is already an object named like that
@@ -156,7 +162,7 @@ class AppStore
 
         $class = get_class($s);
 
-        if( $class == 'Address' )
+        if( $class == 'Application' )
         {
             if( $s->isTmp() )
             {
@@ -170,7 +176,7 @@ class AppStore
 
             $this->_all[$objectName] = $s;
         }
-        elseif ( $class == 'AddressGroup' )
+        elseif ( $class == 'ApplicationGroup' )
         {
             $this->_groups[$objectName] = $s;
             $this->_all[$objectName] = $s;
@@ -322,7 +328,8 @@ class AppStore
 
             $app = new Application($appName, $this);
             $app->type = 'predefined';
-            $this->add($app);
+            $this->_applications[$appName] = $app;
+            $this->_all[$appName] = $app;
 
             $cursor = DH::findFirstElement('default', $appx);
             if ( $cursor === false )
@@ -467,13 +474,15 @@ class AppStore
 
 	public function loadcontainers_from_domxml( &$xmlDom )
 	{
+        // TODO: create an ApplicationContainer class
 		foreach( $xmlDom->childNodes as $appx )
 		{
 			if( $appx->nodeType != 1 ) continue;
 
 			$app = new Application($appx->tagName, $this);
 			$app->type = 'predefined';
-			$this->add($app);
+			$this->_applications[$appx->tagName] = $app;
+            $this->_all[$appx->tagName] = $app;
 
 			$app->subapps = Array();
 

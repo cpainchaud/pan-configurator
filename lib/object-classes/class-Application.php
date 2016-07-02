@@ -42,6 +42,14 @@ class Application
 		$this->name = $name;
  	}
 
+    public function isTmp()
+    {
+        if( $this->type == 'tmp' )
+            return true;
+
+        return false;
+    }
+
  	public function isUsingSpecialProto()
  	{
 
