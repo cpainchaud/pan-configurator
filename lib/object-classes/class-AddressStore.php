@@ -170,13 +170,23 @@ class AddressStore
         foreach( $xml->childNodes as $node )
         {
             /** @var DOMElement $node */
-            if( $node->nodeType != 1 ) continue;
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
             $name = $node->getAttribute('name');
             if( strlen($name) == 0 )
                 derr("unsupported empty group name", $node);
 
             $ns = new AddressGroup( $name, $this);
+
+            if( isset($this->_tmpAddresses[$name]) )
+            {
+                $tmpObj = $this->_tmpAddresses[$name];
+                $tmpObj->replaceMeGlobally($ns);
+                $this->remove($tmpObj);
+            }
+
+            if( isset($this->all[$name]) )
+                mwarning("an object with name '{$name}' already exists in this store, please investigate", $node);
 
             $this->_addressGroups[$name] = $ns;
             $this->all[$name] = $ns;
