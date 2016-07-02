@@ -1,5 +1,14 @@
 CHANGELOG
 
+1.6.0 MAJOR RELEASE
+* support of Applications/Group/Support and Application Store at every level of the hierarchy
+* support of Security Profiles and Profile Groups
+
+utils:
+rules-edit: introduction of new filters based on Security Profiles and Groups
+            introduction of new filters based on Application Groups and Support
+
+
 1.5.10
 * DoSRule and QoSRule class introduced
 * Fixed PBF rules inconsistencies FROM and TO fields
