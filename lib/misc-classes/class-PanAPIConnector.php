@@ -624,7 +624,7 @@ class PanAPIConnector
      * @param bool $checkResultTag
      * @param string|null $filecontent
      * @param string $filename
-     * @param Array $moreOptions
+     * @param array $moreOptions
      * @return DomDocument
      */
     public function sendRequest(&$parameters, $checkResultTag = FALSE, &$filecontent = null, $filename = '', $moreOptions = Array())
