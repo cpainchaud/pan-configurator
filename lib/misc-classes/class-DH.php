@@ -107,7 +107,7 @@ class DH
     /**
      * @param string $tagName
      * @param DOMNode $node
-     * @return bool|DOMNode
+     * @return bool|DOMElement
      * @throws Exception
      */
 	static function findFirstElementOrDie($tagName, DOMNode $node)
@@ -123,12 +123,16 @@ class DH
     /**
      * @param $tagName
      * @param DOMNode $node
-     * @return bool|DOMNode
+     * @return bool|DOMElement
      */
 	static function findFirstElement($tagName, DOMNode $node)
 	{
 		foreach( $node->childNodes as $lnode )
 		{
+            if( $lnode->nodeType != XML_ELEMENT_NODE )
+                continue;
+            /** @var DOMElement $lnode */
+
 			if( $lnode->nodeName == $tagName )
 				return $lnode;
 		}
@@ -148,7 +152,7 @@ class DH
      * @param DOMElement $parent
      * @param string $tagName
      * @param null $withText
-     * @return DOMElement|DOMNode
+     * @return DOMElement
      */
 	static function createElement(DOMElement $parent,$tagName, $withText = null)
 	{
@@ -168,7 +172,7 @@ class DH
 	 * @param DOMElement $parent
 	 * @param string $tagName
 	 * @param null $withText
-	 * @return DOMElement|DOMNode
+	 * @return DOMElement
 	 */
 	static function createOrResetElement(DOMElement $parent,$tagName, $withText = null)
 	{
@@ -189,7 +193,7 @@ class DH
      * @param string $tagName
      * @param DOMNode $node
      * @param null|string $withText
-     * @return bool|DOMElement|DOMNode
+     * @return bool|DOMElement
      */
 	static function findFirstElementOrCreate($tagName, DOMNode $node, $withText = null)
 	{
