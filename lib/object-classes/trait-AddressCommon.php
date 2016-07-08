@@ -95,7 +95,7 @@ trait AddressCommon
                     }
                     if( $ref->name == 'snathosts' )
                         derr('unsupported use case in '.$ref->owner->_PANC_shortName());
-                    if( $ref->name == 'source' && $ref->owner->natType() == 'static-ip'  )
+                    if( $ref->name == 'source' && $ref->owner->SourceNat_Type() == 'static-ip'  )
                         derr('unsupported use case with static-ip NAT and source insertion in '.$ref->owner->_PANC_shortName());
 
                     if( $displayOutput )
