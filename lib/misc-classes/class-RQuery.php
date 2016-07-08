@@ -1012,10 +1012,9 @@ RQuery::$defaultFilters['rule']['src']['operators']['includes.full.or.partial'] 
 );
 
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(RuleRQueryContext $context )
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
-        return $object->destination->includedInIP4Network($value) == 1;
+        return $context->object->destination->includedInIP4Network($context->value) == 1;
     },
     'arg' => true,
     'argDesc' => 'ie: 192.168.0.0/24 | 192.168.50.10/32 | 192.168.50.10 | 10.0.0.0-10.33.0.0'
@@ -1028,7 +1027,10 @@ RQuery::$defaultFilters['rule']['dst']['operators']['included-in.partial'] = Arr
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full.or.partial'] = Array(
-    'eval' => "\$object->destination->includedInIP4Network('!value!') > 0",
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return $context->object->destination->includedInIP4Network($context->value) > 0;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['includes.full'] = Array(
