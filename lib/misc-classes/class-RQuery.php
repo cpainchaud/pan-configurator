@@ -1058,7 +1058,7 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.from.query'] = Array(
         if( $context->object->source->count() == 0 )
             return false;
 
-        if( $context->value === null || !isset($nestedQueries[$context->value]) )
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
@@ -1082,7 +1082,7 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.from.query'] = Array(
                     if( $context->object->destination->count() == 0 )
                         return false;
 
-                    if( $context->value === null || !isset($nestedQueries[$context->value]) )
+                    if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
                         derr("cannot find nested query called '{$context->value}'");
 
                     $errorMessage = '';
@@ -1106,7 +1106,7 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.recursive.from.query'] 
         if( $context->object->source->count() == 0 )
             return false;
 
-        if( $context->value === null || !isset($nestedQueries[$context->value]) )
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
@@ -1130,7 +1130,7 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.from.query'] 
         if( $context->object->destination->count() == 0 )
             return false;
 
-        if( $context->value === null || !isset($nestedQueries[$context->value]) )
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
