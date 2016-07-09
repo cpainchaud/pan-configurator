@@ -1064,9 +1064,16 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.from.query'] = Array(
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
-        $rQuery = new RQuery('address');
-        if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
-            derr('nested query execution error : '.$errorMessage);
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('address');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
 
         foreach( $context->object->source->all() as $member )
         {
@@ -1088,9 +1095,16 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.from.query'] = Array(
                         derr("cannot find nested query called '{$context->value}'");
 
                     $errorMessage = '';
-                    $rQuery = new RQuery('address');
-                    if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
-                        derr('nested query execution error : '.$errorMessage);
+
+                    if( !isset($context->cachedSubRQuery) )
+                    {
+                        $rQuery = new RQuery('address');
+                        if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                            derr('nested query execution error : '.$errorMessage);
+                        $context->cachedSubRQuery = $rQuery;
+                    }
+                    else
+                        $rQuery = $context->cachedSubRQuery;
 
                     foreach( $context->object->destination->all() as $member )
                     {
@@ -1112,9 +1126,16 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.recursive.from.query'] 
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
-        $rQuery = new RQuery('address');
-        if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
-            derr('nested query execution error : '.$errorMessage);
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('address');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
 
         foreach( $context->object->source->membersExpanded() as $member )
         {
@@ -1136,9 +1157,16 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.from.query'] 
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
-        $rQuery = new RQuery('address');
-        if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
-            derr('nested query execution error : '.$errorMessage);
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('address');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
 
         foreach( $context->object->destination->all() as $member )
         {
