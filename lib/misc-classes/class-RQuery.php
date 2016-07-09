@@ -1012,10 +1012,9 @@ RQuery::$defaultFilters['rule']['src']['operators']['includes.full.or.partial'] 
 );
 
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(RuleRQueryContext $context )
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
-        return $object->destination->includedInIP4Network($value) == 1;
+        return $context->object->destination->includedInIP4Network($context->value) == 1;
     },
     'arg' => true,
     'argDesc' => 'ie: 192.168.0.0/24 | 192.168.50.10/32 | 192.168.50.10 | 10.0.0.0-10.33.0.0'
@@ -1028,7 +1027,10 @@ RQuery::$defaultFilters['rule']['dst']['operators']['included-in.partial'] = Arr
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full.or.partial'] = Array(
-    'eval' => "\$object->destination->includedInIP4Network('!value!') > 0",
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return $context->object->destination->includedInIP4Network($context->value) > 0;
+    },
     'arg' => true
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['includes.full'] = Array(
@@ -1058,13 +1060,20 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.from.query'] = Array(
         if( $context->object->source->count() == 0 )
             return false;
 
-        if( $context->value === null || !isset($nestedQueries[$context->value]) )
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
-        $rQuery = new RQuery('address');
-        if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
-            derr('nested query execution error : '.$errorMessage);
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('address');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
 
         foreach( $context->object->source->all() as $member )
         {
@@ -1082,13 +1091,20 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.from.query'] = Array(
                     if( $context->object->destination->count() == 0 )
                         return false;
 
-                    if( $context->value === null || !isset($nestedQueries[$context->value]) )
+                    if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
                         derr("cannot find nested query called '{$context->value}'");
 
                     $errorMessage = '';
-                    $rQuery = new RQuery('address');
-                    if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
-                        derr('nested query execution error : '.$errorMessage);
+
+                    if( !isset($context->cachedSubRQuery) )
+                    {
+                        $rQuery = new RQuery('address');
+                        if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                            derr('nested query execution error : '.$errorMessage);
+                        $context->cachedSubRQuery = $rQuery;
+                    }
+                    else
+                        $rQuery = $context->cachedSubRQuery;
 
                     foreach( $context->object->destination->all() as $member )
                     {
@@ -1106,13 +1122,20 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.recursive.from.query'] 
         if( $context->object->source->count() == 0 )
             return false;
 
-        if( $context->value === null || !isset($nestedQueries[$context->value]) )
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
-        $rQuery = new RQuery('address');
-        if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
-            derr('nested query execution error : '.$errorMessage);
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('address');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
 
         foreach( $context->object->source->membersExpanded() as $member )
         {
@@ -1130,13 +1153,20 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.from.query'] 
         if( $context->object->destination->count() == 0 )
             return false;
 
-        if( $context->value === null || !isset($nestedQueries[$context->value]) )
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
             derr("cannot find nested query called '{$context->value}'");
 
         $errorMessage = '';
-        $rQuery = new RQuery('address');
-        if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
-            derr('nested query execution error : '.$errorMessage);
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('address');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
 
         foreach( $context->object->destination->all() as $member )
         {
@@ -1479,7 +1509,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(
     },
     'arg' => false
 );
-RQuery::$defaultFilters['rule']['rule']['operators']['is.snatbidir'] = Array(
+RQuery::$defaultFilters['rule']['rule']['operators']['is.bidir.nat'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         if( !$context->object->isNatRule() )
@@ -1489,26 +1519,26 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.snatbidir'] = Array(
     },
     'arg' => false
 );
-RQuery::$defaultFilters['rule']['rule']['operators']['is.snat'] = Array(
+RQuery::$defaultFilters['rule']['rule']['operators']['has.source.nat'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         if( !$context->object->isNatRule() )
             return false;
 
-        if( $context->object->natType() != 'none' )
+        if( $context->object->sourceNatTypeIs_None() )
             return true;
 
         return false;
     },
     'arg' => false
 );
-RQuery::$defaultFilters['rule']['rule']['operators']['is.dnat'] = Array(
+RQuery::$defaultFilters['rule']['rule']['operators']['has.destination.nat'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         if( !$context->object->isNatRule() )
             return false;
 
-        if( $context->object->natType() != 'none' )
+        if( $context->object->destinationNatIsEnabled() )
             return false;
 
         return true;
@@ -1588,7 +1618,6 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         $object = $context->object;
-        $value = $context->value;
 
         if( !$object->isSecurityRule() )
             derr("unsupported filter : this is not a security rule.".$object->toString());
@@ -1677,9 +1706,8 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
 
 
 RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
-    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
-        return $object->name() == $value;
+    'Function' => function(RuleRQueryContext $context )
+    {   return $context->object->name() == $context->value;
     },
     'arg' => true
 );
@@ -1810,7 +1838,7 @@ RQuery::$defaultFilters['rule']['target']['operators']['has'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         $vsys = null;
-        $serial = '';
+
         $ex = explode('/', $context->value);
 
         if( count($ex) > 2 )

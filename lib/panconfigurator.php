@@ -168,6 +168,8 @@ require_once $basedir.'/rule-classes/class-PbfRule.php';
 require_once $basedir.'/rule-classes/class-QoSRule.php';
 require_once $basedir.'/rule-classes/class-DoSRule.php';
 
+PH::$basedir = $basedir;
+
 unset($basedir);
 
 

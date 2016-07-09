@@ -20,6 +20,8 @@ rules-edit: new actions 'from-replace', 'to-replace' to help replace Zones where
 bugfix:
 - fixed a loading error when using blank proxy-id in IPsecTunnels which implictly means 0.0.0.0/0
 - fixed an issue where malformed xml could be generated when changing log-profile when it already existed
+- fixed error caused by typo in filter (src/to has.from.query)
+- fixed rules-edit filter is.dnat and is.snat and renamed has.source.nat, has.destination.nat, has.bidir.nat
 
 
 1.5.9

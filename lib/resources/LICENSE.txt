@@ -1,0 +1,4 @@
+
+All schema XML files are actually copies of the official product files and owned by Palo Alto Networks.
+This project is just making fair use of them.
+

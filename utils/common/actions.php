@@ -516,7 +516,7 @@ class RuleCallContext extends CallContext
         {
             if( !$rule->isNatRule() )
                 return self::enclose('');
-            return self::enclose($rule->natType(), $wrap);
+            return self::enclose($rule->SourceNat_Type(), $wrap);
         }
         if( $fieldName == 'snat_trans' )
         {
