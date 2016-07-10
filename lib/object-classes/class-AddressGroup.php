@@ -571,28 +571,29 @@ class AddressGroup
      * @param bool $keepGroupsInList keep groups in the the list on top of just expanding them
 	* @return Address[]|AddressGroup[] list of all member objects, if some of them are groups, they are exploded and their members inserted
 	*/
-	public function &expand($keepGroupsInList=false)
-	{
-		$ret = Array();
+    public function & expand($keepGroupsInList=false)
+    {
+        $ret = Array();
 
-		foreach( $this->members as  $object )
-		{
-			if( $object->isGroup() )
-			{
+        foreach( $this->members as  $object )
+        {
+            $serial = spl_object_hash($object);
+            if( $object->isGroup() )
+            {
                 /** @var AddressGroup $object */
-                $tmpList = & $object->expand();
-				$ret = array_merge( $ret, $tmpList);
+                $tmpList = $object->expand();
+                $ret = array_merge( $ret, $tmpList);
+                unset($tmpList);
                 if( $keepGroupsInList )
-                    $ret[] = $object;
-			}
-			else
-				$ret[] = $object;
-		}
+                    $ret[$serial] = $object;
 
-		$ret = array_unique_no_cast($ret);
+            }
+            else
+                $ret[$serial] = $object;
+        }
 
-		return $ret;
-	}
+        return $ret;
+    }
 
 	/**
 	 * @param Address|AddressGroup $object
