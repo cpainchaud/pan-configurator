@@ -108,7 +108,7 @@ $supportedActions['delete'] = Array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding."  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)";
+            print $context->padding."  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)\n";
             return;
         }
 
@@ -127,7 +127,7 @@ $supportedActions['delete-force'] = Array(
 
         if( $object->countReferences() != 0 )
         {
-            print $context->padding."  * WARNING : this object seems to be used so deletion may fail.";
+            print $context->padding."  * WARNING : this object seems to be used so deletion may fail.\n";
         }
 
         if( $context->isAPI )
