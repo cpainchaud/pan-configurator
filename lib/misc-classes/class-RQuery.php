@@ -2098,17 +2098,25 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact'] = Ar
         $object = $context->object;
 
         $values = explode(',', $context->value);
-        $mapping = new IP4Map();
 
-        $count = 0;
-        foreach( $values as $net )
+
+        if( !isset($context->cachedValueMapping) )
         {
-            $net = trim($net);
-            if( strlen($net) < 1 )
-                derr("empty network/IP name provided for argument #$count");
-            $mapping->addMap(IP4Map::mapFromText($net));
-            $count++;
+            $mapping = new IP4Map();
+
+            $count = 0;
+            foreach( $values as $net )
+            {
+                $net = trim($net);
+                if( strlen($net) < 1 )
+                    derr("empty network/IP name provided for argument #$count");
+                $mapping->addMap(IP4Map::mapFromText($net));
+                $count++;
+            }
+            $context->cachedValueMapping = $mapping;
         }
+        else
+            $mapping = $context->cachedValueMapping;
 
         return $object->getIP4Mapping()->equals($mapping);
     },
