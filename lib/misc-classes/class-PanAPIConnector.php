@@ -1298,6 +1298,38 @@ class PanAPIConnector
 
         return $answer;
     }
+
+    /**
+     * @return string[][]  ie: Array( Array('serial' => '000C12234', 'hostname' => 'FW-MUNICH4' ) )
+     */
+    public function & panorama_getConnectedFirewallsSerials()
+    {
+        $result = $this->sendCmdRequest('<show><devices><connected/></devices></show>');
+        $devicesRoot = DH::findXPathSingleEntryOrDie('/result/devices', $result);
+
+        $firewalls = Array();
+
+        foreach( $devicesRoot->childNodes as $entryNode )
+        {
+            $fw = Array();
+
+            if( $entryNode->nodeType != XML_ELEMENT_NODE )
+                continue;
+            /** @var DOMElement $entryNode */
+
+            $hostnameNode = DH::findFirstElement('hostname', $entryNode);
+            if( $hostnameNode !== false )
+                $fw['hostname'] = $hostnameNode->textContent;
+            else
+                $fw['hostname'] = $entryNode->getAttribute('name');
+
+            $fw['serial'] = $entryNode->getAttribute('name');
+
+            $firewalls[$fw['serial']] = $fw;
+        }
+
+        return $firewalls;
+    }
     
 }
 

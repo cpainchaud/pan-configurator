@@ -3,6 +3,7 @@ CHANGELOG
 1.5.10
 * DoSRule and QoSRule class introduced
 * Fixed PBF rules inconsistencies FROM and TO fields
+* PanAPIConnector new function panorama_getConnectedFirewallsSerials()
 
 utils:
 upload-config: new argument 'extraFiltersOut' to strip unwanted XML parts out of the config before saving/uploading it.
