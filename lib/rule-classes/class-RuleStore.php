@@ -417,18 +417,18 @@ class RuleStore
 			if( !$this->owner->owner->$varName->isRuleNameAvailable($name, false) )
 				return false;
 
-            $dgToInspect = $this->owner->childDeviceGroups;
+            $dgToInspect = $this->owner->_childDeviceGroups;
 
             while( count($dgToInspect) != 0 )
             {
                 $nextDgToInspect = Array();
 
-                foreach ($this->owner->childDeviceGroups as $dg)
+                foreach ( $this->owner->_childDeviceGroups as $dg)
                 {
                     if (!$dg->$varName->isRuleNameAvailable($name, false))
                         return false;
 
-                    $nextDgToInspect = array_merge($nextDgToInspect, $dg->childDeviceGroups);
+                    $nextDgToInspect = array_merge($nextDgToInspect, $dg->_childDeviceGroups);
                 }
 
                 $dgToInspect = $nextDgToInspect;
