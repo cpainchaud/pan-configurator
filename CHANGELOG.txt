@@ -1,6 +1,7 @@
 CHANGELOG
 
 1.5.10
+* New Utility "override-finder.php" : find and display which parts of a firewall configuration are currently overriding the Template pushed by Panorama.
 * DoSRule and QoSRule class introduced
 * Fixed PBF rules inconsistencies FROM and TO fields
 * PanAPIConnector new function panorama_getConnectedFirewallsSerials()
