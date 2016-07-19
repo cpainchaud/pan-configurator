@@ -232,10 +232,24 @@ function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
  */
 function checkFirewallOverride($apiConnector, $padding)
 {
+    PH::enableExceptionSupport();
     print $padding." - Downloading candidate config...";
     $request = 'type=config&action=get&xpath=/config';
-    $candidateDoc = $apiConnector->sendSimpleRequest($request);
+
+    try
+    {
+        $candidateDoc = $apiConnector->sendSimpleRequest($request);
+    }
+    catch(Exception $e)
+    {
+        PH::disableExceptionSupport();
+        print $padding." ***** API Error occured : ".$e->getMessage()."\n\n";
+        return;
+    }
+    PH::disableExceptionSupport();
+
     print "OK!\n";
+
 
     print $padding." - Looking for root /config xpath...";
     $configRoot = DH::findXPathSingleEntryOrDie('/response/result/config', $candidateDoc);
@@ -259,7 +273,6 @@ if($cycleConnectedFirewalls)
     $firewallSerials = $inputConnector->panorama_getConnectedFirewallsSerials();
 
     $countFW = 0;
-
     foreach( $firewallSerials as $fw )
     {
         $countFW++;

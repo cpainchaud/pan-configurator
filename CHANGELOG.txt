@@ -2,6 +2,8 @@ CHANGELOG
 
 1.5.11
 
+utils:
+override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
 
 
 1.5.10
