@@ -610,7 +610,7 @@ class PanoramaConf
                         mwarning("DeviceGroup '$dgName' has DG '{$dgToParent[$dgName]}' listed as parent but it cannot be found in XML");
                     else
                     {
-                        $parentDG->childDeviceGroups[$dgName] = $ldv;
+                        $parentDG->_childDeviceGroups[$dgName] = $ldv;
                         $ldv->parentDeviceGroup = $parentDG;
                         $ldv->addressStore->parentCentralStore = $parentDG->addressStore;
                         $ldv->serviceStore->parentCentralStore = $parentDG->serviceStore;

@@ -81,7 +81,7 @@ class DeviceGroup
     public $parentDeviceGroup = null;
 
     /** @var DeviceGroup[] */
-    public $childDeviceGroups = Array();
+    public $_childDeviceGroups = Array();
 
 	/** @var Array */
 	private $devices = Array();
@@ -500,6 +500,30 @@ class DeviceGroup
         print "- {$this->serviceStore->count()}/{$this->serviceStore->countServices()}/{$this->serviceStore->countServiceGroups()}/{$this->serviceStore->countTmpServices()}/{$this->serviceStore->countUnused()} total/service/group/tmp/unused objects\n";
         print "- {$this->tagStore->count()} tags. {$this->tagStore->countUnused()} unused\n";
 	}
+
+    /**
+     * @param bool $nested
+     * @return DeviceGroup[]
+     */
+	public function childDeviceGroups($nested = false)
+    {
+        if( $nested )
+        {
+            $dgs = Array();
+
+            foreach( $this->_childDeviceGroups as $dg )
+            {
+                $dgs[$dg->name()] = $dg;
+                $tmp = $dg->childDeviceGroups(true);
+                foreach( $tmp as $sub )
+                    $dgs[$sub->name()] = $sub;
+            }
+
+            return $dgs;
+        }
+
+        return $this->_childDeviceGroups;
+    }
 
 }
 

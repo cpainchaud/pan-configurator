@@ -1953,6 +1953,53 @@ RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['address']['object']['operators']['overrides.upper.level'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $location = PH::findLocationObjectOrDie($context->object);
+        if( $location->isFirewall() || $location->isPanorama() || $location->isVirtualSystem() )
+            return false;
+
+        $store = $context->object->owner;
+
+        if( isset($store->parentCentralStore) && $store->parentCentralStore !== null )
+        {
+            $store = $store->parentCentralStore;
+            $find = $store->find($context->object->name());
+
+            return $find === null;
+        }
+        else
+            return false;
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['address']['object']['operators']['overriden.at.lower.level'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        $location = PH::findLocationObjectOrDie($object);
+        if( $location->isFirewall() || $location->isVirtualSystem() )
+            return false;
+
+        if( $location->isPanorama() )
+            $locations = $location->deviceGroups;
+        else
+        {
+            $locations = $location->childDeviceGroups(true);
+        }
+
+        foreach( $locations as $deviceGroup )
+        {
+            if( $deviceGroup->addressStore->find($object->name(), null, false) !== null )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
