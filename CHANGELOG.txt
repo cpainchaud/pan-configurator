@@ -1,8 +1,27 @@
 CHANGELOG
 
+1.6.0 MAJOR RELEASE
+* support of Applications/Group/Support and Application Store at every level of the hierarchy
+* support of Security Profiles and Profile Groups
+
+utils:
+rules-edit: introduction of new filters based on Security Profiles and Groups
+            introduction of new filters based on Application Groups and Support
+
+
+1.5.11
+
+utils:
+address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level'
+override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
+
+
+
 1.5.10
+* New Utility "override-finder.php" : find and display which parts of a firewall configuration are currently overriding the Template pushed by Panorama.
 * DoSRule and QoSRule class introduced
 * Fixed PBF rules inconsistencies FROM and TO fields
+* PanAPIConnector new function panorama_getConnectedFirewallsSerials()
 
 utils:
 upload-config: new argument 'extraFiltersOut' to strip unwanted XML parts out of the config before saving/uploading it.
@@ -11,6 +30,8 @@ rules-edit: new actions 'from-replace', 'to-replace' to help replace Zones where
 bugfix:
 - fixed a loading error when using blank proxy-id in IPsecTunnels which implictly means 0.0.0.0/0
 - fixed an issue where malformed xml could be generated when changing log-profile when it already existed
+- fixed error caused by typo in filter (src/to has.from.query)
+- fixed rules-edit filter is.dnat and is.snat and renamed has.source.nat, has.destination.nat, has.bidir.nat
 
 
 1.5.9

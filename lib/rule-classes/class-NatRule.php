@@ -394,7 +394,6 @@ class NatRule extends Rule
         }
         if( $this->dnathost === $old )
         {
-            $found = true;
             $this->setDNAT($new, $this->dnatports);
 
             $xpath = DH::elementToPanXPath($this->dnatroot);
@@ -727,13 +726,13 @@ class NatRule extends Rule
 		print $padding."  Destination: ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$s."\n";
 
-        if( $this->natType() == 'static-ip' )
-            print $padding."  SNAT Type: ".$this->natType()."   BiDir: ".$this->_snatbidir."\n";
+        if( $this->snattype == 'static-ip' )
+            print $padding."  SNAT Type: ".$this->snattype."   BiDir: ".$this->_snatbidir."\n";
         else
-            print $padding."  SNAT Type: ".$this->natType()."\n";
+            print $padding."  SNAT Type: ".$this->snattype."\n";
 
 
-        if( $this->natType() != 'none' )
+        if( $this->snattype != 'none' )
         {
             if( $this->snatinterface !== null )
                 print $padding . "   SNAT HOSTS: {$this->snatinterface}/{$this->snathosts->toString_inline()}\n";
@@ -755,7 +754,7 @@ class NatRule extends Rule
 	}
 
     /**
-     * @deprecated
+     * @deprecated use SourceNat_Type() instead
      * @return string
      */
 	public function natType()
@@ -766,6 +765,11 @@ class NatRule extends Rule
     public function destinationInterface()
     {
         return $this->_destinationInterface;
+    }
+
+    public function destinationNatIsEnabled()
+    {
+        return $this->dnathost !== null;
     }
 
 	/**

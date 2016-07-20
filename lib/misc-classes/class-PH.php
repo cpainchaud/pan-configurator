@@ -33,9 +33,11 @@ class PH
 
     public static $outputFormattingEnabled = true;
 
+    public static $basedir;
+
     private static $library_version_major = 1;
     private static $library_version_sub = 5;
-    private static $library_version_bugfix = 9;
+    private static $library_version_bugfix = 11;
 
     static public function frameworkVersion()
     {
