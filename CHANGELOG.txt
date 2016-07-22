@@ -1,8 +1,10 @@
 CHANGELOG
 
 1.6.0 MAJOR RELEASE
-* support of Applications/Group/Support and Application Store at every level of the hierarchy
+* support of Applications Group and Filters
 * support of Security Profiles and Profile Groups
+* support for predefined Services and Address Objects (Regions)
+* support for DBL and Region Objects
 
 utils:
 rules-edit: introduction of new filters based on Security Profiles and Groups
