@@ -439,7 +439,15 @@ class Address
         else
             $networkMap = IP4Map::mapFromText($network);
 
-        return cidr::netMatch($this->getIP4Mapping()->getFirstMapEntry(), $networkMap->getFirstMapEntry());
+        $localEntry = $networkMap->getFirstMapEntry();
+        if( $localEntry === null )
+            return 0;
+
+        $networkEntry = $this->getIP4Mapping()->getFirstMapEntry();
+        if( $networkEntry === null )
+            return 0;
+
+        return cidr::netMatch($localEntry, $networkEntry);
     }
 
     /**
@@ -459,8 +467,16 @@ class Address
         else
             $networkMap = IP4Map::mapFromText($network);
 
+        $localEntry = $networkMap->getFirstMapEntry();
+        if( $localEntry === null )
+            return 0;
 
-        return cidr::netMatch($networkMap->getFirstMapEntry(), $this->getIP4Mapping()->getFirstMapEntry());
+        $networkEntry = $this->getIP4Mapping()->getFirstMapEntry();
+        if( $networkEntry === null )
+            return 0;
+
+
+        return cidr::netMatch($networkEntry, $localEntry);
     }
 
 
