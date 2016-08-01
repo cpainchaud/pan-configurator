@@ -6,6 +6,9 @@ utils:
 address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level'
 override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
 
+bugfix:
+- added checks to prevent crash when trying to resolve an IPv6 object into an IPv4 mapping.
+
 
 1.5.10
 * New Utility "override-finder.php" : find and display which parts of a firewall configuration are currently overriding the Template pushed by Panorama.
