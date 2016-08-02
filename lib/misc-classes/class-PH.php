@@ -60,7 +60,7 @@ class PH
         if( !is_numeric($numbers[1]) )
             derr("'{$numbers[1]}' is not a valid integer");
 
-        if( count($numbers) == 3 || !is_numeric($numbers[2]) )
+        if( count($numbers) == 3 && !is_numeric($numbers[2]) )
             derr("'{$numbers[2]}' is not a valid integer");
 
         if( $numbers[0] > self::$library_version_major )
