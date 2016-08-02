@@ -54,13 +54,13 @@ class PH
         if( count($numbers) < 2 || count($numbers) > 3)
             derr("'{$versionString}' is not a valid version syntax ( 'X.Y' or 'X.Y.Z' is accepted)");
 
-        if( !is_int($numbers[0]) )
+        if( !is_numeric($numbers[0]) )
             derr("'{$numbers[0]}' is not a valid integer");
 
-        if( !is_int($numbers[1]) )
+        if( !is_numeric($numbers[1]) )
             derr("'{$numbers[1]}' is not a valid integer");
 
-        if( count($numbers) == 3 || !is_int($numbers[2]) )
+        if( count($numbers) == 3 || !is_numeric($numbers[2]) )
             derr("'{$numbers[2]}' is not a valid integer");
 
         if( $numbers[0] > self::$library_version_major )
