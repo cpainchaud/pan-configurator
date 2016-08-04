@@ -17,7 +17,7 @@
  */
 
 print "\n***********************************************\n";
-print   "*********** SERVICE-MERGER UTILITY **************\n\n";
+print   "*********** ADDRESS-MERGER UTILITY **************\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
@@ -89,7 +89,7 @@ if( !file_exists($origfile) )
 }
 
 // destroy destination file if it exists
-if( file_exists($outputfile) && is_file($outputfile)  )
+if( file_exists($outputfile) && is_file($outputfile) )
     unlink($outputfile);
 
 echo " - loading configuration file '{$origfile}' ... ";
@@ -98,7 +98,7 @@ echo "OK!\n";
 
 if( $location == 'shared' )
 {
-    $store = $panc->serviceStore;
+    $store = $panc->addressStore;
 }
 else
 {
@@ -106,22 +106,52 @@ else
     if( $findLocation === null )
         derr("cannot find DeviceGroup/VSYS named '{$location}', check case or syntax");
 
-    $store = $findLocation->serviceStore;
+    $store = $findLocation->addressStore;
+}
 
+if( $panc->isPanorama() )
+{
+    if( $location == 'shared' )
+        $childDeviceGroups = $panc->deviceGroups;
+    else
+        $childDeviceGroups = $findLocation->childDeviceGroups(true);
 }
 
 echo " - location '{$location}' found\n";
-echo " - found {$store->countServices()} services\n";
-echo " - computing service values database ... ";
+echo " - found {$store->count()} address Objects\n";
+echo " - computing address values database ... ";
 
 //
-// Building a hash table of all service based on their REAL port mapping
+// Building a hash table of all address objects with same value
 //
 $hashMap = Array();
-foreach( $store->serviceObjects() as $service )
+foreach( $store->addressObjects() as $object )
 {
-    $value = $service->dstPortMapping()->mappingToText();
-    $hashMap[$value][] = $service;
+    $skipThisOne = false;
+
+    // Object with descandants in lower device groups should be excluded
+    if( $panc->isPanorama() )
+    {
+        foreach( $childDeviceGroups as $dg )
+        {
+            if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
+            {
+                $skipThisOne = true;
+                break;
+            }
+        }
+        if( $skipThisOne )
+            continue;
+    }
+
+    $value = $object->value();
+
+    // if object is /32, let's remove it to match equivalent non /32 syntax
+    if( $object->isType_ipNetmask() && strpos($object->value() , '/32') !== false )
+        $value = substr($value, 0, strlen($value) - 3);
+
+    $value = $object->type().'-'.$value;
+    $hashMap[$value][] = $object;
 }
 
 //
@@ -138,7 +168,7 @@ foreach( $hashMap as $index => &$hash )
 unset($hash);
 echo "OK!\n";
 
-echo " - found ".count($hashMap)." duplicates values totalling {$countConcernedObjects} service objects which are duplicate\n";
+echo " - found ".count($hashMap)." duplicates values totalling {$countConcernedObjects} address objects which are duplicate\n";
 
 echo "\n\nNow going after each duplicates for a replacement\n";
 
@@ -147,25 +177,25 @@ foreach( $hashMap as $index => &$hash )
 {
     $first = null;
     print " - value '{$index}'\n";
-    foreach($hash as $service)
+    foreach( $hash as $object)
     {
-        /** @var Service $service */
+        /** @var Address $object */
         if( $first === null )
         {
-            print "   * keeping service '{$service->name()}'\n";
-            $first = $service;
+            print "   * keeping object '{$object->name()}'\n";
+            $first = $object;
         }
         else
         {
-            print "    - replacing '{$service->name()}'\n";
-            $service->replaceMeGlobally($first);
-            $service->owner->remove($service);
+            print "    - replacing '{$object->name()}'\n";
+            $object->replaceMeGlobally($first);
+            $object->owner->remove($object);
             $countRemoved++;
         }
     }
 }
 
-echo "\n\nDuplicates removal is now done. Number is services after cleanup: '{$store->countServices()}' (removed {$countConcernedObjects} services)\n\n";
+echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countConcernedObjects} services)\n\n";
 
 print "\n\n***********************************************\n\n";
 
