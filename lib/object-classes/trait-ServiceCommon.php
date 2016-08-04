@@ -151,6 +151,9 @@ trait ServiceCommon
     {
         /** @var Service|ServiceGroup $this */
 
+        if( is_numeric($outputPadding) )
+            $outputPadding = str_pad(' ', $outputPadding);
+
         $allowedActionIfLastInRule = Array('delete' => true, 'setany' => true, 'disable' => true);
         if( !isset($allowedActionIfLastInRule[$actionIfLastInRule]) )
             derr('unsupported actionIfLastInRule='.$actionIfLastInRule);

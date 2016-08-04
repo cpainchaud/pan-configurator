@@ -178,7 +178,7 @@ class ServiceDstPortMapping
     /**
      * @param $array Service[]|ServiceGroup[]
      */
-    public function mergeWithArrayOfServiceObjects(&$array)
+    public function mergeWithArrayOfServiceObjects($array)
     {
         foreach( $array as $object)
         {

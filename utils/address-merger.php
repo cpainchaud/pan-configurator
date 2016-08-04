@@ -16,8 +16,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-print "\n***********************************************\n";
-print   "*********** ADDRESS-MERGER UTILITY **************\n\n";
+echo "\n***********************************************\n";
+echo   "*********** ADDRESS-MERGER UTILITY **************\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
@@ -26,28 +26,28 @@ require_once("lib/panconfigurator.php");
 function display_usage_and_exit($shortMessage = false)
 {
     global $argv;
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml out=outputfile.xml location=shared|vsys1|dg1 ".
+    echo PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml out=outputfile.xml location=shared|vsys1|dg1 ".
         "\n";
 
     if( !$shortMessage )
     {
-        print PH::boldText("\nListing available arguments\n\n");
+        echo PH::boldText("\nListing available arguments\n\n");
 
         global $supportedArguments;
 
         ksort($supportedArguments);
         foreach( $supportedArguments as &$arg )
         {
-            print " - ".PH::boldText($arg['niceName']);
+            echo " - ".PH::boldText($arg['niceName']);
             if( isset( $arg['argDesc']))
-                print '='.$arg['argDesc'];
+                echo '='.$arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']))
-                print "\n     ".$arg['shortHelp'];
-            print "\n\n";
+                echo "\n     ".$arg['shortHelp'];
+            echo "\n\n";
         }
 
-        print "\n\n";
+        echo "\n\n";
     }
 
     exit(1);
@@ -63,13 +63,29 @@ function display_error_usage_exit($msg)
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-$supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
+$supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1|shared|vsys1');
 
 
 // load PAN-Configurator library
 require_once("lib/panconfigurator.php");
 
 PH::processCliArgs();
+
+// check that only supported arguments were provided
+foreach ( PH::$args as $index => &$arg )
+{
+    if( !isset($supportedArguments[$index]) )
+    {
+        if( strpos($index,'subquery') === 0 )
+        {
+            $nestedQueries[$index] = &$arg;
+            continue;
+        }
+        //var_dump($supportedArguments);
+        display_error_usage_exit("unsupported argument provided: '$index'");
+    }
+}
+
 
 if( !isset(PH::$args['out']) )
     display_error_usage_exit(' "out=" argument is missing');
@@ -176,18 +192,18 @@ $countRemoved = 0;
 foreach( $hashMap as $index => &$hash )
 {
     $first = null;
-    print " - value '{$index}'\n";
+    echo " - value '{$index}'\n";
     foreach( $hash as $object)
     {
         /** @var Address $object */
         if( $first === null )
         {
-            print "   * keeping object '{$object->name()}'\n";
+            echo "   * keeping object '{$object->name()}'\n";
             $first = $object;
         }
         else
         {
-            print "    - replacing '{$object->name()}'\n";
+            echo "    - replacing '{$object->name()}'\n";
             $object->replaceMeGlobally($first);
             $object->owner->remove($object);
             $countRemoved++;
@@ -195,14 +211,14 @@ foreach( $hashMap as $index => &$hash )
     }
 }
 
-echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countConcernedObjects} services)\n\n";
+echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countRemoved} addresses)\n\n";
 
-print "\n\n***********************************************\n\n";
+echo "\n\n***********************************************\n\n";
 
-print "\n\n";
+echo "\n\n";
 $panc->save_to_file($outputfile);
 
-print "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
+echo "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
 
 
 
