@@ -1,6 +1,7 @@
 CHANGELOG
 
 1.5.11
+* New 'service-merger' utility 'service-merger.php'. Safer, faster and find more dups than MT.
 
 utils:
 address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level'
