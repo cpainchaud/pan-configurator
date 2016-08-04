@@ -72,12 +72,12 @@ require_once("lib/panconfigurator.php");
 PH::processCliArgs();
 
 if( !isset(PH::$args['out']) )
-    derr(' "out=" argument is missing');
+    display_error_usage_exit(' "out=" argument is missing');
 if( !isset(PH::$args['in']) )
-    derr(' "in=" argument is missing');
+    display_error_usage_exit(' "in=" argument is missing');
 
 if( !isset(PH::$args['location']) )
-    derr(' "location=" argument is missing');
+    display_error_usage_exit(' "location=" argument is missing');
 
 $origfile = PH::$args['in'];
 $outputfile = PH::$args['out'];
