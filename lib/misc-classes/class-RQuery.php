@@ -2194,6 +2194,57 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = Ar
     },
     'arg' => true
 );
+RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isAddress() && $object->type() == 'fqdn' )
+            return false;
+
+        $values = explode(',', $context->value);
+        $mapping = new IP4Map();
+
+        $count = 0;
+        foreach( $values as $net )
+        {
+            $net = trim($net);
+            if( strlen($net) < 1 )
+                derr("empty network/IP name provided for argument #$count");
+            $mapping->addMap(IP4Map::mapFromText($net));
+            $count++;
+        }
+
+        return $mapping->includedInOtherMap($object->getIP4Mapping()) == 1;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full-or-partial'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isAddress() && $object->type() == 'fqdn' )
+            return false;
+
+        $values = explode(',', $context->value);
+        $mapping = new IP4Map();
+
+        $count = 0;
+        foreach( $values as $net )
+        {
+            $net = trim($net);
+            if( strlen($net) < 1 )
+                derr("empty network/IP name provided for argument #$count");
+            $mapping->addMap(IP4Map::mapFromText($net));
+            $count++;
+        }
+
+        return $mapping->includedInOtherMap($object->getIP4Mapping()) != 0;
+    },
+    'arg' => true
+);
+
 // </editor-fold>
 
 
