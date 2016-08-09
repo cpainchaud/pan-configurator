@@ -618,6 +618,43 @@ class ServiceStore
 		return $count;
 	}
 
+
+    /**
+     * @param string $base
+     * @param string $suffix
+     * @param integer|string $startCount
+     * @return string
+     */
+    public function findAvailableName($base, $nested=true, $suffix= '', $startCount = '')
+    {
+        $maxl = 31;
+        $basel = strlen($base);
+        $suffixl = strlen($suffix);
+        $inc = $startCount;
+        $basePlusSuffixL = $basel + $suffixl;
+
+        while(true)
+        {
+
+            $incl = strlen(strval($inc));
+
+            if( $basePlusSuffixL + $incl > $maxl )
+            {
+                $newname = substr($base,0, $basel-$suffixl-$incl).$suffix.$inc;
+            }
+            else
+                $newname = $base.$suffix.$inc;
+
+            if( $this->find($newname, null, $nested) === null )
+                return $newname;
+
+            if( $startCount == '' )
+                $startCount = 0;
+
+            $inc++;
+        }
+    }
+
 	
 }
 

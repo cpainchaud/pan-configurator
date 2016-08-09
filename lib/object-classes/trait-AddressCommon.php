@@ -16,6 +16,10 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+/**
+ * Class AddressCommon
+ * @property AddressStore $owner
+ */
 trait AddressCommon
 {
     use ReferencableObject {removeReference as super_removeReference;}
@@ -310,6 +314,33 @@ trait AddressCommon
     {
         /** @var Address|AddressGroup $this */
         $this->__removeWhereIamUsed(true, $displayOutput, $outputPadding, $actionIfLastInRule);
+    }
+
+    /**
+     * looks into child DeviceGroups to see if an object with same name exists in lower levels
+     * @return bool
+     */
+    public function hasDescendants()
+    {
+        $owner = $this->owner->owner;
+
+        if( $owner->isFirewall() )
+            return false;
+        if( $owner->isVirtualSystem() )
+            return false;
+
+        if( $owner->isPanorama() )
+            $deviceGroups = $owner->deviceGroups;
+        else
+            $deviceGroups = $owner->childDeviceGroups(true);
+
+        foreach( $deviceGroups as $dg )
+        {
+            if( $dg->addressStore->find($this->name(), null, false) )
+                return true;
+        }
+
+        return false;
     }
 
 }

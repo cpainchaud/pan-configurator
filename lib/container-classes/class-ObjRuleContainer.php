@@ -409,6 +409,11 @@ class ObjRuleContainer
         print $retString;
     }
 
+    public function name()
+    {
+        return $this->name;
+    }
+
 
 }
 

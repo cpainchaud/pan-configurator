@@ -37,6 +37,12 @@ class IP4Map
     static public function mapFromText($text)
     {
         $map = new IP4Map();
+
+        // if IPv6 detected then we exit with blank mapping
+        $ex = explode('/', $text);
+        if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== FALSE )
+            return $map;
+
         $map->_map[] = cidr::stringToStartEnd($text);
         return $map;
     }
