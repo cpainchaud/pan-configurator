@@ -66,7 +66,7 @@ $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output f
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
 $supportedArguments['dupalgorithm'] = Array('niceName' => 'DupAlgorithm', 'shortHelp' => 'specifies how to detect duplicates by port or by location where objects are used', 'argDesc'=> '=ports|WhereUsed');
 $supportedArguments['mergecountlimit'] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '=100');
-
+$supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 // load PAN-Configurator library
 require_once("lib/panconfigurator.php");
@@ -86,6 +86,11 @@ foreach ( PH::$args as $index => &$arg )
         //var_dump($supportedArguments);
         display_error_usage_exit("unsupported argument provided: '$index'");
     }
+}
+
+if( isset(PH::$args['help']) )
+{
+    display_usage_and_exit();
 }
 
 

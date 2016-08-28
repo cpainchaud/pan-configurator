@@ -63,8 +63,8 @@ function display_error_usage_exit($msg)
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-$supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1|shared|vsys1');
-
+$supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=vsys1|shared|dg1');
+$supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 // load PAN-Configurator library
 require_once("lib/panconfigurator.php");
@@ -84,6 +84,11 @@ foreach ( PH::$args as $index => &$arg )
         //var_dump($supportedArguments);
         display_error_usage_exit("unsupported argument provided: '$index'");
     }
+}
+
+if( isset(PH::$args['help']) )
+{
+    display_usage_and_exit();
 }
 
 
