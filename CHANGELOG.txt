@@ -9,7 +9,8 @@ address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level',
 override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
 
 bugfix:
-- added checks to prevent crash when trying to resolve an IPv6 object into an IPv4 mapping.
+- added checks to prevent crash when trying to resolve an IPv6 object into an IPv4 mapping
+- fixed a crash when exporting PBF rules to HTML in  rules-edit utility
 
 
 1.5.10
