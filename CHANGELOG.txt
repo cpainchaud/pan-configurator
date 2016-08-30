@@ -2,7 +2,7 @@ CHANGELOG
 
 1.5.11
 * new function AddressCommon->hasDescendants() to for objects with same name in lower level (child devicegroups)
-* New 'address-merger' and 'service-merger' utility 'service-merger.php'. Safer, faster and find more dups than MT.
+* New 'address-merger', 'addressgroup-merger' and 'service-merger' utility 'service-merger.php'. Safer, faster and find more dups than MT.
 
 utils:
 address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial'

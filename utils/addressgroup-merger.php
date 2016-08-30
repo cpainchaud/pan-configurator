@@ -17,7 +17,7 @@
  */
 
 echo "\n***********************************************\n";
-echo   "*********** ADDRESS-MERGER UTILITY **************\n\n";
+echo   "*********** ADDRESSGROUP-MERGER UTILITY **********\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
@@ -140,13 +140,13 @@ if( $panc->isPanorama() )
 
 echo " - location '{$location}' found\n";
 echo " - found {$store->count()} address Objects\n";
-echo " - computing address values database ... ";
+echo " - computing AddressGroup hash database ... ";
 
 //
 // Building a hash table of all address objects with same value
 //
 $hashMap = Array();
-foreach( $store->addressObjects() as $object )
+foreach( $store->addressGroups() as $object )
 {
     $skipThisOne = false;
 
@@ -165,13 +165,18 @@ foreach( $store->addressObjects() as $object )
             continue;
     }
 
-    $value = $object->value();
+    $value = '';
 
-    // if object is /32, let's remove it to match equivalent non /32 syntax
-    if( $object->isType_ipNetmask() && strpos($object->value() , '/32') !== false )
-        $value = substr($value, 0, strlen($value) - 3);
+    $members = $object->members();
+    usort($members, '__CmpObjName');
 
-    $value = $object->type().'-'.$value;
+    foreach( $members as $member )
+    {
+        $value .= './.'.$member->name();
+    }
+
+    $value = md5($value);
+
     $hashMap[$value][] = $object;
 }
 
@@ -189,18 +194,19 @@ foreach( $hashMap as $index => &$hash )
 unset($hash);
 echo "OK!\n";
 
-echo " - found ".count($hashMap)." duplicates values totalling {$countConcernedObjects} address objects which are duplicate\n";
+echo " - found ".count($hashMap)." duplicate values totalling {$countConcernedObjects} groups which are duplicate\n";
 
 echo "\n\nNow going after each duplicates for a replacement\n";
 
 $countRemoved = 0;
 foreach( $hashMap as $index => &$hash )
 {
+    echo "\n";
     $first = null;
     echo " - value '{$index}'\n";
     foreach( $hash as $object)
     {
-        /** @var Address $object */
+        /** @var AddressGroup $object */
         if( $first === null )
         {
             echo "   * keeping object '{$object->name()}'\n";
@@ -216,7 +222,7 @@ foreach( $hashMap as $index => &$hash )
     }
 }
 
-echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countRemoved} addresses)\n\n";
+echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddressGroups()}' (removed {$countRemoved} groups)\n\n";
 
 echo "\n\n***********************************************\n\n";
 
