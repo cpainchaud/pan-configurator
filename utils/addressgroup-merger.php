@@ -64,6 +64,7 @@ $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=vsys1|shared|dg1');
+$supportedArguments['pickfilter'] =Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '=(name regex /^g/)');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 // load PAN-Configurator library
@@ -138,6 +139,19 @@ if( $panc->isPanorama() )
         $childDeviceGroups = $findLocation->childDeviceGroups(true);
 }
 
+$query = null;
+if( isset(PH::$args['pickfilter']) )
+{
+    $query = new RQuery('address');
+    $errMsg = '';
+    if( $query->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
+        derr("invalid pickFilter was input: ".$errMsg);
+    echo " - pickFilter was input: ";
+    $query->display();
+    echo "\n";
+
+}
+
 echo " - location '{$location}' found\n";
 echo " - found {$store->count()} address Objects\n";
 echo " - computing AddressGroup hash database ... ";
@@ -202,23 +216,38 @@ $countRemoved = 0;
 foreach( $hashMap as $index => &$hash )
 {
     echo "\n";
-    $first = null;
     echo " - value '{$index}'\n";
+
+    $pickedObject = null;
+
+    if( $query !== null )
+    {
+        foreach( $hash as $object)
+        {
+            if( $query->matchSingleObject($object) )
+            {
+                $pickedObject = $object;
+                break;
+            }
+        }
+    }
+
+    if( $pickedObject === null )
+        $pickedObject = reset($hash);
+
+    echo "   * keeping object '{$pickedObject->name()}'\n";
+
+
     foreach( $hash as $object)
     {
+        if( $object === $pickedObject )
+            continue;
+
         /** @var AddressGroup $object */
-        if( $first === null )
-        {
-            echo "   * keeping object '{$object->name()}'\n";
-            $first = $object;
-        }
-        else
-        {
-            echo "    - replacing '{$object->name()}'\n";
-            $object->replaceMeGlobally($first);
-            $object->owner->remove($object);
-            $countRemoved++;
-        }
+        echo "    - replacing '{$object->name()}'\n";
+        $object->replaceMeGlobally($pickedObject);
+        $object->owner->remove($object);
+        $countRemoved++;
     }
 }
 
