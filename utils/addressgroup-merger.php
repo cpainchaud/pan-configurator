@@ -237,7 +237,6 @@ foreach( $hashMap as $index => &$hash )
 
     echo "   * keeping object '{$pickedObject->name()}'\n";
 
-
     foreach( $hash as $object)
     {
         if( $object === $pickedObject )
