@@ -640,7 +640,7 @@ $supportedActions['name-addprefix'] = Array(
         echo $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
         {
-            echo " *** SKIPPED : resulting name is too long\n";
+            echo $context->padding." *** SKIPPED : resulting name is too long\n";
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -648,7 +648,7 @@ $supportedActions['name-addprefix'] = Array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
         {
-            echo " *** SKIPPED : an object with same name already exists\n";
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
             return;
         }
         if( $context->isAPI )
@@ -668,7 +668,7 @@ $supportedActions['name-addsuffix'] = Array(
         echo $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
         {
-            echo " *** SKIPPED : resulting name is too long\n";
+            echo $context->padding." *** SKIPPED : resulting name is too long\n";
             return;
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -676,7 +676,7 @@ $supportedActions['name-addsuffix'] = Array(
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
         {
-            echo " *** SKIPPED : an object with same name already exists\n";
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
             return;
         }
         if( $context->isAPI )
@@ -692,21 +692,22 @@ $supportedActions['name-removeprefix'] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
-        $removeprefix = $context->arguments['prefix'];
-        if( substr($object->name(), 0, strlen($removeprefix)) === $removeprefix )
-            $newName = substr($object->name(), strlen($removeprefix));
-        echo $context->padding." - new name will be '{$newName}'\n";
-        if( strlen($newName) > 63 )
+        $prefix = $context->arguments['prefix'];
+
+        if( strpos($object->name(), $prefix) !== 0 )
         {
-            echo " *** SKIPPED : resulting name is too long\n";
+            echo $context->padding." *** SKIPPED : prefix not found\n";
             return;
         }
+        $newName = substr($object->name(), strlen($prefix));
+        echo $context->padding." - new name will be '{$newName}'\n";
+
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
         {
-            echo " *** SKIPPED : an object with same name already exists\n";
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
             return;
         }
         if( $context->isAPI )
@@ -722,21 +723,24 @@ $supportedActions['name-removesuffix'] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
-        $removesuffix = $context->arguments['suffix'];
-        if( substr($object->name(), (strlen($object->name())-strlen($removesuffix)), strlen($object->name()) ) === $removesuffix )
-            $newName = substr($object->name(), 0, (strlen($object->name())-strlen($removesuffix)));
-        echo $context->padding." - new name will be '{$newName}'\n";
-        if( strlen($newName) > 63 )
+        $suffix = $context->arguments['suffix'];
+        $suffixStartIndex = strlen($object->name()) - strlen($suffix);
+
+        if( substr($object->name(), $suffixStartIndex, strlen($object->name()) ) != $suffix )
         {
-            echo " *** SKIPPED : resulting name is too long\n";
+            echo $context->padding." *** SKIPPED : suffix not found\n";
             return;
         }
+        $newName = substr( $object->name(), 0, $suffixStartIndex );
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
         if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
             $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
         {
-            echo " *** SKIPPED : an object with same name already exists\n";
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
             return;
         }
         if( $context->isAPI )
