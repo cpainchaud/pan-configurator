@@ -700,6 +700,13 @@ $supportedActions['name-removeprefix'] = Array(
             return;
         }
         $newName = substr($object->name(), strlen($prefix));
+
+        if ( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
+        {
+            echo $context->padding." *** SKIPPED : object name contains not allowed character at the beginning\n";
+            return;
+        }
+
         echo $context->padding." - new name will be '{$newName}'\n";
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
