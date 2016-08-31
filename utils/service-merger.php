@@ -43,7 +43,7 @@ function display_usage_and_exit($shortMessage = false)
                 echo '='.$arg['argDesc'];
             //."=";
             if( isset($arg['shortHelp']))
-                echo "\n     ".$arg['shortHelp'];
+                echo "\n     ".str_replace("\n", "\n    ",$arg['shortHelp']);
             echo "\n\n";
         }
 
@@ -63,10 +63,17 @@ function display_error_usage_exit($msg)
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-$supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
-$supportedArguments['dupalgorithm'] = Array('niceName' => 'DupAlgorithm', 'shortHelp' => 'specifies how to detect duplicates by port or by location where objects are used', 'argDesc'=> '=ports|WhereUsed');
+$supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
+$supportedArguments['dupalgorithm'] = Array(    'niceName' => 'DupAlgorithm',
+                                                'shortHelp' => "Specifies how to detect duplicates by port or by location where objects are used:\n".
+                                                    "  - SamePorts: objects with same ports will be merged into 1 single object\n".
+                                                    "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
+                                                'argDesc'=> 'SamePorts|WhereUsed');
 $supportedArguments['mergecountlimit'] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '=100');
-$supportedArguments['pickfilter'] =Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '=(name regex /^g/)');
+$supportedArguments['pickfilter'] = Array(  'niceName' => 'pickFilter',
+                                            'shortHelp' => "specify a filter a pick which object will be kept while others will be replaced by this one.\n".
+                                                "   ie: 2 services are found to be mergeable: 'H-1.1.1.1' and 'Server-ABC'. Then by using pickFilter=(name regex /^H-/) you would ensure that object H-1.1.1.1 would remain and Server-ABC be replaced by it.",
+                                            'argDesc' => '(name regex /^g/)');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 // load PAN-Configurator library
@@ -110,11 +117,11 @@ else
 if( isset(PH::$args['dupalgorithm']) )
 {
     $dupAlg = strtolower(PH::$args['dupalgorithm']);
-    if( $dupAlg != 'ports' && $dupAlg != 'whereused')
+    if( $dupAlg != 'sameports' && $dupAlg != 'whereused')
         display_error_usage_exit('unsupported value for dupAlgorithm: '.PH::$args['dupalgorithm']);
 }
 else
-    $dupAlg = 'ports';
+    $dupAlg = 'sameports';
 
 $origfile = PH::$args['in'];
 $outputfile = PH::$args['out'];
@@ -162,13 +169,14 @@ if( isset(PH::$args['pickfilter']) )
 
 echo " - location '{$location}' found\n";
 echo " - found {$store->countServices()} services\n";
+echo " - DupAlgorithm selected: {$dupAlg}\n";
 echo " - computing service values database ... ";
 
 //
 // Building a hash table of all service based on their REAL port mapping
 //
 $hashMap = Array();
-if( $dupAlg == 'ports' )
+if( $dupAlg == 'sameports' )
     foreach( $store->serviceObjects() as $service )
     {
         $value = $service->dstPortMapping()->mappingToText();
@@ -201,7 +209,7 @@ echo " - found ".count($hashMap)." duplicates values totalling {$countConcernedO
 echo "\n\nNow going after each duplicates for a replacement\n";
 
 $countRemoved = 0;
-if( $dupAlg == 'ports' )
+if( $dupAlg == 'sameports' )
     foreach( $hashMap as $index => &$hash )
     {
         echo "\n";

@@ -33,9 +33,9 @@ because of firewall capacity problems for example. A collection of filters and a
 - **service-edit.php** : to make changes to service/group, you can use filters to make changes only to objects of
  interest. Makes it easy to delete unused objects for example.
  
- - **service-merger.php** : merge address objects together. Useful when you want to do cleaning or reduce number of objects
- because of firewall capacity problems for example. A collection of filters and algorithms will make this tool very flexible
-  to bring you a tailored process for your customer.
+- **service-merger.php** : merge address objects together. Useful when you want to do cleaning or reduce number of objects
+because of firewall capacity problems for example. A collection of filters and algorithms will make this tool very flexible
+to bring you a tailored process for your customer.
 
 - **upload-config.php** : tool for easy upload/download of configuration on a PANOS device. ie: if you want to
  replicate a config from a device to another but just keep management IP address. Use 'help' argument for more details.
