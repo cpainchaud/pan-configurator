@@ -33,7 +33,7 @@ class AddressStore
 	public $parentCentralStore = null;
 
     /** @var Address[]|AddressGroup[] */
-	protected $all = Array();
+	protected $_all = Array();
 
 	/** @var Address[] */
 	protected $_addressObjects = Array();
@@ -120,8 +120,14 @@ class AddressStore
 
 			$objectName = $ns->name();
 
+            if( isset($this->_all[$objectName]) )
+            {
+                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file", $node);
+                continue;
+            }
+
 			$this->_addressObjects[$objectName] = $ns;
-			$this->all[$objectName] = $ns;
+			$this->_all[$objectName] = $ns;
 		}
 	}
 
@@ -151,7 +157,7 @@ class AddressStore
 				derr("error while parsing query: {$errMesg}");
 
 			$res = Array();
-			foreach( $this->all as $obj )
+			foreach( $this->_all as $obj )
 			{
 				if( $query->matchSingleObject($obj) )
 					$res[] = $obj;
@@ -159,7 +165,7 @@ class AddressStore
 			return $res;
 		}
 
-		return $this->all;
+		return $this->_all;
 	}
 
 
@@ -170,7 +176,7 @@ class AddressStore
         foreach( $xml->childNodes as $node )
         {
             /** @var DOMElement $node */
-            if( $node->nodeType != 1 ) continue;
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
             $name = $node->getAttribute('name');
             if( strlen($name) == 0 )
@@ -178,8 +184,21 @@ class AddressStore
 
             $ns = new AddressGroup( $name, $this);
 
+            if( isset($this->_tmpAddresses[$name]) )
+            {
+                $tmpObj = $this->_tmpAddresses[$name];
+                $tmpObj->replaceMeGlobally($ns);
+                $this->remove($tmpObj);
+            }
+
+            if( isset($this->_all[$name]) )
+            {
+                mwarning("an object with name '{$name}' already exists in this store, please investigate yor xml file", $node);
+                continue;
+            }
+
             $this->_addressGroups[$name] = $ns;
-            $this->all[$name] = $ns;
+            $this->_all[$name] = $ns;
 
         }
 		
@@ -207,9 +226,9 @@ class AddressStore
 
 		$objectName = $object->name();
 
-		if( isset($this->all[$objectName]) )
+		if( isset($this->_all[$objectName]) )
 		{
-			if( $this->all[$objectName] === $object )
+			if( $this->_all[$objectName] === $object )
 				return true;
 		}
 
@@ -223,7 +242,7 @@ class AddressStore
 	*/
 	public function count()
 	{
-		return count($this->all);
+		return count($this->_all);
 	}
 
 	
@@ -286,9 +305,9 @@ class AddressStore
 	{
 		$f = null;
 
-        if( isset($this->all[$objectName]) )
+        if( isset($this->_all[$objectName]) )
         {
-            $foundObject = $this->all[$objectName];
+            $foundObject = $this->_all[$objectName];
             $foundObject->addReference($ref);
             return $foundObject;
         }
@@ -363,7 +382,7 @@ class AddressStore
 	
 	public function toString_inline()
 	{
-		$arr = &$this->all;
+		$arr = &$this->_all;
 		$c = count($arr);
 
 		
@@ -423,7 +442,7 @@ class AddressStore
 		$objectName = $s->name();
 
 		// there is already an object named like that
-		if( isset($this->all[$objectName]) && $this->all[$objectName] !== $s )
+		if( isset($this->_all[$objectName]) && $this->_all[$objectName] !== $s )
 		{
 			derr('You cannot add object with same name in a store');
 		}
@@ -442,12 +461,12 @@ class AddressStore
 				$this->addressRoot->appendChild($s->xmlroot);
 			}
 				
-			$this->all[$objectName] = $s;
+			$this->_all[$objectName] = $s;
 		}
 		elseif ( $class == 'AddressGroup' )
 		{
 			$this->_addressGroups[$objectName] = $s;
-			$this->all[$objectName] = $s;
+			$this->_all[$objectName] = $s;
 
             $this->addressGroupRoot->appendChild($s->xmlroot);
 			
@@ -497,13 +516,13 @@ class AddressStore
 		$objectName = $s->name();
 
 		
-		if( !isset($this->all[$objectName]) )
+		if( !isset($this->_all[$objectName]) )
 		{
 			mdeb('Tried to remove an object that is not part of this store');
 			return false;
 		}
 
-		unset( $this->all[$objectName]);
+		unset( $this->_all[$objectName]);
 
 
 		if(  $class == 'Address' )
@@ -691,10 +710,10 @@ class AddressStore
      */
 	function createTmp($name, $ref=null)
 	{
-        if( isset($this->all[$name]) )
+        if( isset($this->_all[$name]) )
         {
             mwarning("cannot create a TMP object named '{$name}' because an object with that name already existed and was returned by this function");
-            return $this->all[$name];
+            return $this->_all[$name];
         }
 
 		$f = new Address($name,$this);
@@ -716,7 +735,7 @@ class AddressStore
      */
 	public function referencedObjectRenamed($h, $oldName)
 	{
-		if( $this->all[$oldName] !== $h)
+		if( $this->_all[$oldName] !== $h)
         {
             mwarning("Unexpected : object is not part of this library");
             return false;
@@ -724,8 +743,8 @@ class AddressStore
 
         $newName = $h->name();
 
-		unset($this->all[$oldName]);
-		$this->all[$newName] = $h;
+		unset($this->_all[$oldName]);
+		$this->_all[$newName] = $h;
 
 		$class = get_class($h);
 
@@ -750,7 +769,7 @@ class AddressStore
 	public function countUnused()
 	{
 		$count = 0;
-		foreach( $this->all as $o )
+		foreach( $this->_all as $o )
 		{
 			if( $o->countReferences() == 0 )
 				$count++;

@@ -73,7 +73,7 @@ trait ReferencableObject
 			return;
 		}
 
-		mwarning('tried to unreference an object that does not referenced:'.$this->toString().'  against  '.$ref->toString());
+		mwarning('tried to unreference an object that is not referenced:'.$this->toString().'  against  '.$ref->toString());
 	}
 	
 	public function broadcastMyNameChange($oldname)

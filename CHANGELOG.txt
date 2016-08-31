@@ -1,8 +1,25 @@
 CHANGELOG
 
+1.5.11
+* new function AddressCommon->hasDescendants() to for objects with same name in lower level (child devicegroups)
+* New 'address-merger', 'addressgroup-merger' and 'service-merger' utility 'service-merger.php'. Safer, faster and find more dups than MT.
+
+utils:
+address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial'
+address-edit: new actions 'name-removePrefix, name-removeSuffix'
+override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
+
+bugfix:
+- added checks to prevent crash when trying to resolve an IPv6 object into an IPv4 mapping
+- fixed a crash when exporting PBF rules to HTML in  rules-edit utility
+- fixed a crash when replacing an object used in a DNAT with another object
+
+
 1.5.10
+* New Utility "override-finder.php" : find and display which parts of a firewall configuration are currently overriding the Template pushed by Panorama.
 * DoSRule and QoSRule class introduced
 * Fixed PBF rules inconsistencies FROM and TO fields
+* PanAPIConnector new function panorama_getConnectedFirewallsSerials()
 
 utils:
 upload-config: new argument 'extraFiltersOut' to strip unwanted XML parts out of the config before saving/uploading it.
@@ -11,6 +28,8 @@ rules-edit: new actions 'from-replace', 'to-replace' to help replace Zones where
 bugfix:
 - fixed a loading error when using blank proxy-id in IPsecTunnels which implictly means 0.0.0.0/0
 - fixed an issue where malformed xml could be generated when changing log-profile when it already existed
+- fixed error caused by typo in filter (src/to has.from.query)
+- fixed rules-edit filter is.dnat and is.snat and renamed has.source.nat, has.destination.nat, has.bidir.nat
 
 
 1.5.9

@@ -42,16 +42,37 @@ trait PathableName
 
     public function _PANC_shortName()
     {
-        $location = 'shared';
+        $str = '';
 
-        $locationObject = PH::findLocationObjectOrDie($this);
+        $owner = $this;
 
-        if( $locationObject->isVirtualSystem() || $locationObject->isDeviceGroup() )
+        while( $owner !== null )
         {
-            $location = $this->owner->owner->name();
+            if( is_subclass_of($owner, 'ObjRuleContainer') ||
+                get_class($owner) == 'DeviceGroup' || get_class($owner) == 'VirtualSystem' )
+                $str = $owner->name().$str;
+            elseif( is_subclass_of($owner, 'Rule') )
+            {
+                $str = $owner->ruleNature().':'.$owner->name().$str;
+                $owner = $owner->owner;
+            }
+            else
+            {
+                if( method_exists($owner, 'name') )
+                    $str = get_class($owner) . ':' . $owner->name() . $str;
+                else
+                    $str = get_class($owner) . $str;
+            }
+
+            $str = '/'.$str;
+
+            if( !isset($owner->owner) )
+                break;
+            if( get_class($owner) == 'DeviceGroup' || get_class($owner) == 'VirtualSystem' )
+                break;
+            $owner = $owner->owner;
         }
 
-        return $location.'/'.get_class($this).'/'.$this->name;
+        return $str;
     }
-
 }
