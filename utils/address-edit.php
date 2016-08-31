@@ -687,6 +687,66 @@ $supportedActions['name-addsuffix'] = Array(
     'args' => Array( 'suffix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
     ),
 );
+$supportedActions['name-removeprefix'] = Array(
+    'name' => 'name-removePrefix',
+    'MainFunction' =>  function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $removeprefix = $context->arguments['prefix'];
+        if( substr($object->name(), 0, strlen($removeprefix)) === $removeprefix )
+            $newName = substr($object->name(), strlen($removeprefix));
+        echo $context->padding." - new name will be '{$newName}'\n";
+        if( strlen($newName) > 63 )
+        {
+            echo " *** SKIPPED : resulting name is too long\n";
+            return;
+        }
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
+            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        {
+            echo " *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+            $object->setName($newName);
+    },
+    'args' => Array( 'prefix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    ),
+);
+$supportedActions['name-removesuffix'] = Array(
+    'name' => 'name-removeSuffix',
+    'MainFunction' =>  function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $removesuffix = $context->arguments['suffix'];
+        if( substr($object->name(), (strlen($object->name())-strlen($removesuffix)), strlen($object->name()) ) === $removesuffix )
+            $newName = substr($object->name(), 0, (strlen($object->name())-strlen($removesuffix)));
+        echo $context->padding." - new name will be '{$newName}'\n";
+        if( strlen($newName) > 63 )
+        {
+            echo " *** SKIPPED : resulting name is too long\n";
+            return;
+        }
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
+            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        {
+            echo " *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+            $object->setName($newName);
+    },
+    'args' => Array( 'suffix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    ),
+);
 
 $supportedActions['move'] = Array(
     'name' => 'move',
