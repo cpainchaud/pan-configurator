@@ -66,6 +66,7 @@ $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output f
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
 $supportedArguments['dupalgorithm'] = Array('niceName' => 'DupAlgorithm', 'shortHelp' => 'specifies how to detect duplicates by port or by location where objects are used', 'argDesc'=> '=ports|WhereUsed');
 $supportedArguments['mergecountlimit'] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '=100');
+$supportedArguments['pickfilter'] =Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '=(name regex /^g/)');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 // load PAN-Configurator library
@@ -146,6 +147,19 @@ else
 
 }
 
+$query = null;
+if( isset(PH::$args['pickfilter']) )
+{
+    $query = new RQuery('service');
+    $errMsg = '';
+    if( $query->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
+        derr("invalid pickFilter was input: ".$errMsg);
+    echo " - pickFilter was input: ";
+    $query->display();
+    echo "\n";
+
+}
+
 echo " - location '{$location}' found\n";
 echo " - found {$store->countServices()} services\n";
 echo " - computing service values database ... ";
@@ -190,64 +204,89 @@ $countRemoved = 0;
 if( $dupAlg == 'ports' )
     foreach( $hashMap as $index => &$hash )
     {
-        $first = null;
+        echo "\n";
         echo " - value '{$index}'\n";
-        foreach($hash as $service)
+
+        $pickedObject = null;
+
+        if( $query !== null )
         {
-            /** @var Service $service */
-            /** @var Service $first */
-            if( $first === null )
+            foreach( $hash as $object)
             {
-                echo "   * keeping service '{$service->name()}'\n";
-                $first = $service;
+                if( $query->matchSingleObject($object) )
+                {
+                    $pickedObject = $object;
+                    break;
+                }
             }
-            else
-            {
-                echo "    - replacing '{$service->name()}'\n";
-                $service->replaceMeGlobally($first);
-                $service->owner->remove($service);
-                $countRemoved++;
-            }
+        }
+
+        if( $pickedObject === null )
+            $pickedObject = reset($hash);
+
+        echo "   * keeping object '{$pickedObject->name()}'\n";
+
+        foreach( $hash as $object)
+        {
+            if( $object === $pickedObject )
+                continue;
+
+            /** @var Service $object */
+            echo "    - replacing '{$object->name()}'\n";
+            $object->replaceMeGlobally($pickedObject);
+            $object->owner->remove($object);
+            $countRemoved++;
+
             if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
             {
-                echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACH mergeCountLimit ({$mergeCountLimit})\n";
+                echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
                 break 2;
             }
         }
-        echo "\n";
     }
 elseif( $dupAlg == 'whereused' )
     foreach( $hashMap as $index => &$hash )
     {
-        $first = null;
-        echo " - group of ".count($hash)." services :\n";
+        echo "\n";
+        echo " - value '{$index}'\n";
+
+        $pickedObject = null;
+
+        if( $query !== null )
+        {
+            foreach( $hash as $object)
+            {
+                if( $query->matchSingleObject($object) )
+                {
+                    $pickedObject = $object;
+                    break;
+                }
+            }
+        }
+
+        if( $pickedObject === null )
+            $pickedObject = reset($hash);
+
+        echo "   * keeping object '{$pickedObject->name()}'\n";
+
         foreach($hash as $service)
         {
             /** @var Service $service */
-            /** @var Service $first */
-            if( $first === null )
-            {
-                $newName = $service->owner->findAvailableName('super-service');
-                echo "   * keeping service '{$service->name()}' and renaming to '{$newName}''\n";
-                $service->setName($newName);
-                $first = $service;
-            }
+
+            $localMapping = $service->dstPortMapping();
+            echo "    - adding the following ports to first service: ".$localMapping->mappingToText()."\n";
+            $localMapping->mergeWithMapping($pickedObject->dstPortMapping());
+            if( $pickedObject->isTcp() )
+                $pickedObject->setDestPort($localMapping->tcpMappingToText());
             else
-            {
-                $localMapping = $service->dstPortMapping();
-                echo "    - adding the following ports to first service: ".$localMapping->mappingToText()."\n";
-                $localMapping->mergeWithMapping($first->dstPortMapping());
-                if( $first->isTcp() )
-                    $first->setDestPort($localMapping->tcpMappingToText());
-                else
-                    $first->setDestPort($localMapping->udpMappingToText());
+                $pickedObject->setDestPort($localMapping->udpMappingToText());
 
 
-                echo "    - removing '{$service->name()}' from places where it's used:\n";
-                $service->removeWhereIamUsed(true, 7);
-                $service->owner->remove($service);
-                $countRemoved++;
-            }
+            echo "    - removing '{$service->name()}' from places where it's used:\n";
+            $service->removeWhereIamUsed(true, 7);
+            $service->owner->remove($service);
+            $countRemoved++;
+
             if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
             {
                 echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACH mergeCountLimit ({$mergeCountLimit})\n";
@@ -255,7 +294,7 @@ elseif( $dupAlg == 'whereused' )
             }
 
         }
-        echo "   *- final mapping for service '{$first->name()}': {$first->getDestPort()}\n";
+        echo "   *- final mapping for service '{$pickedObject->name()}': {$pickedObject->getDestPort()}\n";
         
         echo "\n";
     }
