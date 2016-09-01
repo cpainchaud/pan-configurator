@@ -65,6 +65,7 @@ $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=vsys1|shared|dg1');
 $supportedArguments['pickfilter'] =Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '=(name regex /^g/)');
+$supportedArguments['allowmergingwithupperlevel'] =Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 // load PAN-Configurator library
@@ -152,6 +153,11 @@ if( isset(PH::$args['pickfilter']) )
 
 }
 
+$upperLevelSearch = false;
+if( isset(PH::$args['allowmergingwithupperlevel']) )
+    $upperLevelSearch = true;
+
+echo " - upper level search status : ".boolYesNo($upperLevelSearch)."\n";
 echo " - location '{$location}' found\n";
 echo " - found {$store->count()} address Objects\n";
 echo " - computing address values database ... ";
@@ -189,13 +195,34 @@ foreach( $store->addressObjects() as $object )
     $hashMap[$value][] = $object;
 }
 
+$upperHashMap = Array();
+if( $upperLevelSearch && ($store->owner->isDeviceGroup() || $store->owner->isVirtualSystem()) )
+{
+    foreach( $store->owner->owner->addressStore->nestedPointOfView() as $object )
+    {
+        if( !$object->isAddress() )
+            continue;
+        if( $object->isTmpAddr() )
+            continue;
+
+        $value = $object->value();
+
+        // if object is /32, let's remove it to match equivalent non /32 syntax
+        if( $object->isType_ipNetmask() && strpos($object->value() , '/32') !== false )
+            $value = substr($value, 0, strlen($value) - 3);
+
+        $value = $object->type().'-'.$value;
+        $upperHashMap[$value][] = $object;
+    }
+}
+
 //
 // Hashes with single entries have no duplicate, let's remove them
 //
 $countConcernedObjects = 0;
 foreach( $hashMap as $index => &$hash )
 {
-    if( count($hash) == 1 )
+    if( count($hash) == 1 && !isset($upperHashMap[$index]) )
         unset($hashMap[$index]);
     else
         $countConcernedObjects += count($hash);
@@ -217,20 +244,38 @@ foreach( $hashMap as $index => &$hash )
 
     if( $query !== null )
     {
-        foreach( $hash as $object)
+        if( isset($upperHashMap[$index]) )
         {
-            if( $query->matchSingleObject($object) )
+            foreach( $upperHashMap[$index] as $object )
             {
-                $pickedObject = $object;
-                break;
+                if( $query->matchSingleObject($object) )
+                {
+                    $pickedObject = $object;
+                    break;
+                }
             }
+            if( $pickedObject === null )
+                $pickedObject = reset($upperHashMap[$index]);
+
+            echo "   * using object from upper level : '{$pickedObject->name()}'\n";
+        }
+        else
+        {
+            foreach( $hash as $object )
+            {
+                if( $query->matchSingleObject($object) )
+                {
+                    $pickedObject = $object;
+                    break;
+                }
+            }
+            if( $pickedObject === null )
+                $pickedObject = reset($hash);
+
+            echo "   * keeping object '{$pickedObject->name()}'\n";
         }
     }
 
-    if( $pickedObject === null )
-        $pickedObject = reset($hash);
-
-    echo "   * keeping object '{$pickedObject->name()}'\n";
 
     foreach( $hash as $object)
     {

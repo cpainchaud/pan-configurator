@@ -701,6 +701,38 @@ class AddressStore
 	}
 
     /**
+     * @return Address[]|AddressGroup[]
+     */
+	public function nestedPointOfView()
+    {
+        $current = $this;
+
+        $objects = Array();
+
+        while(true)
+        {
+            foreach( $current->_addressObjects as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+            }
+            foreach( $current->_addressGroups as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+            }
+
+
+            if( isset($current->owner) && $current->owner !== null && isset($current->owner->addressStore) )
+                $current = $current->owner->addressStore;
+            else
+                break;
+        }
+
+        return $objects;
+    }
+
+    /**
      * Used to create an object that is 'temporary' : means that is not supported (like Regions)
      * or that is on Panorama. This is a trick to play with objects that don't exist in the conf.
      *
