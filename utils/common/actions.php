@@ -402,8 +402,12 @@ class RuleCallContext extends CallContext
 
         if( $fieldName == 'to' )
         {
+            if( $rule->isPbfRule() && $rule->isInterfaceBased() )
+                return self::enclose($rule->to->getAll(), $wrap);
+
             if( $rule->to->isAny() )
                 return self::enclose('any');
+
             return self::enclose($rule->to->getAll(), $wrap);
         }
 

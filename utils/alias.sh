@@ -5,6 +5,7 @@ alias pa_rule-merger='php -r "require_once '"'"'utils/rule-merger.php'"'"';" $@'
 
 alias pa_address-edit='php -r "require_once '"'"'utils/address-edit.php'"'"';" $@'
 alias pa_address-merger='php -r "require_once '"'"'utils/address-merger.php'"'"';" $@'
+alias pa_addressgroup-merger='php -r "require_once '"'"'utils/addressgroup-merger.php'"'"';" $@'
 
 alias pa_service-edit='php -r "require_once '"'"'utils/service-edit.php'"'"';" $@'
 alias pa_service-merger='php -r "require_once '"'"'utils/service-merger.php'"'"';" $@'

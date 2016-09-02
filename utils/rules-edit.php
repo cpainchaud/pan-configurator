@@ -150,7 +150,7 @@ if( isset(PH::$args['help']) )
     if( isset($action['help']) )
         print $action['help'];
 
-    if( !isset($args) )
+    if( !isset($args) || !isset($action['args']) )
     {
         print "\n\n**No arguments required**";
     }

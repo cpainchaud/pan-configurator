@@ -17,7 +17,7 @@
  */
 
 echo "\n***********************************************\n";
-echo   "*********** ADDRESS-MERGER UTILITY **************\n\n";
+echo   "*********** ADDRESSGROUP-MERGER UTILITY **********\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
@@ -92,6 +92,7 @@ if( isset(PH::$args['help']) )
 {
     display_usage_and_exit();
 }
+
 
 if( !isset(PH::$args['in']) )
     display_error_usage_exit(' "in=" argument is missing');
@@ -226,15 +227,36 @@ if( isset(PH::$args['pickfilter']) )
     echo "\n";
 
 }
-
 $upperLevelSearch = false;
 if( isset(PH::$args['allowmergingwithupperlevel']) )
     $upperLevelSearch = true;
 
 echo " - upper level search status : ".boolYesNo($upperLevelSearch)."\n";
 echo " - location '{$location}' found\n";
-echo " - found {$store->countAddresses()} address Objects\n";
-echo " - computing address values database ... ";
+echo " - found {$store->count()} address Objects\n";
+echo " - computing AddressGroup hash database ... ";
+
+
+/**
+ * @param AddressGroup $object
+ * @return string
+ */
+$hashGenerator = function($object)
+{
+    $value = '';
+
+    $members = $object->members();
+    usort($members, '__CmpObjName');
+
+    foreach( $members as $member )
+    {
+        $value .= './.'.$member->name();
+    }
+
+    //$value = md5($value);
+
+    return $value;
+};
 
 //
 // Building a hash table of all address objects with same value
@@ -248,21 +270,19 @@ $hashMap = Array();
 $upperHashMap = Array();
 foreach( $objectsToSearchThrough as $object )
 {
-    if( !$object->isAddress() )
-        continue;
-    if( $object->isTmpAddr() )
+    if( !$object->isGroup() || $object->isDynamic() )
         continue;
 
-    $skipThisOne = FALSE;
+    $skipThisOne = false;
 
     // Object with descendants in lower device groups should be excluded
-    if( $panc->isPanorama() && $object->owner === $store )
+    if( $panc->isPanorama() )
     {
         foreach( $childDeviceGroups as $dg )
         {
             if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
             {
-                $skipThisOne = TRUE;
+                $skipThisOne = true;
                 break;
             }
         }
@@ -270,13 +290,7 @@ foreach( $objectsToSearchThrough as $object )
             continue;
     }
 
-    $value = $object->value();
-
-    // if object is /32, let's remove it to match equivalent non /32 syntax
-    if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
-        $value = substr($value, 0, strlen($value) - 3);
-
-    $value = $object->type() . '-' . $value;
+    $value = $hashGenerator($object);
 
     if( $object->owner === $store )
     {
@@ -299,14 +313,17 @@ $countConcernedObjects = 0;
 foreach( $hashMap as $index => &$hash )
 {
     if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
+    {
+        //echo "\nancestor not found for ".reset($hash)->name()."\n";
         unset($hashMap[$index]);
+    }
     else
         $countConcernedObjects += count($hash);
 }
 unset($hash);
 echo "OK!\n";
 
-echo " - found ".count($hashMap)." duplicates values totalling {$countConcernedObjects} address objects which are duplicate\n";
+echo " - found ".count($hashMap)." duplicate values totalling {$countConcernedObjects} groups which are duplicate\n";
 
 echo "\n\nNow going after each duplicates for a replacement\n";
 
@@ -365,20 +382,19 @@ foreach( $hashMap as $index => &$hash )
         }
     }
 
-
     // Merging loop finally!
-    foreach( $hash as $objectIndex => $object)
+    foreach( $hash as $object)
     {
-        /** @var Address $object */
+        /** @var AddressGroup $object */
         if( isset($object->ancestor) )
         {
             $ancestor = $object->ancestor;
-            /** @var Address $ancestor */
-            if( $upperLevelSearch && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()) )
+            /** @var AddressGroup $ancestor */
+            if( $upperLevelSearch && $ancestor->isGroup() && !$ancestor->isDynamic() )
             {
-                if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
+                if( $hashGenerator($object) == $hashGenerator($ancestor) )
                 {
-                    echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
+                    echo "    - group '{$object->name()}' merged with its ancestor, deleting this one... ";
                     $object->replaceMeGlobally($ancestor);
                     if( $apiMode )
                         $object->owner->API_remove($object);
@@ -394,13 +410,14 @@ foreach( $hashMap as $index => &$hash )
                     continue;
                 }
             }
-            echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
+            echo "    - group '{$object->name()}' cannot be merged because it has an ancestor\n";
             continue;
         }
 
         if( $object === $pickedObject )
             continue;
 
+        /** @var AddressGroup $object */
         echo "    - replacing '{$object->name()}'\n";
         if( $apiMode )
         {
@@ -418,7 +435,7 @@ foreach( $hashMap as $index => &$hash )
     }
 }
 
-echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countRemoved} addresses)\n\n";
+echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddressGroups()}' (removed {$countRemoved} groups)\n\n";
 
 echo "\n\n***********************************************\n\n";
 

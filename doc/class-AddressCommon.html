@@ -7,7 +7,7 @@
 	<title>Trait AddressCommon | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3289192737"></script>
+	<script type="text/javascript" src="elementlist.js?2180725909"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,6 +50,7 @@
 				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
 				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
 				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-DoSRule.html">DoSRule</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
@@ -68,6 +69,7 @@
 				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
 				<li><a href="class-PbfRule.html">PbfRule</a></li>
 				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-QoSRule.html">QoSRule</a></li>
 				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
@@ -175,6 +177,11 @@
 	<h1>Trait AddressCommon</h1>
 
 
+	<div class="description">
+	
+<p>Class AddressCommon</p>
+
+	</div>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
@@ -338,7 +345,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addObjectWhereIamUsed">#</a>
-		<code><b>addObjectWhereIamUsed</b>( <span>mixed <var>$objectToAdd</var></span>, <span>mixed <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$skipIfConflict</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$skipNatRules</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>addObjectWhereIamUsed</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$objectToAdd</var></span>, <span>boolean <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>string|integer <var>$skipIfConflict</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$skipNatRules</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -351,15 +358,15 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$objectToAdd</var></dt>
-					<dd><code>mixed</code><br>$objectToAdd Address|AddressGroup</dd>
+					<dd><code><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code></code><br>$objectToAdd</dd>
 					<dt><var>$displayOutput</var></dt>
-					<dd><code>mixed</code><br>$displayOutput bool</dd>
+					<dd><code>boolean</code><br>$displayOutput</dd>
 					<dt><var>$outputPadding</var></dt>
-					<dd><code>mixed</code><br>$skipIfConflict bool</dd>
+					<dd><code>boolean</code><br>$skipIfConflict</dd>
 					<dt><var>$skipIfConflict</var></dt>
-					<dd><code>mixed</code><br>$outputPadding string|int</dd>
+					<dd><code>string|integer</code><br>$outputPadding</dd>
 					<dt><var>$skipNatRules</var></dt>
-					<dd><code>mixed</code><br>$skipNatRules bool</dd>
+					<dd><code>boolean</code><br>$skipNatRules</dd>
 				</dl></div>
 
 
@@ -380,7 +387,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_API_addObjectWhereIamUsed">#</a>
-		<code><b>API_addObjectWhereIamUsed</b>( <span>mixed <var>$objectToAdd</var></span>, <span>mixed <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$skipIfConflict</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$skipNatRules</var> = <span class="php-keyword1">false</span></span> )</code>
+		<code><b>API_addObjectWhereIamUsed</b>( <span><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code> <var>$objectToAdd</var></span>, <span>boolean <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>string|integer <var>$skipIfConflict</var> = <span class="php-keyword1">false</span></span>, <span>boolean <var>$skipNatRules</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -393,15 +400,15 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$objectToAdd</var></dt>
-					<dd><code>mixed</code><br>$objectToAdd Address|AddressGroup</dd>
+					<dd><code><code><a href="class-Address.html">Address</a></code>|<code><a href="class-AddressGroup.html">AddressGroup</a></code></code><br>$objectToAdd</dd>
 					<dt><var>$displayOutput</var></dt>
-					<dd><code>mixed</code><br>$displayOutput bool</dd>
+					<dd><code>boolean</code><br>$displayOutput</dd>
 					<dt><var>$outputPadding</var></dt>
-					<dd><code>mixed</code><br>$skipIfConflict bool</dd>
+					<dd><code>boolean</code><br>$skipIfConflict</dd>
 					<dt><var>$skipIfConflict</var></dt>
-					<dd><code>mixed</code><br>$outputPadding string|int</dd>
+					<dd><code>string|integer</code><br>$outputPadding</dd>
 					<dt><var>$skipNatRules</var></dt>
-					<dd><code>mixed</code><br>$skipNatRules bool</dd>
+					<dd><code>boolean</code><br>$skipNatRules</dd>
 				</dl></div>
 
 
@@ -422,7 +429,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_removeWhereIamUsed">#</a>
-		<code><b>removeWhereIamUsed</b>( <span>mixed <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$actionIfLastInRule</var> = <span class="php-quote">'delete'</span> </span> )</code>
+		<code><b>removeWhereIamUsed</b>( <span>boolean <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>string <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>string|integer <var>$actionIfLastInRule</var> = <span class="php-quote">'delete'</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -435,11 +442,11 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$displayOutput</var></dt>
-					<dd><code>mixed</code><br>$displayOutput bool</dd>
+					<dd><code>boolean</code><br>$displayOutput</dd>
 					<dt><var>$outputPadding</var></dt>
-					<dd><code>mixed</code><br>$actionIfLastInRule string can be delete|setany|disable</dd>
+					<dd><code>string</code><br>$actionIfLastInRule can be delete|setany|disable</dd>
 					<dt><var>$actionIfLastInRule</var></dt>
-					<dd><code>mixed</code><br>$outputPadding string|int</dd>
+					<dd><code>string|integer</code><br>$outputPadding</dd>
 				</dl></div>
 
 
@@ -460,7 +467,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_API_removeWhereIamUsed">#</a>
-		<code><b>API_removeWhereIamUsed</b>( <span>mixed <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$actionIfLastInRule</var> = <span class="php-quote">'delete'</span> </span> )</code>
+		<code><b>API_removeWhereIamUsed</b>( <span>boolean <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>string <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>string|integer <var>$actionIfLastInRule</var> = <span class="php-quote">'delete'</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -473,13 +480,52 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$displayOutput</var></dt>
-					<dd><code>mixed</code><br>$displayOutput bool</dd>
+					<dd><code>boolean</code><br>$displayOutput</dd>
 					<dt><var>$outputPadding</var></dt>
-					<dd><code>mixed</code><br>$actionIfLastInRule string can be delete|setany|disable</dd>
+					<dd><code>string</code><br>$actionIfLastInRule can be delete|setany|disable</dd>
 					<dt><var>$actionIfLastInRule</var></dt>
-					<dd><code>mixed</code><br>$outputPadding string|int</dd>
+					<dd><code>string|integer</code><br>$outputPadding</dd>
 				</dl></div>
 
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="hasDescendants" id="_hasDescendants">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_hasDescendants">#</a>
+		<code><b>hasDescendants</b>( )</code>
+
+		<div class="description short">
+			
+<p>looks into child DeviceGroups to see if an object with same name exists in
+lower levels</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>looks into child DeviceGroups to see if an object with same name exists in
+lower levels</p>
+
+
+
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
 
 
@@ -534,6 +580,30 @@
 	</tr>
 	</table>
 
+	<table class="summary" id="magicProperties">
+	<caption>Magic properties summary</caption>
+	<tr data-order="owner" id="m$owner">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-AddressStore.html">AddressStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$owner</var>		</td>
+		<td class="description"><div>
+			<a href="#m$owner" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	</table>
 
 
 

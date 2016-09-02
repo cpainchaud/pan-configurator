@@ -360,11 +360,8 @@ class NatRule extends Rule
             /** @var Address|AddressGroup $old */
             /** @var Address|AddressGroup $new */
 
-            $found = true;
             $this->setDNAT($new, $this->dnatports);
-            $old->removeReference($this);
-            if( $new !== null )
-                $new->addReference($this);
+
             return true;
         }
 

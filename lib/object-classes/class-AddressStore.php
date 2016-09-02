@@ -120,6 +120,12 @@ class AddressStore
 
 			$objectName = $ns->name();
 
+            if( isset($this->_all[$objectName]) )
+            {
+                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file", $node);
+                continue;
+            }
+
 			$this->_addressObjects[$objectName] = $ns;
 			$this->_all[$objectName] = $ns;
 		}
@@ -186,7 +192,10 @@ class AddressStore
             }
 
             if( isset($this->_all[$name]) )
-                mwarning("an object with name '{$name}' already exists in this store, please investigate", $node);
+            {
+                mwarning("an object with name '{$name}' already exists in this store, please investigate yor xml file", $node);
+                continue;
+            }
 
             $this->_addressGroups[$name] = $ns;
             $this->_all[$name] = $ns;
@@ -690,6 +699,38 @@ class AddressStore
 	{
 		return $this->_addressObjects;
 	}
+
+    /**
+     * @return Address[]|AddressGroup[]
+     */
+	public function nestedPointOfView()
+    {
+        $current = $this;
+
+        $objects = Array();
+
+        while(true)
+        {
+            foreach( $current->_addressObjects as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+            }
+            foreach( $current->_addressGroups as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+            }
+
+
+            if( isset($current->owner->owner) &&  $current->owner->owner !== null )
+                $current = $current->owner->owner->addressStore;
+            else
+                break;
+        }
+
+        return $objects;
+    }
 
     /**
      * Used to create an object that is 'temporary' : means that is not supported (like Regions)

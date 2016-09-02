@@ -7,7 +7,7 @@
 	<title>Class PanoramaConf | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3289192737"></script>
+	<script type="text/javascript" src="elementlist.js?2180725909"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,6 +50,7 @@
 				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
 				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
 				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-DoSRule.html">DoSRule</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
@@ -68,6 +69,7 @@
 				<li class="active"><a href="class-PanoramaConf.html">PanoramaConf</a></li>
 				<li><a href="class-PbfRule.html">PbfRule</a></li>
 				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-QoSRule.html">QoSRule</a></li>
 				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
@@ -318,7 +320,7 @@ $pan-&gt;display_statistics();</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_load_from_domxml">#</a>
-		<code><b>load_from_domxml</b>( <span>mixed <var>$xml</var></span> )</code>
+		<code><b>load_from_domxml</b>( <span><code><a href="class-DOMElement.html">DOMElement</a></code>|<code><a href="class-DOMDocument.html">DOMDocument</a></code> <var>$xml</var></span> )</code>
 
 		<div class="description short">
 			
@@ -331,7 +333,7 @@ $pan-&gt;display_statistics();</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$xml</var></dt>
-					<dd><code>mixed</code><br>$xml DOMNode</dd>
+					<dd><code><code><a href="class-DOMElement.html">DOMElement</a></code>|<code><a href="class-DOMDocument.html">DOMDocument</a></code></code><br>$xml</dd>
 				</dl></div>
 
 
@@ -681,6 +683,10 @@ $fromRunning = TRUE</p>
 
 
 
+				<h4>Var</h4>
+				<div class="list">
+						string $fromDirectory<br />
+				</div>
 
 
 		</div>
@@ -737,7 +743,7 @@ $fromRunning = TRUE</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_createDeviceGroup">#</a>
-		<code><b>createDeviceGroup</b>( <span>mixed <var>$name</var></span> )</code>
+		<code><b>createDeviceGroup</b>( <span>string <var>$name</var></span> )</code>
 
 		<div class="description short">
 			
@@ -754,7 +760,7 @@ $fromRunning = TRUE</p>
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$name</var></dt>
-					<dd><code>mixed</code><br>$name string</dd>
+					<dd><code>string</code><br>$name</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -1246,6 +1252,50 @@ $fromRunning = TRUE</p>
 			</div>
 		</div></td>
 	</tr>
+	<tr data-order="qosRules" id="$qosRules">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-RuleStore.html">RuleStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$qosRules</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$qosRules" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="dosRules" id="$dosRules">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-RuleStore.html">RuleStore</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$dosRules</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$dosRules" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
 	<tr data-order="addressStore" id="$addressStore">
 		<td class="attributes"><code>
 			public  
@@ -1415,6 +1465,28 @@ $fromRunning = TRUE</p>
 		<td class="value"><code><span class="php-keyword1">false</span></code></td>
 		<td class="description"><div>
 			<a href="#$_fakeMode" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_fakeNetworkProperties" id="$_fakeNetworkProperties">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-NetworkPropertiesContainer.html">NetworkPropertiesContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$_fakeNetworkProperties</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$_fakeNetworkProperties" class="anchor">#</a>
 
 			<div class="description short">
 				

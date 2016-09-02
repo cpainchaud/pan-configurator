@@ -82,7 +82,7 @@ trait AddressCommon
                 /** @var AddressRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
-                if( $ruleClass == 'SecurityRule'  || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' )
+                if( $ruleClass == 'SecurityRule'  || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' || $ruleClass == 'CaptivePortalRule')
                 {
                     if( $displayOutput )
                         print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";
@@ -154,7 +154,7 @@ trait AddressCommon
                 /** @var AddressRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
-                if( $ruleClass == 'SecurityRule' || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' )
+                if( $ruleClass == 'SecurityRule' || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' || $ruleClass == 'CaptivePortalRule' )
                 {
                     if( $displayOutput )
                         print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";
@@ -196,6 +196,9 @@ trait AddressCommon
     private function __removeWhereIamUsed($apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
         /** @var Address|AddressGroup $this */
+
+        if( !is_string($outputPadding) )
+            $outputPadding = str_pad('', $outputPadding);
 
         $allowedActionIfLastInRule = Array('delete' => true, 'setany' => true, 'disable' => true);
         if( !isset($allowedActionIfLastInRule[$actionIfLastInRule]) )
