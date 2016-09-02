@@ -723,8 +723,8 @@ class AddressStore
             }
 
 
-            if( isset($current->owner) && $current->owner !== null && isset($current->owner->addressStore) )
-                $current = $current->owner->addressStore;
+            if( isset($current->owner->owner) &&  $current->owner->owner !== null )
+                $current = $current->owner->owner->addressStore;
             else
                 break;
         }

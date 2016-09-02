@@ -74,6 +74,7 @@ $supportedArguments['pickfilter'] = Array(  'niceName' => 'pickFilter',
                                             'shortHelp' => "specify a filter a pick which object will be kept while others will be replaced by this one.\n".
                                                 "   ie: 2 services are found to be mergeable: 'H-1.1.1.1' and 'Server-ABC'. Then by using pickFilter=(name regex /^H-/) you would ensure that object H-1.1.1.1 would remain and Server-ABC be replaced by it.",
                                             'argDesc' => '(name regex /^g/)');
+$supportedArguments['allowmergingwithupperlevel'] =Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 // load PAN-Configurator library
@@ -102,8 +103,6 @@ if( isset(PH::$args['help']) )
 }
 
 
-if( !isset(PH::$args['out']) )
-    display_error_usage_exit(' "out=" argument is missing');
 if( !isset(PH::$args['in']) )
     display_error_usage_exit(' "in=" argument is missing');
 if( !isset(PH::$args['location']) )
@@ -123,26 +122,100 @@ if( isset(PH::$args['dupalgorithm']) )
 else
     $dupAlg = 'sameports';
 
-$origfile = PH::$args['in'];
-$outputfile = PH::$args['out'];
 $location = PH::$args['location'];
 
-if( !file_exists($origfile) )
+//
+// What kind of config input do we have.
+//     File or API ?
+//
+// <editor-fold desc="  ****  input method validation and PANOS vs Panorama auto-detect  ****" defaultstate="collapsed" >
+$configInput = PH::processIOMethod(PH::$args['in'], true);
+$xmlDoc = null;
+
+if( $configInput['status'] == 'fail' )
 {
-    derr("input file '$origfile' does not exists");
+    fwrite(STDERR, "\n\n**ERROR** " . $configInput['msg'] . "\n\n");exit(1);
 }
 
-// destroy destination file if it exists
-if( file_exists($outputfile) && is_file($outputfile)  )
-    unlink($outputfile);
+if( $configInput['type'] == 'file' )
+{
+    $apiMode = false;
+    if( !file_exists($configInput['filename']) )
+        derr("file '{$configInput['filename']}' not found");
 
-echo " - loading configuration file '{$origfile}' ... ";
-$panc = PH::getPanObjectFromConf($origfile);
-echo "OK!\n";
+    $xmlDoc = new DOMDocument();
+    echo " - Reading XML file from disk... ";
+    if( ! $xmlDoc->load($configInput['filename']) )
+        derr("error while reading xml config file");
+    echo "OK!\n";
+
+}
+elseif ( $configInput['type'] == 'api'  )
+{
+    $apiMode = true;
+    echo " - Downloading config from API... ";
+    $xmlDoc = $configInput['connector']->getCandidateConfig();
+    echo "OK!\n";
+}
+else
+    derr('not supported yet');
+
+//
+// Determine if PANOS or Panorama
+//
+$xpathResult = DH::findXPath('/config/devices/entry/vsys', $xmlDoc);
+if( $xpathResult === FALSE )
+    derr('XPath error happened');
+if( $xpathResult->length <1 )
+    $configType = 'panorama';
+else
+    $configType = 'panos';
+unset($xpathResult);
+
+
+if( $configType == 'panos' )
+    $panc = new PANConf();
+else
+    $panc = new PanoramaConf();
+
+echo " - Detected platform type is '{$configType}'\n";
+
+if( $configInput['type'] == 'api' )
+    $panc->connector = $configInput['connector'];
+
+//
+// load the config
+//
+echo " - Loading configuration through PAN-Configurator library... ";
+$loadStartMem = memory_get_usage(true);
+$loadStartTime = microtime(true);
+$panc->load_from_domxml($xmlDoc);
+$loadEndTime = microtime(true);
+$loadEndMem = memory_get_usage(true);
+$loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
+$loadUsedMem = convert($loadEndMem - $loadStartMem);
+echo "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
+// --------------------
+
+// </editor-fold>
+
+
+if( !$apiMode )
+{
+    if( !isset(PH::$args['out']) )
+        display_error_usage_exit(' "out=" argument is missing');
+
+    $outputfile = PH::$args['out'];
+
+    // destroy destination file if it exists
+    if( file_exists($outputfile) && is_file($outputfile) )
+        unlink($outputfile);
+}
 
 if( $location == 'shared' )
 {
     $store = $panc->serviceStore;
+    $parentStore = null;
 }
 else
 {
@@ -151,6 +224,7 @@ else
         derr("cannot find DeviceGroup/VSYS named '{$location}', check case or syntax");
 
     $store = $findLocation->serviceStore;
+    $parentStore = $findLocation->owner->serviceStore;
 
 }
 
@@ -167,26 +241,72 @@ if( isset(PH::$args['pickfilter']) )
 
 }
 
+$upperLevelSearch = false;
+if( isset(PH::$args['allowmergingwithupperlevel']) )
+    $upperLevelSearch = true;
+
+echo " - upper level search status : ".boolYesNo($upperLevelSearch)."\n";
 echo " - location '{$location}' found\n";
 echo " - found {$store->countServices()} services\n";
 echo " - DupAlgorithm selected: {$dupAlg}\n";
-echo " - computing service values database ... ";
+echo " - computing address values database ... ";
+
 
 //
 // Building a hash table of all service based on their REAL port mapping
 //
+if( $upperLevelSearch)
+    $objectsToSearchThrough = $store->nestedPointOfView();
+else
+    $objectsToSearchThrough = $store->serviceObjects();
+
 $hashMap = Array();
+$upperHashMap = Array();
 if( $dupAlg == 'sameports' )
-    foreach( $store->serviceObjects() as $service )
+    foreach( $objectsToSearchThrough as $object )
     {
-        $value = $service->dstPortMapping()->mappingToText();
-        $hashMap[$value][] = $service;
+        if( !$object->isService() )
+            continue;
+        if( $object->isTmpSrv() )
+            continue;
+
+        $value = $object->dstPortMapping()->mappingToText();
+
+        if( $object->owner === $store )
+        {
+            $hashMap[$value][] = $object;
+            if( $parentStore !== null )
+            {
+                $findAncestor = $parentStore->find($object->name(), null, true);
+                if( $findAncestor !== null )
+                    $object->ancestor = $findAncestor;
+            }
+        }
+        else
+            $upperHashMap[$value][] = $object;
+
     }
 elseif( $dupAlg == 'whereused' )
-    foreach( $store->serviceObjects() as $service )
+    foreach( $objectsToSearchThrough as $object )
     {
-        $value = $service->getRefHashComp().$service->protocol();
-        $hashMap[$value][] = $service;
+        if( !$object->isService() )
+            continue;
+        if( $object->isTmpSrv() )
+            continue;
+
+        $value = $object->getRefHashComp().$object->protocol();
+        if( $object->owner === $store )
+        {
+            $hashMap[$value][] = $object;
+            if( $parentStore !== null )
+            {
+                $findAncestor = $parentStore->find($object->name(), null, true);
+                if( $findAncestor !== null )
+                    $object->ancestor = $findAncestor;
+            }
+        }
+        else
+            $upperHashMap[$value][] = $object;
     }
 else derr("unsupported use case");
 
@@ -196,7 +316,7 @@ else derr("unsupported use case");
 $countConcernedObjects = 0;
 foreach( $hashMap as $index => &$hash )
 {
-    if( count($hash) == 1 )
+    if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
         unset($hashMap[$index]);
     else
         $countConcernedObjects += count($hash);
@@ -219,30 +339,99 @@ if( $dupAlg == 'sameports' )
 
         if( $query !== null )
         {
-            foreach( $hash as $object)
+            if( isset($upperHashMap[$index]) )
             {
-                if( $query->matchSingleObject($object) )
+                foreach( $upperHashMap[$index] as $object )
                 {
-                    $pickedObject = $object;
-                    break;
+                    if( $query->matchSingleObject($object) )
+                    {
+                        $pickedObject = $object;
+                        break;
+                    }
                 }
+                if( $pickedObject === null )
+                    $pickedObject = reset($upperHashMap[$index]);
+
+                echo "   * using object from upper level : '{$pickedObject->name()}'\n";
+            }
+            else
+            {
+                foreach( $hash as $object )
+                {
+                    if( $query->matchSingleObject($object) )
+                    {
+                        $pickedObject = $object;
+                        break;
+                    }
+                }
+                if( $pickedObject === null )
+                    $pickedObject = reset($hash);
+
+                echo "   * keeping object '{$pickedObject->name()}'\n";
+            }
+        }
+        else
+        {
+            if( isset($upperHashMap[$index]) )
+            {
+                $pickedObject = reset($upperHashMap[$index]);
+                echo "   * using object from upper level : '{$pickedObject->name()}'\n";
+            }
+            else
+            {
+                $pickedObject = reset($hash);
+                echo "   * keeping object '{$pickedObject->name()}'\n";
             }
         }
 
-        if( $pickedObject === null )
-            $pickedObject = reset($hash);
-
-        echo "   * keeping object '{$pickedObject->name()}'\n";
-
         foreach( $hash as $object)
         {
+            /** @var Service $object */
+
+            if( isset($object->ancestor) )
+            {
+                $ancestor = $object->ancestor;
+                /** @var Service $ancestor */
+                if( $upperLevelSearch && !$ancestor->isTmpSrv() && !$ancestor->isGroup() )
+                {
+                    if( $object->dstPortMapping()->equals($ancestor->dstPortMapping()) )
+                    {
+                        echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
+                        $object->replaceMeGlobally($ancestor);
+                        if( $apiMode )
+                            $object->owner->API_remove($object);
+                        else
+                            $object->owner->remove($object);
+
+                        echo "OK!\n";
+
+                        if( $pickedObject === $object )
+                            $pickedObject = $ancestor;
+
+                        $countRemoved++;
+                        continue;
+                    }
+                }
+                echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
+                continue;
+            }
+
             if( $object === $pickedObject )
                 continue;
 
-            /** @var Service $object */
             echo "    - replacing '{$object->name()}'\n";
-            $object->replaceMeGlobally($pickedObject);
-            $object->owner->remove($object);
+            if( $apiMode )
+            {
+                $object->API_addObjectWhereIamUsed( $pickedObject, true, 6);
+                $object->API_removeWhereIamUsed( true, 6);
+                $object->owner->API_remove($object);
+            }
+            else
+            {
+                $object->addObjectWhereIamUsed( $pickedObject, true, 6);
+                $object->removeWhereIamUsed( true, 6);
+                $object->owner->remove($object);
+            }
             $countRemoved++;
 
             if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
@@ -277,11 +466,23 @@ elseif( $dupAlg == 'whereused' )
 
         echo "   * keeping object '{$pickedObject->name()}'\n";
 
-        foreach($hash as $service)
+        foreach( $hash as $object)
         {
-            /** @var Service $service */
+            /** @var Service $object */
+            /** @var Service $object */
 
-            $localMapping = $service->dstPortMapping();
+            if( isset($object->ancestor) )
+            {
+                $ancestor = $object->ancestor;
+                /** @var Service $ancestor */
+                echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
+                continue;
+            }
+
+            if( $object === $pickedObject )
+                continue;
+
+            $localMapping = $object->dstPortMapping();
             echo "    - adding the following ports to first service: ".$localMapping->mappingToText()."\n";
             $localMapping->mergeWithMapping($pickedObject->dstPortMapping());
             if( $pickedObject->isTcp() )
@@ -290,9 +491,9 @@ elseif( $dupAlg == 'whereused' )
                 $pickedObject->setDestPort($localMapping->udpMappingToText());
 
 
-            echo "    - removing '{$service->name()}' from places where it's used:\n";
-            $service->removeWhereIamUsed(true, 7);
-            $service->owner->remove($service);
+            echo "    - removing '{$object->name()}' from places where it's used:\n";
+            $object->removeWhereIamUsed(true, 7);
+            $object->owner->remove($object);
             $countRemoved++;
 
             if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
@@ -314,7 +515,9 @@ echo "\n\nDuplicates removal is now done. Number is services after cleanup: '{$s
 echo "\n\n***********************************************\n\n";
 
 echo "\n\n";
-$panc->save_to_file($outputfile);
+
+if( !$apiMode )
+    $panc->save_to_file($outputfile);
 
 echo "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
 
