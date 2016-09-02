@@ -7,7 +7,7 @@
 	<title>Class PbfRule | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3289192737"></script>
+	<script type="text/javascript" src="elementlist.js?2180725909"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,6 +50,7 @@
 				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
 				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
 				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-DoSRule.html">DoSRule</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
@@ -68,6 +69,7 @@
 				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
 				<li class="active"><a href="class-PbfRule.html">PbfRule</a></li>
 				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-QoSRule.html">QoSRule</a></li>
 				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
@@ -230,6 +232,41 @@
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
+	<tr data-order="load_from" id="_load_from">
+
+		<td class="attributes"><code>
+			 protected 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from">#</a>
+		<code><b>load_from</b>( )</code>
+
+		<div class="description short">
+			
+<p>For developer use only</p>
+
+		</div>
+
+		<div class="description detailed hidden">
+			
+<p>For developer use only</p>
+
+
+
+
+
+
+
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_load_from">Rule::load_from()</a></code></div>
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="__construct" id="___construct">
 
 		<td class="attributes"><code>
@@ -399,6 +436,64 @@
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="isZoneBased" id="_isZoneBased">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isZoneBased">#</a>
+		<code><b>isZoneBased</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="isInterfaceBased" id="_isInterfaceBased">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_isInterfaceBased">#</a>
+		<code><b>isInterfaceBased</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	</table>
 
 	<table class="summary inherited">
@@ -432,14 +527,15 @@
 			<a href="class-Rule.html#_isCaptivePortalRule"><b>isCaptivePortalRule()</b></a>, 
 			<a href="class-Rule.html#_isDecryptionRule"><b>isDecryptionRule()</b></a>, 
 			<a href="class-Rule.html#_isDisabled"><b>isDisabled()</b></a>, 
+			<a href="class-Rule.html#_isDoSRule"><b>isDoSRule()</b></a>, 
 			<a href="class-Rule.html#_isEnabled"><b>isEnabled()</b></a>, 
 			<a href="class-Rule.html#_isNatRule"><b>isNatRule()</b></a>, 
 			<a href="class-Rule.html#_isPostRule"><b>isPostRule()</b></a>, 
 			<a href="class-Rule.html#_isPreRule"><b>isPreRule()</b></a>, 
+			<a href="class-Rule.html#_isQoSRule"><b>isQoSRule()</b></a>, 
 			<a href="class-Rule.html#_isSecurityRule"><b>isSecurityRule()</b></a>, 
 			<a href="class-Rule.html#_load_common_from_domxml"><b>load_common_from_domxml()</b></a>, 
 			<a href="class-Rule.html#_load_destination"><b>load_destination()</b></a>, 
-			<a href="class-Rule.html#_load_from"><b>load_from()</b></a>, 
 			<a href="class-Rule.html#_load_source"><b>load_source()</b></a>, 
 			<a href="class-Rule.html#_load_to"><b>load_to()</b></a>, 
 			<a href="class-Rule.html#_name"><b>name()</b></a>, 
@@ -548,16 +644,82 @@
 	<caption>Properties summary</caption>
 	<tr data-order="templatexml" id="$templatexml">
 		<td class="attributes"><code>
-			protected static 
+			public static 
 			string
 		</code></td>
 
 		<td class="name">
 <var>$templatexml</var>		</td>
-		<td class="value"><code><span class="php-quote">'&lt;entry name=&quot;**temporarynamechangeme**&quot;&gt;&lt;from&gt;&lt;member&gt;any&lt;/member&gt;&lt;/from&gt;&lt;to&gt;&lt;member&gt;any&lt;/member&gt;&lt;/to&gt;
+		<td class="value"><code><span class="php-quote">'&lt;entry name=&quot;**temporarynamechangeme**&quot;&gt;&lt;from&gt;&lt;zone&gt;&lt;/zone&gt;&lt;/from&gt;
 &lt;source&gt;&lt;member&gt;any&lt;/member&gt;&lt;/source&gt;&lt;destination&gt;&lt;member&gt;any&lt;/member&gt;&lt;/destination&gt;&lt;/entry&gt;'</span></code></td>
 		<td class="description"><div>
 			<a href="#$templatexml" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="templatexmlroot" id="$templatexmlroot">
+		<td class="attributes"><code>
+			protected static 
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$templatexmlroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$templatexmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="from" id="$from">
+		<td class="attributes"><code>
+			public  
+			<code><a href="class-ZoneRuleContainer.html">ZoneRuleContainer</a></code>|<code><a href="class-InterfaceContainer.html">InterfaceContainer</a></code>
+		</code></td>
+
+		<td class="name">
+<var>$from</var>		</td>
+		<td class="value"><code></code></td>
+		<td class="description"><div>
+			<a href="#$from" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="_zoneBased" id="$_zoneBased">
+		<td class="attributes"><code>
+			protected  
+			boolean
+		</code></td>
+
+		<td class="name">
+<var>$_zoneBased</var>		</td>
+		<td class="value"><code><span class="php-keyword1">true</span></code></td>
+		<td class="description"><div>
+			<a href="#$_zoneBased" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -588,7 +750,6 @@
 			<a href="class-Rule.html#$_targets"><var>$_targets</var></a>, 
 			<a href="class-Rule.html#$destination"><var>$destination</var></a>, 
 			<a href="class-Rule.html#$disabled"><var>$disabled</var></a>, 
-			<a href="class-Rule.html#$from"><var>$from</var></a>, 
 			<a href="class-Rule.html#$name"><var>$name</var></a>, 
 			<a href="class-Rule.html#$owner"><var>$owner</var></a>, 
 			<a href="class-Rule.html#$services"><var>$services</var></a>, 

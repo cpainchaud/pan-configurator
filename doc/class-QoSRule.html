@@ -4,7 +4,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="generator" content="ApiGen 2.8.0" />
 
-	<title>Class RuleWithUserID | PAN-Configurator</title>
+	<title>Class QoSRule | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
 	<script type="text/javascript" src="elementlist.js?2180725909"></script>
@@ -69,11 +69,11 @@
 				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
 				<li><a href="class-PbfRule.html">PbfRule</a></li>
 				<li><a href="class-PH.html">PH</a></li>
-				<li><a href="class-QoSRule.html">QoSRule</a></li>
+				<li class="active"><a href="class-QoSRule.html">QoSRule</a></li>
 				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
-				<li class="active"><a href="class-RuleWithUserID.html">RuleWithUserID</a></li>
+				<li><a href="class-RuleWithUserID.html">RuleWithUserID</a></li>
 				<li><a href="class-SecurityRule.html">SecurityRule</a></li>
 				<li><a href="class-Service.html">Service</a></li>
 				<li><a href="class-ServiceDstPortMapping.html">ServiceDstPortMapping</a></li>
@@ -174,7 +174,7 @@
 	</div>
 
 <div id="content" class="class">
-	<h1>Class RuleWithUserID</h1>
+	<h1>Class QoSRule</h1>
 
 
 
@@ -197,21 +197,22 @@
 		</dd>
 		<dd style="padding-left:30px">
 			<img src="resources/inherit.png" alt="Extended by" />
-<b><span>RuleWithUserID</span></b>			
+			<a href="class-RuleWithUserID.html"><span>RuleWithUserID</span></a>
 			
+			
+			
+		</dd>
+		<dd style="padding-left:60px">
+			<img src="resources/inherit.png" alt="Extended by" />
+<b><span>QoSRule</span></b>			
+			
+			 uses 
+				<a href="class-NegatableRule.html"><span>NegatableRule</span></a>
 			
 		</dd>
 	</dl>
 
 
-	<div>
-		<h4>Direct known subclasses</h4>
-			<a href="class-DecryptionRule.html">DecryptionRule</a>, 
-			<a href="class-DoSRule.html">DoSRule</a>, 
-			<a href="class-PbfRule.html">PbfRule</a>, 
-			<a href="class-QoSRule.html">QoSRule</a>, 
-			<a href="class-SecurityRule.html">SecurityRule</a>
-	</div>
 
 
 
@@ -224,14 +225,14 @@
 		
 		
 
-		<b>Located at</b> rule-classes/class-RuleWithUserID.php<br />
+		<b>Located at</b> rule-classes/class-QoSRule.php<br />
 	</div>
 
 
 
 	<table class="summary" id="methods">
 	<caption>Methods summary</caption>
-	<tr data-order="userID_IsAny" id="_userID_IsAny">
+	<tr data-order="__construct" id="___construct">
 
 		<td class="attributes"><code>
 			 public 
@@ -241,8 +242,44 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_userID_IsAny">#</a>
-		<code><b>userID_IsAny</b>( )</code>
+		<a class="anchor" href="#___construct">#</a>
+		<code><b>__construct</b>( <span><code><a href="class-RuleStore.html">RuleStore</a></code> <var>$owner</var></span>, <span>boolean <var>$fromTemplateXML</var> = <span class="php-keyword1">false</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$owner</var></dt>
+					<dd><code><code><a href="class-RuleStore.html">RuleStore</a></code></code><br>$owner</dd>
+					<dt><var>$fromTemplateXML</var></dt>
+					<dd><code>boolean</code><br>$fromTemplateXML</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="load_from_domxml" id="_load_from_domxml">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_load_from_domxml">#</a>
+		<code><b>load_from_domxml</b>( <span>mixed <var>$xml</var></span> )</code>
 
 		<div class="description short">
 			
@@ -260,7 +297,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="userID_IsUnknown" id="_userID_IsUnknown">
+	<tr data-order="action" id="_action">
 
 		<td class="attributes"><code>
 			 public 
@@ -270,8 +307,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_userID_IsUnknown">#</a>
-		<code><b>userID_IsUnknown</b>( )</code>
+		<a class="anchor" href="#_action">#</a>
+		<code><b>action</b>( )</code>
 
 		<div class="description short">
 			
@@ -289,7 +326,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="userID_IsKnown" id="_userID_IsKnown">
+	<tr data-order="display" id="_display">
 
 		<td class="attributes"><code>
 			 public 
@@ -299,8 +336,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_userID_IsKnown">#</a>
-		<code><b>userID_IsKnown</b>( )</code>
+		<a class="anchor" href="#_display">#</a>
+		<code><b>display</b>( <span>mixed <var>$padding</var> = <span class="php-num">0</span></span> )</code>
 
 		<div class="description short">
 			
@@ -318,7 +355,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="userID_IsPreLogon" id="_userID_IsPreLogon">
+	<tr data-order="cleanForDestruction" id="_cleanForDestruction">
 
 		<td class="attributes"><code>
 			 public 
@@ -328,8 +365,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_userID_IsPreLogon">#</a>
-		<code><b>userID_IsPreLogon</b>( )</code>
+		<a class="anchor" href="#_cleanForDestruction">#</a>
+		<code><b>cleanForDestruction</b>( )</code>
 
 		<div class="description short">
 			
@@ -347,7 +384,7 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="userID_IsCustom" id="_userID_IsCustom">
+	<tr data-order="isQoSRule" id="_isQoSRule">
 
 		<td class="attributes"><code>
 			 public 
@@ -357,8 +394,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_userID_IsCustom">#</a>
-		<code><b>userID_IsCustom</b>( )</code>
+		<a class="anchor" href="#_isQoSRule">#</a>
+		<code><b>isQoSRule</b>( )</code>
 
 		<div class="description short">
 			
@@ -372,44 +409,13 @@
 
 
 
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_isQoSRule">Rule::isQoSRule()</a></code></div>
 
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="userID_type" id="_userID_type">
-
-		<td class="attributes"><code>
-			 public 
-			string
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_userID_type">#</a>
-		<code><b>userID_type</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-				<h4>Returns</h4>
-				<div class="list">
-					<code>string</code><br />
-				</div>
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="userID_getUsers" id="_userID_getUsers">
+	<tr data-order="ruleNature" id="_ruleNature">
 
 		<td class="attributes"><code>
 			 public 
@@ -419,8 +425,8 @@
 		</td>
 
 		<td class="name"><div>
-		<a class="anchor" href="#_userID_getUsers">#</a>
-		<code><b>userID_getUsers</b>( )</code>
+		<a class="anchor" href="#_ruleNature">#</a>
+		<code><b>ruleNature</b>( )</code>
 
 		<div class="description short">
 			
@@ -434,45 +440,29 @@
 
 
 
-
-		</div>
-		</div></td>
-	</tr>
-	<tr data-order="userID_loadUsersFromXml" id="_userID_loadUsersFromXml">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_userID_loadUsersFromXml">#</a>
-		<code><b>userID_loadUsersFromXml</b>( )</code>
-
-		<div class="description short">
-			
-<p>For developers only</p>
-
-		</div>
-
-		<div class="description detailed hidden">
-			
-<p>For developers only</p>
-
-
-
-
-
-
-
+				<h4>Overrides</h4>
+				<div class="list"><code><a href="class-Rule.html#_ruleNature">Rule::ruleNature()</a></code></div>
 
 		</div>
 		</div></td>
 	</tr>
 	</table>
 
+	<table class="summary inherited">
+	<caption>Methods inherited from <a href="class-RuleWithUserID.html#methods">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#_userID_IsAny"><b>userID_IsAny()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsCustom"><b>userID_IsCustom()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsKnown"><b>userID_IsKnown()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsPreLogon"><b>userID_IsPreLogon()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_IsUnknown"><b>userID_IsUnknown()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_getUsers"><b>userID_getUsers()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_loadUsersFromXml"><b>userID_loadUsersFromXml()</b></a>, 
+			<a href="class-RuleWithUserID.html#_userID_type"><b>userID_type()</b></a>
+		</code></td>
+	</tr>
+	</table>
 	<table class="summary inherited">
 	<caption>Methods inherited from <a href="class-Rule.html#methods">Rule</a></caption>
 	<tr>
@@ -495,7 +485,6 @@
 			<a href="class-Rule.html#_isPbfRule"><b>isPbfRule()</b></a>, 
 			<a href="class-Rule.html#_isPostRule"><b>isPostRule()</b></a>, 
 			<a href="class-Rule.html#_isPreRule"><b>isPreRule()</b></a>, 
-			<a href="class-Rule.html#_isQoSRule"><b>isQoSRule()</b></a>, 
 			<a href="class-Rule.html#_isSecurityRule"><b>isSecurityRule()</b></a>, 
 			<a href="class-Rule.html#_load_common_from_domxml"><b>load_common_from_domxml()</b></a>, 
 			<a href="class-Rule.html#_load_destination"><b>load_destination()</b></a>, 
@@ -504,7 +493,6 @@
 			<a href="class-Rule.html#_load_to"><b>load_to()</b></a>, 
 			<a href="class-Rule.html#_name"><b>name()</b></a>, 
 			<a href="class-Rule.html#_rewriteSDisabled_XML"><b>rewriteSDisabled_XML()</b></a>, 
-			<a href="class-Rule.html#_ruleNature"><b>ruleNature()</b></a>, 
 			<a href="class-Rule.html#_setDisabled"><b>setDisabled()</b></a>, 
 			<a href="class-Rule.html#_setEnabled"><b>setEnabled()</b></a>, 
 			<a href="class-Rule.html#_setName"><b>setName()</b></a>, 
@@ -522,6 +510,20 @@
 	</tr>
 	</table>
 
+	<table class="summary used">
+	<caption>Methods used from <a href="class-NegatableRule.html#methods">NegatableRule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-NegatableRule.html#_API_setDestinationIsNegated"><b>API_setDestinationIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_API_setSourceIsNegated"><b>API_setSourceIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#__readNegationFromXml"><b>_readNegationFromXml()</b></a>, 
+			<a href="class-NegatableRule.html#_destinationIsNegated"><b>destinationIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_setDestinationIsNegated"><b>setDestinationIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_setSourceIsNegated"><b>setSourceIsNegated()</b></a>, 
+			<a href="class-NegatableRule.html#_sourceIsNegated"><b>sourceIsNegated()</b></a>
+		</code></td>
+	</tr>
+	</table>
 	<table class="summary used">
 	<caption>Methods used from <a href="class-PathableName.html#methods">PathableName</a></caption>
 	<tr>
@@ -577,14 +579,14 @@
 
 	<table class="summary" id="constants">
 	<caption>Constants summary</caption>
-	<tr data-order="__UserIDType_Any" id="__UserIDType_Any">
+	<tr data-order="ActionClass1" id="ActionClass1">
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-<b>__UserIDType_Any</b>		</code></td>
+<b>ActionClass1</b>		</code></td>
 		<td class="value"><code><span class="php-num">0</span></code></td>
 		<td class="description"><div>
-			<a href="#__UserIDType_Any" class="anchor">#</a>
+			<a href="#ActionClass1" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -596,14 +598,14 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="__UserIDType_Unknown" id="__UserIDType_Unknown">
+	<tr data-order="ActionClass2" id="ActionClass2">
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-<b>__UserIDType_Unknown</b>		</code></td>
+<b>ActionClass2</b>		</code></td>
 		<td class="value"><code><span class="php-num">1</span></code></td>
 		<td class="description"><div>
-			<a href="#__UserIDType_Unknown" class="anchor">#</a>
+			<a href="#ActionClass2" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -615,14 +617,14 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="__UserIDType_Known" id="__UserIDType_Known">
+	<tr data-order="ActionClass3" id="ActionClass3">
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-<b>__UserIDType_Known</b>		</code></td>
+<b>ActionClass3</b>		</code></td>
 		<td class="value"><code><span class="php-num">2</span></code></td>
 		<td class="description"><div>
-			<a href="#__UserIDType_Known" class="anchor">#</a>
+			<a href="#ActionClass3" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -634,14 +636,14 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="__UserIDType_PreLogon" id="__UserIDType_PreLogon">
+	<tr data-order="ActionClass4" id="ActionClass4">
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-<b>__UserIDType_PreLogon</b>		</code></td>
+<b>ActionClass4</b>		</code></td>
 		<td class="value"><code><span class="php-num">3</span></code></td>
 		<td class="description"><div>
-			<a href="#__UserIDType_PreLogon" class="anchor">#</a>
+			<a href="#ActionClass4" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -653,14 +655,71 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="__UserIDType_Custom" id="__UserIDType_Custom">
+	<tr data-order="ActionClass5" id="ActionClass5">
 
 		<td class="attributes"><code>integer</code></td>
 		<td class="name"><code>
-<b>__UserIDType_Custom</b>		</code></td>
+<b>ActionClass5</b>		</code></td>
 		<td class="value"><code><span class="php-num">4</span></code></td>
 		<td class="description"><div>
-			<a href="#__UserIDType_Custom" class="anchor">#</a>
+			<a href="#ActionClass5" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionClass6" id="ActionClass6">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionClass6</b>		</code></td>
+		<td class="value"><code><span class="php-num">5</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionClass6" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionClass7" id="ActionClass7">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionClass7</b>		</code></td>
+		<td class="value"><code><span class="php-num">6</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionClass7" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="ActionClass8" id="ActionClass8">
+
+		<td class="attributes"><code>integer</code></td>
+		<td class="name"><code>
+<b>ActionClass8</b>		</code></td>
+		<td class="value"><code><span class="php-num">7</span></code></td>
+		<td class="description"><div>
+			<a href="#ActionClass8" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -674,22 +733,81 @@
 	</tr>
 	</table>
 
+	<table class="summary inherited">
+	<caption>Constants inherited from <a href="class-RuleWithUserID.html#constants">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#__UserIDType_Any"><b>__UserIDType_Any</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Custom"><b>__UserIDType_Custom</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Known"><b>__UserIDType_Known</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_PreLogon"><b>__UserIDType_PreLogon</b></a>, 
+			<a href="class-RuleWithUserID.html#__UserIDType_Unknown"><b>__UserIDType_Unknown</b></a>
+		</code></td>
+	</tr>
+	</table>
 
 
 
 	<table class="summary" id="properties">
 	<caption>Properties summary</caption>
-	<tr data-order="_userIDType" id="$_userIDType">
+	<tr data-order="templatexml" id="$templatexml">
+		<td class="attributes"><code>
+			public static 
+			string
+		</code></td>
+
+		<td class="name">
+<var>$templatexml</var>		</td>
+		<td class="value"><code><span class="php-quote">'&lt;entry name=&quot;**temporarynamechangeme**&quot;&gt;&lt;from&gt;&lt;member&gt;any&lt;/member&gt;&lt;/from&gt;&lt;to&gt;&lt;member&gt;any&lt;/member&gt;&lt;/to&gt;
+&lt;source&gt;&lt;member&gt;any&lt;/member&gt;&lt;/source&gt;&lt;destination&gt;&lt;member&gt;any&lt;/member&gt;&lt;/destination&gt;
+&lt;source-user&gt;&lt;member&gt;any&lt;/member&gt;&lt;/source-user&gt;&lt;category&gt;&lt;member&gt;any&lt;/member&gt;&lt;/category&gt;&lt;application&gt;&lt;member&gt;any&lt;/member&gt;&lt;/application&gt;
+&gt;&lt;service&gt;&lt;member&gt;any&lt;/member&gt;&lt;/service&gt;&gt;&lt;action&gt;&lt;class&gt;1&lt;/class&gt;&lt;/action&gt;&lt;/entry&gt;'</span></code></td>
+		<td class="description"><div>
+			<a href="#$templatexml" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="templatexmlroot" id="$templatexmlroot">
+		<td class="attributes"><code>
+			protected static 
+			mixed
+		</code></td>
+
+		<td class="name">
+<var>$templatexmlroot</var>		</td>
+		<td class="value"><code><span class="php-keyword1">null</span></code></td>
+		<td class="description"><div>
+			<a href="#$templatexmlroot" class="anchor">#</a>
+
+			<div class="description short">
+				
+			</div>
+
+			<div class="description detailed hidden">
+				
+
+			</div>
+		</div></td>
+	</tr>
+	<tr data-order="action" id="$action">
 		<td class="attributes"><code>
 			protected  
 			integer
 		</code></td>
 
 		<td class="name">
-<var>$_userIDType</var>		</td>
-		<td class="value"><code><code><a href="class-RuleWithUserID.html#__UserIDType_Any">RuleWithUserID::<b>__UserIDType_Any</b></a></code></code></td>
+<var>$action</var>		</td>
+		<td class="value"><code><code><a href="class-QoSRule.html#ActionClass1">QoSRule::<b>ActionClass1</b></a></code></code></td>
 		<td class="description"><div>
-			<a href="#$_userIDType" class="anchor">#</a>
+			<a href="#$action" class="anchor">#</a>
 
 			<div class="description short">
 				
@@ -701,30 +819,43 @@
 			</div>
 		</div></td>
 	</tr>
-	<tr data-order="_users" id="$_users">
+	<tr data-order="apps" id="$apps">
 		<td class="attributes"><code>
 			protected  
-			array
+			<code><a href="class-AppRuleContainer.html">AppRuleContainer</a></code>
 		</code></td>
 
 		<td class="name">
-<var>$_users</var>		</td>
-		<td class="value"><code><span class="php-keyword1">Array</span>()</code></td>
+<var>$apps</var>		</td>
+		<td class="value"><code></code></td>
 		<td class="description"><div>
-			<a href="#$_users" class="anchor">#</a>
+			<a href="#$apps" class="anchor">#</a>
 
 			<div class="description short">
 				
+<p>$apps</p>
+
 			</div>
 
 			<div class="description detailed hidden">
 				
+<p>$apps</p>
+
 
 			</div>
 		</div></td>
 	</tr>
 	</table>
 
+	<table class="summary inherited">
+	<caption>Properties inherited from <a href="class-RuleWithUserID.html#properties">RuleWithUserID</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-RuleWithUserID.html#$_userIDType"><var>$_userIDType</var></a>, 
+			<a href="class-RuleWithUserID.html#$_users"><var>$_users</var></a>
+		</code></td>
+	</tr>
+	</table>
 	<table class="summary inherited">
 	<caption>Properties inherited from <a href="class-Rule.html#properties">Rule</a></caption>
 	<tr>
@@ -773,6 +904,15 @@
 	<tr>
 		<td><code>
 			<a href="class-XmlConvertible.html#$xmlroot"><var>$xmlroot</var></a>
+		</code></td>
+	</tr>
+	</table>
+	<table class="summary used">
+	<caption>Properties used from <a href="class-NegatableRule.html#properties">NegatableRule</a></caption>
+	<tr>
+		<td><code>
+			<a href="class-NegatableRule.html#$_destinationIsNegated"><var>$_destinationIsNegated</var></a>, 
+			<a href="class-NegatableRule.html#$_sourceIsNegated"><var>$_sourceIsNegated</var></a>
 		</code></td>
 	</tr>
 	</table>
