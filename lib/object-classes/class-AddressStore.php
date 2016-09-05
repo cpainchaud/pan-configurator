@@ -193,7 +193,7 @@ class AddressStore
 
             if( isset($this->_all[$name]) )
             {
-                mwarning("an object with name '{$name}' already exists in this store, please investigate yor xml file", $node);
+                mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node);
                 continue;
             }
 
