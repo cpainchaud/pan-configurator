@@ -61,11 +61,9 @@ class ZoneRuleContainer extends ObjRuleContainer
                 $this->API_sync();
                 return true;
             }
-
             $xpath = &$this->getXPath();
             $con = findConnectorOrDie($this);
-            $url = "type=config&action=set&xpath=$xpath&element=<member>".$Obj->name()."</member>";
-            $con->sendRequest($url);
+            $con->sendSetRequest($xpath, "<member>{$Obj->name()}</member>");
 
             return true;
         }
@@ -120,8 +118,8 @@ class ZoneRuleContainer extends ObjRuleContainer
                 return true;
             }
 
-            $url = "type=config&action=delete&xpath=" . $xpath."/member[text()='".$Obj->name()."']";
-            $con->sendRequest($url);
+            $xpath .= "/member[text()='{$Obj->name()}']";
+            $con->sendDeleteRequest($xpath);
 
             return true;
         }
@@ -295,22 +293,15 @@ class ZoneRuleContainer extends ObjRuleContainer
         $this->setAny();
         $xpath = &$this->getXPath();
         $con = findConnectorOrDie($this);
-
-        $url = "type=config&action=delete&xpath=".$xpath;
-        $con->sendRequest($url);
-
-        $url = "type=config&action=set&xpath=$xpath&element=<member>any</member>";
-        $con->sendRequest($url);
+        $con->sendDeleteRequest($xpath);
+        $con->sendSetRequest($xpath, '<member>any</member>');
     }
 
 
     public function &getXPath()
     {
-
         $str = $this->owner->getXPath().'/'.$this->name;
-
         return $str;
-
     }
 
     public function copy(ZoneRuleContainer $other)

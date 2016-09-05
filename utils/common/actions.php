@@ -563,4 +563,10 @@ class AddressCallContext extends CallContext
     public $object;
 }
 
+class TagCallContext extends CallContext
+{
+    /** @var  Tag */
+    public $object;
+}
+
 
