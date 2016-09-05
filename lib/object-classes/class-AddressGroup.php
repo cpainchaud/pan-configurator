@@ -132,10 +132,16 @@ class AddressGroup
 			$this->membersRoot = DH::findFirstElement('static', $xml);
 
 			if( $this->membersRoot === false )
-			{
-				$tmp = DH::findFirstElement('dynamic', $xml);
-                if( $tmp === false )
-                    mwarning('unsupported AddressGroup type: ', $xml);
+            {
+                $tmp = DH::findFirstElement('dynamic', $xml);
+                if( $tmp === FALSE )
+                {
+                    $tmp2 = DH::firstChildElement($xml);
+                    if( $tmp2 === FALSE )
+                        mwarning('empty AddressGroup : ', $xml);
+                    else
+                        mwarning('unsupported AddressGroup type: ', $xml);
+                }
                 else
                     $this->isDynamic;
 			}
