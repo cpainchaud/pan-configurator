@@ -65,8 +65,8 @@ $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
 $supportedArguments['dupalgorithm'] = Array(    'niceName' => 'DupAlgorithm',
-                                                'shortHelp' => "Specifies how to detect duplicates by port or by location where objects are used:\n".
-                                                    "  - SamePorts: objects with same ports will be merged into 1 single object\n".
+                                                'shortHelp' => "Specifies how to detect duplicates:\n".
+                                                    "  - SamePorts: objects with same ports will be replaced by the one picked (default)\n".
                                                     "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
                                                 'argDesc'=> 'SamePorts|WhereUsed');
 $supportedArguments['mergecountlimit'] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '=100');
@@ -250,6 +250,7 @@ echo " - location '{$location}' found\n";
 echo " - found {$store->countServices()} services\n";
 echo " - DupAlgorithm selected: {$dupAlg}\n";
 echo " - computing address values database ... ";
+sleep(1);
 
 
 //

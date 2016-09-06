@@ -63,7 +63,16 @@ function display_error_usage_exit($msg)
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
+$supportedArguments['dupalgorithm'] = Array(
+    'niceName' => 'DupAlgorithm',
+    'shortHelp' =>
+        "Specifies how to detect duplicates:\n".
+        "  - SameMembers: groups holding same members replaced by the one picked first (default)\n".
+        "  - SameIP4Value: groups resolving the same IP4 coverage will be replaced by the one picked first\n".
+        "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
+    'argDesc'=> 'SamePorts|WhereUsed');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=vsys1|shared|dg1');
+$supportedArguments['mergecountlimit'] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '=100');
 $supportedArguments['pickfilter'] =Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '=(name regex /^g/)');
 $supportedArguments['allowmergingwithupperlevel'] =Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
@@ -101,6 +110,11 @@ if( !isset(PH::$args['location']) )
     display_error_usage_exit(' "location=" argument is missing');
 
 $location = PH::$args['location'];
+
+if( isset(PH::$args['mergecountlimit']) )
+    $mergeCountLimit = PH::$args['mergecountlimit'];
+else
+    $mergeCountLimit = false;
 
 
 //
@@ -231,32 +245,77 @@ $upperLevelSearch = false;
 if( isset(PH::$args['allowmergingwithupperlevel']) )
     $upperLevelSearch = true;
 
+if( isset(PH::$args['dupalgorithm']) )
+{
+    $dupAlg = strtolower(PH::$args['dupalgorithm']);
+    if( $dupAlg != 'samemembers' && $dupAlg != 'sameip4value' && $dupAlg != 'whereused')
+        display_error_usage_exit('unsupported value for dupAlgorithm: '.PH::$args['dupalgorithm']);
+}
+else
+    $dupAlg = 'samemembers';
+
 echo " - upper level search status : ".boolYesNo($upperLevelSearch)."\n";
 echo " - location '{$location}' found\n";
 echo " - found {$store->count()} address Objects\n";
+echo " - DupAlgorithm selected: {$dupAlg}\n";
 echo " - computing AddressGroup hash database ... ";
+sleep(1);
 
 
 /**
  * @param AddressGroup $object
  * @return string
  */
-$hashGenerator = function($object)
-{
-    $value = '';
-
-    $members = $object->members();
-    usort($members, '__CmpObjName');
-
-    foreach( $members as $member )
+if( $dupAlg == 'samemembers' )
+    $hashGenerator = function($object)
     {
-        $value .= './.'.$member->name();
-    }
+        /** @var AddressGroup $object */
+        $value = '';
 
-    //$value = md5($value);
+        $members = $object->members();
+        usort($members, '__CmpObjName');
 
-    return $value;
-};
+        foreach( $members as $member )
+        {
+            $value .= './.'.$member->name();
+        }
+
+        //$value = md5($value);
+
+        return $value;
+    };
+elseif( $dupAlg == 'sameip4value' )
+    $hashGenerator = function($object)
+    {
+        /** @var AddressGroup $object */
+        $value = '';
+
+        $mapping = $object->getFullMapping();
+
+        $value = $mapping['ip4']->dumpToString();
+
+        if( count($mapping['unresolved']) > 0 )
+        {
+            ksort($mapping['unresolved']);
+            $value .= '//unresolved:/';
+
+            foreach($mapping['unresolved'] as $unresolvedEntry)
+                $value .= $unresolvedEntry->name().'.%.';
+        }
+        //$value = md5($value);
+
+        return $value;
+    };
+elseif( $dupAlg == 'whereused' )
+    $hashGenerator = function($object)
+    {
+        /** @var AddressGroup $object */
+        $value = $object->getRefHashComp().'//dynamic:'.boolYesNo($object->isDynamic());
+
+        return $value;
+    };
+else
+    derr("unsupported dupAlgorithm");
 
 //
 // Building a hash table of all address objects with same value
@@ -390,7 +449,7 @@ foreach( $hashMap as $index => &$hash )
         {
             $ancestor = $object->ancestor;
             /** @var AddressGroup $ancestor */
-            if( $upperLevelSearch && $ancestor->isGroup() && !$ancestor->isDynamic() )
+            if( $upperLevelSearch && $ancestor->isGroup() && !$ancestor->isDynamic() && $dupAlg != 'whereused')
             {
                 if( $hashGenerator($object) == $hashGenerator($ancestor) )
                 {
@@ -407,6 +466,11 @@ foreach( $hashMap as $index => &$hash )
                         $pickedObject = $ancestor;
 
                     $countRemoved++;
+                    if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+                    {
+                        echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+                        break 2;
+                    }
                     continue;
                 }
             }
@@ -417,21 +481,47 @@ foreach( $hashMap as $index => &$hash )
         if( $object === $pickedObject )
             continue;
 
-        /** @var AddressGroup $object */
-        echo "    - replacing '{$object->name()}'\n";
+        if( $dupAlg == 'whereused' )
+        {
+            echo "    - merging '{$object->name()}' members into '{$pickedObject->name()}': \n";
+            foreach( $object->members() as $member )
+            {
+                echo "     - adding member '{$member->name()}'... ";
+                if( $apiMode )
+                    $pickedObject->API_addMember($member);
+                else
+                    $pickedObject->addMember($member);
+                echo " OK!\n";
+            }
+            echo "    - now replacing this object with '{$pickedObject->name()}'\n";
+        }
+
+        echo "    - replacing '{$object->name()}' with '{$pickedObject->name()}' where it's used\n";
         if( $apiMode )
         {
-            $object->API_addObjectWhereIamUsed( $pickedObject, true, 6);
-            $object->API_removeWhereIamUsed( true, 6);
+            $object->API_addObjectWhereIamUsed($pickedObject, TRUE, 6);
+            $object->API_removeWhereIamUsed(TRUE, 6);
+            echo "    - deleting '{$object->name()}'... ";
             $object->owner->API_remove($object);
+            echo "OK!\n";
         }
         else
         {
-            $object->addObjectWhereIamUsed( $pickedObject, true, 6);
-            $object->removeWhereIamUsed( true, 6);
+            $object->addObjectWhereIamUsed($pickedObject, TRUE, 6);
+            $object->removeWhereIamUsed(TRUE, 6);
             $object->owner->remove($object);
+            echo "    - deleting '{$object->name()}'... ";
+            $object->owner->remove($object);
+            echo "OK!\n";
         }
         $countRemoved++;
+
+
+        if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+        {
+            echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+            break 2;
+        }
     }
 }
 

@@ -64,6 +64,7 @@ $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
 $supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=vsys1|shared|dg1');
+$supportedArguments['mergecountlimit'] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '=100');
 $supportedArguments['pickfilter'] =Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '=(name regex /^g/)');
 $supportedArguments['allowmergingwithupperlevel'] =Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
@@ -100,6 +101,11 @@ if( !isset(PH::$args['location']) )
     display_error_usage_exit(' "location=" argument is missing');
 
 $location = PH::$args['location'];
+
+if( isset(PH::$args['mergecountlimit']) )
+    $mergeCountLimit = PH::$args['mergecountlimit'];
+else
+    $mergeCountLimit = false;
 
 
 //
@@ -235,6 +241,7 @@ echo " - upper level search status : ".boolYesNo($upperLevelSearch)."\n";
 echo " - location '{$location}' found\n";
 echo " - found {$store->countAddresses()} address Objects\n";
 echo " - computing address values database ... ";
+sleep(1);
 
 //
 // Building a hash table of all address objects with same value
@@ -391,6 +398,13 @@ foreach( $hashMap as $index => &$hash )
                         $pickedObject = $ancestor;
 
                     $countRemoved++;
+
+                    if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+                    {
+                        echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+                        break 2;
+                    }
+
                     continue;
                 }
             }
@@ -415,6 +429,12 @@ foreach( $hashMap as $index => &$hash )
             $object->owner->remove($object);
         }
         $countRemoved++;
+
+        if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+        {
+            echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+            break 2;
+        }
     }
 }
 

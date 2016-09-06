@@ -751,6 +751,52 @@ class AddressGroup
 
         return $mapObject;
     }
+
+    public function getFullMapping()
+    {
+        $result = Array( 'unresolved' => Array() );
+        $mapObject = new IP4Map();
+
+        foreach( $this->members as $member )
+        {
+            if( $member->isTmpAddr() && !$member->nameIsValidRuleIPEntry() )
+            {
+                $result['unresolved'][spl_object_hash($member)] = $member;
+                continue;
+            }
+            elseif( $member->isAddress() )
+            {
+                if( $member->type() == 'fqdn' )
+                {
+                    $result['unresolved'][spl_object_hash($member)] = $member;
+                }
+                else
+                {
+                    $localMap = $member->getIP4Mapping();
+                    $mapObject->addMap($localMap, true);
+                }
+            }
+            elseif( $member->isGroup() )
+            {
+                if( $member->isDynamic() )
+                    $result['unresolved'][spl_object_hash($member)] = $member;
+                else
+                {
+                    $localMap = $member->getFullMapping();
+                    $mapObject->addMap($localMap['ip4'], TRUE);
+                    foreach( $localMap['unresolved'] as $unresolvedEntry )
+                        $result['unresolved'][spl_object_hash($unresolvedEntry)] = $unresolvedEntry;
+                }
+            }
+            else
+                derr('unsupported type of objects '.$member->toString());
+        }
+        $mapObject->sortAndRecalculate();
+
+        $result['ip4'] = $mapObject;
+
+        return $result;
+    }
 	
 
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
