@@ -112,8 +112,12 @@ $supportedActions['delete'] = Array(
     {
         $object = $context->object;
 
-        if( $object->countReferences() != 0)
-            derr("this object is used by other objects and cannot be deleted (use 'deleteForce' to try anyway or 'replaceWithObject')");
+        if( $object->countReferences() != 0 )
+        {
+            print $context->padding."  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)\n";
+            return;
+        }
+
         if( $context->isAPI )
             $object->owner->API_remove($object);
         else
@@ -126,6 +130,9 @@ $supportedActions['deleteforce'] = Array(
     'MainFunction' => function ( ServiceCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->countReferences() != 0 )
+            print $context->padding."  * WARNING : this object seems to be used so deletion may fail.\n";
 
         if( $context->isAPI )
             $object->owner->API_remove($object);
