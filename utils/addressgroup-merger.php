@@ -323,7 +323,7 @@ else
 if( $upperLevelSearch)
     $objectsToSearchThrough = $store->nestedPointOfView();
 else
-    $objectsToSearchThrough = $store->addressObjects();
+    $objectsToSearchThrough = $store->addressGroups();
 
 $hashMap = Array();
 $upperHashMap = Array();
