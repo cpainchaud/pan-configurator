@@ -197,6 +197,26 @@ class TagStore extends ObjStore
     }
 
 
+    private function &getBaseXPath()
+    {
+        $str = '';
+
+        if ($this->owner->isPanorama() ||  $this->owner->isFirewall() )
+        {
+            $str = "/config/shared";
+        }
+        else
+            $str = $this->owner->getXPath();
+
+
+        return $str;
+    }
+
+    public function &getTagStoreXPath()
+    {
+        $path = $this->getBaseXPath().'/tag';
+        return $path;
+    }
 	
 	public function rewriteXML()
 	{

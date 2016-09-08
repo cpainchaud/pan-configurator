@@ -457,11 +457,8 @@ class AddressRuleContainer extends ObjRuleContainer
         $xpath = &$this->getXPath();
         $con = findConnectorOrDie($this);
 
-        $url = "type=config&action=delete&xpath=".$xpath;
-        $con->sendRequest($url);
-
-        $url = "type=config&action=set&xpath=$xpath&element=<member>any</member>";
-        $con->sendRequest($url);
+        $con->sendDeleteRequest($xpath);
+        $con->sendSetRequest($xpath, '<member>any</member>');
     }
 
 

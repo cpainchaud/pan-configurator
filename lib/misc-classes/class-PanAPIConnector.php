@@ -681,7 +681,8 @@ class PanAPIConnector
             $finalUrl .= '&' . $parameters;
         }
 
-        curl_setopt($this->_curl_handle, CURLOPT_URL, str_replace(' ', '%20', $finalUrl));
+        curl_setopt($this->_curl_handle, CURLOPT_URL, $finalUrl);
+
         if( isset($moreOptions['timeout']) )
             curl_setopt($this->_curl_handle, CURLOPT_CONNECTTIMEOUT, $moreOptions['timeout']);
         else

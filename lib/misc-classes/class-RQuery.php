@@ -57,7 +57,7 @@ class RQuery
 
         $this->objectType = $objectType;
 
-        if( $this->objectType != "rule" && $this->objectType != "address" && $this->objectType != "service"  )
+        if( $this->objectType != "rule" && $this->objectType != "address" && $this->objectType != "service" && $this->objectType != "tag"  )
         {
             derr("unsupported object type '$objectType'");
         }
@@ -68,6 +68,8 @@ class RQuery
             $this->contextObject = new AddressRQueryContext($this);
         elseif($this->objectType == 'rule' )
             $this->contextObject = new RuleRQueryContext($this);
+        elseif($this->objectType == 'tag' )
+            $this->contextObject = new TagRQueryContext($this);
     }
 
     /**
@@ -622,6 +624,48 @@ class ServiceRQueryContext extends RQueryContext
 
     /**
      * @param $object Service|ServiceGroup
+     * @return bool
+     */
+    function execute($object, $nestedQueries = null)
+    {
+        if( $nestedQueries !== null )
+            $this->nestedQueries = &$nestedQueries;
+
+        $this->object = $object;
+        $this->value = &$this->rQueryObject->argument;
+
+        return $this->rQueryObject->refOperator['Function']($this);
+    }
+
+}
+
+/**
+ * Class ServiceRQueryContext
+ * @ignore
+ */
+class TagRQueryContext extends RQueryContext
+{
+    /** @var  Tag */
+    public $object;
+    public $value;
+
+    public $rQueryObject;
+
+    public $nestedQueries;
+
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
+    }
+
+    /**
+     * @param $object Tag
      * @return bool
      */
     function execute($object, $nestedQueries = null)
@@ -2428,6 +2472,36 @@ RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
 // </editor-fold>
 
 
+//
+//          Tag Filters
+//
+
+// <editor-fold desc=" ***** Tag filters *****" defaultstate="collapsed" >
+RQuery::$defaultFilters['tag']['name']['operators']['regex'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( strlen($value) > 0 && $value[0] == '%')
+        {
+            $value = substr($value, 1);
+            if( !isset($context->nestedQueries[$value]) )
+                derr("regular expression filter makes reference to unknown string alias '{$value}'");
+
+            $value = $context->nestedQueries[$value];
+        }
+
+        $matching = preg_match($value, $object->name());
+        if( $matching === FALSE )
+            derr("regular expression error on '{$value}'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true
+);
+// </editor-fold>
 
 
 
