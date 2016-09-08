@@ -35,11 +35,6 @@ trait ServiceCommon
         return false;
     }
 
-    public function isDynamic()
-    {
-        return false;
-    }
-
     public function removeReference($ref)
     {
         $this->super_removeReference($ref);

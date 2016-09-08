@@ -500,12 +500,17 @@ class ServiceGroup
 	}
 
 
+    /**
+     * @return ServiceDstPortMapping
+     */
     public function dstPortMapping()
     {
         $mapping = new ServiceDstPortMapping();
 
         foreach( $this->members as $member)
         {
+            if( $member->isTmpSrv() )
+                $mapping->unresolved[$member->name()] = $member;
             $localMapping = $member->dstPortMapping();
             $mapping->mergeWithMapping($localMapping);
         }
