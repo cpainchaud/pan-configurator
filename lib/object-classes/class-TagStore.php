@@ -28,7 +28,13 @@ class TagStore extends ObjStore
 	protected $parentCentralStore = null;
 	
 	public static $childn = 'Tag';
-	
+
+    /** @var Tag[] */
+    protected $_tagObjects = Array();
+    /** @var Tag[] */
+    protected $_tmpTags = Array();
+
+
 	public function __construct($owner)
 	{
 		$this->classn = &self::$childn;
@@ -178,6 +184,85 @@ class TagStore extends ObjStore
         }
 
         return $newTag;
+    }
+
+    /**
+     * @param Tag $s
+     * @param bool $cleanInMemory
+     * @return bool
+     */
+    public function remove($s, $cleanInMemory = false)
+    {
+        $class = get_class($s);
+
+        //$ser = spl_object_hash($s);
+
+        //if( isset($this->fastMemToIndex[$ser]))
+        //{
+            if( $class == "Tag" )
+            {
+                //if( $s->type == 'tmp' )
+                if( $this->xmlroot === null )
+                {
+                    $pos = array_search($s, $this->_tmpTags,true);
+                    unset($this->_tmpTags[$pos]);
+
+                }
+                else
+                {
+                    $pos = array_search($s, $this->_tagObjects,true);
+                    unset($this->_tagObjects[$pos]);
+                }
+            }
+            else
+                derr("Class $class is not supported");
+
+            //unset($this->fast[$s->name()]);
+            //unset($this->all[$this->fastMemToIndex[$ser]]);
+            //unset($this->fastMemToIndex[$ser]);
+
+            $s->owner = null;
+
+            if( !$s->isTmp() )
+            {
+                if( $class == "Tag" )
+                {
+                    if( count($this->_tagObjects) > 0 )
+                        $this->xmlroot->removeChild($s->xmlroot);
+                    else
+                        DH::clearDomNodeChilds($this->xmlroot);
+                }
+                else
+                    derr('unsupported');
+
+                if( $cleanInMemory )
+                    $s->xmlroot = null;
+            }
+            return true;
+        //}
+        //return false;
+    }
+
+    /**
+     * @param Tag $s
+     * @return bool
+     */
+    public function API_remove($s, $cleanInMemory = false)
+    {
+        $xpath = null;
+
+        if( !$s->isTmp() )
+            $xpath = $s->getXPath();
+
+        $ret = $this->remove($s, $cleanInMemory);
+
+        if( $ret && !$s->isTmp())
+        {
+            $con = findConnectorOrDie($this);
+            $con->sendDeleteRequest($xpath);
+        }
+
+        return $ret;
     }
 
     public function &getXPath()

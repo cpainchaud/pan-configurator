@@ -105,15 +105,18 @@ $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this m
 $supportedActions = Array();
 // <editor-fold desc="  ****  Supported Actions Array  ****" defaultstate="collapsed" >
 
-/*
+
 $supportedActions['delete'] = Array(
     'name' => 'delete',
     'MainFunction' => function ( TagCallContext $context )
     {
         $object = $context->object;
 
-        if( $object->countReferences() != 0)
-            derr("this object is used by other objects and cannot be deleted (use 'deleteForce' to try anyway or 'replaceWithObject')");
+        if( $object->countReferences() != 0 )
+        {
+            print $context->padding."  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)\n";
+            return;
+        }
         if( $context->isAPI )
             $object->owner->API_remove($object);
         else
@@ -127,13 +130,15 @@ $supportedActions['deleteforce'] = Array(
     {
         $object = $context->object;
 
+        if( $object->countReferences() != 0 )
+            print $context->padding."  * WARNING : this object seems to be used so deletion may fail.\n";
         if( $context->isAPI )
             $object->owner->API_remove($object);
         else
             $object->owner->remove($object);
     },
 );
-*/
+
 
 $supportedActions['name-addprefix'] = Array(
     'name' => 'name-addPrefix',
