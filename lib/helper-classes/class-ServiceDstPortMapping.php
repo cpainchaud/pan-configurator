@@ -20,10 +20,13 @@ class ServiceDstPortMapping
 {
     public $tcpPortMap = Array();
     public $udpPortMap = Array();
+    /** @var Service[]|ServiceGroup[]  */
+    public $unresolved = Array();
 
 
     /**
      * @param $text
+     * @param bool $tcp
      * @return ServiceDstPortMapping
      */
     static public function mappingFromText($text, $tcp = true)
