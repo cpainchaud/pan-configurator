@@ -118,9 +118,9 @@ $supportedActions['delete'] = Array(
             return;
         }
         if( $context->isAPI )
-            $object->owner->API_remove($object);
+            $object->owner->API_removeTag($object);
         else
-            $object->owner->remove($object);
+            $object->owner->removeTag($object);
     },
 );
 
@@ -133,9 +133,9 @@ $supportedActions['deleteforce'] = Array(
         if( $object->countReferences() != 0 )
             print $context->padding."  * WARNING : this object seems to be used so deletion may fail.\n";
         if( $context->isAPI )
-            $object->owner->API_remove($object);
+            $object->owner->API_removeTag($object);
         else
-            $object->owner->remove($object);
+            $object->owner->removeTag($object);
     },
 );
 

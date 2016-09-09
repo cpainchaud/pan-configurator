@@ -29,11 +29,6 @@ class TagStore extends ObjStore
 	
 	public static $childn = 'Tag';
 
-    /** @var Tag[] */
-    protected $_tagObjects = Array();
-    /** @var Tag[] */
-    protected $_tmpTags = Array();
-
 
 	public function __construct($owner)
 	{
@@ -75,8 +70,8 @@ class TagStore extends ObjStore
 	}
 
     /**
-     * add a Zone to this store. Use at your own risk.
-     * @param Tag
+     * add a Tag to this store. Use at your own risk.
+     * @param Tag $Obj
      * @param bool
      * @return bool
      */
@@ -94,9 +89,9 @@ class TagStore extends ObjStore
     }
 
 	/**
-	* @param $base string
-     * @param $suffix string
-     * @param $startCount integer|string
+	* @param string $base
+     * @param string $suffix
+     * @param integer|string $startCount
      * @return string
 	*/
 	public function findAvailableTagName($base, $suffix, $startCount = '')
@@ -186,77 +181,38 @@ class TagStore extends ObjStore
         return $newTag;
     }
 
+
     /**
-     * @param Tag $s
-     * @param bool $cleanInMemory
-     * @return bool
+     * @param Tag $tag
+     *
+     * @return bool  True if Zone was found and removed. False if not found.
      */
-    public function remove($s, $cleanInMemory = false)
+    public function removeTag( Tag $tag )
     {
-        $class = get_class($s);
+        $ret = $this->remove($tag);
 
-        //$ser = spl_object_hash($s);
+        if( $ret && !$tag->isTmp() && $this->xmlroot !== null )
+        {
+            $this->xmlroot->removeChild($tag->xmlroot);
+        }
 
-        //if( isset($this->fastMemToIndex[$ser]))
-        //{
-            if( $class == "Tag" )
-            {
-                //if( $s->type == 'tmp' )
-                if( $this->xmlroot === null )
-                {
-                    $pos = array_search($s, $this->_tmpTags,true);
-                    unset($this->_tmpTags[$pos]);
-
-                }
-                else
-                {
-                    $pos = array_search($s, $this->_tagObjects,true);
-                    unset($this->_tagObjects[$pos]);
-                }
-            }
-            else
-                derr("Class $class is not supported");
-
-            //unset($this->fast[$s->name()]);
-            //unset($this->all[$this->fastMemToIndex[$ser]]);
-            //unset($this->fastMemToIndex[$ser]);
-
-            $s->owner = null;
-
-            if( !$s->isTmp() )
-            {
-                if( $class == "Tag" )
-                {
-                    if( count($this->_tagObjects) > 0 )
-                        $this->xmlroot->removeChild($s->xmlroot);
-                    else
-                        DH::clearDomNodeChilds($this->xmlroot);
-                }
-                else
-                    derr('unsupported');
-
-                if( $cleanInMemory )
-                    $s->xmlroot = null;
-            }
-            return true;
-        //}
-        //return false;
+        return $ret;
     }
 
     /**
-     * @param Tag $s
+     * @param Tag $tag
      * @return bool
      */
-    public function API_remove($s, $cleanInMemory = false)
+    public function API_removeTag(Tag $tag)
     {
         $xpath = null;
 
-        if( !$s->isTmp() )
-            $xpath = $s->getXPath();
+        if( !$tag->isTmp() )
+            $xpath = $tag->getXPath();
 
-        $ret = $this->remove($s, $cleanInMemory);
+        $ret = $this->removeTag($tag);
 
-        if( $ret && !$s->isTmp())
+        if( $ret && !$tag->isTmp())
         {
             $con = findConnectorOrDie($this);
             $con->sendDeleteRequest($xpath);
@@ -284,8 +240,6 @@ class TagStore extends ObjStore
 
     private function &getBaseXPath()
     {
-        $str = '';
-
         if ($this->owner->isPanorama() ||  $this->owner->isFirewall() )
         {
             $str = "/config/shared";
