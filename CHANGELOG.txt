@@ -3,6 +3,7 @@ CHANGELOG
 1.5.11
 * new function AddressCommon->hasDescendants() to for objects with same name in lower level (child devicegroups)
 * New 'address-merger', 'addressgroup-merger' and 'service-merger' utility 'service-merger.php'. Safer, faster and find more dups than MT.
+* new util: tag-edit
 
 utils:
 rules-edit: new actions 'tag-remove-all'
@@ -10,11 +11,13 @@ address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level',
 address-edit: new actions 'name-removePrefix, name-removeSuffix'
 service-edit: new actions 'name-removePrefix, name-removeSuffix'
 override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
+tag-edit: new filters 'name eq', 'name contains', 'name eq.nocase', 'location is' and 'refcount - >,<,=,!'
 
 bugfix:
 - added checks to prevent crash when trying to resolve an IPv6 object into an IPv4 mapping
 - fixed a crash when exporting PBF rules to HTML in  rules-edit utility
 - fixed a crash when replacing an object used in a DNAT with another object
+- fixed a bug when logstart was already enabled, and logend should be enabled in a second step
 
 
 1.5.10
