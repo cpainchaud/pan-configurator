@@ -524,7 +524,6 @@ foreach( $hashMap as $index => &$hash )
             {
                 $object->addObjectWhereIamUsed($pickedObject, TRUE, 6);
                 $object->removeWhereIamUsed(TRUE, 6);
-                $object->owner->remove($object);
                 echo "    - deleting '{$object->name()}'... ";
                 $object->owner->remove($object);
                 echo "OK!\n";
