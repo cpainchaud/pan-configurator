@@ -1072,6 +1072,24 @@ RuleCallContext::$supportedActions['tag-remove'] = Array(
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
+RuleCallContext::$supportedActions['tag-remove-all'] = Array(
+    'name' => 'tag-Remove-All',
+    'section' => 'tag',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        foreach($rule->tags->tags() as $tag )
+        {
+            echo $context->padding."  - removing tag {$tag->name()}... ";
+            if( $context->isAPI )
+                $rule->tags->API_removeTag($tag);
+            else
+                $rule->tags->removeTag($tag);
+            echo "OK!\n";
+        }
+    },
+    //'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
 RuleCallContext::$supportedActions['tag-remove-regex'] = Array(
     'name' => 'tag-Remove-Regex',
     'section' => 'tag',
@@ -1086,11 +1104,12 @@ RuleCallContext::$supportedActions['tag-remove-regex'] = Array(
                 derr("'$pattern' is not a valid regex");
             if( $result == 1 )
             {
-                print $context->padding."  - removed tag {$tag->name()}\n";
+                echo $context->padding."  - removing tag {$tag->name()}... ";
                 if( $context->isAPI )
                     $rule->tags->API_removeTag($tag);
                 else
                     $rule->tags->removeTag($tag);
+                echo "OK!\n";
             }
         }
     },

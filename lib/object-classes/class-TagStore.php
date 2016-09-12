@@ -28,7 +28,8 @@ class TagStore extends ObjStore
 	protected $parentCentralStore = null;
 	
 	public static $childn = 'Tag';
-	
+
+
 	public function __construct($owner)
 	{
 		$this->classn = &self::$childn;
@@ -69,8 +70,8 @@ class TagStore extends ObjStore
 	}
 
     /**
-     * add a Zone to this store. Use at your own risk.
-     * @param Tag
+     * add a Tag to this store. Use at your own risk.
+     * @param Tag $Obj
      * @param bool
      * @return bool
      */
@@ -88,9 +89,9 @@ class TagStore extends ObjStore
     }
 
 	/**
-	* @param $base string
-     * @param $suffix string
-     * @param $startCount integer|string
+	* @param string $base
+     * @param string $suffix
+     * @param integer|string $startCount
      * @return string
 	*/
 	public function findAvailableTagName($base, $suffix, $startCount = '')
@@ -180,6 +181,46 @@ class TagStore extends ObjStore
         return $newTag;
     }
 
+
+    /**
+     * @param Tag $tag
+     *
+     * @return bool  True if Zone was found and removed. False if not found.
+     */
+    public function removeTag( Tag $tag )
+    {
+        $ret = $this->remove($tag);
+
+        if( $ret && !$tag->isTmp() && $this->xmlroot !== null )
+        {
+            $this->xmlroot->removeChild($tag->xmlroot);
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @param Tag $tag
+     * @return bool
+     */
+    public function API_removeTag(Tag $tag)
+    {
+        $xpath = null;
+
+        if( !$tag->isTmp() )
+            $xpath = $tag->getXPath();
+
+        $ret = $this->removeTag($tag);
+
+        if( $ret && !$tag->isTmp())
+        {
+            $con = findConnectorOrDie($this);
+            $con->sendDeleteRequest($xpath);
+        }
+
+        return $ret;
+    }
+
     public function &getXPath()
     {
         $str = '';
@@ -197,6 +238,24 @@ class TagStore extends ObjStore
     }
 
 
+    private function &getBaseXPath()
+    {
+        if ($this->owner->isPanorama() ||  $this->owner->isFirewall() )
+        {
+            $str = "/config/shared";
+        }
+        else
+            $str = $this->owner->getXPath();
+
+
+        return $str;
+    }
+
+    public function &getTagStoreXPath()
+    {
+        $path = $this->getBaseXPath().'/tag';
+        return $path;
+    }
 	
 	public function rewriteXML()
 	{

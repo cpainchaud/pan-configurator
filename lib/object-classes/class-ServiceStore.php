@@ -529,6 +529,38 @@ class ServiceStore
 		
 		return $f;
 	}
+
+    /**
+     * @return Service[]|ServiceGroup[]
+     */
+    public function nestedPointOfView()
+    {
+        $current = $this;
+
+        $objects = Array();
+
+        while(true)
+        {
+            foreach( $current->_serviceObjects as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+            }
+            foreach( $current->_serviceGroups as $o )
+            {
+                if( !isset($objects[$o->name()]) )
+                    $objects[$o->name()] = $o;
+            }
+
+
+            if( isset($current->owner->owner) &&  $current->owner->owner !== null )
+                $current = $current->owner->owner->serviceStore;
+            else
+                break;
+        }
+
+        return $objects;
+    }
 	
 	
 	public function referencedObjectRenamed($h,$oldname)

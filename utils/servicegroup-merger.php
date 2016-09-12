@@ -17,7 +17,7 @@
  */
 
 echo "\n***********************************************\n";
-echo   "*********** ADDRESSGROUP-MERGER UTILITY **********\n\n";
+echo   "*********** SERVICEGROUP-MERGER UTILITY **********\n\n";
 
 set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
 require_once("lib/panconfigurator.php");
@@ -68,7 +68,7 @@ $supportedArguments['dupalgorithm'] = Array(
     'shortHelp' =>
         "Specifies how to detect duplicates:\n".
         "  - SameMembers: groups holding same members replaced by the one picked first (default)\n".
-        "  - SameIP4Value: groups resolving the same IP4 coverage will be replaced by the one picked first\n".
+        "  - SamePortMapping: groups resolving the same port mapping coverage will be replaced by the one picked first\n".
         "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
     'argDesc'=> 'SamePorts|WhereUsed');
 $supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=vsys1|shared|dg1');
@@ -208,7 +208,7 @@ if( !$apiMode )
 
 if( $location == 'shared' )
 {
-    $store = $panc->addressStore;
+    $store = $panc->serviceStore;
     $parentStore = null;
 }
 else
@@ -217,8 +217,8 @@ else
     if( $findLocation === null )
         derr("cannot find DeviceGroup/VSYS named '{$location}', check case or syntax");
 
-    $store = $findLocation->addressStore;
-    $parentStore = $findLocation->owner->addressStore;
+    $store = $findLocation->serviceStore;
+    $parentStore = $findLocation->owner->serviceStore;
 }
 
 if( $panc->isPanorama() )
@@ -232,7 +232,7 @@ if( $panc->isPanorama() )
 $query = null;
 if( isset(PH::$args['pickfilter']) )
 {
-    $query = new RQuery('address');
+    $query = new RQuery('service');
     $errMsg = '';
     if( $query->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
         derr("invalid pickFilter was input: ".$errMsg);
@@ -248,7 +248,7 @@ if( isset(PH::$args['allowmergingwithupperlevel']) )
 if( isset(PH::$args['dupalgorithm']) )
 {
     $dupAlg = strtolower(PH::$args['dupalgorithm']);
-    if( $dupAlg != 'samemembers' && $dupAlg != 'sameip4value' && $dupAlg != 'whereused')
+    if( $dupAlg != 'samemembers' && $dupAlg != 'sameportmapping' && $dupAlg != 'whereused')
         display_error_usage_exit('unsupported value for dupAlgorithm: '.PH::$args['dupalgorithm']);
 }
 else
@@ -256,20 +256,20 @@ else
 
 echo " - upper level search status : ".boolYesNo($upperLevelSearch)."\n";
 echo " - location '{$location}' found\n";
-echo " - found {$store->count()} address Objects\n";
+echo " - found {$store->count()} service Objects\n";
 echo " - DupAlgorithm selected: {$dupAlg}\n";
-echo " - computing AddressGroup hash database ... ";
+echo " - computing ServiceGroup hash database ... ";
 sleep(1);
 
 
 /**
- * @param AddressGroup $object
+ * @param ServiceGroup $object
  * @return string
  */
 if( $dupAlg == 'samemembers' )
     $hashGenerator = function($object)
     {
-        /** @var AddressGroup $object */
+        /** @var ServiceGroup $object */
         $value = '';
 
         $members = $object->members();
@@ -280,37 +280,34 @@ if( $dupAlg == 'samemembers' )
             $value .= './.'.$member->name();
         }
 
-        //$value = md5($value);
-
         return $value;
     };
-elseif( $dupAlg == 'sameip4value' )
+elseif( $dupAlg == 'sameportmapping' )
     $hashGenerator = function($object)
     {
-        /** @var AddressGroup $object */
+        /** @var ServiceGroup $object */
         $value = '';
 
-        $mapping = $object->getFullMapping();
+        $mapping = $object->dstPortMapping();
 
-        $value = $mapping['ip4']->dumpToString();
+        $value = $mapping->mappingToText();
 
         if( count($mapping['unresolved']) > 0 )
         {
             ksort($mapping['unresolved']);
             $value .= '//unresolved:/';
 
-            foreach($mapping['unresolved'] as $unresolvedEntry)
+            foreach($mapping->unresolved as $unresolvedEntry)
                 $value .= $unresolvedEntry->name().'.%.';
         }
-        //$value = md5($value);
 
         return $value;
     };
 elseif( $dupAlg == 'whereused' )
     $hashGenerator = function($object)
     {
-        /** @var AddressGroup $object */
-        $value = $object->getRefHashComp().'//dynamic:'.boolYesNo($object->isDynamic());
+        /** @var ServiceGroup $object */
+        $value = $object->getRefHashComp();
 
         return $value;
     };
@@ -318,18 +315,18 @@ else
     derr("unsupported dupAlgorithm");
 
 //
-// Building a hash table of all address objects with same value
+// Building a hash table of all service objects with same value
 //
 if( $upperLevelSearch)
     $objectsToSearchThrough = $store->nestedPointOfView();
 else
-    $objectsToSearchThrough = $store->addressGroups();
+    $objectsToSearchThrough = $store->serviceGroups();
 
 $hashMap = Array();
 $upperHashMap = Array();
 foreach( $objectsToSearchThrough as $object )
 {
-    if( !$object->isGroup() || $object->isDynamic() )
+    if( !$object->isGroup() )
         continue;
 
     $skipThisOne = false;
@@ -339,7 +336,7 @@ foreach( $objectsToSearchThrough as $object )
     {
         foreach( $childDeviceGroups as $dg )
         {
-            if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
+            if( $dg->serviceStore->find($object->name(), null, FALSE) !== null )
             {
                 $skipThisOne = true;
                 break;
@@ -444,12 +441,12 @@ foreach( $hashMap as $index => &$hash )
     // Merging loop finally!
     foreach( $hash as $object)
     {
-        /** @var AddressGroup $object */
+        /** @var ServiceGroup $object */
         if( isset($object->ancestor) )
         {
             $ancestor = $object->ancestor;
-            /** @var AddressGroup $ancestor */
-            if( $upperLevelSearch && $ancestor->isGroup() && !$ancestor->isDynamic() && $dupAlg != 'whereused')
+            /** @var ServiceGroup $ancestor */
+            if( $upperLevelSearch && $ancestor->isGroup() )
             {
                 if( $hashGenerator($object) == $hashGenerator($ancestor) )
                 {
@@ -529,21 +526,19 @@ foreach( $hashMap as $index => &$hash )
                 $object->owner->remove($object);
                 echo "OK!\n";
             }
-        }
+            $countRemoved++;
 
 
-        $countRemoved++;
-
-
-        if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
-        {
-            echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
-            break 2;
+            if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+            {
+                echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+                break 2;
+            }
         }
     }
 }
 
-echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddressGroups()}' (removed {$countRemoved} groups)\n\n";
+echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countServiceGroups()}' (removed {$countRemoved} groups)\n\n";
 
 echo "\n\n***********************************************\n\n";
 

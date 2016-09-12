@@ -5,8 +5,10 @@ CHANGELOG
 * New 'address-merger', 'addressgroup-merger' and 'service-merger' utility 'service-merger.php'. Safer, faster and find more dups than MT.
 
 utils:
+rules-edit: new actions 'tag-remove-all'
 address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial'
 address-edit: new actions 'name-removePrefix, name-removeSuffix'
+service-edit: new actions 'name-removePrefix, name-removeSuffix'
 override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
 
 bugfix:

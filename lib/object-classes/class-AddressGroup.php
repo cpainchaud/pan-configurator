@@ -132,10 +132,16 @@ class AddressGroup
 			$this->membersRoot = DH::findFirstElement('static', $xml);
 
 			if( $this->membersRoot === false )
-			{
-				$tmp = DH::findFirstElement('dynamic', $xml);
-                if( $tmp === false )
-                    mwarning('unsupported AddressGroup type: ', $xml);
+            {
+                $tmp = DH::findFirstElement('dynamic', $xml);
+                if( $tmp === FALSE )
+                {
+                    $tmp2 = DH::firstChildElement($xml);
+                    if( $tmp2 === FALSE )
+                        mwarning('empty AddressGroup : ', $xml);
+                    else
+                        mwarning('unsupported AddressGroup type: ', $xml);
+                }
                 else
                     $this->isDynamic;
 			}
@@ -442,12 +448,8 @@ class AddressGroup
 	public function API_setName($newName)
 	{
 		$c = findConnectorOrDie($this);
-		$path = $this->getXPath();
-
-		$url = "type=config&action=rename&xpath=$path&newname=$newName";
-
-		$c->sendRequest($url);
-
+		$xpath = $this->getXPath();
+        $c->sendRenameRequest($xpath, $newName);
 		$this->setName($newName);
 	}
 
@@ -744,6 +746,52 @@ class AddressGroup
         $mapObject->sortAndRecalculate();
 
         return $mapObject;
+    }
+
+    public function getFullMapping()
+    {
+        $result = Array( 'unresolved' => Array() );
+        $mapObject = new IP4Map();
+
+        foreach( $this->members as $member )
+        {
+            if( $member->isTmpAddr() && !$member->nameIsValidRuleIPEntry() )
+            {
+                $result['unresolved'][spl_object_hash($member)] = $member;
+                continue;
+            }
+            elseif( $member->isAddress() )
+            {
+                if( $member->type() == 'fqdn' )
+                {
+                    $result['unresolved'][spl_object_hash($member)] = $member;
+                }
+                else
+                {
+                    $localMap = $member->getIP4Mapping();
+                    $mapObject->addMap($localMap, true);
+                }
+            }
+            elseif( $member->isGroup() )
+            {
+                if( $member->isDynamic() )
+                    $result['unresolved'][spl_object_hash($member)] = $member;
+                else
+                {
+                    $localMap = $member->getFullMapping();
+                    $mapObject->addMap($localMap['ip4'], TRUE);
+                    foreach( $localMap['unresolved'] as $unresolvedEntry )
+                        $result['unresolved'][spl_object_hash($unresolvedEntry)] = $unresolvedEntry;
+                }
+            }
+            else
+                derr('unsupported type of objects '.$member->toString());
+        }
+        $mapObject->sortAndRecalculate();
+
+        $result['ip4'] = $mapObject;
+
+        return $result;
     }
 	
 

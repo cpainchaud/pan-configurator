@@ -7,7 +7,7 @@
 	<title>Class ObjStore | PAN-Configurator</title>
 
 	<script type="text/javascript" src="resources/combined.js?772778653"></script>
-	<script type="text/javascript" src="elementlist.js?3289192737"></script>
+	<script type="text/javascript" src="elementlist.js?2180725909"></script>
 	<link rel="stylesheet" type="text/css" media="all" href="resources/style.css?3505392360" />
 
 </head>
@@ -50,6 +50,7 @@
 				<li><a href="class-DecryptionRule.html">DecryptionRule</a></li>
 				<li><a href="class-DeviceGroup.html">DeviceGroup</a></li>
 				<li><a href="class-DH.html">DH</a></li>
+				<li><a href="class-DoSRule.html">DoSRule</a></li>
 				<li><a href="class-EthernetIfStore.html">EthernetIfStore</a></li>
 				<li><a href="class-EthernetInterface.html">EthernetInterface</a></li>
 				<li><a href="class-InterfaceContainer.html">InterfaceContainer</a></li>
@@ -68,6 +69,7 @@
 				<li><a href="class-PanoramaConf.html">PanoramaConf</a></li>
 				<li><a href="class-PbfRule.html">PbfRule</a></li>
 				<li><a href="class-PH.html">PH</a></li>
+				<li><a href="class-QoSRule.html">QoSRule</a></li>
 				<li><a href="class-RQuery.html">RQuery</a></li>
 				<li><a href="class-Rule.html">Rule</a></li>
 				<li><a href="class-RuleStore.html">RuleStore</a></li>
@@ -472,7 +474,7 @@ it and return it.</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_referencedObjectRenamed">#</a>
-		<code><b>referencedObjectRenamed</b>( <span>mixed <var>$h</var></span>, <span>mixed <var>$oldName</var></span> )</code>
+		<code><b>referencedObjectRenamed</b>( <span><code><a href="class-ReferencableObject.html">ReferencableObject</a></code> <var>$h</var></span>, <span>string <var>$oldName</var></span> )</code>
 
 		<div class="description short">
 			
@@ -482,8 +484,19 @@ it and return it.</p>
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$h</var></dt>
+					<dd><code><code><a href="class-ReferencableObject.html">ReferencableObject</a></code></code><br>$h</dd>
+					<dt><var>$oldName</var></dt>
+					<dd><code>string</code><br>$oldName</dd>
+				</dl></div>
 
 
+				<h4>Throws</h4>
+				<div class="list">
+					<code><code><a href="class-Exception.html">Exception</a></code></code><br />
+				</div>
 
 
 
@@ -523,14 +536,14 @@ it and return it.</p>
 
 		<td class="attributes"><code>
 			 protected 
-			
+			boolean
 			
 			</code>
 		</td>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_remove">#</a>
-		<code><b>remove</b>( <span>mixed <var>$Obj</var></span> )</code>
+		<code><b>remove</b>( <span><code><a href="class-ReferencableObject.html">ReferencableObject</a></code> <var>$Obj</var></span> )</code>
 
 		<div class="description short">
 			
@@ -540,7 +553,16 @@ it and return it.</p>
 			
 
 
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$Obj</var></dt>
+					<dd><code><code><a href="class-ReferencableObject.html">ReferencableObject</a></code></code><br>$Obj</dd>
+				</dl></div>
 
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
 
 
 
@@ -696,7 +718,7 @@ it and return it.</p>
 	<tr data-order="o" id="$o">
 		<td class="attributes"><code>
 			public  
-			null|ReferenceableObject[]
+			null|<code><a href="class-ReferencableObject.html">ReferencableObject</a>[]</code>
 		</code></td>
 
 		<td class="name">
@@ -718,7 +740,7 @@ it and return it.</p>
 	<tr data-order="nameIndex" id="$nameIndex">
 		<td class="attributes"><code>
 			protected  
-			array
+			null|<code><a href="class-ReferencableObject.html">ReferencableObject</a>[]</code>
 		</code></td>
 
 		<td class="name">

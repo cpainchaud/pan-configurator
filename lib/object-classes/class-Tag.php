@@ -74,6 +74,28 @@ class Tag
         return $ret;
     }
 
+    /**
+     * @param string $newName
+     */
+    public function API_setName($newName)
+    {
+        $c = findConnectorOrDie($this);
+        $xpath = $this->getXPath();
+        $c->sendRenameRequest($xpath, $newName);
+        $this->setName($newName);
+    }
+
+    /**
+     * @return string
+     */
+    public function &getXPath()
+    {
+        $str = $this->owner->getTagStoreXPath()."/entry[@name='".$this->name."']";
+
+        return $str;
+    }
+    
+
     public function isTmp()
     {
         if( $this->xmlroot === null )

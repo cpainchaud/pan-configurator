@@ -19,7 +19,7 @@
 
 
 print "\n***********************************************\n";
-print   "*********** SERVICE-EDIT UTILITY **************\n\n";
+print   "*********** TAG-EDIT UTILITY **************\n\n";
 
 
 set_include_path( dirname(__FILE__).'/../'. PATH_SEPARATOR . get_include_path() );
@@ -108,7 +108,7 @@ $supportedActions = Array();
 
 $supportedActions['delete'] = Array(
     'name' => 'delete',
-    'MainFunction' => function ( ServiceCallContext $context )
+    'MainFunction' => function ( TagCallContext $context )
     {
         $object = $context->object;
 
@@ -117,552 +117,37 @@ $supportedActions['delete'] = Array(
             print $context->padding."  * SKIPPED: this object is used by other objects and cannot be deleted (use deleteForce to try anyway)\n";
             return;
         }
-
         if( $context->isAPI )
-            $object->owner->API_remove($object);
+            $object->owner->API_removeTag($object);
         else
-            $object->owner->remove($object);
+            $object->owner->removeTag($object);
     },
 );
 
 $supportedActions['deleteforce'] = Array(
     'name' => 'deleteForce',
-    'MainFunction' => function ( ServiceCallContext $context )
+    'MainFunction' => function ( TagCallContext $context )
     {
         $object = $context->object;
 
         if( $object->countReferences() != 0 )
             print $context->padding."  * WARNING : this object seems to be used so deletion may fail.\n";
-
         if( $context->isAPI )
-            $object->owner->API_remove($object);
+            $object->owner->API_removeTag($object);
         else
-            $object->owner->remove($object);
+            $object->owner->removeTag($object);
     },
 );
 
-$supportedActions['addobjectwhereused'] = Array(
-    'name' => 'addObjectWhereUsed',
-    'MainFunction' => function ( ServiceCallContext $context )
-    {
-        $object = $context->object;
-        $objectRefs = $object->getReferences();
-
-        $foundObject = $object->owner->find($context->arguments['objectName']);
-
-        if( $foundObject === null )
-            derr("cannot find an object named '{$context->arguments['objectName']}'");
-
-        $clearForAction = true;
-        foreach ($objectRefs as $objectRef)
-        {
-            $class = get_class($objectRef);
-            if ($class != 'ServiceRuleContainer' && $class != 'ServiceGroup')
-            {
-                $clearForAction = false;
-                print "     *  skipped because its used in unsupported class $class\n";
-                break;
-            }
-        }
-        if( $clearForAction )
-        {
-            foreach ($objectRefs as $objectRef)
-            {
-                $class = get_class($objectRef);
-                if ($class == 'ServiceRuleContainer' || $class == 'ServiceGroup')
-                {
-                    print $context->padding." - adding in {$objectRef->toString()}\n";
-                    if( $context->isAPI )
-                        $objectRef->API_add($foundObject);
-                    else
-                        $objectRef->add($foundObject);
-                } else
-                {
-                    derr('unsupported class');
-                }
-
-            }
-        }
-    },
-    'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
-);
-
-$supportedActions['replacewithobject'] = Array(
-    'name' => 'replaceWithObject',
-    'MainFunction' => function ( ServiceCallContext $context )
-    {
-        $object = $context->object;
-        $objectRefs = $object->getReferences();
-
-        $foundObject = $object->owner->find($context->arguments['objectName']);
-
-        if( $foundObject === null )
-            derr("cannot find an object named '{$context->arguments['objectName']}'");
-
-        /** @var ServiceGroup|ServiceRuleContainer $objectRef */
-
-        foreach ($objectRefs as $objectRef)
-        {
-            print $context->padding." * replacing in {$objectRef->toString()}\n";
-            if( $context->isAPI )
-                $objectRef->API_replaceReferencedObject($object, $foundObject);
-            else
-                $objectRef->replaceReferencedObject($object, $foundObject);
-        }
-
-    },
-    'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
-);
-
-$supportedActions['exporttoexcel'] = Array(
-    'name' => 'exportToExcel',
-    'MainFunction' => function(ServiceCallContext $context)
-    {
-        $object = $context->object;
-        $context->objectList[] = $object;
-    },
-    'GlobalInitFunction' => function(ServiceCallContext $context)
-    {
-        $context->objectList = Array();
-    },
-    'GlobalFinishFunction' => function(ServiceCallContext $context)
-    {
-        $args = &$context->arguments;
-        $filename = $args['filename'];
-
-        $lines = '';
-        $encloseFunction  = function($value, $nowrap = true)
-        {
-            if( is_string($value) )
-                $output = htmlspecialchars($value);
-            elseif( is_array($value) )
-            {
-                $output = '';
-                $first = true;
-                foreach( $value as $subValue )
-                {
-                    if( !$first )
-                    {
-                        $output .= '<br />';
-                    }
-                    else
-                        $first= false;
-
-                    if( is_string($subValue) )
-                        $output .= htmlspecialchars($subValue);
-                    else
-                        $output .= htmlspecialchars($subValue->name());
-                }
-            }
-            else
-                derr('unsupported');
-
-            if( $nowrap )
-                return '<td style="white-space: nowrap">'.$output.'</td>';
-
-            return '<td>'.$output.'</td>';
-        };
-
-        $count = 0;
-        if( isset($context->objectList) )
-        {
-            foreach ($context->objectList as $object)
-            {
-                $count++;
-
-                /** @var Service|ServiceGroup $object */
-                if ($count % 2 == 1)
-                    $lines .= "<tr>\n";
-                else
-                    $lines .= "<tr bgcolor=\"#DDDDDD\">";
-
-                if ($object->owner->owner->isPanorama() || $object->owner->owner->isFirewall())
-                    $lines .= $encloseFunction('shared');
-                else
-                    $lines .= $encloseFunction($object->owner->owner->name());
-
-                $lines .= $encloseFunction($object->name());
-
-                if( $object->isGroup() )
-                {
-                        $lines .= $encloseFunction('group');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction('');
-                        $lines .= $encloseFunction($object->members());
-                }
-                elseif ( $object->isService() )
-                {
-                    if( $object->isTmpSrv() )
-                        $lines .= $encloseFunction('unknown');
-                    else
-                    {
-                        if( $object->isTcp() )
-                            $lines .= $encloseFunction('service-tcp');
-                        else
-                            $lines .= $encloseFunction('service-udp');
-
-                        $lines .= $encloseFunction($object->getDestPort());
-                        $lines .= $encloseFunction($object->getSourcePort());
-                    }
-
-                    $lines .= $encloseFunction($object->description(), false);
-                }
-
-                $lines .= "</tr>\n";
-            }
-        }
-
-        $content = file_get_contents(dirname(__FILE__).'/common/html-export-template.html');
-        $content = str_replace('%TableHeaders%',
-                                '<th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>members</th><th>description</th>',
-                                $content);
-
-        $content = str_replace('%lines%', $lines, $content);
-
-        $jscontent =  file_get_contents(dirname(__FILE__).'/common/jquery-1.11.js');
-        $jscontent .= "\n";
-        $jscontent .= file_get_contents(dirname(__FILE__).'/common/jquery.stickytableheaders.min.js');
-        $jscontent .= "\n\$('table').stickyTableHeaders();\n";
-
-        $content = str_replace('%JSCONTENT%', $jscontent, $content);
-
-        file_put_contents($filename, $content);
-    },
-    'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
-);
-
-// TODO replaceByApp with file list
-
-$supportedActions['move'] = Array(
-    'name' => 'move',
-    'MainFunction' =>  function ( ServiceCallContext $context )
-    {
-        $object = $context->object;
-
-        $localLocation = 'shared';
-
-        if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isFirewall() )
-            $localLocation = $object->owner->owner->name();
-
-        $targetLocation = $context->arguments['location'];
-        $targetStore = null;
-
-        if( $localLocation == $targetLocation )
-        {
-            print $context->padding."   * SKIPPED because original and target destinations are the same: $targetLocation\n";
-            return;
-        }
-
-        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
-
-        if( $targetLocation == 'shared' )
-        {
-            $targetStore = $rootObject->serviceStore;
-        }
-        else
-        {
-            $findSubSystem = $rootObject->findSubSystemByName($targetLocation);
-            if( $findSubSystem === null )
-                derr("cannot find VSYS/DG named '$targetLocation'");
-
-            $targetStore = $findSubSystem->serviceStore;
-        }
-
-        if( $localLocation == 'shared' )
-        {
-            print $context->padding."   * SKIPPED : moving from SHARED to sub-level is not yet supported\n";
-            return;
-        }
-
-        if( $localLocation != 'shared' && $targetLocation != 'shared' )
-        {
-            print $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
-            return;
-        }
-
-        $conflictObject = $targetStore->find($object->name() ,null, false);
-        if( $conflictObject === null )
-        {
-            print $context->padding."   * moved, no conflict\n";
-            if( $context->isAPI )
-            {
-                derr("unsupported with API yet, use offline mode instead");
-            }
-            else
-            {
-                $object->owner->remove($object);
-                $targetStore->add($object);
-            }
-            return;
-        }
-
-        if( $context->arguments['mode'] == 'skipifconflict' )
-        {
-            print $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
-            return;
-        }
-
-        print $context->padding."   - there is a conflict with type ";
-        if( $conflictObject->isGroup() )
-            print "Group\n";
-        else
-            print "Service\n";
-
-        if( $conflictObject->isGroup() && !$object->isGroup() || !$conflictObject->isGroup() && $object->isGroup() )
-        {
-            print $context->padding."   * SKIPPED because conflict has mismatching types\n";
-            return;
-        }
-
-        if( $conflictObject->isTmpSrv() && !$object->isTmpSrv() )
-        {
-            derr("unsupported situation with a temporary object");
-            return;
-        }
-
-        if( $object->isTmpSrv() )
-        {
-            print $context->padding."   * SKIPPED because this object is Tmp\n";
-            return;
-        }
-
-        if( $object->isGroup() )
-        {
-            if( $object->equals($conflictObject) )
-            {
-                print "    * Removed because target has same content\n";
-                goto do_replace;
-            }
-            else
-            {
-                $object->displayValueDiff($conflictObject, 9);
-                if( $context->arguments['mode'] == 'removeifmatch')
-                {
-                    print $context->padding."    * SKIPPED because of mismatching group content\n";
-                    return;
-                }
-
-                $localMap = $object->dstPortMapping();
-                $targetMap = $conflictObject->dstPortMapping();
-
-                if( ! $localMap->equals($targetMap) )
-                {
-                    print $context->padding."    * SKIPPED because of mismatching group content and numerical values\n";
-                    return;
-                }
-
-                print "    * Removed because it has same numerical value\n";
-
-                goto do_replace;
-
-            }
-            return;
-        }
-
-        if( $object->equals($conflictObject) )
-        {
-            print "    * Removed because target has same content\n";
-            goto do_replace;
-        }
-
-        if( $context->arguments['mode'] == 'removeifmatch' )
-            return;
-
-        $localMap = $object->dstPortMapping();
-        $targetMap = $conflictObject->dstPortMapping();
-
-        if( ! $localMap->equals($targetMap) )
-        {
-            print $context->padding."    * SKIPPED because of mismatching content and numerical values\n";
-            return;
-        }
-
-        print "    * Removed because target has same numerical value\n";
-
-        do_replace:
-
-        $object->replaceMeGlobally($conflictObject);
-        if($context->isAPI)
-            $object->owner->API_remove($object);
-        else
-            $object->owner->remove($object);
-
-
-    },
-    'args' => Array( 'location' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
-        'mode' => Array( 'type' => 'string', 'default' => 'skipIfConflict', 'choices' => Array( 'skipIfConflict', 'removeIfMatch', 'removeIfNumericalMatch') )
-    ),
-);
-
-$supportedActions['removewhereused'] = Array(
-    'name' => 'removeWhereUsed',
-    'MainFunction' => function ( ServiceCallContext $context )
-    {
-        $object = $context->object;
-
-        if( $context->isAPI )
-            $object->API_removeWhereIamUsed(true, $context->padding, $context->arguments['actionIfLastMemberInRule']);
-        else
-            $object->removeWhereIamUsed(true, $context->padding, $context->arguments['actionIfLastMemberInRule']);
-    },
-    'args' => Array( 'actionIfLastMemberInRule' => Array(   'type' => 'string',
-                                                            'default' => 'delete',
-                                                            'choices' => Array( 'delete', 'disable', 'setAny' )
-                                                        ),
-    ),
-);
-
-$supportedActions['replacegroupbyservice'] = Array(
-    'name' => 'replaceGroupByService',
-    'MainFunction' => function ( ServiceCallContext $context )
-    {
-        $object = $context->object;
-
-        if( $context->isAPI )
-            derr("action 'replaceGroupByService' is not support in API/online mode yet");
-
-        if( $object->isService() )
-        {
-            print $context->padding." *** SKIPPED : this is not a group\n";
-            return;
-        }
-        if( !$object->isGroup() )
-        {
-            print $context->padding." *** SKIPPED : unsupported object type\n";
-            return;
-        }
-        if( $object->count() < 1 )
-        {
-            print $context->padding." *** SKIPPED : group has no member\n";
-            return;
-        }
-
-        $mapping = $object->dstPortMapping();
-        if( $mapping->hasTcpMappings() && $mapping->hasUdpMappings() )
-        {
-            print $context->padding." *** SKIPPED : group has a mix of UDP and TCP based mappings, they cannot be merged in a single object\n";
-            return;
-        }
-
-        foreach( $object->members() as $member )
-        {
-            if( $member->isTmpSrv() )
-            {
-                print $context->padding." *** SKIPPED : temporary services detected\n";
-                return;
-            }
-        }
-
-
-        $store = $object->owner;
-
-        $store->remove($object);
-
-        if( $mapping->hasUdpMappings() )
-            $newService = $store->newService($object->name(), 'udp', $mapping->udpMappingToText() );
-        else
-            $newService = $store->newService($object->name(), 'tcp', $mapping->tcpMappingToText() );
-
-        $object->replaceMeGlobally($newService);
-
-        if( $mapping->hasUdpMappings() )
-            print $context->padding." * replaced by service with same name and value: udp/{$newService->dstPortMapping()->udpMappingToText()}\n";
-        else
-            print $context->padding." * replaced by service with same name and value: tcp/{$newService->dstPortMapping()->tcpMappingToText()}\n";
-
-    },
-);
-
-$supportedActions['replacebymembersanddelete'] = Array(
-    'name' => 'replaceByMembersAndDelete',
-    'MainFunction' => function ( ServiceCallContext $context )
-    {
-        $object = $context->object;
-
-
-        if( !$object->isGroup() )
-        {
-            print $context->padding."     *  skipped it's not a group\n";
-            return;
-        }
-
-
-        $objectRefs = $object->getReferences();
-
-        $clearForAction = true;
-        foreach( $objectRefs as $objectRef )
-        {
-            $class = get_class($objectRef);
-            if( $class != 'ServiceRuleContainer' && $class != 'ServiceGroup' )
-            {
-                $clearForAction = false;
-                print "     *  skipped because its used in unsupported class $class\n";
-                return;
-            }
-        }
-        if( $clearForAction )
-        {
-            foreach ($objectRefs as $objectRef)
-            {
-                $class = get_class($objectRef);
-                if( $class == 'ServiceRuleContainer' )
-                {
-                    /** @var ServiceRuleContainer $objectRef */
-
-                    print $context->padding."    - in Reference: {$objectRef->toString()}\n";
-                    foreach ($object->members() as $objectMember)
-                    {
-                        print $context->padding."      - adding {$objectMember->name()}\n";
-                        if( $context->isAPI )
-                            $objectRef->API_add($objectMember);
-                        else
-                            $objectRef->add($objectMember);
-                    }
-                    if( $context->isAPI )
-                        $objectRef->API_remove($object);
-                    else
-                        $objectRef->remove($object);
-                }
-                elseif( $class == 'ServiceGroup' )
-                {
-                    /** @var ServiceGroup $objectRef */
-
-                    print $context->padding."    - in Reference: {$objectRef->toString()}\n";
-                    foreach ($object->members() as $objectMember)
-                    {
-                        print $context->padding."      - adding {$objectMember->name()}\n";
-                        if( $context->isAPI )
-                            $objectRef->API_addMember($objectMember);
-                        else
-                            $objectRef->addMember($objectMember);
-                    }
-                    if( $context->isAPI )
-                        $objectRef->API_removeMember($object);
-                    else
-                        $objectRef->removeMember($object);
-                }
-                else
-                {
-                    derr('unsupported class');
-                }
-
-            }
-            if( $context->isAPI )
-                $object->owner->API_remove($object, true);
-            else
-                $object->owner->remove($object, true);
-        }
-    },
-);
 
 $supportedActions['name-addprefix'] = Array(
     'name' => 'name-addPrefix',
-    'MainFunction' =>  function ( ServiceCallContext $context )
+    'MainFunction' =>  function ( TagCallContext $context )
     {
         $object = $context->object;
         $newName = $context->arguments['prefix'].$object->name();
         print $context->padding." - new name will be '{$newName}'\n";
-        if( strlen($newName) > 63 )
+        if( strlen($newName) > 127 )
         {
             print " *** SKIPPED : resulting name is too long\n";
             return;
@@ -678,6 +163,7 @@ $supportedActions['name-addprefix'] = Array(
         if( $context->isAPI )
             $object->API_setName($newName);
         else
+
             $object->setName($newName);
     },
     'args' => Array( 'prefix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
@@ -685,12 +171,12 @@ $supportedActions['name-addprefix'] = Array(
 );
 $supportedActions['name-addsuffix'] = Array(
     'name' => 'name-addSuffix',
-    'MainFunction' =>  function ( ServiceCallContext $context )
+    'MainFunction' =>  function ( TagCallContext $context )
     {
         $object = $context->object;
         $newName = $object->name().$context->arguments['suffix'];
         print $context->padding." - new name will be '{$newName}'\n";
-        if( strlen($newName) > 63 )
+        if( strlen($newName) > 127 )
         {
             print " *** SKIPPED : resulting name is too long\n";
             return;
@@ -713,7 +199,7 @@ $supportedActions['name-addsuffix'] = Array(
 );
 $supportedActions['name-removeprefix'] = Array(
     'name' => 'name-removePrefix',
-    'MainFunction' =>  function ( ServiceCallContext $context )
+    'MainFunction' =>  function ( TagCallContext $context )
     {
         $object = $context->object;
         $prefix = $context->arguments['prefix'];
@@ -751,7 +237,7 @@ $supportedActions['name-removeprefix'] = Array(
 );
 $supportedActions['name-removesuffix'] = Array(
     'name' => 'name-removeSuffix',
-    'MainFunction' =>  function ( ServiceCallContext $context )
+    'MainFunction' =>  function ( TagCallContext $context )
     {
         $object = $context->object;
         $suffix = $context->arguments['suffix'];
@@ -785,7 +271,7 @@ $supportedActions['name-removesuffix'] = Array(
 
 $supportedActions['displayreferences'] = Array(
     'name' => 'displayReferences',
-    'MainFunction' => function ( ServiceCallContext $context )
+    'MainFunction' => function ( TagCallContext $context )
     {
         $object = $context->object;
 
@@ -795,12 +281,11 @@ $supportedActions['displayreferences'] = Array(
 
 $supportedActions['display'] = Array(
     'name' => 'display',
-    'MainFunction' => function ( ServiceCallContext $context )
+    'MainFunction' => function ( TagCallContext $context )
     {
         $object = $context->object;
         print "     * ".get_class($object)." '{$object->name()}' \n";
-        if( $object->isGroup() ) foreach($object->members() as $member) print "          - {$member->name()}\n";
-                print "\n\n";
+        print "\n\n";
     },
 );
 // </editor-fold>
@@ -883,11 +368,11 @@ if( isset(PH::$args['listactions']) )
 
 if( isset(PH::$args['listfilters']) )
 {
-    ksort(RQuery::$defaultFilters['service']);
+    ksort(RQuery::$defaultFilters['tag']);
 
     print "Listing of supported filters:\n\n";
 
-    foreach(RQuery::$defaultFilters['service'] as $index => &$filter )
+    foreach(RQuery::$defaultFilters['tag'] as $index => &$filter )
     {
         print "* ".$index."\n";
         ksort( $filter['operators'] );
@@ -1045,7 +530,7 @@ else
 // Extracting actions
 //
 $explodedActions = explode('/', $doActions);
-/** @var ServiceCallContext[] $doActions */
+/** @var TagCallContext[] $doActions */
 $doActions = Array();
 foreach( $explodedActions as &$exAction )
 {
@@ -1063,7 +548,7 @@ foreach( $explodedActions as &$exAction )
     if( count($explodedAction) == 1 )
         $explodedAction[1] = '';
 
-    $context = new ServiceCallContext($supportedActions[$actionName], $explodedAction[1]);
+    $context = new TagCallContext($supportedActions[$actionName], $explodedAction[1]);
     $context->baseObject = $pan;
     if( $configInput['type'] == 'api' )
     {
@@ -1086,7 +571,7 @@ foreach( $explodedActions as &$exAction )
 $objectFilterRQuery = null;
 if( $objectsFilter !== null )
 {
-    $objectFilterRQuery = new RQuery('service');
+    $objectFilterRQuery = new RQuery('tag');
     $res = $objectFilterRQuery->parseFromString($objectsFilter, $errorMessage);
     if( $res === false )
     {
@@ -1147,14 +632,14 @@ foreach( $objectsLocation as $location )
     {
         if( $location == 'shared' || $location == 'any'  )
         {
-            $objectsToProcess[] = Array('store' => $pan->serviceStore, 'objects' => $pan->serviceStore->all());
+            $objectsToProcess[] = Array('store' => $pan->tagStore, 'objects' => $pan->tagStore->getall());
             $locationFound = true;
         }
         foreach ($pan->getVirtualSystems() as $sub)
         {
             if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
             {
-                $objectsToProcess[] = Array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all());
+                $objectsToProcess[] = Array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall());
                 $locationFound = true;
             }
         }
@@ -1164,7 +649,7 @@ foreach( $objectsLocation as $location )
         if( $location == 'shared' || $location == 'any' )
         {
 
-            $objectsToProcess[] = Array('store' => $pan->serviceStore, 'objects' => $pan->serviceStore->all());
+            $objectsToProcess[] = Array('store' => $pan->tagStore, 'objects' => $pan->tagStore->getall());
             $locationFound = true;
         }
 
@@ -1172,7 +657,7 @@ foreach( $objectsLocation as $location )
         {
             if( ($location == 'any' || $location == 'all' || $location == $sub->name()) && !isset($ruleStoresToProcess[$sub->name().'%pre']) )
             {
-                $objectsToProcess[] = Array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all() );
+                $objectsToProcess[] = Array('store' => $sub->tagStore, 'objects' => $sub->tagStore->getall() );
                 $locationFound = true;
             }
         }
@@ -1215,7 +700,7 @@ foreach( $objectsToProcess as &$objectsRecord )
 {
     $subObjectsProcessed = 0;
 
-    /** @var ServiceStore $store */
+    /** @var TagStore $store */
     $store = $objectsRecord['store'];
     $objects = &$objectsRecord['objects'];
     foreach( $doActions as $doAction )
@@ -1297,7 +782,7 @@ if( $configOutput !== null )
 }
 
 
-print "\n\n*********** END OF SERVICE-EDIT UTILITY **********\n";
+print "\n\n*********** END OF TAG-EDIT UTILITY **********\n";
 print     "**************************************************\n";
 print "\n\n";
 
