@@ -2112,6 +2112,49 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
             $value = $context->nestedQueries[$value];
         }
 
+        if( strpos( $value, '$$value$$' ) !== FALSE )
+        {
+            $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+            if( !$object->isGroup() )
+                $replace = str_replace(Array('.', '/'), Array('\.', '\/'), $object->value() );
+
+            $value = str_replace( '$$value$$', $replace, $value);
+
+        }
+        if( strpos( $value, '$$value.no-netmask$$' ) !== FALSE )
+        {
+            $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+            if( !$object->isGroup() && $object->isType_ipNetmask() )
+                $replace = str_replace('.', '\.', $object->getNetworkValue() );
+
+            $value = str_replace( '$$value.no-netmask$$',  $replace, $value);
+        }
+        if( strpos( $value, '$$netmask$$' ) !== FALSE )
+        {
+            $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+            if( !$object->isGroup() && $object->isType_ipNetmask() )
+                $replace = $object->getNetworkMask();
+
+            $value = str_replace( '$$netmask$$',  $replace, $value);
+        }
+        if( strpos( $value, '$$netmask.blank32$$' ) !== FALSE )
+        {
+            $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+            if( !$object->isGroup() && $object->isType_ipNetmask() )
+            {
+                $netmask = $object->getNetworkMask();
+                if( $netmask != 32 )
+                    $replace = $object->getNetworkMask();
+            }
+
+            $value = str_replace( '$$netmask.blank32$$',  $replace, $value);
+        }
+
+        if( strlen($value) == 0 )
+            return false;
+        if( strpos($value, '//') !== FALSE )
+            return false;
+
         $matching = preg_match($value, $object->name());
         if( $matching === FALSE )
             derr("regular expression error on '{$value}'");

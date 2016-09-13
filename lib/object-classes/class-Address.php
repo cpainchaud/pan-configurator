@@ -488,6 +488,37 @@ class Address
 
 	}
 
+	public function getNetworkMask()
+    {
+        if( $this->type !== self::TypeIpNetmask )
+            return FALSE;
+
+        $explode = explode('/', $this->value );
+
+        if( count($explode) < 2 )
+            return 32;
+
+        else
+            return intval($explode[1]);
+    }
+
+    /**
+     * @return bool|string
+     */
+    public function getNetworkValue()
+    {
+        if( $this->type !== self::TypeIpNetmask )
+            return FALSE;
+
+        $explode = explode('/', $this->value );
+
+        if( count($explode) < 2 )
+            return $this->value;
+
+        else
+            return $explode[0];
+    }
+
 	public function nameIsValidRuleIPEntry()
 	{
 		if( filter_var($this->name, FILTER_VALIDATE_IP) !== false  )

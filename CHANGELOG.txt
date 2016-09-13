@@ -5,11 +5,12 @@ CHANGELOG
 * new function AddressCommon->hasDescendants() to determine if objects with same name in lower level (child devicegroups) exist
 * new 'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger' utilities. Safer, faster and find more dups than MT.
 * new tag-edit utility on the same basis as address-edit.
+* Improved address name regex based filter with support to insert objects value: $$netmask$$, $$netmask.blank32$$, $$value$$, $$value.no-netmask$$
 
 utils:
 rules-edit: new actions 'tag-remove-all'
 rules-edit: new filter 'service has.regex'
-address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial'
+address-edit: new filters 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial'
 address-edit: new actions 'name-removePrefix, name-removeSuffix'
 service-edit: new actions 'name-removePrefix, name-removeSuffix'
 override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
