@@ -36,8 +36,9 @@ $supportedArguments[] = Array(
         "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
     'argDesc'=> 'SamePorts|WhereUsed');
 $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => 'vsys1|shared|dg1');
-$supportedArguments[] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
+$supportedArguments[] = Array('niceName' => 'mergeCountLimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
 $supportedArguments[] = Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '(name regex /^g/)');
+$supportedArguments[] = Array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
 $supportedArguments[] = Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
@@ -193,18 +194,30 @@ if( $panc->isPanorama() )
         $childDeviceGroups = $findLocation->childDeviceGroups(true);
 }
 
-$query = null;
+$pickFilter = null;
 if( isset(PH::$args['pickfilter']) )
 {
-    $query = new RQuery('service');
+    $pickFilter = new RQuery('service');
     $errMsg = '';
-    if( $query->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
+    if( $pickFilter->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
         derr("invalid pickFilter was input: ".$errMsg);
     echo " - pickFilter was input: ";
-    $query->display();
+    $pickFilter->display();
     echo "\n";
 
 }
+$excludeFilter = null;
+if( isset(PH::$args['excludefilter']) )
+{
+    $excludeFilter = new RQuery('service');
+    $errMsg = '';
+    if( $excludeFilter->parseFromString(PH::$args['excludefilter'], $errMsg) === FALSE )
+        derr("invalid pickFilter was input: ".$errMsg);
+    echo " - excludeFilter was input: ";
+    $excludeFilter->display();
+    echo "\n";
+}
+
 $upperLevelSearch = false;
 if( isset(PH::$args['allowmergingwithupperlevel']) )
     $upperLevelSearch = true;
@@ -293,6 +306,9 @@ foreach( $objectsToSearchThrough as $object )
     if( !$object->isGroup() )
         continue;
 
+    if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+        continue;
+
     $skipThisOne = false;
 
     // Object with descendants in lower device groups should be excluded
@@ -355,13 +371,13 @@ foreach( $hashMap as $index => &$hash )
 
     $pickedObject = null;
 
-    if( $query !== null )
+    if( $pickFilter !== null )
     {
         if( isset($upperHashMap[$index]) )
         {
             foreach( $upperHashMap[$index] as $object )
             {
-                if( $query->matchSingleObject($object) )
+                if( $pickFilter->matchSingleObject($object) )
                 {
                     $pickedObject = $object;
                     break;
@@ -376,7 +392,7 @@ foreach( $hashMap as $index => &$hash )
         {
             foreach( $hash as $object )
             {
-                if( $query->matchSingleObject($object) )
+                if( $pickFilter->matchSingleObject($object) )
                 {
                     $pickedObject = $object;
                     break;

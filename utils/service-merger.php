@@ -32,11 +32,12 @@ $supportedArguments[] = Array(    'niceName' => 'DupAlgorithm',
                                                     "  - SamePorts: objects with same ports will be replaced by the one picked (default)\n".
                                                     "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
                                                 'argDesc'=> 'SamePorts|WhereUsed');
-$supportedArguments[] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
+$supportedArguments[] = Array('niceName' => 'mergeCountLimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
 $supportedArguments[] = Array(  'niceName' => 'pickFilter',
                                             'shortHelp' => "specify a filter a pick which object will be kept while others will be replaced by this one.\n".
                                                 "   ie: 2 services are found to be mergeable: 'H-1.1.1.1' and 'Server-ABC'. Then by using pickFilter=(name regex /^H-/) you would ensure that object H-1.1.1.1 would remain and Server-ABC be replaced by it.",
                                             'argDesc' => '(name regex /^g/)');
+$supportedArguments[] = Array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
 $supportedArguments[] = Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
@@ -191,17 +192,28 @@ else
 
 }
 
-$query = null;
+$pickFilter = null;
 if( isset(PH::$args['pickfilter']) )
 {
-    $query = new RQuery('service');
+    $pickFilter = new RQuery('service');
     $errMsg = '';
-    if( $query->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
+    if( $pickFilter->parseFromString(PH::$args['pickfilter'], $errMsg) === FALSE )
         derr("invalid pickFilter was input: ".$errMsg);
     echo " - pickFilter was input: ";
-    $query->display();
+    $pickFilter->display();
     echo "\n";
 
+}
+$excludeFilter = null;
+if( isset(PH::$args['excludefilter']) )
+{
+    $excludeFilter = new RQuery('service');
+    $errMsg = '';
+    if( $excludeFilter->parseFromString(PH::$args['excludefilter'], $errMsg) === FALSE )
+        derr("invalid pickFilter was input: ".$errMsg);
+    echo " - excludeFilter was input: ";
+    $excludeFilter->display();
+    echo "\n";
 }
 
 $upperLevelSearch = false;
@@ -234,6 +246,9 @@ if( $dupAlg == 'sameports' )
         if( $object->isTmpSrv() )
             continue;
 
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+            continue;
+
         $value = $object->dstPortMapping()->mappingToText();
 
         if( $object->owner === $store )
@@ -256,6 +271,9 @@ elseif( $dupAlg == 'whereused' )
         if( !$object->isService() )
             continue;
         if( $object->isTmpSrv() )
+            continue;
+
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
             continue;
 
         $value = $object->getRefHashComp().$object->protocol();
@@ -301,13 +319,13 @@ if( $dupAlg == 'sameports' )
 
         $pickedObject = null;
 
-        if( $query !== null )
+        if( $pickFilter !== null )
         {
             if( isset($upperHashMap[$index]) )
             {
                 foreach( $upperHashMap[$index] as $object )
                 {
-                    if( $query->matchSingleObject($object) )
+                    if( $pickFilter->matchSingleObject($object) )
                     {
                         $pickedObject = $object;
                         break;
@@ -322,7 +340,7 @@ if( $dupAlg == 'sameports' )
             {
                 foreach( $hash as $object )
                 {
-                    if( $query->matchSingleObject($object) )
+                    if( $pickFilter->matchSingleObject($object) )
                     {
                         $pickedObject = $object;
                         break;
@@ -413,11 +431,11 @@ elseif( $dupAlg == 'whereused' )
 
         $pickedObject = null;
 
-        if( $query !== null )
+        if( $pickFilter !== null )
         {
             foreach( $hash as $object)
             {
-                if( $query->matchSingleObject($object) )
+                if( $pickFilter->matchSingleObject($object) )
                 {
                     $pickedObject = $object;
                     break;
