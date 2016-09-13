@@ -17,68 +17,32 @@
  */
 
 echo "\n***********************************************\n";
-echo   "*********** SERVICE-MERGER UTILITY **************\n\n";
+echo   "*********** ".basename(__FILE__)." UTILITY **************\n\n";
 
-set_include_path( get_include_path() . PATH_SEPARATOR . dirname(__FILE__).'/../');
+set_include_path( dirname(__FILE__).'/../'. PATH_SEPARATOR . get_include_path() );
 require_once("lib/panconfigurator.php");
-
-
-function display_usage_and_exit($shortMessage = false)
-{
-    global $argv;
-    echo PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml out=outputfile.xml location=shared|vsys1|dg1 [dupAlgorithm=XYZ] [MergeCountLimit=100]".
-        "\n";
-
-    if( !$shortMessage )
-    {
-        echo PH::boldText("\nListing available arguments\n\n");
-
-        global $supportedArguments;
-
-        ksort($supportedArguments);
-        foreach( $supportedArguments as &$arg )
-        {
-            echo " - ".PH::boldText($arg['niceName']);
-            if( isset( $arg['argDesc']))
-                echo '='.$arg['argDesc'];
-            //."=";
-            if( isset($arg['shortHelp']))
-                echo "\n     ".str_replace("\n", "\n    ",$arg['shortHelp']);
-            echo "\n\n";
-        }
-
-        echo "\n\n";
-    }
-
-    exit(1);
-}
-
-function display_error_usage_exit($msg)
-{
-    fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
-    display_usage_and_exit(true);
-}
-
+require_once(dirname(__FILE__).'/common/misc.php');
 
 $supportedArguments = Array();
-$supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
-$supportedArguments['out'] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-$supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
-$supportedArguments['dupalgorithm'] = Array(    'niceName' => 'DupAlgorithm',
+$supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
+$supportedArguments[] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
+$supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
+$supportedArguments[] = Array(    'niceName' => 'DupAlgorithm',
                                                 'shortHelp' => "Specifies how to detect duplicates:\n".
                                                     "  - SamePorts: objects with same ports will be replaced by the one picked (default)\n".
                                                     "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
                                                 'argDesc'=> 'SamePorts|WhereUsed');
-$supportedArguments['mergecountlimit'] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '=100');
-$supportedArguments['pickfilter'] = Array(  'niceName' => 'pickFilter',
+$supportedArguments[] = Array('niceName' => 'mergecountlimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
+$supportedArguments[] = Array(  'niceName' => 'pickFilter',
                                             'shortHelp' => "specify a filter a pick which object will be kept while others will be replaced by this one.\n".
                                                 "   ie: 2 services are found to be mergeable: 'H-1.1.1.1' and 'Server-ABC'. Then by using pickFilter=(name regex /^H-/) you would ensure that object H-1.1.1.1 would remain and Server-ABC be replaced by it.",
                                             'argDesc' => '(name regex /^g/)');
-$supportedArguments['allowmergingwithupperlevel'] =Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
-$supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
+$supportedArguments[] = Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
+$supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
-// load PAN-Configurator library
-require_once("lib/panconfigurator.php");
+$usageMsg = PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=inputfile.xml [out=outputfile.xml] location=shared [dupAlgorithm=XYZ] [MergeCountLimit=100] ['pickFilter=(name regex /^H-/)']...";
+
+prepareSupportedArgumentsArray($supportedArguments);
 
 PH::processCliArgs();
 
@@ -92,7 +56,6 @@ foreach ( PH::$args as $index => &$arg )
             $nestedQueries[$index] = &$arg;
             continue;
         }
-        //var_dump($supportedArguments);
         display_error_usage_exit("unsupported argument provided: '$index'");
     }
 }
