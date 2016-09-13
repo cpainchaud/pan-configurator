@@ -118,7 +118,8 @@ class RQuery
                         }
                         if( $objectFind === null )
                         {
-                            fwrite(STDERR, "\n\n**ERROR** cannot find object with name '".$this->argument."'\n\n");
+                            $locationStr = PH::getLocationString($object);
+                            fwrite(STDERR, "\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
                             exit(1);
                         }
                         if( !is_string($this->refOperator['eval']) )
