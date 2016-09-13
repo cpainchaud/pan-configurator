@@ -629,7 +629,7 @@ class SecurityRule extends RuleWithUserID
 	*/
     public function setLogEnd($yes)
     {
-        if( $this->logstart != $yes )
+        if( $this->logend != $yes )
         {
             $tmp = DH::findFirstElementOrCreate('log-end', $this->xmlroot);
             DH::setDomNodeText( $tmp, boolYesNo($yes));

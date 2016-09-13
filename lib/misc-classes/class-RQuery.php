@@ -118,7 +118,8 @@ class RQuery
                         }
                         if( $objectFind === null )
                         {
-                            fwrite(STDERR, "\n\n**ERROR** cannot find object with name '".$this->argument."'\n\n");
+                            $locationStr = PH::getLocationString($object);
+                            fwrite(STDERR, "\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
                             exit(1);
                         }
                         if( !is_string($this->refOperator['eval']) )
@@ -1322,6 +1323,37 @@ RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
 );
+RQuery::$defaultFilters['rule']['service']['operators']['has.regex'] = Array(
+    'eval' => function(RuleRQueryContext $context)
+    {
+        $rule = $context->object;
+
+        if( $rule->isSecurityRule() )
+        {
+            foreach( $rule->services->getAll() as $service )
+            {
+                $matching = preg_match($context->value, $service->name() );
+                if( $matching === FALSE )
+                    derr("regular expression error on '{$context->value}'");
+                if( $matching === 1 )
+                    return true;
+            }
+        }
+        elseif( $rule->isNatRule() )
+        {
+            $matching = preg_match($context->value, $rule->service->name() );
+            if( $matching === FALSE )
+                derr("regular expression error on '{$context->value}'");
+            if( $matching === 1 )
+                return true;
+        }
+        else
+            derr("unsupported rule type");
+
+        return false;
+    },
+    'arg' => true,
+);
 
 
 //                                              //
@@ -2080,6 +2112,44 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
             $value = $context->nestedQueries[$value];
         }
 
+        if( strpos( $value, '$$value$$' ) !== FALSE )
+        {
+            $replace = '';
+            if( !$object->isGroup() )
+                $replace = str_replace(Array('.', '/'), Array('\.', '\/'), $object->value() );
+
+            $value = str_replace( '$$value$$', $replace, $value);
+
+        }
+        if( strpos( $value, '$$value.no-netmask$$' ) !== FALSE )
+        {
+            $replace = '';
+            if( !$object->isGroup() && $object->isType_ipNetmask() )
+                $replace = str_replace('.', '\.', $object->getNetworkValue() );
+
+            $value = str_replace( '$$value.no-netmask$$',  $replace, $value);
+        }
+        if( strpos( $value, '$$netmask$$' ) !== FALSE )
+        {
+            $replace = '';
+            if( !$object->isGroup() && $object->isType_ipNetmask() )
+                $replace .= $object->getNetworkMask();
+
+            $value = str_replace( '$$netmask$$',  $replace, $value);
+        }
+        if( strpos( $value, '$$netmask.blank32$$' ) !== FALSE )
+        {
+            $replace = '';
+            if( !$object->isGroup() && $object->isType_ipNetmask() )
+            {
+                $netmask = $object->getNetworkMask();
+                if( $netmask != 32 )
+                    $replace .= $object->getNetworkMask();
+            }
+
+            $value = str_replace( '$$netmask.blank32$$',  $replace, $value);
+        }
+
         $matching = preg_match($value, $object->name());
         if( $matching === FALSE )
             derr("regular expression error on '{$value}'");
@@ -2477,6 +2547,75 @@ RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
 //
 
 // <editor-fold desc=" ***** Tag filters *****" defaultstate="collapsed" >
+RQuery::$defaultFilters['tag']['refcount']['operators']['>,<,=,!'] = Array(
+    'eval' => '$object->countReferences() !operator! !value!',
+    'arg' => true
+);
+RQuery::$defaultFilters['tag']['object']['operators']['is.unused'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        return $context->object->countReferences() == 0;
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['tag']['name']['operators']['is.in.file'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === false )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        return isset($list[$object->name()]);
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['tag']['object']['operators']['is.tmp'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        return $context->object->isTmp();
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['tag']['name']['operators']['eq'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        return $context->object->name() == $context->value;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['tag']['name']['operators']['eq.nocase'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        return strtolower($context->object->name()) == strtolower($context->value);
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['tag']['name']['operators']['contains'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        return strpos($context->object->name(), $context->value) !== false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['tag']['name']['operators']['regex'] = Array(
     'Function' => function(TagRQueryContext $context )
     {
@@ -2497,6 +2636,25 @@ RQuery::$defaultFilters['tag']['name']['operators']['regex'] = Array(
             derr("regular expression error on '{$value}'");
         if( $matching === 1 )
             return true;
+        return false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['tag']['location']['operators']['is'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $owner = $context->object->owner->owner;
+        if( strtolower($context->value) == 'shared' )
+        {
+            if( $owner->isPanorama() )
+                return true;
+            if( $owner->isFirewall() )
+                return true;
+            return false;
+        }
+        if( strtolower($context->value) == strtolower($owner->name()) )
+            return true;
+
         return false;
     },
     'arg' => true

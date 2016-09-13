@@ -37,6 +37,13 @@ because of firewall capacity problems for example. A collection of filters and a
 because of firewall capacity problems for example. A collection of filters and algorithms will make this tool very flexible
 to bring you a tailored process for your customer.
 
+- **servicegroup-merger.php** : merge service groups together. Useful when you want to do cleaning or reduce number of objects
+ because of firewall capacity problems for example. A collection of filters and algorithms will make this tool very flexible
+ to bring you a tailored process for your customer.
+
+- **tag-edit.php** : to make changes to tags, you can use filters to make changes only to objects of
+ interest.
+
 - **upload-config.php** : tool for easy upload/download of configuration on a PANOS device. ie: if you want to
  replicate a config from a device to another but just keep management IP address. Use 'help' argument for more details.
 

@@ -2,19 +2,25 @@ CHANGELOG
 
 1.5.11
 * new function AddressCommon->hasDescendants() to for objects with same name in lower level (child devicegroups)
-* New 'address-merger', 'addressgroup-merger' and 'service-merger' utility 'service-merger.php'. Safer, faster and find more dups than MT.
+* new function AddressCommon->hasDescendants() to determine if objects with same name in lower level (child devicegroups) exist
+* new 'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger' utilities. Safer, faster and find more dups than MT.
+* new tag-edit utility on the same basis as address-edit.
+* Improved address name regex based filter with support to insert objects value: $$netmask$$, $$netmask.blank32$$, $$value$$, $$value.no-netmask$$
 
 utils:
 rules-edit: new actions 'tag-remove-all'
-address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial'
+rules-edit: new filter 'service has.regex'
+address-edit: new filters 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial'
 address-edit: new actions 'name-removePrefix, name-removeSuffix'
 service-edit: new actions 'name-removePrefix, name-removeSuffix'
 override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
+tag-edit: new filters 'name eq', 'name contains', 'name eq.nocase', 'location is' and 'refcount - >,<,=,!'
 
 bugfix:
 - added checks to prevent crash when trying to resolve an IPv6 object into an IPv4 mapping
 - fixed a crash when exporting PBF rules to HTML in  rules-edit utility
 - fixed a crash when replacing an object used in a DNAT with another object
+- fixed an typo with setLogEnd in SecurityRule that would prevent the rule from being updated
 
 
 1.5.10
