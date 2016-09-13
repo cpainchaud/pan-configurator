@@ -1322,6 +1322,37 @@ RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
 );
+RQuery::$defaultFilters['rule']['service']['operators']['has.regex'] = Array(
+    'eval' => function(RuleRQueryContext $context)
+    {
+        $rule = $context->object;
+
+        if( $rule->isSecurityRule() )
+        {
+            foreach( $rule->services->getAll() as $service )
+            {
+                $matching = preg_match($context->value, $service->name() );
+                if( $matching === FALSE )
+                    derr("regular expression error on '{$context->value}'");
+                if( $matching === 1 )
+                    return true;
+            }
+        }
+        elseif( $rule->isNatRule() )
+        {
+            $matching = preg_match($context->value, $rule->service->name() );
+            if( $matching === FALSE )
+                derr("regular expression error on '{$context->value}'");
+            if( $matching === 1 )
+                return true;
+        }
+        else
+            derr("unsupported rule type");
+
+        return false;
+    },
+    'arg' => true,
+);
 
 
 //                                              //

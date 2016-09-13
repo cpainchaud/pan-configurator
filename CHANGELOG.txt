@@ -8,6 +8,7 @@ CHANGELOG
 
 utils:
 rules-edit: new actions 'tag-remove-all'
+rules-edit: new filter 'service has.regex'
 address-edit: new filers 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial'
 address-edit: new actions 'name-removePrefix, name-removeSuffix'
 service-edit: new actions 'name-removePrefix, name-removeSuffix'
