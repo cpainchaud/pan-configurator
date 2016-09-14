@@ -2029,6 +2029,26 @@ RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['address']['object']['operators']['is.iprange'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        if( !$context->object->isGroup() )
+            return $context->object->isType_ipRange() == true;
+        else
+            return false;
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['address']['object']['operators']['is.fqdn'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        if( !$context->object->isGroup() )
+            return $context->object->isType_FQDN() == true;
+        else
+            return false;
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['address']['object']['operators']['overrides.upper.level'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
