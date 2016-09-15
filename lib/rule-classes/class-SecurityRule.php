@@ -989,7 +989,7 @@ class SecurityRule extends RuleWithUserID
         else
             $endString = date('Y/m/d H:00:00', $endTimestamp);
 
-        $query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&async=yes&cmd=<type>'
+        $query = '<type>'
             ."<{$type}><aggregate-by><member>container-of-app</member><member>app</member></aggregate-by>"
             ."<values><member>{$repeatOrCount}</member></values></{$type}></type>"
             ."<topn>{$limit}</topn><topm>50</topm><caption>rule app container usage</caption>"
@@ -998,9 +998,15 @@ class SecurityRule extends RuleWithUserID
             ."<query>(rule eq '{$this->name}') {$dvq} {$excludedAppsString}</query>";
 
 
-        //print "\nQuery: $query\n";
+        $apiArgs = Array();
+        $apiArgs['type'] = 'report';
+        $apiArgs['reporttype'] = 'dynamic';
+        $apiArgs['reportname'] = 'custom-dynamic-report';
+        $apiArgs['async'] = 'yes';
+        $apiArgs['cmd'] = $query;
 
-        $ret = $con->getReport($query);
+
+        $ret = $con->getReport($apiArgs);
 
         return $ret;
     }
@@ -1070,7 +1076,14 @@ class SecurityRule extends RuleWithUserID
 		         .'<query>'."$dvq $query_appfilter and (rule eq '".$this->name."')</query>";
 
 
-		$ret = $con->getReport($query);
+        $apiArgs = Array();
+        $apiArgs['type'] = 'report';
+        $apiArgs['reporttype'] = 'dynamic';
+        $apiArgs['reportname'] = 'custom-dynamic-report';
+        $apiArgs['async'] = 'yes';
+        $apiArgs['cmd'] = $query;
+
+		$ret = $con->getReport($apiArgs);
 
 		return $ret;
 	}
