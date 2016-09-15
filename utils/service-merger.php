@@ -26,7 +26,7 @@ require_once(dirname(__FILE__).'/common/misc.php');
 $supportedArguments = Array();
 $supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
 $supportedArguments[] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
-$supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
+$supportedArguments[] = Array('niceName' => 'location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => 'sub1[,sub2]');
 $supportedArguments[] = Array(    'niceName' => 'DupAlgorithm',
                                                 'shortHelp' => "Specifies how to detect duplicates:\n".
                                                     "  - SamePorts: objects with same ports will be replaced by the one picked (default)\n".
