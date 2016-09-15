@@ -42,7 +42,7 @@ function prepareSupportedArgumentsArray(&$arr)
     $tmpArgs = Array();
     foreach( $arr as &$arg )
     {
-        $tmpArgs[$arg['niceName']] = $arg;
+        $tmpArgs[strtolower($arg['niceName'])] = $arg;
     }
     $arr= $tmpArgs;
 }
