@@ -8,10 +8,10 @@ CHANGELOG
 * Improved address name regex based filter with support to insert objects value: $$netmask$$, $$netmask.blank32$$, $$value$$, $$value.no-netmask$$
 
 utils:
-rules-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:H-$$value.no-netmask-$$current.name$$'
 rules-edit: new action 'tag-remove-all'
 rules-edit: new filter 'service has.regex'
-address-edit: new filters 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial', 'object is.iprange', 'object is.fqdn'
+address-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:H-$$value.no-netmask-$$current.name$$'
+address-edit: new filters 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial', 'object is.iprange', 'object is.fqdn', 'object is.ip-netmask', netmask  >,<,=,! XX
 address-edit: new actions 'name-removePrefix, name-removeSuffix'
 service-edit: new actions 'name-removePrefix, name-removeSuffix'
 override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.

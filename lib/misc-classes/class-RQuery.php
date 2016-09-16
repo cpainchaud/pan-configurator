@@ -2029,13 +2029,23 @@ RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
     },
     'arg' => false
 );
-RQuery::$defaultFilters['address']['object']['operators']['is.iprange'] = Array(
+RQuery::$defaultFilters['address']['object']['operators']['is.ip-range'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         if( !$context->object->isGroup() )
             return $context->object->isType_ipRange() == true;
-        else
-            return false;
+
+        return false;
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['address']['object']['operators']['is.ip-netmask'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        if( !$context->object->isGroup() )
+            return $context->object->isType_ipNetmask() == true;
+
+        return false;
     },
     'arg' => false
 );
@@ -2215,7 +2225,10 @@ RQuery::$defaultFilters['address']['name']['operators']['is.in.file'] = Array(
     },
     'arg' => true
 );
-
+RQuery::$defaultFilters['address']['netmask']['operators']['>,<,=,!'] = Array(
+    'eval' => '!$object->isGroup() && $object->isType_ipNetmask() && $object->getNetworkMask() !operator! !value!',
+    'arg' => true
+);
 RQuery::$defaultFilters['address']['members.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
     'arg' => true
