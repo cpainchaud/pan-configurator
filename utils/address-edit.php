@@ -631,6 +631,105 @@ $supportedActions['replacebymembersanddelete'] = Array(
     },
 );
 
+$supportedActions['name-rename'] = Array(
+    'name' => 'name-Rename',
+    'MainFunction' =>  function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+        if( $object->isGroup() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to Group objects\n";
+            return;
+        }
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $newName = str_replace('$$current.name$$', $object->name(), $newName);
+        }
+        if( strpos( $newName, '$$value$$' ) !== FALSE )
+        {
+            $newName = str_replace( '$$value$$', $object->value(), $newName);
+        }
+        if( strpos( $newName, '$$value.no-netmask$$' ) !== FALSE )
+        {
+            if( $object->isType_ipNetmask() )
+                $replace = str_replace('.', '\.', $object->getNetworkValue() );
+            else
+                $replace = $object->value();
+
+            $newName = str_replace( '$$value.no-netmask$$',  $replace, $newName);
+        }
+        if( strpos( $newName, '$$netmask$$' ) !== FALSE )
+        {
+            if( !$object->isType_ipNetmask() )
+            {
+                echo $context->padding." *** SKIPPED : 'netmask' alias is not compatible with this type of objects\n";
+                return;
+            }
+            $replace = $object->getNetworkMask();
+
+            $newName = str_replace( '$$netmask$$',  $replace, $newName);
+        }
+        if( strpos( $newName, '$$netmask.blank32$$' ) !== FALSE )
+        {
+            if( !$object->isType_ipNetmask() )
+            {
+                echo $context->padding." *** SKIPPED : 'netmask' alias is not compatible with this type of objects\n";
+                return;
+            }
+
+            $replace = '';
+            $netmask = $object->getNetworkMask();
+            if( $netmask != 32 )
+                $replace = $object->getNetworkMask();
+
+            $newName = str_replace( '$$netmask.blank32$$',  $replace, $newName);
+        }
+
+
+        if( $object->name() == $newName )
+        {
+            echo $context->padding." *** SKIPPED : new name and old name are the same\n";
+            return;
+        }
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        $findObject = $object->owner->find($newName);
+        if( $findObject !== null )
+        {
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        else
+        {
+            echo $context->padding." - renaming object... ";
+            if( $context->isAPI )
+                $object->API_setName($newName);
+            else
+                $object->setName($newName);
+            echo "OK!\n";
+        }
+
+    },
+    'args' => Array( 'stringFormula' => Array(
+        'type' => 'string',
+        'default' => '*nodefault*',
+        'help' =>
+            "This string is used to compose a name. You can use the following aliases :\n".
+            "  - \\$\$current.name\\$\\$ : name of current object\n")
+    ),
+    'help' => ''
+);
+
 $supportedActions['name-addprefix'] = Array(
     'name' => 'name-addPrefix',
     'MainFunction' =>  function ( AddressCallContext $context )
@@ -645,8 +744,7 @@ $supportedActions['name-addprefix'] = Array(
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
-            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        if( $object->owner->find($newName) !== null )
         {
             echo $context->padding." *** SKIPPED : an object with same name already exists\n";
             return;
@@ -673,8 +771,7 @@ $supportedActions['name-addsuffix'] = Array(
         }
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
-            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        if( $object->owner->find($newName) !== null )
         {
             echo $context->padding." *** SKIPPED : an object with same name already exists\n";
             return;
@@ -711,8 +808,7 @@ $supportedActions['name-removeprefix'] = Array(
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
-            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        if( $object->owner->find($newName) !== null )
         {
             echo $context->padding." *** SKIPPED : an object with same name already exists\n";
             return;
@@ -744,8 +840,7 @@ $supportedActions['name-removesuffix'] = Array(
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
-        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
-            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        if( $object->owner->find($newName) !== null )
         {
             echo $context->padding." *** SKIPPED : an object with same name already exists\n";
             return;
