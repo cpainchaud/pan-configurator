@@ -661,7 +661,7 @@ $supportedActions['name-rename'] = Array(
         if( strpos( $newName, '$$value.no-netmask$$' ) !== FALSE )
         {
             if( $object->isType_ipNetmask() )
-                $replace = $object->getNetworkValue()
+                $replace = $object->getNetworkValue();
             else
                 $replace = $object->value();
 
