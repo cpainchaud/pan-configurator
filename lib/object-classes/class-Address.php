@@ -27,17 +27,13 @@ class Address
 	use XmlConvertible;
     use ObjectWithDescription;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
 	protected $value;
 
     /** @var AddressStore|null */
 	public $owner;
 
-	/**
-	 * @var TagRuleContainer
-	 */
+	/** @var TagRuleContainer */
 	public $tags;
 
 	const TypeTmp = 0;

@@ -26,22 +26,16 @@ class AddressGroup
 
     private $isDynamic = false;
 
-    /**
-     * @var AddressStore|null
-     */
+    /** @var AddressStore|null */
 	public $owner=null;
 
     /** @var Address[]|AddressGroup[] $members */
 	private $members = Array();
 
-	/**
-	 * @var DOMElement
-	 */
+	/** @var DOMElement */
 	private $membersRoot = null;
 
-    /**
-     * @var TagRuleContainer
-     */
+    /** @var TagRuleContainer */
     public $tags;
 
 	

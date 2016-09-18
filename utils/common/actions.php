@@ -188,6 +188,16 @@ class RuleCallContext extends CallContext
     public static $commonActionFunctions = Array();
     public static $supportedActions = Array();
 
+    static public function prepareSupportedActions()
+    {
+        $tmpArgs = Array();
+        foreach( self::$supportedActions as &$arg )
+        {
+            $tmpArgs[strtolower($arg['name'])] = $arg;
+        }
+        self::$supportedActions = $tmpArgs;
+    }
+
     public function addRuleToMergedApiChange($setValue)
     {
         $rule = $this->object;
@@ -547,21 +557,58 @@ class RuleCallContext extends CallContext
 
     }
 }
-
 require_once "actions-rule.php";
+RuleCallContext::prepareSupportedActions();
+
+
+
 
 
 class ServiceCallContext extends CallContext
 {
     /** @var  Service|ServiceGroup */
     public $object;
+
+    public static $commonActionFunctions = Array();
+    public static $supportedActions = Array();
+
+    static public function prepareSupportedActions()
+    {
+        $tmpArgs = Array();
+        foreach( self::$supportedActions as &$arg )
+        {
+            $tmpArgs[strtolower($arg['name'])] = $arg;
+        }
+        self::$supportedActions = $tmpArgs;
+    }
+
 }
+require_once "actions-service.php";
+ServiceCallContext::prepareSupportedActions();
+
+
+
 
 class AddressCallContext extends CallContext
 {
     /** @var  Address|AddressGroup */
     public $object;
+
+    public static $commonActionFunctions = Array();
+    public static $supportedActions = Array();
+
+    static public function prepareSupportedActions()
+    {
+        $tmpArgs = Array();
+        foreach( self::$supportedActions as &$arg )
+        {
+            $tmpArgs[strtolower($arg['name'])] = $arg;
+        }
+        self::$supportedActions = $tmpArgs;
+    }
 }
+require_once  "actions-address.php";
+AddressCallContext::prepareSupportedActions();
 
 class TagCallContext extends CallContext
 {

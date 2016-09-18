@@ -528,7 +528,7 @@ $supportedActions = Array();
 //                                              //
 //                Zone Based Actions            //
 //                                              //
-RuleCallContext::$supportedActions['from-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Add',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -548,7 +548,7 @@ RuleCallContext::$supportedActions['from-add'] = Array(
     'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument.".
                 "Zone must be existing already or script will out an error. Use action from-add-force if you want to add a zone that does not not exist."
 );
-RuleCallContext::$supportedActions['from-add-force'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Add-Force',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -565,7 +565,7 @@ RuleCallContext::$supportedActions['from-add-force'] = Array(
     'args' => &RuleCallContext::$commonActionFunctions['zone-add']['args'],
     'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument."
 );
-RuleCallContext::$supportedActions['from-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Remove',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -594,7 +594,7 @@ RuleCallContext::$supportedActions['from-remove'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['from-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Remove-Force-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -623,7 +623,7 @@ RuleCallContext::$supportedActions['from-remove-force-any'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['from-replace'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Replace',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -633,7 +633,7 @@ RuleCallContext::$supportedActions['from-replace'] = Array(
     },
     'args' => & RuleCallContext::$commonActionFunctions['zone-replace']['args']
 );
-RuleCallContext::$supportedActions['from-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Set-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -653,7 +653,7 @@ RuleCallContext::$supportedActions['from-set-any'] = Array(
     },
 );
 
-RuleCallContext::$supportedActions['to-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Add',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -677,7 +677,7 @@ RuleCallContext::$supportedActions['to-add'] = Array(
     'help' =>   "Adds a zone in the 'TO' field of a rule. If TO was set to ANY then it will be replaced by zone in argument.".
                 "Zone must be existing already or script will out an error. Use action to-add-force if you want to add a zone that does not not exist."
 );
-RuleCallContext::$supportedActions['to-add-force'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Add-Force',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -700,7 +700,7 @@ RuleCallContext::$supportedActions['to-add-force'] = Array(
     'args' => &RuleCallContext::$commonActionFunctions['zone-add']['args'],
     'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument."
 );
-RuleCallContext::$supportedActions['to-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Remove',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -734,7 +734,7 @@ RuleCallContext::$supportedActions['to-remove'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['to-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Remove-Force-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -768,7 +768,7 @@ RuleCallContext::$supportedActions['to-remove-force-any'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['to-replace'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Replace',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -778,7 +778,7 @@ RuleCallContext::$supportedActions['to-replace'] = Array(
     },
     'args' => & RuleCallContext::$commonActionFunctions['zone-replace']['args']
 );
-RuleCallContext::$supportedActions['to-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Set-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -803,7 +803,7 @@ RuleCallContext::$supportedActions['to-set-any'] = Array(
     },
 );
 
-RuleCallContext::$supportedActions['from-calculate-zones'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-calculate-zones',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -822,7 +822,7 @@ RuleCallContext::$supportedActions['from-calculate-zones'] = Array(
     'args' => & RuleCallContext::$commonActionFunctions['calculate-zones']['args'],
     'help' => & RuleCallContext::$commonActionFunctions['calculate-zones']['help']
 );
-RuleCallContext::$supportedActions['to-calculate-zones'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-calculate-zones',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -850,7 +850,7 @@ RuleCallContext::$supportedActions['to-calculate-zones'] = Array(
 //                                                    //
 //                Source/Dest Based Actions           //
 //                                                    //
-RuleCallContext::$supportedActions['src-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Add',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -868,7 +868,7 @@ RuleCallContext::$supportedActions['src-add'] = Array(
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
     'help' => "adds an object in the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
 );
-RuleCallContext::$supportedActions['src-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Remove',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -885,7 +885,7 @@ RuleCallContext::$supportedActions['src-remove'] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['src-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Remove-Force-Any',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -902,7 +902,7 @@ RuleCallContext::$supportedActions['src-remove-force-any'] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['dst-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-Add',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -920,7 +920,7 @@ RuleCallContext::$supportedActions['dst-add'] = Array(
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
     'help' => "adds an object in the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
 );
-RuleCallContext::$supportedActions['dst-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-Remove',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -937,7 +937,7 @@ RuleCallContext::$supportedActions['dst-remove'] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['dst-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-Remove-Force-Any',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -954,7 +954,7 @@ RuleCallContext::$supportedActions['dst-remove-force-any'] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['src-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-set-Any',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -966,7 +966,7 @@ RuleCallContext::$supportedActions['src-set-any'] = Array(
             $rule->source->setAny();
     },
 );
-RuleCallContext::$supportedActions['dst-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-set-Any',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -980,7 +980,7 @@ RuleCallContext::$supportedActions['dst-set-any'] = Array(
 );
 
 
-RuleCallContext::$supportedActions['src-negate-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Negate-Set',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -996,7 +996,7 @@ RuleCallContext::$supportedActions['src-negate-set'] = Array(
     'help' => "manages Source Negation enablement"
 );
 
-RuleCallContext::$supportedActions['dst-negate-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-Negate-Set',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -1016,7 +1016,7 @@ RuleCallContext::$supportedActions['dst-negate-set'] = Array(
 //                                                 //
 //              Tag property Based Actions         //
 //                                                 //
-RuleCallContext::$supportedActions['tag-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Add',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1033,7 +1033,7 @@ RuleCallContext::$supportedActions['tag-add'] = Array(
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['tag-add-force'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Add-Force',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1055,7 +1055,7 @@ RuleCallContext::$supportedActions['tag-add-force'] = Array(
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['tag-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Remove',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1072,7 +1072,7 @@ RuleCallContext::$supportedActions['tag-remove'] = Array(
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['tag-remove-all'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Remove-All',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1090,7 +1090,7 @@ RuleCallContext::$supportedActions['tag-remove-all'] = Array(
     },
     //'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['tag-remove-regex'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Remove-Regex',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1120,7 +1120,7 @@ RuleCallContext::$supportedActions['tag-remove-regex'] = Array(
 //                                                   //
 //                Services Based Actions             //
 //                                                   //
-RuleCallContext::$supportedActions['service-set-appdefault'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Set-AppDefault',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1133,7 +1133,7 @@ RuleCallContext::$supportedActions['service-set-appdefault'] = Array(
             $rule->services->setApplicationDefault();
     },
 );
-RuleCallContext::$supportedActions['service-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Set-Any',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1146,7 +1146,7 @@ RuleCallContext::$supportedActions['service-set-any'] = Array(
             $rule->services->setAny();
     },
 );
-RuleCallContext::$supportedActions['service-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Add',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1163,7 +1163,7 @@ RuleCallContext::$supportedActions['service-add'] = Array(
     },
     'args' => Array( 'svcName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['service-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Remove',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1180,7 +1180,7 @@ RuleCallContext::$supportedActions['service-remove'] = Array(
     },
     'args' => Array( 'svcName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['service-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Remove-Force-Any',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1202,7 +1202,7 @@ RuleCallContext::$supportedActions['service-remove-force-any'] = Array(
 //                                                   //
 //                App Based Actions                  //
 //                                                   //
-RuleCallContext::$supportedActions['app-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Set-Any',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)
@@ -1214,7 +1214,7 @@ RuleCallContext::$supportedActions['app-set-any'] = Array(
             $rule->apps->setAny();
     },
 );
-RuleCallContext::$supportedActions['app-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Add',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)
@@ -1231,7 +1231,7 @@ RuleCallContext::$supportedActions['app-add'] = Array(
     },
     'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['app-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Remove',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)
@@ -1248,7 +1248,7 @@ RuleCallContext::$supportedActions['app-remove'] = Array(
     },
     'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['app-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Remove-Force-Any',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)
@@ -1270,7 +1270,7 @@ RuleCallContext::$supportedActions['app-remove-force-any'] = Array(
 //                                                 //
 //               Target based Actions                 //
 //                                                 //
-RuleCallContext::$supportedActions['target-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'target-Set-Any',
     'section' => 'target',
     'MainFunction' => function(RuleCallContext $context)
@@ -1289,7 +1289,7 @@ RuleCallContext::$supportedActions['target-set-any'] = Array(
             $rule->target_setAny();
     },
 );
-RuleCallContext::$supportedActions['target-negate-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'target-Negate-Set',
     'section' => 'target',
     'MainFunction' => function(RuleCallContext $context)
@@ -1309,7 +1309,7 @@ RuleCallContext::$supportedActions['target-negate-set'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => '*nodefault*'  ) )
 );
-RuleCallContext::$supportedActions['target-add-device'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'target-Add-Device',
     'section' => 'target',
     'MainFunction' => function(RuleCallContext $context)
@@ -1337,7 +1337,7 @@ RuleCallContext::$supportedActions['target-add-device'] = Array(
                         'vsys' => Array( 'type' => 'string', 'default' => '*NULL*'  )
                         ),
 );
-RuleCallContext::$supportedActions['target-remove-device'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'target-Remove-Device',
     'section' => 'target',
     'MainFunction' => function(RuleCallContext $context)
@@ -1370,7 +1370,7 @@ RuleCallContext::$supportedActions['target-remove-device'] = Array(
 //                                                 //
 //               Log based Actions                 //
 //                                                 //
-RuleCallContext::$supportedActions['logstart-enable'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logStart-Enable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1390,7 +1390,7 @@ RuleCallContext::$supportedActions['logstart-enable'] = Array(
     },
     'help' => 'disables "log at start" in a security rule'
 );
-RuleCallContext::$supportedActions['logstart-disable'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logStart-Disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1410,7 +1410,7 @@ RuleCallContext::$supportedActions['logstart-disable'] = Array(
     },
     'help' => 'enables "log at start" in a security rule'
 );
-RuleCallContext::$supportedActions['logstart-enable-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logStart-Enable-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1438,7 +1438,7 @@ RuleCallContext::$supportedActions['logstart-enable-fastapi'] = Array(
     },
     'help' => "enables 'log at start' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
-RuleCallContext::$supportedActions['logstart-disable-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logStart-Disable-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1467,7 +1467,7 @@ RuleCallContext::$supportedActions['logstart-disable-fastapi'] = Array(
     'help' => "disables 'log at start' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
 
-RuleCallContext::$supportedActions['logend-enable'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logEnd-Enable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1488,7 +1488,7 @@ RuleCallContext::$supportedActions['logend-enable'] = Array(
     'help' => "enables 'log at end' in a security rule."
 );
 
-RuleCallContext::$supportedActions['logend-disable'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logEnd-Disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1508,7 +1508,7 @@ RuleCallContext::$supportedActions['logend-disable'] = Array(
     },
     'help' => "disables 'log at end' in a security rule."
 );
-RuleCallContext::$supportedActions['logend-disable-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logend-Disable-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1536,7 +1536,7 @@ RuleCallContext::$supportedActions['logend-disable-fastapi'] = Array(
     },
     'help' => "disables 'log at end' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
-RuleCallContext::$supportedActions['logend-enable-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logend-Enable-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1564,7 +1564,7 @@ RuleCallContext::$supportedActions['logend-enable-fastapi'] = Array(
     },
     'help' => "enables 'log at end' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
-RuleCallContext::$supportedActions['logsetting-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logSetting-set',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1591,7 +1591,7 @@ RuleCallContext::$supportedActions['logsetting-set'] = Array(
 //                                                   //
 //                Security profile Based Actions     //
 //                                                   //
-RuleCallContext::$supportedActions['securityprofile-group-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Group-Set',
     'MainFunction' =>  function(RuleCallContext $context)
     {
@@ -1610,7 +1610,7 @@ RuleCallContext::$supportedActions['securityprofile-group-set'] = Array(
     },
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
-RuleCallContext::$supportedActions['securityprofile-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Remove',
     'MainFunction' =>  function(RuleCallContext $context)
     {
@@ -1628,7 +1628,7 @@ RuleCallContext::$supportedActions['securityprofile-remove'] = Array(
             $rule->removeSecurityProfile();
     },
 );
-RuleCallContext::$supportedActions['securityprofile-group-set-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Group-Set-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1657,7 +1657,7 @@ RuleCallContext::$supportedActions['securityprofile-group-set-fastapi'] = Array(
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 
-RuleCallContext::$supportedActions['description-append'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'description-Append',
     'MainFunction' =>  function(RuleCallContext $context)
     {
@@ -1684,7 +1684,7 @@ RuleCallContext::$supportedActions['description-append'] = Array(
 //                                                   //
 //                Other property Based Actions       //
 //                                                   //
-RuleCallContext::$supportedActions['enabled-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'enabled-Set',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1696,7 +1696,7 @@ RuleCallContext::$supportedActions['enabled-set'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-RuleCallContext::$supportedActions['enabled-set-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'enabled-Set-FastAPI',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1716,7 +1716,7 @@ RuleCallContext::$supportedActions['enabled-set-fastapi'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-RuleCallContext::$supportedActions['disabled-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'disabled-Set',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1728,7 +1728,7 @@ RuleCallContext::$supportedActions['disabled-set'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-RuleCallContext::$supportedActions['disabled-set-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'disabled-Set-FastAPI',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1761,7 +1761,7 @@ RuleCallContext::$supportedActions['disabled-set-fastapi'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-RuleCallContext::$supportedActions['delete'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'delete',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1772,7 +1772,7 @@ RuleCallContext::$supportedActions['delete'] = Array(
             $rule->owner->remove($rule);
     }
 );
-RuleCallContext::$supportedActions['bidirnat-split'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'biDirNat-Split',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1818,7 +1818,7 @@ RuleCallContext::$supportedActions['bidirnat-split'] = Array(
     'args' => Array(  'suffix' => Array( 'type' => 'string', 'default' => '-DST'  ), )
 );
 
-RuleCallContext::$supportedActions['name-prepend'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-Prepend',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1849,7 +1849,7 @@ RuleCallContext::$supportedActions['name-prepend'] = Array(
     },
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
-RuleCallContext::$supportedActions['name-append'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-Append',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1880,7 +1880,7 @@ RuleCallContext::$supportedActions['name-append'] = Array(
     },
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
-RuleCallContext::$supportedActions['ruletype-change'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'ruleType-Change',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1906,11 +1906,14 @@ RuleCallContext::$supportedActions['ruletype-change'] = Array(
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
 
-RuleCallContext::$supportedActions['display'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'display',
-    'MainFunction' => function(RuleCallContext $context) { $context->object->display(7); }
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $context->object->display(7);
+    }
 );
-RuleCallContext::$supportedActions['invertpreandpost'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'invertPreAndPost',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1936,7 +1939,7 @@ RuleCallContext::$supportedActions['invertpreandpost'] = Array(
 );
 
 
-RuleCallContext::$supportedActions['copy'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'copy',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1978,7 +1981,7 @@ RuleCallContext::$supportedActions['copy'] = Array(
         'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
 );
 
-RuleCallContext::$supportedActions['move'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'move',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -2027,7 +2030,7 @@ RuleCallContext::$supportedActions['move'] = Array(
         'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
 );
 
-RuleCallContext::$supportedActions['exporttoexcel'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'exportToExcel',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -2123,7 +2126,7 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
     'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
 );
 
-RuleCallContext::$supportedActions['clone'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'clone',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -2155,7 +2158,7 @@ RuleCallContext::$supportedActions['clone'] = Array(
                         'suffix' =>  Array( 'type' => 'string', 'default' => '-cloned' )
                     )
 );
-RuleCallContext::$supportedActions['cloneforappoverride'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'cloneForAppOverride',
     'MainFunction' => function(RuleCallContext $context)
     {
