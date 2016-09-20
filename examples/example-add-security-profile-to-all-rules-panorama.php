@@ -28,7 +28,7 @@ $panc->load_from_file($origfile);
 $dg = $panc->findDeviceGroup($targetDG);
 if( $dg === null )
 {
-	derr("DeviceGroup $targetDV was not found ? Exit\n");
+	derr("DeviceGroup {$targetDG} was not found ? Exit\n");
 }
 
 print "\n***********************************************\n\n";

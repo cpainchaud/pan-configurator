@@ -762,6 +762,325 @@ var data = {
                 "help": null,
                 "args": false
             }
+        ],
+        "address": [
+            {
+                "name": "addObjectWhereUsed",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "objectName"
+                    },
+                    {
+                        "type": "bool",
+                        "default": false,
+                        "name": "skipNatRules"
+                    }
+                ]
+            },
+            {
+                "name": "delete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "delete-Force",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "displayReferences",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "exportToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "filename"
+                    }
+                ]
+            },
+            {
+                "name": "move",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "location"
+                    },
+                    {
+                        "type": "string",
+                        "default": "skipIfConflict",
+                        "choices": [
+                            "skipIfConflict",
+                            "removeIfMatch",
+                            "removeIfNumericalMatch"
+                        ],
+                        "name": "mode"
+                    }
+                ]
+            },
+            {
+                "name": "name-addPrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-addSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removePrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removeSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-Rename",
+                "help": "",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - \\$$current.name\\$\\$ : current name of the object\n  - \\$$value\\$\\$ : value of the object\n  - \\$$value.no-netmask\\$\\$ : value truncated of netmask if any\n  - \\$$netmask\\$\\$ : netmask\n  - \\$$netmask.blank32\\$\\$ : netmask or nothing if 32\n",
+                        "name": "stringFormula"
+                    }
+                ]
+            },
+            {
+                "name": "removeWhereUsed",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "delete",
+                        "choices": [
+                            "delete",
+                            "disable",
+                            "setAny"
+                        ],
+                        "name": "actionIfLastMemberInRule"
+                    }
+                ]
+            },
+            {
+                "name": "replace-IP-by-MT-like-Object",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "replaceByMembersAndDelete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "replaceWithObject",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "objectName"
+                    }
+                ]
+            },
+            {
+                "name": "showIP4Mapping",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "z_BETA_summarize",
+                "help": null,
+                "args": false
+            }
+        ],
+        "service": [
+            {
+                "name": "addObjectWhereUsed",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "objectName"
+                    }
+                ]
+            },
+            {
+                "name": "delete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "deleteForce",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "displayReferences",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "exportToExcel",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "filename"
+                    }
+                ]
+            },
+            {
+                "name": "move",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "location"
+                    },
+                    {
+                        "type": "string",
+                        "default": "skipIfConflict",
+                        "choices": [
+                            "skipIfConflict",
+                            "removeIfMatch",
+                            "removeIfNumericalMatch"
+                        ],
+                        "name": "mode"
+                    }
+                ]
+            },
+            {
+                "name": "name-addPrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-addSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removePrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removeSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "removeWhereUsed",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "delete",
+                        "choices": [
+                            "delete",
+                            "disable",
+                            "setAny"
+                        ],
+                        "name": "actionIfLastMemberInRule"
+                    }
+                ]
+            },
+            {
+                "name": "replaceByMembersAndDelete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "replaceGroupByService",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "replaceWithObject",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "objectName"
+                    }
+                ]
+            }
         ]
     }
 };

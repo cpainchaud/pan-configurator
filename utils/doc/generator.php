@@ -31,7 +31,6 @@ $actionsData = Array();
 
 foreach(RuleCallContext::$supportedActions as &$action)
 {
-
     $record = Array( 'name' => $action['name'],'help' => null, 'args' => false );
 
     if( isset($action['help']) )
@@ -45,12 +44,67 @@ foreach(RuleCallContext::$supportedActions as &$action)
         foreach($action['args'] as $argName => $arg)
         {
             $tmpArr = $arg;
+            if( isset($arg['help']) )
+                $arg['help'] = str_replace( Array("\n"  , ' '),
+                                            Array("<br>", '&nbsp'),
+                                            $arg['help']);
             $tmpArr['name'] = $argName;
             $record['args'][] = $tmpArr;
         }
     }
-
     $actionsData['rule'][] = $record;
+}
+
+foreach(AddressCallContext::$supportedActions as &$action)
+{
+    $record = Array( 'name' => $action['name'],'help' => null, 'args' => false );
+
+    if( isset($action['help']) )
+        $record['help'] = str_replace(  Array("\n"  , ' '),
+            Array("<br>", '&nbsp'),
+            $action['help']);
+
+    if( isset($action['args']) && $action['args'] !== false )
+    {
+        $record['args'] = Array();
+        foreach($action['args'] as $argName => $arg)
+        {
+            $tmpArr = $arg;
+            if( isset($arg['help']) )
+                $arg['help'] = str_replace( Array("\n"  , ' '),
+                    Array("<br>", '&nbsp'),
+                    $arg['help']);
+            $tmpArr['name'] = $argName;
+            $record['args'][] = $tmpArr;
+        }
+    }
+    $actionsData['address'][] = $record;
+}
+
+foreach(ServiceCallContext::$supportedActions as &$action)
+{
+    $record = Array( 'name' => $action['name'],'help' => null, 'args' => false );
+
+    if( isset($action['help']) )
+        $record['help'] = str_replace(  Array("\n"  , ' '),
+            Array("<br>", '&nbsp'),
+            $action['help']);
+
+    if( isset($action['args']) && $action['args'] !== false )
+    {
+        $record['args'] = Array();
+        foreach($action['args'] as $argName => $arg)
+        {
+            $tmpArr = $arg;
+            if( isset($arg['help']) )
+                $arg['help'] = str_replace( Array("\n"  , ' '),
+                    Array("<br>", '&nbsp'),
+                    $arg['help']);
+            $tmpArr['name'] = $argName;
+            $record['args'][] = $tmpArr;
+        }
+    }
+    $actionsData['service'][] = $record;
 }
 
 
