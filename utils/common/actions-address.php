@@ -350,6 +350,29 @@ AddressCallContext::$supportedActions[] = Array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
+        $addWhereUsed = false;
+        $addUsedInLocation = false;
+        $fieldsArray = explode('|',$context->arguments['additionalFields']) ;
+        foreach($fieldsArray as $fieldName)
+        {
+            $fieldName = strtolower($fieldName);
+            if( $fieldName == 'whereused' )
+                $addWhereUsed = true;
+            elseif( $fieldName == 'usedinlocation' )
+                $addUsedInLocation = true;
+            else{
+                if( $fieldName != '*none*')
+                 derr("unsupported field name '{$fieldName}' when export to Excel/HTML");
+            }
+        }
+
+        $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>tags</th>';
+
+        if( $addWhereUsed )
+            $headers .= '<th>where used</th>';
+        if( $addUsedInLocation )
+            $headers .= '<th>location used</th>';
+
         $lines = '';
         $encloseFunction  = function($value, $nowrap = true)
         {
@@ -415,17 +438,45 @@ AddressCallContext::$supportedActions[] = Array(
                         $lines .= $encloseFunction('group-static');
                         $lines .= $encloseFunction($object->members());
                     }
+                    $lines .= $encloseFunction($object->description(), false);
+                    $lines .= $encloseFunction($object->tags->tags());
                 }
                 elseif ( $object->isAddress() )
                 {
                     if( $object->isTmpAddr() )
+                    {
                         $lines .= $encloseFunction('unknown');
+                        $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction('');
+                        $lines .= $encloseFunction('');
+                    }
                     else
                     {
                         $lines .= $encloseFunction($object->type());
                         $lines .= $encloseFunction($object->value());
                         $lines .= $encloseFunction($object->description(), false);
+                        $lines .= $encloseFunction($object->tags->tags());
                     }
+                }
+
+                if( $addWhereUsed )
+                {
+                    $refTextArray = Array();
+                    foreach( $object->getReferences() as $ref )
+                        $refTextArray[] = $ref->_PANC_shortName();
+
+                    $lines .= $encloseFunction($refTextArray);
+                }
+                if( $addUsedInLocation )
+                {
+                    $refTextArray = Array();
+                    foreach( $object->getReferences() as $ref )
+                    {
+                        $location = PH::getLocationString($object->owner);
+                        $refTextArray[$location] = $location;
+                    }
+
+                    $lines .= $encloseFunction($refTextArray);
                 }
 
                 $lines .= "</tr>\n";
@@ -433,16 +484,14 @@ AddressCallContext::$supportedActions[] = Array(
             }
         }
 
-        $content = file_get_contents(dirname(__FILE__).'/common/html-export-template.html');
-        $content = str_replace('%TableHeaders%',
-            '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th>',
-            $content);
+        $content = file_get_contents(dirname(__FILE__).'/html-export-template.html');
+        $content = str_replace('%TableHeaders%', $headers, $content);
 
         $content = str_replace('%lines%', $lines, $content);
 
-        $jscontent =  file_get_contents(dirname(__FILE__).'/common/jquery-1.11.js');
+        $jscontent =  file_get_contents(dirname(__FILE__).'/jquery-1.11.js');
         $jscontent .= "\n";
-        $jscontent .= file_get_contents(dirname(__FILE__).'/common/jquery.stickytableheaders.min.js');
+        $jscontent .= file_get_contents(dirname(__FILE__).'/jquery.stickytableheaders.min.js');
         $jscontent .= "\n\$('table').stickyTableHeaders();\n";
 
         $content = str_replace('%JSCONTENT%', $jscontent, $content);
@@ -452,7 +501,16 @@ AddressCallContext::$supportedActions[] = Array(
 
         file_put_contents($filename, $content);
     },
-    'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
+    'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+                        'additionalFields' =>
+                            Array( 'type' => 'string',
+                                'default' => '*NONE*',
+                                'help' =>
+                                    "pipe(|) separated list of additional field to include in the report. The following is available:\n".
+                                    "  - WhereUsed : list places where object is used (rules, groups ...)\n".
+                                    "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n")
+    )
+
 );
 
 
