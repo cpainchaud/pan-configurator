@@ -141,9 +141,22 @@ class Service
 		$this->_dport = $newPorts;
 		$tmp = DH::findFirstElementOrCreate('port', $this->tcpOrUdpRoot, $this->_dport);
         DH::setDomNodeText($tmp, $newPorts);
-
         return true;
 	}
+
+    /**
+     * @param string $newPorts
+     * @return bool
+     */
+    public function API_setDestPort($newPorts)
+    {
+        $ret = $this->setDestPort($newPorts);
+        $connector = findConnectorOrDie($this);
+
+        $this->API_sync();
+
+        return $ret;
+    }
 
 
     public function setSourcePort($newPorts)

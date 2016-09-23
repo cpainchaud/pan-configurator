@@ -287,6 +287,9 @@ elseif( $dupAlg == 'sameip4value' )
 elseif( $dupAlg == 'whereused' )
     $hashGenerator = function($object)
     {
+        if( $object->countReferences() == 0 )
+            return null;
+
         /** @var AddressGroup $object */
         $value = $object->getRefHashComp().'//dynamic:'.boolYesNo($object->isDynamic());
 
@@ -331,6 +334,8 @@ foreach( $objectsToSearchThrough as $object )
     }
 
     $value = $hashGenerator($object);
+    if( $value === null )
+        continue;
 
     if( $object->owner === $store )
     {

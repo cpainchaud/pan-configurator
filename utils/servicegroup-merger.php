@@ -283,6 +283,9 @@ elseif( $dupAlg == 'sameportmapping' )
 elseif( $dupAlg == 'whereused' )
     $hashGenerator = function($object)
     {
+        if( $object->countReferences() == 0 )
+            return null;
+
         /** @var ServiceGroup $object */
         $value = $object->getRefHashComp();
 
@@ -327,6 +330,8 @@ foreach( $objectsToSearchThrough as $object )
     }
 
     $value = $hashGenerator($object);
+    if( $value === null )
+        continue;
 
     if( $object->owner === $store )
     {
