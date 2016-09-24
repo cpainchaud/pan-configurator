@@ -25,91 +25,81 @@ require_once("../common/actions.php");
 
 $dataFile = __DIR__.'/data.js';
 
+function &generateActionJSON(&$actions)
+{
+
+    $result = Array();
+    foreach($actions as $action)
+    {
+        $record = Array( 'name' => $action['name'],'help' => null, 'args' => false );
+
+        if( isset($action['help']) )
+            $record['help'] = str_replace(  Array("\n"  , ' '),
+                Array("<br>", '&nbsp'),
+                $action['help']);
+
+        if( isset($action['args']) && $action['args'] !== false )
+        {
+            $record['args'] = Array();
+            foreach($action['args'] as $argName => $arg)
+            {
+                $tmpArr = $arg;
+                if( isset($arg['help']) )
+                    $arg['help'] = str_replace( Array("\n"  , ' '),
+                        Array("<br>", '&nbsp'),
+                        $arg['help']);
+                $tmpArr['name'] = $argName;
+                $record['args'][] = $tmpArr;
+            }
+        }
+
+        $result[] = $record;
+    }
+
+    return $result;
+}
 $actionsData = Array();
+$actionsData['rule'] = generateActionJSON(RuleCallContext::$supportedActions);
+$actionsData['address'] = generateActionJSON(AddressCallContext::$supportedActions);
+$actionsData['service'] = generateActionJSON(ServiceCallContext::$supportedActions);
 
 
-
-foreach(RuleCallContext::$supportedActions as &$action)
+function &generateFilterJSON($actions)
 {
-    $record = Array( 'name' => $action['name'],'help' => null, 'args' => false );
+    $result = Array();
 
-    if( isset($action['help']) )
-        $record['help'] = str_replace(  Array("\n"  , ' '),
-            Array("<br>", '&nbsp'),
-            $action['help']);
+    ksort($actions);
 
-    if( isset($action['args']) && $action['args'] !== false )
+    foreach($actions as $name => $filter)
     {
-        $record['args'] = Array();
-        foreach($action['args'] as $argName => $arg)
+        $record = Array( 'name' => $name,'help' => null, 'operators' => Array() );
+
+        ksort($filter['operators']);
+
+        foreach( $filter['operators'] as $opName => &$opDetails)
         {
-            $tmpArr = $arg;
-            if( isset($arg['help']) )
-                $arg['help'] = str_replace( Array("\n"  , ' '),
-                                            Array("<br>", '&nbsp'),
-                                            $arg['help']);
-            $tmpArr['name'] = $argName;
-            $record['args'][] = $tmpArr;
+            $opRecord = Array('name' => $opName, 'argument' => null);
+
+            if( isset($opDetails['arg']) && $opDetails['arg'] === true )
+                $opRecord['argument'] = '*required*';
+
+
+            $record['operators'][] = &$opRecord;
         }
+
+        $result[] = $record;
     }
-    $actionsData['rule'][] = $record;
+
+    return $result;
 }
-
-foreach(AddressCallContext::$supportedActions as &$action)
-{
-    $record = Array( 'name' => $action['name'],'help' => null, 'args' => false );
-
-    if( isset($action['help']) )
-        $record['help'] = str_replace(  Array("\n"  , ' '),
-            Array("<br>", '&nbsp'),
-            $action['help']);
-
-    if( isset($action['args']) && $action['args'] !== false )
-    {
-        $record['args'] = Array();
-        foreach($action['args'] as $argName => $arg)
-        {
-            $tmpArr = $arg;
-            if( isset($arg['help']) )
-                $arg['help'] = str_replace( Array("\n"  , ' '),
-                    Array("<br>", '&nbsp'),
-                    $arg['help']);
-            $tmpArr['name'] = $argName;
-            $record['args'][] = $tmpArr;
-        }
-    }
-    $actionsData['address'][] = $record;
-}
-
-foreach(ServiceCallContext::$supportedActions as &$action)
-{
-    $record = Array( 'name' => $action['name'],'help' => null, 'args' => false );
-
-    if( isset($action['help']) )
-        $record['help'] = str_replace(  Array("\n"  , ' '),
-            Array("<br>", '&nbsp'),
-            $action['help']);
-
-    if( isset($action['args']) && $action['args'] !== false )
-    {
-        $record['args'] = Array();
-        foreach($action['args'] as $argName => $arg)
-        {
-            $tmpArr = $arg;
-            if( isset($arg['help']) )
-                $arg['help'] = str_replace( Array("\n"  , ' '),
-                    Array("<br>", '&nbsp'),
-                    $arg['help']);
-            $tmpArr['name'] = $argName;
-            $record['args'][] = $tmpArr;
-        }
-    }
-    $actionsData['service'][] = $record;
-}
+$filtersData = Array();
+$filtersData['rule'] = generateFilterJSON(RQuery::$defaultFilters['rule']);
+$filtersData['address'] = generateFilterJSON(RQuery::$defaultFilters['address']);
+$filtersData['service'] = generateFilterJSON(RQuery::$defaultFilters['service']);
 
 
 
-$data = Array('actions' => &$actionsData);
+$data = Array('actions' => &$actionsData, 'filters' => &$filtersData );
 
 $data = 'var data = '.json_encode($data, JSON_PRETTY_PRINT) .';';
 
