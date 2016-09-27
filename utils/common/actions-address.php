@@ -278,7 +278,40 @@ AddressCallContext::$supportedActions[] = Array(
     },
     'args' => Array( 'objectName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
+AddressCallContext::$supportedActions[] = Array(
+    'name' => 'tag-Add',
+    'section' => 'tag',
+    'MainFunction' => function(AddressCallContext $context)
+    {
+        $object = $context->object;
+        $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
+        if( $objectFind === null )
+            derr("tag named '{$context->arguments['tagName']}' not found");
 
+        if( $context->isAPI )
+            $object->tags->API_addTag($objectFind);
+        else
+            $object->tags->addTag($objectFind);
+    },
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+AddressCallContext::$supportedActions[] = Array(
+    'name' => 'tag-Remove',
+    'section' => 'tag',
+    'MainFunction' => function(AddressCallContext $context)
+    {
+        $object = $context->object;
+        $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
+        if( $objectFind === null )
+            derr("tag named '{$context->arguments['tagName']}' not found");
+
+        if( $context->isAPI )
+            $object->tags->API_removeTag($objectFind);
+        else
+            $object->tags->removeTag($objectFind);
+    },
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
 AddressCallContext::$supportedActions[] = Array(
     'name' => 'z_BETA_summarize',
     'MainFunction' => function ( AddressCallContext $context )
