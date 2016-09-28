@@ -27,7 +27,9 @@ class SecurityRule extends RuleWithUserID
 	protected $logend = true;
 
 	protected $logSetting = false;
-	
+
+    protected $dsri = false;
+
 	protected $secproftype = 'none';
 
     /** @var null|string[]|DOMElement */
@@ -174,6 +176,20 @@ class SecurityRule extends RuleWithUserID
                 else
                 {
                     $this->action = $actionFound;
+                }
+            }
+            else if( $node->nodeName == 'option' )
+            {
+                foreach($node->childNodes as $subnode)
+                {
+                    if( $subnode->nodeName == 'disable-server-response-inspection' )
+                    {
+                        $lstate = strtolower($subnode->textContent);
+                        if( $lstate == 'yes' )
+                        {
+                            $this->dsri = true;
+                        }
+                    }
                 }
             }
         }
@@ -730,6 +746,19 @@ class SecurityRule extends RuleWithUserID
 
         return true;
 	}
+
+
+    /**
+     *
+     * @return bool
+     */
+    public function isDSRIEnabled()
+    {
+        if ($this->dsri)
+            return true;
+
+        return false;
+    }
 
 	/**
 	* Helper function to quickly print a function properties to CLI

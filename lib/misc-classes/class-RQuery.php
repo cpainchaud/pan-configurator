@@ -1585,6 +1585,13 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['rule']['operators']['is.dsri'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        return $context->object->isDSRIEnabled();
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['rule']['rule']['operators']['is.bidir.nat'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
