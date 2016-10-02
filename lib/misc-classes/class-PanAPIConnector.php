@@ -54,7 +54,7 @@ class PanAPIConnector
     /**
      * @var PanAPIConnector[]
      */
-    static private $savedConnectors = Array();
+    static public $savedConnectors = Array();
     static private $keyStoreFileName = '.panconfkeystore';
     static private $keyStoreInitialized = FALSE;
 

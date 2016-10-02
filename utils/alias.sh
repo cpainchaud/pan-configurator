@@ -16,4 +16,6 @@ alias pa_tag-edit='php -r "require_once '"'"'utils/tag-edit.php'"'"';" $@'
 alias pa_upload-config='php -r "require_once '"'"'utils/upload-config.php'"'"';" $@'
 alias pa_override-finder='php -r "require_once '"'"'utils/override-finder.php'"'"';" $@'
 
+alias pa_key-manager='php -r "require_once '"'"'utils/key-manager.php'"'"';" $@'
+
 alias pa_ckp-exclude='php -r "require_once '"'"'utils/checkpoint-exclude.php'"'"';" $@'
