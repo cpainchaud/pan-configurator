@@ -76,7 +76,7 @@ function &generateFilterJSON($actions)
 
         ksort($filter['operators']);
 
-        foreach( $filter['operators'] as $opName => &$opDetails)
+        foreach( $filter['operators'] as $opName => $opDetails)
         {
             $opRecord = Array('name' => $opName, 'argument' => null);
 
@@ -84,7 +84,7 @@ function &generateFilterJSON($actions)
                 $opRecord['argument'] = '*required*';
 
 
-            $record['operators'][] = &$opRecord;
+            $record['operators'][] = $opRecord;
         }
 
         $result[] = $record;
