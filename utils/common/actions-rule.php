@@ -2084,7 +2084,7 @@ RuleCallContext::$supportedActions[] = Array(
             'snat_address' => 'snat_address',
             'snat_address_resolved_summary' => 'snat_address_resolved_summary',
             'dnat_host' => 'dnat_host',
-            'dnat_resolved sum' => 'dnat_host_resolved_sum',
+            'dnat_host_resolved_sum' => 'dnat_host_resolved_sum',
             'description' => 'description'
         );
 
