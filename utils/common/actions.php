@@ -609,7 +609,7 @@ class RuleCallContext extends CallContext
                 $strMapping[] = $unresolved;
 
 
-            return self::enclose($rule->snathosts->getAll(), $wrap);
+            return self::enclose($strMapping);
         }
 
 
