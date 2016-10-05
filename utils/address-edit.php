@@ -124,6 +124,7 @@ if( isset(PH::$args['loadplugin']) )
     $pluginFile = PH::$args['loadplugin'];
     echo " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
     require_once $pluginFile;
+    AddressCallContext::prepareSupportedActions();
     echo "OK!\n";
 }
 
