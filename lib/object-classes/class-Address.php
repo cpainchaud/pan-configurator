@@ -398,11 +398,14 @@ class Address
         elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
         {
             $this->_ip4Map = new IP4Map();
+            $this->_ip4Map->unresolved[$this->name] = $this;
             //$this->_ip4Map->
         }
         elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
         {
             $this->_ip4Map = IP4Map::mapFromText($this->value);
+            if( $this->_ip4Map->count() == 0 )
+                $this->_ip4Map->unresolved[$this->name] = $this;
         }
         else
         {

@@ -43,7 +43,9 @@ class IP4Map
         // if IPv6 detected then we exit with blank mapping
         $ex = explode('/', $text);
         if( filter_var($ex[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== FALSE )
+        {
             return $map;
+        }
 
         $map->_map[] = cidr::stringToStartEnd($text);
         return $map;
@@ -225,6 +227,11 @@ class IP4Map
     {
         foreach( $other->_map as $mapEntry)
             $this->_map[] = $mapEntry;
+
+        foreach($other->unresolved as $oName => $object)
+        {
+            $this->unresolved[$oName] = $object;
+        }
 
         if( !$skipRecalculation )
         {
