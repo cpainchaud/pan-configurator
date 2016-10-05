@@ -1586,6 +1586,27 @@ RuleCallContext::$supportedActions[] = Array(
     'help' => "Sets log setting/forwarding profile of a Security rule to the value specified."
 );
 
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'logSetting-disable',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setLogSetting(null);
+        else
+            $rule->setLogSetting(null);
+    },
+    'help' => "Remove log setting/forwarding profile of a Security rule if any."
+);
+
 
 
 //                                                   //
