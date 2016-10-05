@@ -20,6 +20,8 @@ class IP4Map
 {
     protected $_map = Array();
 
+    public $unresolved = Array();
+
     public function getMapArray()
     {
         return $this->_map;
@@ -197,22 +199,25 @@ class IP4Map
     }
 
     /**
+     * @param string $separator
      * @return string
      */
-    public function &dumpToString()
+    public function &dumpToString($separator = ',')
     {
 
         $ret = Array();
 
         foreach( $this->_map as &$entry )
         {
-            $ret[] = long2ip($entry['start']).'-'.long2ip($entry['end']);
+            if( $entry['start'] == $entry['end'])
+                $ret[] = long2ip($entry['start']);
+            else
+                $ret[] = long2ip($entry['start']).'-'.long2ip($entry['end']);
         }
 
-        $ret = PH::list_to_string($ret);
+        $ret = PH::list_to_string($ret, $separator);
 
         return $ret;
-
     }
 
 

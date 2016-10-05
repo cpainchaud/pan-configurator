@@ -2047,6 +2047,19 @@ RuleCallContext::$supportedActions[] = Array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
+        $addResolvedAddressSummary = false;
+        $fieldsArray = explode('|',$context->arguments['additionalFields']) ;
+        foreach($fieldsArray as $fieldName)
+        {
+            $fieldName = strtolower($fieldName);
+            if( $fieldName == 'resolveaddresssummary' )
+                $addResolvedAddressSummary = true;
+            else{
+                if( $fieldName != '*none*')
+                    derr("unsupported field name '{$fieldName}' when export to Excel/HTML");
+            }
+        }
+
         $fields = Array(
             'location' => 'location',
             'type' => 'type',
@@ -2055,7 +2068,9 @@ RuleCallContext::$supportedActions[] = Array(
             'from' => 'from',
             'to' => 'to',
             'src' => 'source',
+            'src_resolved_sum' => 'src_resolved_sum',
             'dst' => 'destination',
+            'dst_resolved_sum' => 'dst_resolved_sum',
             'service' => 'service',
             'application' => 'application',
             'action' => 'action',
@@ -2088,6 +2103,8 @@ RuleCallContext::$supportedActions[] = Array(
 
                 foreach($fields as $fieldName => $fieldID )
                 {
+                    if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum') && !$addResolvedAddressSummary  )
+                        continue;
                     $lines .= $context->ruleFieldHtmlExport($rule, $fieldID);
                 }
 
@@ -2100,15 +2117,14 @@ RuleCallContext::$supportedActions[] = Array(
 
 
         $tableHeaders = '';
-        foreach($fields as $fName => $value )
-            $tableHeaders .= "<th>{$fName}</th>\n";
+        foreach($fields as $fieldName => $value )
+        {
+            if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum') && !$addResolvedAddressSummary  )
+                continue;
+            $tableHeaders .= "<th>{$fieldName}</th>\n";
+        }
 
         $content = file_get_contents(dirname(__FILE__).'/html-export-template.html');
-        /*$content = str_replace('%TableHeaders%',
-            '<th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>'.
-            '<th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>'.
-            '<th>SNAT type</th><th>SNAT hosts</th><th>DNAT host</th><th>DNAT port</th>',
-            $content);*/
 
         $content = str_replace('%TableHeaders%', $tableHeaders, $content);
 
@@ -2123,7 +2139,16 @@ RuleCallContext::$supportedActions[] = Array(
 
         file_put_contents($filename, $content);
     },
-    'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
+    'args' => Array(
+        'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+        'additionalFields' =>
+            Array( 'type' => 'string',
+                'default' => '*NONE*',
+                'help' =>
+                    "pipe(|) separated list of additional field to include in the report. The following is available:\n".
+                    "  - resolveAddressSummary : fields with address objects will be resolved and summarized in a new column)\n"
+            )
+    )
 );
 
 RuleCallContext::$supportedActions[] = Array(

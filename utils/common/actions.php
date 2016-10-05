@@ -552,6 +552,34 @@ class RuleCallContext extends CallContext
             return self::enclose( boolYesNo($rule->isDisabled()) );
         }
 
+        if( $fieldName == 'src_resolved_sum' )
+        {
+            if( $rule->source->isAny() )
+                return self::enclose('');
+
+            $mapping = $rule->source->getIP4Mapping();
+            $strMapping = explode( ',',$mapping->dumpToString());
+
+            foreach( array_keys($mapping->unresolved) as $unresolved )
+                $strMapping[] = $unresolved;
+
+            return self::enclose($strMapping);
+        }
+
+        if( $fieldName == 'dst_resolved_sum' )
+        {
+            if( $rule->destination->isAny() )
+                return self::enclose('');
+
+            $mapping = $rule->destination->getIP4Mapping();
+            $strMapping = explode( ',',$mapping->dumpToString());
+
+            foreach( array_keys($mapping->unresolved) as $unresolved )
+                $strMapping[] = $unresolved;
+
+            return self::enclose($strMapping);
+        }
+
 
         return self::enclose('unsupported');
 

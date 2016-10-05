@@ -11,6 +11,7 @@ CHANGELOG
 utils:
 rules-edit: new action 'tag-remove-all'
 rules-edit: new filter 'service has.regex', 'rule is.dsri'
+rules-edit: action 'exportToExcel' new option to add optional fields like 'resolveAddressSummary'
 address-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:H-$$value.no-netmask-$$current.name$$'
 address-edit: new filters 'overriden.at.lower.level' and 'overrides.upper.level', 'ip4.includes-full', 'ip4.includes-full-or-partial', 'object is.iprange', 'object is.fqdn', 'object is.ip-netmask', netmask  >,<,=,! XX
 address-edit: new actions 'name-removePrefix, name-removeSuffix', 'tag-add', 'tag-add-force', 'tag-remove', 'tag-remove-all', 'tag-remove-regex'

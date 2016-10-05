@@ -573,25 +573,31 @@ class AddressRuleContainer extends ObjRuleContainer
      */
     public function getIP4Mapping()
     {
-        $result = Array( 'unresolved' => Array() );
         $mapObject = new IP4Map();
 
         foreach( $this->o as $member )
         {
             if( $member->isTmpAddr() && !$member->nameIsValidRuleIPEntry() )
             {
-                $result['unresolved'][] = $member;
+                $mapObject->unresolved[$member->name()] = $member;
                 continue;
             }
             elseif( $member->isAddress() )
             {
+                /** @var Address $member */
                 $localMap = $member->getIP4Mapping();
                 $mapObject->addMap($localMap, true);
             }
             elseif( $member->isGroup() )
             {
-                $localMap = $member->getIP4Mapping();
-                $mapObject->addMap($localMap, true);
+                /** @var AddressGroup $member */
+                if( $member->isDynamic() )
+                    $mapObject->unresolved[$member->name()] = $member;
+                else
+                {
+                    $localMap = $member->getIP4Mapping();
+                    $mapObject->addMap($localMap, true);
+                }
             }
             else
                 derr('unsupported type of objects '.$member->toString());
