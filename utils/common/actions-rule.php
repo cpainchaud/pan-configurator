@@ -2081,8 +2081,10 @@ RuleCallContext::$supportedActions[] = Array(
             'log end' => 'log_end',
             'log prof' => 'log_profile',
             'snat type' => 'snat_type',
-            'snat trans' => 'snat_trans',
-            'dnat host' => 'dnat_host',
+            'snat_address' => 'snat_address',
+            'snat_address_resolved_summary' => 'snat_address_resolved_summary',
+            'dnat_host' => 'dnat_host',
+            'dnat_resolved sum' => 'dnat_host_resolved_sum',
             'description' => 'description'
         );
 
@@ -2103,7 +2105,8 @@ RuleCallContext::$supportedActions[] = Array(
 
                 foreach($fields as $fieldName => $fieldID )
                 {
-                    if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum') && !$addResolvedAddressSummary  )
+                    if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
+                            $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum' ) && !$addResolvedAddressSummary  )
                         continue;
                     $lines .= $context->ruleFieldHtmlExport($rule, $fieldID);
                 }
@@ -2119,7 +2122,8 @@ RuleCallContext::$supportedActions[] = Array(
         $tableHeaders = '';
         foreach($fields as $fieldName => $value )
         {
-            if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum') && !$addResolvedAddressSummary  )
+            if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
+                    $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum' ) && !$addResolvedAddressSummary  )
                 continue;
             $tableHeaders .= "<th>{$fieldName}</th>\n";
         }

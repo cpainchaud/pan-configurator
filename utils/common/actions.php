@@ -532,7 +532,7 @@ class RuleCallContext extends CallContext
                 return self::enclose('');
             return self::enclose($rule->SourceNat_Type(), $wrap);
         }
-        if( $fieldName == 'snat_trans' )
+        if( $fieldName == 'snat_address' )
         {
             if( !$rule->isNatRule() )
                 return self::enclose('');
@@ -578,6 +578,38 @@ class RuleCallContext extends CallContext
                 $strMapping[] = $unresolved;
 
             return self::enclose($strMapping);
+        }
+
+        if( $fieldName == 'dnat_host_resolved_sum' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+
+            if( $rule->dnathost === null )
+                return self::enclose('');
+
+            $mapping = $rule->dnathost->getIP4Mapping();
+            $strMapping = explode( ',',$mapping->dumpToString());
+
+            foreach( array_keys($mapping->unresolved) as $unresolved )
+                $strMapping[] = $unresolved;
+
+            return self::enclose($strMapping);
+        }
+
+        if( $fieldName == 'snat_address_resolved_sum' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+
+            $mapping = $rule->snathosts->getIP4Mapping();
+            $strMapping = explode( ',',$mapping->dumpToString());
+
+            foreach( array_keys($mapping->unresolved) as $unresolved )
+                $strMapping[] = $unresolved;
+
+
+            return self::enclose($rule->snathosts->getAll(), $wrap);
         }
 
 
