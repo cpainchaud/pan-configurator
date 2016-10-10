@@ -139,7 +139,12 @@ class TagStore extends ObjStore
             derr('Tag named "'.$name.'" already exists, cannot create');
 
         if( $this->xmlroot === null )
-            $this->xmlroot = DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
+        {
+            if( $this->owner->isDeviceGroup() || $this->owner->isVirtualSystem() )
+                $this->xmlroot = DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
+            else
+                $this->xmlroot = DH::findFirstElementOrCreate('tag', $this->owner->sharedroot);
+        }
 
         $newTag = new Tag($name, $this);
         $newTag->owner = null;
