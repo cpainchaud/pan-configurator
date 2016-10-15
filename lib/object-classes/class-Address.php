@@ -120,7 +120,7 @@ class Address
 		}
 
 		if( !$typeFound )
-			derr('object type not found or not supported', $xml);
+			derr('Object type not found or not supported for object '.$this->name.'. Please check your configuration file and fix it.', $xml);
 
 		if( $this->owner->owner->version >= 60 )
 		{
