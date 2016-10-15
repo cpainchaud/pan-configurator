@@ -767,6 +767,30 @@ AddressCallContext::$supportedActions[] = Array(
 
             $newName = str_replace( '$$netmask.blank32$$',  $replace, $newName);
         }
+        if( strpos( $newName, '$$reverse-dns$$' ) !== FALSE )
+        {
+            if( !$object->isType_ipNetmask() )
+            {
+                echo $context->padding." *** SKIPPED : 'reverse-dns' alias is compatible with ip-netmask type objects\n";
+                return;
+            }
+            if( $object->getNetworkMask() != 32 )
+            {
+                echo $context->padding." *** SKIPPED : 'reverse-dns' actions only works on /32 addresses\n";
+                return;
+            }
+
+            $ip = $object->getNetworkValue();
+            $reverseDns = gethostbyaddr( $ip );
+
+            if( $ip == $reverseDns )
+            {
+                echo $context->padding." *** SKIPPED : 'reverse-dns' could not be resolved\n";
+                return;
+            }
+
+            $newName = str_replace( '$$reverse-dns$$',  $reverseDns, $newName);
+        }
 
 
         if( $object->name() == $newName )
@@ -800,10 +824,11 @@ AddressCallContext::$supportedActions[] = Array(
         'help' =>
             "This string is used to compose a name. You can use the following aliases :\n".
             "  - \\$\$current.name\\$\\$ : current name of the object\n".
-            "  - \\$\$value\\$\\$ : value of the object\n".
-            "  - \\$\$value.no-netmask\\$\\$ : value truncated of netmask if any\n".
             "  - \\$\$netmask\\$\\$ : netmask\n".
-            "  - \\$\$netmask.blank32\\$\\$ : netmask or nothing if 32\n")
+            "  - \\$\$netmask.blank32\\$\\$ : netmask or nothing if 32\n".
+            "  - \\$\$reverse-dns\\$\\$ : value truncated of netmask if any\n".
+            "  - \\$\$value\\$\\$ : value of the object\n".
+            "  - \\$\$value.no-netmask\\$\\$ : value truncated of netmask if any\n")
     ),
     'help' => ''
 );

@@ -335,8 +335,8 @@ $supportedActions['name-toucwords'] = Array(
     {
         $object = $context->object;
         #$newName = $context->arguments['prefix'].$object->name();
-        #$newName = mb_strtolower( $object->name(), 'UTF8' );
-        $newName = ucwords( $object->name() );
+        $newName = mb_strtolower( $object->name(), 'UTF8' );
+        $newName = ucwords( $newName );
         print $context->padding." - new name will be '{$newName}'\n";
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
