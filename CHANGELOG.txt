@@ -3,12 +3,12 @@ CHANGELOG
 1.5.11
 * new function AddressCommon->hasDescendants() to for objects with same name in lower level (child devicegroups)
 * new function AddressCommon->hasDescendants() to determine if objects with same name in lower level (child devicegroups) exist
-* new 'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger' utilities. Safer, faster and find more dups than MT.
-* new tag-edit utility on the same basis as address-edit.
 * Improved address name regex based filter with support to insert objects value: $$netmask$$, $$netmask.blank32$$, $$value$$, $$value.no-netmask$$
 * new Utility to manage stored API keys 'key-manager.php'
 
 utils:
+* new 'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger' utilities. Safer, faster and find more dups than MT.
+* new tag-edit utility on the same basis as address-edit
 rules-edit: new action 'tag-remove-all'
 rules-edit: new filter 'service has.regex', 'rule is.dsri'
 rules-edit: action 'exportToExcel' new option to add optional fields like 'resolveAddressSummary'
