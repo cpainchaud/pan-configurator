@@ -656,6 +656,66 @@ class AddressRuleContainer extends ObjRuleContainer
     }
 
     /**
+     * @param $zoneIP4Mapping array  array of IP start-end to zone ie  Array( 0=>Array('start'=>0, 'end'=>50, 'zone'=>'internet') 1=>...  )
+     * @param $zone string containing zones matched
+     * @return IP4Map containing address matches
+     */
+    public function &calculateIP4MappingFromZones( &$zoneIP4Mapping, $zone)
+    {
+        $defaultroute = false;
+        $mapObject = new IP4Map();
+
+        foreach( $zoneIP4Mapping as &$zoneMapping )
+        {
+            if( $zoneMapping['zone'] === $zone  )
+            {
+                if( $zoneMapping['start'] === 0 )
+                {
+                    $defaultroute = true;
+                    continue;
+                }
+
+                $fakeMapping = IP4Map::mapFromText( long2ip($zoneMapping['start']).'-'.long2ip($zoneMapping['end']) );
+                $mapObject->addMap($fakeMapping, true);
+            }
+
+            #if( $objectsMapping->count() == 0 )
+             #   break;
+        }
+
+        if( $defaultroute )
+        {
+            $defaultroute = false;
+
+            foreach( $zoneIP4Mapping as &$zoneMapping )
+            {
+                if( $zoneMapping['zone'] !== $zone  )
+                {
+                    if( $zoneMapping['start'] === 0 )
+                        $defaultroute = true;
+
+                    $fakeMapping = IP4Map::mapFromText( long2ip($zoneMapping['start']).'-'.long2ip($zoneMapping['end']) );
+                    $mapObject->addMap($fakeMapping, true);
+                }
+
+                #if( $mapObject->count() == 0 )
+                #   break;
+            }
+
+            if( $defaultroute )
+                derr( "another default route is available on a different ZONE: ".$zone );
+
+            $fakeMapping = IP4Map::mapFromText('0.0.0.0-255.255.255.255');
+            $fakeMapping->substract($mapObject);
+            $mapObject = $fakeMapping;
+        }
+
+        $mapObject->sortAndRecalculate();
+
+        return $mapObject;
+    }
+
+    /**
      * @return Address[]|AddressGroup[]
      */
     public function &membersExpanded($keepGroupsInList=false)

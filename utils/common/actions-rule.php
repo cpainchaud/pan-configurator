@@ -16,6 +16,278 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
+    'function' => function (RuleCallContext $context, $srcOrDST)
+    {
+        $rule = $context->object;
+
+        $addrContainerIsNegated = false;
+
+        $zoneContainer = null;
+        $addressContainer = null;
+
+        if( $srcOrDST == 'src' )
+        {
+            $zoneContainer  = $rule->from;
+            $addressContainer = $rule->source;
+            if( $rule->isSecurityRule() && $rule->sourceIsNegated() )
+                $addrContainerIsNegated = true;
+        }
+        elseif( $srcOrDST == 'dst' )
+        {
+            $zoneContainer  = $rule->to;
+            $addressContainer = $rule->destination;
+            if( $rule->isSecurityRule() && $rule->destinationIsNegated() )
+                $addrContainerIsNegated = true;
+        }
+        else
+            derr('unsupported');
+
+        $mode = $context->arguments['mode'];
+        $system = $rule->owner->owner;
+
+        /** @var VirtualRouter $virtualRouterToProcess */
+        $virtualRouterToProcess = null;
+
+        if( !isset($context->cachedIPmapping) )
+            $context->cachedIPmapping = Array();
+
+        $serial = spl_object_hash($rule->owner);
+        $configIsOnLocalFirewall = false;
+
+        if( !isset($context->cachedIPmapping[$serial]) )
+        {
+            if( $system->isDeviceGroup() || $system->isPanorama() )
+            {
+                $firewall = null;
+                $panorama = $system;
+                if( $system->isDeviceGroup() )
+                    $panorama = $system->owner;
+
+                if( $context->arguments['template'] == $context->actionRef['args']['template']['default'] )
+                    derr('with Panorama configs, you need to specify a template name');
+
+                if( $context->arguments['virtualRouter'] == $context->actionRef['args']['virtualRouter']['default'] )
+                    derr('with Panorama configs, you need to specify virtualRouter argument. Available virtual routes are: ');
+
+                $_tmp_explTemplateName = explode('@', $context->arguments['template']);
+                if( count($_tmp_explTemplateName) > 1 )
+                {
+                    $firewall = new PANConf();
+                    $configIsOnLocalFirewall = true;
+                    $doc = null;
+
+                    if( strtolower($_tmp_explTemplateName[0]) == 'api' )
+                    {
+                        $panoramaConnector = findConnector($system);
+                        $connector = new PanAPIConnector($panoramaConnector->apihost, $panoramaConnector->apikey, 'panos-via-panorama', $_tmp_explTemplateName[1]);
+                        $firewall->connector = $connector;
+                        $doc = $connector->getMergedConfig();
+                        $firewall->load_from_domxml($doc);
+                        unset($connector);
+                    }
+                    elseif( strtolower($_tmp_explTemplateName[0]) == 'file')
+                    {
+                        $filename = $_tmp_explTemplateName[1];
+                        if( !file_exists($filename) )
+                            derr("cannot read firewall configuration file '{$filename}''");
+                        $doc = new DOMDocument();
+                        if( ! $doc->load($filename) )
+                            derr("invalive xml file".libxml_get_last_error()->message);
+                        unset($filename);
+                    }
+                    else
+                        derr("unsupported method: {$_tmp_explTemplateName[0]}@");
+
+
+                    // delete rules to avoid loading all the config
+                    $deletedNodesCount = DH::removeChildrenElementsMatchingXPath("/config/devices/entry/vsys/entry/rulebase/*", $doc);
+                    if( $deletedNodesCount === false )
+                        derr("xpath issue");
+                    $deletedNodesCount = DH::removeChildrenElementsMatchingXPath("/config/shared/rulebase/*", $doc);
+                    if( $deletedNodesCount === false )
+                        derr("xpath issue");
+
+                    //print "\n\n deleted $deletedNodesCount nodes \n\n";
+
+                    $firewall->load_from_domxml($doc);
+
+                    unset($deletedNodesCount);
+                    unset($doc);
+                }
+
+
+                /** @var Template $template */
+                if( !$configIsOnLocalFirewall )
+                {
+                    $template = $panorama->findTemplate($context->arguments['template']);
+                    if ($template === null)
+                        derr("cannot find Template named '{$context->arguments['template']}'. Available template list:" . PH::list_to_string($panorama->templates));
+                }
+
+                if( $configIsOnLocalFirewall )
+                    $virtualRouterToProcess = $firewall->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+                else
+                    $virtualRouterToProcess = $template->deviceConfiguration->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+
+                if( $virtualRouterToProcess === null )
+                {
+                    if( $configIsOnLocalFirewall )
+                        $tmpVar = $firewall->network->virtualRouterStore->virtualRouters();
+                    else
+                        $tmpVar = $template->deviceConfiguration->network->virtualRouterStore->virtualRouters();
+
+                    derr("cannot find VirtualRouter named '{$context->arguments['virtualRouter']}' in Template '{$context->arguments['template']}'. Available VR list: " . PH::list_to_string($tmpVar));
+                }
+
+                if( ( !$configIsOnLocalFirewall && count($template->deviceConfiguration->virtualSystems) == 1) || ($configIsOnLocalFirewall && count($firewall->virtualSystems) == 1))
+                {
+                    if( $configIsOnLocalFirewall )
+                        $system = $firewall->virtualSystems[0];
+                    else
+                        $system = $template->deviceConfiguration->virtualSystems[0];
+                }
+                else
+                {
+                    $vsysConcernedByVR = $virtualRouterToProcess->findConcernedVsys();
+                    if(count($vsysConcernedByVR) == 1)
+                    {
+                        $system = array_pop($vsysConcernedByVR);
+                    }
+                    elseif( $context->arguments['vsys'] == '*autodetermine*')
+                    {
+                        derr("cannot autodetermine resolution context from Template '{$context->arguments['template']}' VR '{$context->arguments['virtualRouter']}'' , multiple VSYS are available: ".PH::list_to_string($vsysConcernedByVR).". Please provide choose a VSYS.");
+                    }
+                    else
+                    {
+                        if( $configIsOnLocalFirewall )
+                            $vsys = $firewall->findVirtualSystem($context->arguments['vsys']);
+                        else
+                            $vsys = $template->deviceConfiguration->findVirtualSystem($context->arguments['vsys']);
+                        if( $vsys === null )
+                            derr("cannot find VSYS '{$context->arguments['vsys']}' in Template '{$context->arguments['template']}'");
+                        $system = $vsys;
+                    }
+                }
+
+                //derr(DH::dom_to_xml($template->deviceConfiguration->xmlroot));
+                //$tmpVar = $system->importedInterfaces->interfaces();
+                //derr(count($tmpVar)." ".PH::list_to_string($tmpVar));
+            }
+            else if ($context->arguments['virtualRouter'] != '*autodetermine*')
+            {
+                $virtualRouterToProcess = $system->owner->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+                if( $virtualRouterToProcess === null )
+                    derr("VirtualRouter named '{$context->arguments['virtualRouter']}' not found");
+            }
+            else
+            {
+                $vRouters = $system->owner->network->virtualRouterStore->virtualRouters();
+                $foundRouters = Array();
+
+                foreach ($vRouters as $router)
+                {
+                    foreach ($router->attachedInterfaces->interfaces() as $if)
+                    {
+                        if ($system->importedInterfaces->hasInterfaceNamed($if->name()))
+                        {
+                            $foundRouters[] = $router;
+                            break;
+                        }
+                    }
+                }
+
+                print $context->padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers\n";
+                if (count($foundRouters) > 1)
+                    derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
+                if (count($foundRouters) == 0)
+                    derr("no suitable VirtualRouter found, please force one or check your configuration");
+
+                $virtualRouterToProcess = $foundRouters[0];
+            }
+            $context->cachedIPmapping[$serial] = $virtualRouterToProcess->getIPtoZoneRouteMapping($system);
+        }
+
+
+        $ipMapping = &$context->cachedIPmapping[$serial];
+
+        if( $addressContainer->isAny() )
+        {
+            if( $zoneContainer->isAny() )
+            {
+                print $context->padding." - SKIPPED : zone container is ANY()\n";
+                return;
+            }
+            elseif( count( $zoneContainer->zones() ) !== 1 )
+            {
+                print $context->padding." - SKIPPED : more then one zone is involved\n";
+                return;
+            }
+
+            foreach( $zoneContainer->zones() as $zone )
+                $zones[] = $zone->name();
+            print $context->padding." - now calculate IP4Mapping based on the zone: ".$zones[0]."\n";
+        }
+        else{
+            print $context->padding." - SKIPPED : address container is not ANY()\n";
+            return;
+        }
+
+        $resolvedAddresses = & $addressContainer->calculateIP4MappingFromZones($ipMapping['ipv4'], $zones[0]);
+
+        if( $resolvedAddresses->count() == 0 )
+        {
+            print $context->padding." - WARNING : no addresses resolved (Zone? Route?)\n";
+            return;
+        }
+
+        $mapArray = $resolvedAddresses->getMapArray();
+
+        foreach( $mapArray as $addressobject )
+        {
+            $object = new Address( long2ip( $addressobject['start'] )."-".long2ip( $addressobject['end'] ), $addressContainer->parentCentralStore);
+            $object->setType( 'tmp' );
+            $object->setValue( long2ip( $addressobject['start'] )."-".long2ip( $addressobject['end'] ) );
+
+            $addressContainer->addObject( $object );
+
+        }
+    },
+    'args' => Array(    'mode' => Array(    'type' => 'string',
+        'default' => 'show',
+        'choices' => Array('replace', 'show'),
+        'help' =>   "Will determine what to do with resolved addresses : show them, replace SRC is.any in the rule"
+    ),
+        'virtualRouter' => Array(   'type' => 'string',
+            'default' => '*autodetermine*',
+            'help' =>   "Can optionally be provided if script cannot find which virtualRouter it should be using".
+                " (ie: there are several VR in same VSYS)"
+        ),
+        'template' => Array(    'type' => 'string',
+            'default' => '*notPanorama*',
+            'help' =>   "When you are using Panorama then 1 or more templates could apply to a DeviceGroup, in".
+                " such a case you may want to specify which Template name to use.\nBeware that if the Template is overriden".
+                " or if you are not using Templates then you will want load firewall config in lieu of specifying a template.".
+                " \nFor this, give value 'api@XXXXX' where XXXXX is serial number of the Firewall device number you want to use to".
+                " calculate zones.\nIf you don't want to use API but have firewall config file on your computer you can then".
+                " specify file@/folderXYZ/config.xml."
+        ),
+        'vsys' => Array(    'type' => 'string',
+            'default' => '*autodetermine*',
+            'help' =>   "specify vsys when script cannot autodetermine it or when you when to manually override"
+        ),
+    ),
+    'help' =>   "This Action will use routing tables to resolve zones. When the program cannot find all parameters by".
+        " itself (like vsys or template name you will have ti manually provide them.\n\n".
+        "Usage examples:\n\n".
+        "    - xxx-calculate-zones\n".
+        "    - xxx-calculate-zones:replace\n".
+        "    - xxx-calculate-zones:show,vr1\n".
+        "    - xxx-calculate-zones:replace,vr3,api@0011C890C,vsys1\n".
+        "    - xxx-calculate-zones:show,vr5,Datacenter_template\n".
+        "    - xxx-calculate-zones:replace,vr3,file@firewall.xml,vsys1\n"
+);
+
 RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
     'function' => function (RuleCallContext $context, $fromOrTo)
     {
@@ -850,6 +1122,25 @@ RuleCallContext::$supportedActions[] = Array(
 //                                                    //
 //                Source/Dest Based Actions           //
 //                                                    //
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'src-calculate-addresses',
+    'section' => 'zone',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        {
+            echo $context->padding." * SKIPPED: FROM is Zone based, not supported yet.\n";
+            return;
+        }
+
+        $f = RuleCallContext::$commonActionFunctions['calculate-addresses']['function'];
+        $f($context, 'src');
+    },
+    'args' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['args'],
+    'help' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['help']
+);
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Add',
     'section' => 'address',
