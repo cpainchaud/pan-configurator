@@ -634,8 +634,11 @@ class PanAPIConnector
         if( is_array($parameters) )
             $sendThroughPost = TRUE;
 
-        if( $this->_curl_handle === null || $this->_curl_count > 100 )
+        if( (PHP_MAJOR_VERSION <= 5 && PHP_MINOR_VERSION < 5) || $this->_curl_handle === null || $this->_curl_count > 100 )
         {
+            if( $this->_curl_handle !== null )
+                curl_close($this->_curl_handle);
+
             $this->_curl_handle = curl_init();
             $this->_curl_count = 0;
         }
