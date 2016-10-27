@@ -21,24 +21,18 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
     {
         $rule = $context->object;
 
-        $addrContainerIsNegated = false;
-
         $zoneContainer = null;
         $addressContainer = null;
 
         if( $srcOrDST == 'src' )
         {
-            $zoneContainer  = $rule->from;
+            $zoneContainer = $rule->from;
             $addressContainer = $rule->source;
-            if( $rule->isSecurityRule() && $rule->sourceIsNegated() )
-                $addrContainerIsNegated = true;
         }
         elseif( $srcOrDST == 'dst' )
         {
-            $zoneContainer  = $rule->to;
+            $zoneContainer = $rule->to;
             $addressContainer = $rule->destination;
-            if( $rule->isSecurityRule() && $rule->destinationIsNegated() )
-                $addrContainerIsNegated = true;
         }
         else
             derr('unsupported');
@@ -53,7 +47,7 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
             $context->cachedIPmapping = Array();
 
         $serial = spl_object_hash($rule->owner);
-        $configIsOnLocalFirewall = false;
+        $configIsOnLocalFirewall = FALSE;
 
         if( !isset($context->cachedIPmapping[$serial]) )
         {
@@ -74,7 +68,7 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                 if( count($_tmp_explTemplateName) > 1 )
                 {
                     $firewall = new PANConf();
-                    $configIsOnLocalFirewall = true;
+                    $configIsOnLocalFirewall = TRUE;
                     $doc = null;
 
                     if( strtolower($_tmp_explTemplateName[0]) == 'api' )
@@ -86,14 +80,14 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                         $firewall->load_from_domxml($doc);
                         unset($connector);
                     }
-                    elseif( strtolower($_tmp_explTemplateName[0]) == 'file')
+                    elseif( strtolower($_tmp_explTemplateName[0]) == 'file' )
                     {
                         $filename = $_tmp_explTemplateName[1];
                         if( !file_exists($filename) )
                             derr("cannot read firewall configuration file '{$filename}''");
                         $doc = new DOMDocument();
-                        if( ! $doc->load($filename) )
-                            derr("invalive xml file".libxml_get_last_error()->message);
+                        if( !$doc->load($filename) )
+                            derr("invalive xml file" . libxml_get_last_error()->message);
                         unset($filename);
                     }
                     else
@@ -102,10 +96,10 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
 
                     // delete rules to avoid loading all the config
                     $deletedNodesCount = DH::removeChildrenElementsMatchingXPath("/config/devices/entry/vsys/entry/rulebase/*", $doc);
-                    if( $deletedNodesCount === false )
+                    if( $deletedNodesCount === FALSE )
                         derr("xpath issue");
                     $deletedNodesCount = DH::removeChildrenElementsMatchingXPath("/config/shared/rulebase/*", $doc);
-                    if( $deletedNodesCount === false )
+                    if( $deletedNodesCount === FALSE )
                         derr("xpath issue");
 
                     //print "\n\n deleted $deletedNodesCount nodes \n\n";
@@ -121,7 +115,7 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                 if( !$configIsOnLocalFirewall )
                 {
                     $template = $panorama->findTemplate($context->arguments['template']);
-                    if ($template === null)
+                    if( $template === null )
                         derr("cannot find Template named '{$context->arguments['template']}'. Available template list:" . PH::list_to_string($panorama->templates));
                 }
 
@@ -140,7 +134,7 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                     derr("cannot find VirtualRouter named '{$context->arguments['virtualRouter']}' in Template '{$context->arguments['template']}'. Available VR list: " . PH::list_to_string($tmpVar));
                 }
 
-                if( ( !$configIsOnLocalFirewall && count($template->deviceConfiguration->virtualSystems) == 1) || ($configIsOnLocalFirewall && count($firewall->virtualSystems) == 1))
+                if( (!$configIsOnLocalFirewall && count($template->deviceConfiguration->virtualSystems) == 1) || ($configIsOnLocalFirewall && count($firewall->virtualSystems) == 1) )
                 {
                     if( $configIsOnLocalFirewall )
                         $system = $firewall->virtualSystems[0];
@@ -150,13 +144,13 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                 else
                 {
                     $vsysConcernedByVR = $virtualRouterToProcess->findConcernedVsys();
-                    if(count($vsysConcernedByVR) == 1)
+                    if( count($vsysConcernedByVR) == 1 )
                     {
                         $system = array_pop($vsysConcernedByVR);
                     }
-                    elseif( $context->arguments['vsys'] == '*autodetermine*')
+                    elseif( $context->arguments['vsys'] == '*autodetermine*' )
                     {
-                        derr("cannot autodetermine resolution context from Template '{$context->arguments['template']}' VR '{$context->arguments['virtualRouter']}'' , multiple VSYS are available: ".PH::list_to_string($vsysConcernedByVR).". Please provide choose a VSYS.");
+                        derr("cannot autodetermine resolution context from Template '{$context->arguments['template']}' VR '{$context->arguments['virtualRouter']}'' , multiple VSYS are available: " . PH::list_to_string($vsysConcernedByVR) . ". Please provide choose a VSYS.");
                     }
                     else
                     {
@@ -174,7 +168,7 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                 //$tmpVar = $system->importedInterfaces->interfaces();
                 //derr(count($tmpVar)." ".PH::list_to_string($tmpVar));
             }
-            else if ($context->arguments['virtualRouter'] != '*autodetermine*')
+            else if( $context->arguments['virtualRouter'] != '*autodetermine*' )
             {
                 $virtualRouterToProcess = $system->owner->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
                 if( $virtualRouterToProcess === null )
@@ -185,11 +179,11 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                 $vRouters = $system->owner->network->virtualRouterStore->virtualRouters();
                 $foundRouters = Array();
 
-                foreach ($vRouters as $router)
+                foreach( $vRouters as $router )
                 {
-                    foreach ($router->attachedInterfaces->interfaces() as $if)
+                    foreach( $router->attachedInterfaces->interfaces() as $if )
                     {
-                        if ($system->importedInterfaces->hasInterfaceNamed($if->name()))
+                        if( $system->importedInterfaces->hasInterfaceNamed($if->name()) )
                         {
                             $foundRouters[] = $router;
                             break;
@@ -198,9 +192,9 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                 }
 
                 print $context->padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers\n";
-                if (count($foundRouters) > 1)
+                if( count($foundRouters) > 1 )
                     derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
-                if (count($foundRouters) == 0)
+                if( count($foundRouters) == 0 )
                     derr("no suitable VirtualRouter found, please force one or check your configuration");
 
                 $virtualRouterToProcess = $foundRouters[0];
@@ -215,53 +209,52 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
         {
             if( $zoneContainer->isAny() )
             {
-                print $context->padding." - SKIPPED : zone container is ANY()\n";
+                print $context->padding . " - SKIPPED : zone container is ANY()\n";
                 return;
             }
-            elseif( count( $zoneContainer->zones() ) !== 1 )
+            
+        }
+        else
+        {
+            print $context->padding . " - SKIPPED : address container is not ANY()\n";
+            return;
+        }
+
+        foreach( $zoneContainer->zones() as $zone )
+        {
+            $zonename = $zone->name();
+            print $context->padding . " - now calculate IP4Mapping based on the zone: " . $zonename . "\n";
+
+            $resolvedAddresses = &$addressContainer->calculateIP4MappingFromZones($ipMapping['ipv4'], $zonename);
+
+            if( $resolvedAddresses->count() == 0 )
             {
-                print $context->padding." - SKIPPED : more then one zone is involved\n";
+                print $context->padding . " - WARNING : no addresses resolved (Zone? Route?)\n";
                 return;
             }
 
-            foreach( $zoneContainer->zones() as $zone )
-                $zones[] = $zone->name();
-            print $context->padding." - now calculate IP4Mapping based on the zone: ".$zones[0]."\n";
+            $mapArray = $resolvedAddresses->getMapArray();
+
+            $prefix = 'TAP_';
+
+            $addrgroup = $addressContainer->parentCentralStore->find($prefix . $zonename);
+            if( $addrgroup === null )
+                $addrgroup = $addressContainer->parentCentralStore->newAddressGroup('TAP_' . $zonename);
+
+
+            foreach( $mapArray as $addressobject )
+            {
+                $objectname = long2ip($addressobject['start']) . "-" . long2ip($addressobject['end']);
+
+                $object = $addressContainer->parentCentralStore->find($prefix . $objectname);
+                if( $object === null )
+                    $object = $addressContainer->parentCentralStore->newAddress($prefix . $objectname, 'ip-range', $objectname);
+
+                $addrgroup->addMember($object);
+            }
+
+            $addressContainer->addObject($addrgroup);
         }
-        else{
-            print $context->padding." - SKIPPED : address container is not ANY()\n";
-            return;
-        }
-
-        $resolvedAddresses = & $addressContainer->calculateIP4MappingFromZones($ipMapping['ipv4'], $zones[0]);
-
-        if( $resolvedAddresses->count() == 0 )
-        {
-            print $context->padding." - WARNING : no addresses resolved (Zone? Route?)\n";
-            return;
-        }
-
-        $mapArray = $resolvedAddresses->getMapArray();
-
-        $prefix = 'TAP_';
-
-        $addrgroup = $addressContainer->parentCentralStore->find($prefix.$zones[0]);
-        if( $addrgroup === null )
-            $addrgroup = $addressContainer->parentCentralStore->newAddressGroup( 'TAP_'.$zones[0] );
-
-
-        foreach( $mapArray as $addressobject )
-        {
-            $objectname = long2ip( $addressobject['start'] )."-".long2ip( $addressobject['end']);
-
-            $object = $addressContainer->parentCentralStore->find( $prefix.$objectname );
-            if( $object === null )
-                $object = $addressContainer->parentCentralStore->newAddress( $prefix.$objectname, 'ip-range', $objectname);
-
-            $addrgroup->addMember( $object );
-        }
-
-        $addressContainer->addObject( $addrgroup );
     },
     'args' => Array(    'mode' => Array(    'type' => 'string',
         'default' => 'show',
