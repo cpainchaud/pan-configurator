@@ -205,9 +205,9 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
 
                 $virtualRouterToProcess = $foundRouters[0];
             }
+
             $context->cachedIPmapping[$serial] = $virtualRouterToProcess->getIPtoZoneRouteMapping($system);
         }
-
 
         $ipMapping = &$context->cachedIPmapping[$serial];
 
@@ -243,15 +243,25 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
 
         $mapArray = $resolvedAddresses->getMapArray();
 
+        $prefix = 'TAP_';
+
+        $addrgroup = $addressContainer->parentCentralStore->find($prefix.$zones[0]);
+        if( $addrgroup === null )
+            $addrgroup = $addressContainer->parentCentralStore->newAddressGroup( 'TAP_'.$zones[0] );
+
+
         foreach( $mapArray as $addressobject )
         {
-            $object = new Address( long2ip( $addressobject['start'] )."-".long2ip( $addressobject['end'] ), $addressContainer->parentCentralStore);
-            $object->setType( 'tmp' );
-            $object->setValue( long2ip( $addressobject['start'] )."-".long2ip( $addressobject['end'] ) );
+            $objectname = long2ip( $addressobject['start'] )."-".long2ip( $addressobject['end']);
 
-            $addressContainer->addObject( $object );
+            $object = $addressContainer->parentCentralStore->find( $prefix.$objectname );
+            if( $object === null )
+                $object = $addressContainer->parentCentralStore->newAddress( $prefix.$objectname, 'ip-range', $objectname);
 
+            $addrgroup->addMember( $object );
         }
+
+        $addressContainer->addObject( $addrgroup );
     },
     'args' => Array(    'mode' => Array(    'type' => 'string',
         'default' => 'show',
@@ -1137,6 +1147,29 @@ RuleCallContext::$supportedActions[] = Array(
 
         $f = RuleCallContext::$commonActionFunctions['calculate-addresses']['function'];
         $f($context, 'src');
+    },
+    'args' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['args'],
+    'help' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['help']
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'dst-calculate-addresses',
+    'section' => 'zone',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            echo $context->padding." * SKIPPED: TO is Zone based, not supported yet.\n";
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            echo $context->padding." * SKIPPED: there is no TO in PBF Rules.\n";
+            return;
+        }
+
+        $f = RuleCallContext::$commonActionFunctions['calculate-addresses']['function'];
+        $f($context, 'dst');
     },
     'args' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['args'],
     'help' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['help']

@@ -667,9 +667,10 @@ class AddressRuleContainer extends ObjRuleContainer
 
         foreach( $zoneIP4Mapping as &$zoneMapping )
         {
+            #print long2ip($zoneMapping['start']).'-'.long2ip($zoneMapping['end'])."\n";
             if( $zoneMapping['zone'] === $zone  )
             {
-                if( $zoneMapping['start'] === 0 )
+                if( $zoneMapping['start'] === 0 && $zoneMapping['end'] === 4294967295)
                 {
                     $defaultroute = true;
                     continue;
@@ -691,7 +692,7 @@ class AddressRuleContainer extends ObjRuleContainer
             {
                 if( $zoneMapping['zone'] !== $zone  )
                 {
-                    if( $zoneMapping['start'] === 0 )
+                    if( $zoneMapping['start'] === 0 && $zoneMapping['end'] === 4294967295)
                         $defaultroute = true;
 
                     $fakeMapping = IP4Map::mapFromText( long2ip($zoneMapping['start']).'-'.long2ip($zoneMapping['end']) );
