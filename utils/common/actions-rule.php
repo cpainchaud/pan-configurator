@@ -212,7 +212,7 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
                 print $context->padding . " - SKIPPED : zone container is ANY()\n";
                 return;
             }
-            
+
         }
         else
         {
@@ -235,11 +235,11 @@ RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
 
             $mapArray = $resolvedAddresses->getMapArray();
 
-            $prefix = 'TAP_';
+            $prefix = 'TMP_';
 
             $addrgroup = $addressContainer->parentCentralStore->find($prefix . $zonename);
             if( $addrgroup === null )
-                $addrgroup = $addressContainer->parentCentralStore->newAddressGroup('TAP_' . $zonename);
+                $addrgroup = $addressContainer->parentCentralStore->newAddressGroup($prefix . $zonename);
 
 
             foreach( $mapArray as $addressobject )

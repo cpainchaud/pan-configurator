@@ -662,55 +662,32 @@ class AddressRuleContainer extends ObjRuleContainer
      */
     public function &calculateIP4MappingFromZones( &$zoneIP4Mapping, $zone)
     {
-        $defaultroute = false;
-        $mapObject = new IP4Map();
+        $coveredmapObject = new IP4Map();
 
+        $mapObject = Array();
         foreach( $zoneIP4Mapping as &$zoneMapping )
         {
-            #print long2ip($zoneMapping['start']).'-'.long2ip($zoneMapping['end'])."\n";
-            if( $zoneMapping['zone'] === $zone  )
-            {
-                if( $zoneMapping['start'] === 0 && $zoneMapping['end'] === 4294967295)
-                {
-                    $defaultroute = true;
-                    continue;
-                }
+            $routemapObject = new IP4Map();
+            $routeMapping = IP4Map::mapFromText(long2ip($zoneMapping['start']) . '-' . long2ip($zoneMapping['end']));
+            $routemapObject->addMap($routeMapping);
 
-                $fakeMapping = IP4Map::mapFromText( long2ip($zoneMapping['start']).'-'.long2ip($zoneMapping['end']) );
-                $mapObject->addMap($fakeMapping, true);
+
+            if( !isset($mapObject[$zoneMapping['zone']]) )
+            {
+                $mapObject[$zoneMapping['zone']] = new IP4Map();
             }
 
-            #if( $objectsMapping->count() == 0 )
-             #   break;
+
+            $tmp_routemapObject = clone $routemapObject;
+            $routemapObject->substract($coveredmapObject);
+            $mapObject[$zoneMapping['zone']]->addMap($routemapObject, TRUE);
+
+            $coveredmapObject->addMap($tmp_routemapObject, TRUE);
+            $coveredmapObject->sortAndRecalculate();
+
         }
 
-        if( $defaultroute )
-        {
-            $defaultroute = false;
-
-            foreach( $zoneIP4Mapping as &$zoneMapping )
-            {
-                if( $zoneMapping['zone'] !== $zone  )
-                {
-                    if( $zoneMapping['start'] === 0 && $zoneMapping['end'] === 4294967295)
-                        $defaultroute = true;
-
-                    $fakeMapping = IP4Map::mapFromText( long2ip($zoneMapping['start']).'-'.long2ip($zoneMapping['end']) );
-                    $mapObject->addMap($fakeMapping, true);
-                }
-
-                #if( $mapObject->count() == 0 )
-                #   break;
-            }
-
-            if( $defaultroute )
-                derr( "another default route is available on a different ZONE: ".$zone );
-
-            $fakeMapping = IP4Map::mapFromText('0.0.0.0-255.255.255.255');
-            $fakeMapping->substract($mapObject);
-            $mapObject = $fakeMapping;
-        }
-
+        $mapObject = $mapObject[ $zone ];
         $mapObject->sortAndRecalculate();
 
         return $mapObject;
