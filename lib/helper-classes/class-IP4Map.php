@@ -90,6 +90,17 @@ class IP4Map
         return $affectedRows;
     }
 
+    public function intersection( IP4Map $otherMap )
+    {
+        $invertedMap = IP4Map::mapFromText('0.0.0.0-255.255.255.255');
+        $invertedMap->substract($otherMap);
+
+        $result = clone $otherMap;
+        $result->substract($invertedMap);
+
+        return $result;
+    }
+
     public function substractSingleIP4Entry(&$subEntry)
     {
         $affectedRows = 0;
