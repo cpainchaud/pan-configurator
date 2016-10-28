@@ -511,7 +511,7 @@ foreach( $hashMap as $index => &$hash )
                 $object->API_addObjectWhereIamUsed($pickedObject, TRUE, 6);
                 $object->API_removeWhereIamUsed(TRUE, 6);
                 echo "    - deleting '{$object->name()}'... ";
-                $object->owner->API_remove($object);
+                $object->owner->API_remove($object, true);
                 echo "OK!\n";
             }
             else
@@ -519,17 +519,18 @@ foreach( $hashMap as $index => &$hash )
                 $object->addObjectWhereIamUsed($pickedObject, TRUE, 6);
                 $object->removeWhereIamUsed(TRUE, 6);
                 echo "    - deleting '{$object->name()}'... ";
-                $object->owner->remove($object);
+                $object->owner->remove($object, true);
                 echo "OK!\n";
             }
-            $countRemoved++;
 
+        }
 
-            if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
-            {
-                echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
-                break 2;
-            }
+        $countRemoved++;
+
+        if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+        {
+            echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+            break 2;
         }
     }
 }
