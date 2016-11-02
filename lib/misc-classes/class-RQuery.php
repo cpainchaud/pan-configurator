@@ -2494,6 +2494,34 @@ RQuery::$defaultFilters['service']['object']['operators']['is.group'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['service']['object']['operators']['is.tcp'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+        if( $object->isTmpSrv() )
+            return false;
+
+        if( $object->isGroup() )
+            return false;
+
+        return $context->object->isTcp();
+    },
+    'arg' => false
+);
+RQuery::$defaultFilters['service']['object']['operators']['is.udp'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+        if( $object->isTmpSrv() )
+            return false;
+
+        if( $object->isGroup() )
+            return false;
+
+        return $context->object->isUdp();
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['service']['object']['operators']['is.tmp'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
