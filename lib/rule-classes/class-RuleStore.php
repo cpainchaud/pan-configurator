@@ -705,11 +705,17 @@ class RuleStore
 	{
         $this->moveRuleAfter($ruleToBeMoved , $ruleRef, $rewritexml);
 
-		$xpath = $ruleToBeMoved->getXPath();
 		$con = findConnectorOrDie($this);
 
-		$url = 'type=config&action=move&xpath='.$xpath.'&where=after&dst='.$ruleRef->name();
-		$con->sendRequest($url);
+        $params = Array();
+
+        $params['type'] = 'config';
+        $params['action'] = 'move';
+        $params['xpath'] = $ruleToBeMoved->getXPath();
+        $params['where'] = 'after';
+        $params['dst'] = $ruleRef->name();
+
+		$con->sendRequest($params);
 	}
 
     public function removeAll()
@@ -861,11 +867,15 @@ class RuleStore
 	{
 		$this->moveRuleBefore($ruleToBeMoved , $ruleRef, $rewritexml);
 
-		$xpath = $ruleToBeMoved->getXPath();
 		$con = findConnectorOrDie($this);
 
-		$url = 'type=config&action=move&xpath='.$xpath.'&where=before&dst='.$ruleRef->name();
-		$con->sendRequest($url);
+        $params['type'] = 'config';
+        $params['action'] = 'move';
+        $params['xpath'] = $ruleToBeMoved->getXPath();
+        $params['where'] = 'before';
+        $params['dst'] = $ruleRef->name();
+
+        $con->sendRequest($params);
 	}
 	
 	
