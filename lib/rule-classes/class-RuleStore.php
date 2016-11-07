@@ -815,15 +815,17 @@ class RuleStore
                     continue;
                 }
 
-                $newArray[$i] = $rule;
-
-                $i++;
-
                 if ($rule === $ruleRef)
                 {
                     $newArray[$i] = $ruleToBeMoved;
                     $i++;
                 }
+
+                $newArray[$i] = $rule;
+
+                $i++;
+
+
             }
 
             $this->_rules = &$newArray;
@@ -1531,6 +1533,16 @@ class RuleStore
         else
             derr("rule '{$rule->name()}' not found");
 
+    }
+
+    /**
+     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule
+     */
+    public function getRuleOnTop()
+    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $lrule */
+
+        foreach($this->_rules as $lrule)
+            return $lrule;
     }
 
 
