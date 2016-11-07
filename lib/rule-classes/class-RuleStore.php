@@ -754,7 +754,7 @@ class RuleStore
             $tmpRule = $this->find($ruleToBeMoved);
             if( $tmpRule === null )
                 derr("cannot find rule named '$ruleToBeMoved'");
-            return $this->moveRuleAfter( $tmpRule, $ruleRef, $rewriteXml );
+            return $this->moveRuleBefore( $tmpRule, $ruleRef, $rewriteXml );
         }
 
         if( is_string($ruleRef) )
@@ -762,7 +762,7 @@ class RuleStore
             $tmpRule = $this->find($ruleRef);
             if( $tmpRule === null )
                 derr("cannot find rule named '$tmpRule'");
-            return $this->moveRuleAfter( $ruleToBeMoved, $tmpRule, $rewriteXml );
+            return $this->moveRuleBefore( $ruleToBeMoved, $tmpRule, $rewriteXml );
         }
 
         $rtbmSerial = spl_object_hash($ruleToBeMoved);
