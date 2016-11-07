@@ -2052,6 +2052,28 @@ RuleCallContext::$supportedActions[] = Array(
 );
 
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'movetotop',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $context->ruleList[] = $rule;
+    },
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->ruleList = Array();
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $ruleStore = $rule->owner;
+        $ruleontop = $ruleStore->getRuleOnTop();
+
+        foreach ($context->ruleList as $rule)
+            $ruleStore->moveRuleBefore($rule, $ruleontop);
+    }
+);
+
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'exportToExcel',
     'MainFunction' => function(RuleCallContext $context)
     {
