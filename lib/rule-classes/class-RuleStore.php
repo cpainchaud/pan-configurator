@@ -841,15 +841,17 @@ class RuleStore
                     continue;
                 }
 
-                $newArray[$i] = $rule;
-
-                $i++;
-
                 if ($rule === $ruleRef)
                 {
                     $newArray[$i] = $ruleToBeMoved;
                     $i++;
                 }
+
+                $newArray[$i] = $rule;
+
+                $i++;
+
+
             }
             $this->_postRules = &$newArray;
         }
