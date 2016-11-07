@@ -2066,10 +2066,34 @@ RuleCallContext::$supportedActions[] = Array(
     {
         $rule = $context->object;
         $ruleStore = $rule->owner;
-        $ruleontop = $ruleStore->getRuleOnTop();
+        $ruleRef = $ruleStore->getRuleOnTop();
 
         foreach ($context->ruleList as $rule)
-            $ruleStore->moveRuleBefore($rule, $ruleontop);
+            $ruleStore->moveRuleBefore($rule, $ruleRef);
+    }
+);
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'movetobottom',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $context->ruleList[] = $rule;
+    },
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->ruleList = Array();
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $ruleStore = $rule->owner;
+
+        foreach ($context->ruleList as $rule)
+        {
+            $ruleRef = $ruleStore->getRuleOnBottom();
+            $ruleStore->moveRuleAfter($rule, $ruleRef);
+        }
     }
 );
 

@@ -824,8 +824,6 @@ class RuleStore
                 $newArray[$i] = $rule;
 
                 $i++;
-
-
             }
 
             $this->_rules = &$newArray;
@@ -850,8 +848,6 @@ class RuleStore
                 $newArray[$i] = $rule;
 
                 $i++;
-
-
             }
             $this->_postRules = &$newArray;
         }
@@ -1547,6 +1543,20 @@ class RuleStore
             return $lrule;
     }
 
+    /**
+     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule
+     */
+    public function getRuleOnBottom()
+    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $lrule */
+
+        $count = 0;
+        foreach($this->_rules as $lrule)
+        {
+            $count++;
+            if( count( $this->_rules ) == $count )
+                return $lrule;
+        }
+    }
 
     public function createXmlRoot()
     {
