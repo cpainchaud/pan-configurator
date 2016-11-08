@@ -7,6 +7,7 @@ CHANGELOG
 * new tag-edit utility on the same basis as address-edit.
 * Improved address name regex based filter with support to insert objects value: $$netmask$$, $$netmask.blank32$$, $$value$$, $$value.no-netmask$$
 
+
 utils:
 rules-edit: new actions 'tag-remove-all'
 rules-edit: new filter 'service has.regex'
