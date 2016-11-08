@@ -201,7 +201,7 @@ class ServiceRuleContainer extends ObjRuleContainer
             if( $lower == 'any' )
             {
                 if( count($this->o) != 0 )
-                    mwarning('rule has a bad combination of services');
+                    mwarning('rule has a bad combination of services', $xml);
 
                 $this->o = Array();
                 continue;
@@ -209,7 +209,7 @@ class ServiceRuleContainer extends ObjRuleContainer
             else if($lower == 'application-default')
             {
                 if( count($this->o) != 0 )
-                    mwarning('rule has a bad combination of services');
+                    mwarning('rule has a bad combination of services', $xml);
 
                 $this->o = Array();
                 $this->appDef = true;

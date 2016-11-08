@@ -257,13 +257,63 @@ trait ServiceCommon
     }
 
     /**
-     * @param $displayOutput bool
-     * @param $actionIfLastInRule string can be delete|setany|disable
+     * @param bool $displayOutput
+     * @param string $actionIfLastInRule can be delete|setany|disable
      * @param $outputPadding string|int
      */
     public function API_removeWhereIamUsed($displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
         $this->__removeWhereIamUsed(true, $displayOutput, $outputPadding, $actionIfLastInRule);
+    }
+
+
+
+    /**
+     * @param bool $displayOutput
+     * @param Service|ServiceGroup $withObject
+     * @param string|int $outputPadding
+     */
+    public function API_replaceWhereIamUsed($withObject, $displayOutput = false, $outputPadding = '')
+    {
+        $this->__removeWhereIamUsed(true, $withObject, $displayOutput, $outputPadding);
+    }
+
+    /**
+     * @param bool $displayOutput
+     * @param Service|ServiceGroup $withObject
+     * @param string|int $outputPadding
+     */
+    public function replaceWhereIamUsed($withObject, $displayOutput = false, $outputPadding = '')
+    {
+        $this->__removeWhereIamUsed(false, $withObject, $displayOutput, $outputPadding);
+    }
+
+
+    /**
+     * @param bool $displayOutput
+     * @param bool $apiMode
+     * @param Service|ServiceGroup $withObject
+     * @param string|int $outputPadding
+     */
+    public function __replaceWhereIamUsed($apiMode, $withObject, $displayOutput = false, $outputPadding = '')
+    {
+        /** @var Service|ServiceGroup $this */
+
+        if( is_numeric($outputPadding) )
+            $outputPadding = str_pad(' ', $outputPadding);
+
+        /** @var ServiceGroup|ServiceRuleContainer $objectRef */
+
+        foreach( $this->refrules as $objectRef)
+        {
+            if( $displayOutput )
+                echo $outputPadding."- replacing in {$objectRef->toString()}\n";
+            if( $apiMode)
+                $objectRef->API_replaceReferencedObject($this, $withObject);
+            else
+                $objectRef->replaceReferencedObject($this, $withObject);
+        }
+
     }
 
 }
