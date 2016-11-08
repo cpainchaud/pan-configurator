@@ -2069,7 +2069,12 @@ RuleCallContext::$supportedActions[] = Array(
         $ruleRef = $ruleStore->getRuleOnTop();
 
         foreach ($context->ruleList as $rule)
-            $ruleStore->moveRuleBefore($rule, $ruleRef);
+        {
+            if( $context->isAPI )
+                $ruleStore->API_moveRuleBefore($rule, $ruleRef);
+            else
+                $ruleStore->moveRuleBefore($rule, $ruleRef);
+        }
     }
 );
 
@@ -2091,8 +2096,16 @@ RuleCallContext::$supportedActions[] = Array(
 
         foreach ($context->ruleList as $rule)
         {
-            $ruleRef = $ruleStore->getRuleOnBottom();
-            $ruleStore->moveRuleAfter($rule, $ruleRef);
+            if( $context->isAPI )
+            {
+                $ruleRef = $ruleStore->getRuleOnBottom();
+                $ruleStore->API_moveRuleAfter($rule, $ruleRef);
+            }
+            else
+            {
+                $ruleRef = $ruleStore->getRuleOnBottom();
+                $ruleStore->moveRuleAfter($rule, $ruleRef);
+            }
         }
     }
 );

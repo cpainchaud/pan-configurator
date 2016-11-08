@@ -586,6 +586,12 @@ class RuleStore
 	 */
 	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
 	{
+        if ($ruleToBeMoved === $ruleRef)
+        {
+            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move after self!\n";
+            return;
+        }
+
 		// TODO fix after pre/post suppression
 		if( is_string($ruleToBeMoved) )
 		{
@@ -703,6 +709,12 @@ class RuleStore
 	 */
 	public function API_moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
+        if ($ruleToBeMoved === $ruleRef)
+        {
+            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move after self!\n";
+            return;
+        }
+
         $this->moveRuleAfter($ruleToBeMoved , $ruleRef, $rewritexml);
 
 		$con = findConnectorOrDie($this);
@@ -748,6 +760,12 @@ class RuleStore
 	 */
     public function moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
     {
+        if ($ruleToBeMoved === $ruleRef)
+        {
+            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move before self!\n";
+            return;
+        }
+
         // TODO fix after pre/post suppression
         if( is_string($ruleToBeMoved) )
         {
@@ -865,6 +883,11 @@ class RuleStore
 	 */
 	public function API_moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
+        if ($ruleToBeMoved === $ruleRef)
+        {
+            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move befor self!\n";
+            return;
+        }
 		$this->moveRuleBefore($ruleToBeMoved , $ruleRef, $rewritexml);
 
 		$con = findConnectorOrDie($this);
