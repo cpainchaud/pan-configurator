@@ -319,6 +319,55 @@ trait AddressCommon
         $this->__removeWhereIamUsed(true, $displayOutput, $outputPadding, $actionIfLastInRule);
     }
 
+
+    /**
+     * @param bool $displayOutput
+     * @param Service|ServiceGroup $withObject
+     * @param string|int $outputPadding
+     */
+    public function API_replaceWhereIamUsed($withObject, $displayOutput = false, $outputPadding = '')
+    {
+        $this->__removeWhereIamUsed(true, $withObject, $displayOutput, $outputPadding);
+    }
+
+    /**
+     * @param bool $displayOutput
+     * @param Service|ServiceGroup $withObject
+     * @param string|int $outputPadding
+     */
+    public function replaceWhereIamUsed($withObject, $displayOutput = false, $outputPadding = '')
+    {
+        $this->__removeWhereIamUsed(false, $withObject, $displayOutput, $outputPadding);
+    }
+
+
+    /**
+     * @param bool $displayOutput
+     * @param bool $apiMode
+     * @param Address|AddressGroup $withObject
+     * @param string|int $outputPadding
+     */
+    public function __replaceWhereIamUsed($apiMode, $withObject, $displayOutput = false, $outputPadding = '')
+    {
+        /** @var Address|AddressGroup $this */
+
+        if( is_numeric($outputPadding) )
+            $outputPadding = str_pad(' ', $outputPadding);
+
+        /** @var AddressGroup|AddressRuleContainer $objectRef */
+
+        foreach( $this->refrules as $objectRef)
+        {
+            if( $displayOutput )
+                echo $outputPadding."- replacing in {$objectRef->toString()}\n";
+            if( $apiMode)
+                $objectRef->API_replaceReferencedObject($this, $withObject);
+            else
+                $objectRef->replaceReferencedObject($this, $withObject);
+        }
+
+    }
+
     /**
      * looks into child DeviceGroups to see if an object with same name exists in lower levels
      * @return bool

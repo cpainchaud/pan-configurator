@@ -416,6 +416,7 @@ if( $dupAlg == 'sameports' )
             {
                 $object->owner->remove($object);
             }
+
             $countRemoved++;
 
             if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )

@@ -394,19 +394,19 @@ foreach( $hashMap as $index => &$hash )
         if( $object === $pickedObject )
             continue;
 
-        echo "    - replacing '{$object->name()}'\n";
+        echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+        $object->__replaceWhereIamUsed($apiMode, $pickedObject, true, 5);
+
+        echo "    - deleting '{$object->_PANC_shortName()}'\n";
         if( $apiMode )
         {
-            $object->API_addObjectWhereIamUsed( $pickedObject, true, 6);
-            $object->API_removeWhereIamUsed( true, 6);
             $object->owner->API_remove($object);
         }
         else
         {
-            $object->addObjectWhereIamUsed( $pickedObject, true, 6);
-            $object->removeWhereIamUsed( true, 6);
             $object->owner->remove($object);
         }
+        
         $countRemoved++;
 
         if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
