@@ -497,22 +497,17 @@ foreach( $hashMap as $index => &$hash )
         }
         else
         {
-            echo "    - replacing '{$object->name()}' with '{$pickedObject->name()}' where it's used\n";
+            echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+            $object->__replaceWhereIamUsed($apiMode, $pickedObject, true, 5);
+
+            echo "    - deleting '{$object->_PANC_shortName()}'\n";
             if( $apiMode )
             {
-                $object->API_addObjectWhereIamUsed($pickedObject, TRUE, 6);
-                $object->API_removeWhereIamUsed(TRUE, 6);
-                echo "    - deleting '{$object->name()}'... ";
-                $object->owner->API_remove($object, true);
-                echo "OK!\n";
+                $object->owner->API_remove($object);
             }
             else
             {
-                $object->addObjectWhereIamUsed($pickedObject, TRUE, 6);
-                $object->removeWhereIamUsed(TRUE, 6);
-                echo "    - deleting '{$object->name()}'... ";
-                $object->owner->remove($object, true);
-                echo "OK!\n";
+                $object->owner->remove($object);
             }
         }
 

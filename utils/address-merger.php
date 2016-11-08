@@ -406,7 +406,7 @@ foreach( $hashMap as $index => &$hash )
         {
             $object->owner->remove($object);
         }
-        
+
         $countRemoved++;
 
         if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
