@@ -269,9 +269,9 @@ elseif( $dupAlg == 'sameportmapping' )
 
         $value = $mapping->mappingToText();
 
-        if( count($mapping['unresolved']) > 0 )
+        if( count($mapping->unresolved) > 0 )
         {
-            ksort($mapping['unresolved']);
+            ksort($mapping->unresolved);
             $value .= '//unresolved:/';
 
             foreach($mapping->unresolved as $unresolvedEntry)
@@ -283,6 +283,9 @@ elseif( $dupAlg == 'sameportmapping' )
 elseif( $dupAlg == 'whereused' )
     $hashGenerator = function($object)
     {
+        if( $object->countReferences() == 0 )
+            return null;
+
         /** @var ServiceGroup $object */
         $value = $object->getRefHashComp();
 
@@ -327,6 +330,8 @@ foreach( $objectsToSearchThrough as $object )
     }
 
     $value = $hashGenerator($object);
+    if( $value === null )
+        continue;
 
     if( $object->owner === $store )
     {
@@ -367,7 +372,19 @@ $countRemoved = 0;
 foreach( $hashMap as $index => &$hash )
 {
     echo "\n";
-    echo " - value '{$index}'\n";
+
+    if( $dupAlg == 'sameportmapping')
+    {
+        echo " - value '{$index}'\n";
+    }
+
+    $setList = Array();
+    foreach( $hash as $object )
+    {
+        /** @var Service $object */
+        $setList[] = PH::getLocationString($object->owner->owner).'/'.$object->name();
+    }
+    echo " - duplicate set : '".PH::list_to_string($setList)."'\n";
 
     $pickedObject = null;
 

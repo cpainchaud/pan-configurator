@@ -27,7 +27,9 @@ class SecurityRule extends RuleWithUserID
 	protected $logend = true;
 
 	protected $logSetting = false;
-	
+
+    protected $dsri = false;
+
 	protected $secproftype = 'none';
 
     /** @var null|string[]|DOMElement */
@@ -174,6 +176,20 @@ class SecurityRule extends RuleWithUserID
                 else
                 {
                     $this->action = $actionFound;
+                }
+            }
+            else if( $node->nodeName == 'option' )
+            {
+                foreach($node->childNodes as $subnode)
+                {
+                    if( $subnode->nodeName == 'disable-server-response-inspection' )
+                    {
+                        $lstate = strtolower($subnode->textContent);
+                        if( $lstate == 'yes' )
+                        {
+                            $this->dsri = true;
+                        }
+                    }
                 }
             }
         }
@@ -731,6 +747,19 @@ class SecurityRule extends RuleWithUserID
         return true;
 	}
 
+
+    /**
+     *
+     * @return bool
+     */
+    public function isDSRIEnabled()
+    {
+        if ($this->dsri)
+            return true;
+
+        return false;
+    }
+
 	/**
 	* Helper function to quickly print a function properties to CLI
 	*/
@@ -989,7 +1018,7 @@ class SecurityRule extends RuleWithUserID
         else
             $endString = date('Y/m/d H:00:00', $endTimestamp);
 
-        $query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&async=yes&cmd=<type>'
+        $query = '<type>'
             ."<{$type}><aggregate-by><member>container-of-app</member><member>app</member></aggregate-by>"
             ."<values><member>{$repeatOrCount}</member></values></{$type}></type>"
             ."<topn>{$limit}</topn><topm>50</topm><caption>rule app container usage</caption>"
@@ -998,9 +1027,15 @@ class SecurityRule extends RuleWithUserID
             ."<query>(rule eq '{$this->name}') {$dvq} {$excludedAppsString}</query>";
 
 
-        //print "\nQuery: $query\n";
+        $apiArgs = Array();
+        $apiArgs['type'] = 'report';
+        $apiArgs['reporttype'] = 'dynamic';
+        $apiArgs['reportname'] = 'custom-dynamic-report';
+        $apiArgs['async'] = 'yes';
+        $apiArgs['cmd'] = $query;
 
-        $ret = $con->getReport($query);
+
+        $ret = $con->getReport($apiArgs);
 
         return $ret;
     }
@@ -1070,7 +1105,14 @@ class SecurityRule extends RuleWithUserID
 		         .'<query>'."$dvq $query_appfilter and (rule eq '".$this->name."')</query>";
 
 
-		$ret = $con->getReport($query);
+        $apiArgs = Array();
+        $apiArgs['type'] = 'report';
+        $apiArgs['reporttype'] = 'dynamic';
+        $apiArgs['reportname'] = 'custom-dynamic-report';
+        $apiArgs['async'] = 'yes';
+        $apiArgs['cmd'] = $query;
+
+		$ret = $con->getReport($apiArgs);
 
 		return $ret;
 	}

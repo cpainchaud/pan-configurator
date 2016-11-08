@@ -273,6 +273,9 @@ elseif( $dupAlg == 'whereused' )
         if( $object->isTmpSrv() )
             continue;
 
+        if( $object->countReferences() == 0 )
+            continue;
+
         if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
             continue;
 
@@ -427,8 +430,16 @@ elseif( $dupAlg == 'whereused' )
     foreach( $hashMap as $index => &$hash )
     {
         echo "\n";
-        echo " - value '{$index}'\n";
 
+        $setList = Array();
+        foreach( $hash as $object )
+        {
+            /** @var Service $object */
+            $setList[] = PH::getLocationString($object->owner->owner).'/'.$object->name();
+        }
+        echo " - duplicate set : '".PH::list_to_string($setList)."'\n";
+
+        /** @var Service $pickedObject */
         $pickedObject = null;
 
         if( $pickFilter !== null )
@@ -451,7 +462,6 @@ elseif( $dupAlg == 'whereused' )
         foreach( $hash as $object)
         {
             /** @var Service $object */
-            /** @var Service $object */
 
             if( isset($object->ancestor) )
             {
@@ -467,16 +477,31 @@ elseif( $dupAlg == 'whereused' )
             $localMapping = $object->dstPortMapping();
             echo "    - adding the following ports to first service: ".$localMapping->mappingToText()."\n";
             $localMapping->mergeWithMapping($pickedObject->dstPortMapping());
-            if( $pickedObject->isTcp() )
-                $pickedObject->setDestPort($localMapping->tcpMappingToText());
+
+            if( $apiMode )
+            {
+                if( $pickedObject->isTcp() )
+                    $pickedObject->API_setDestPort($localMapping->tcpMappingToText());
+                else
+                    $pickedObject->API_setDestPort($localMapping->udpMappingToText());
+                echo "    - removing '{$object->name()}' from places where it's used:\n";
+                $object->API_removeWhereIamUsed(true, 7);
+                $object->owner->API_remove($object);
+                $countRemoved++;
+            }
             else
-                $pickedObject->setDestPort($localMapping->udpMappingToText());
+            {
+                if( $pickedObject->isTcp() )
+                    $pickedObject->setDestPort($localMapping->tcpMappingToText());
+                else
+                    $pickedObject->setDestPort($localMapping->udpMappingToText());
 
+                echo "    - removing '{$object->name()}' from places where it's used:\n";
+                $object->removeWhereIamUsed(true, 7);
+                $object->owner->remove($object);
+                $countRemoved++;
+            }
 
-            echo "    - removing '{$object->name()}' from places where it's used:\n";
-            $object->removeWhereIamUsed(true, 7);
-            $object->owner->remove($object);
-            $countRemoved++;
 
             if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
             {
@@ -485,7 +510,7 @@ elseif( $dupAlg == 'whereused' )
             }
 
         }
-        echo "   *- final mapping for service '{$pickedObject->name()}': {$pickedObject->getDestPort()}\n";
+        echo "   * final mapping for service '{$pickedObject->name()}': {$pickedObject->getDestPort()}\n";
         
         echo "\n";
     }

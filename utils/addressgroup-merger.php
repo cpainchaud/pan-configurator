@@ -32,7 +32,7 @@ $supportedArguments[] = Array(
     'shortHelp' =>
         "Specifies how to detect duplicates:\n".
         "  - SameMembers: groups holding same members replaced by the one picked first (default)\n".
-        "  - SameIP4Value: groups resolving the same IP4 coverage will be replaced by the one picked first\n".
+        "  - SameIP4Mapping: groups resolving the same IP4 coverage will be replaced by the one picked first\n".
         "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
     'argDesc'=> 'SamePorts|WhereUsed');
 $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=sys1|shared|dg1');
@@ -226,7 +226,7 @@ if( isset(PH::$args['allowmergingwithupperlevel']) )
 if( isset(PH::$args['dupalgorithm']) )
 {
     $dupAlg = strtolower(PH::$args['dupalgorithm']);
-    if( $dupAlg != 'samemembers' && $dupAlg != 'sameip4value' && $dupAlg != 'whereused')
+    if( $dupAlg != 'samemembers' && $dupAlg != 'sameip4mapping' && $dupAlg != 'whereused')
         display_error_usage_exit('unsupported value for dupAlgorithm: '.PH::$args['dupalgorithm']);
 }
 else
@@ -262,7 +262,7 @@ if( $dupAlg == 'samemembers' )
 
         return $value;
     };
-elseif( $dupAlg == 'sameip4value' )
+elseif( $dupAlg == 'sameip4mapping' )
     $hashGenerator = function($object)
     {
         /** @var AddressGroup $object */
@@ -287,6 +287,9 @@ elseif( $dupAlg == 'sameip4value' )
 elseif( $dupAlg == 'whereused' )
     $hashGenerator = function($object)
     {
+        if( $object->countReferences() == 0 )
+            return null;
+
         /** @var AddressGroup $object */
         $value = $object->getRefHashComp().'//dynamic:'.boolYesNo($object->isDynamic());
 
@@ -331,6 +334,8 @@ foreach( $objectsToSearchThrough as $object )
     }
 
     $value = $hashGenerator($object);
+    if( $value === null )
+        continue;
 
     if( $object->owner === $store )
     {

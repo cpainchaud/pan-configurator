@@ -44,11 +44,11 @@ class PANConf
     /** @var DOMDocument */
     public $xmldoc;
 
-    /** @var DOMDocument */
+    /** @var DOMElement */
 	public $sharedroot;
     /** @var DOMDocument */
 	public $devicesroot;
-    /** @var DOMDocument */
+    /** @var DOMElement */
 	public $localhostroot;
 
 	/** @var DOMElement|null */

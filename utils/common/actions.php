@@ -188,6 +188,16 @@ class RuleCallContext extends CallContext
     public static $commonActionFunctions = Array();
     public static $supportedActions = Array();
 
+    static public function prepareSupportedActions()
+    {
+        $tmpArgs = Array();
+        foreach( self::$supportedActions as &$arg )
+        {
+            $tmpArgs[strtolower($arg['name'])] = $arg;
+        }
+        self::$supportedActions = $tmpArgs;
+    }
+
     public function addRuleToMergedApiChange($setValue)
     {
         $rule = $this->object;
@@ -522,7 +532,7 @@ class RuleCallContext extends CallContext
                 return self::enclose('');
             return self::enclose($rule->SourceNat_Type(), $wrap);
         }
-        if( $fieldName == 'snat_trans' )
+        if( $fieldName == 'snat_address' )
         {
             if( !$rule->isNatRule() )
                 return self::enclose('');
@@ -542,26 +552,123 @@ class RuleCallContext extends CallContext
             return self::enclose( boolYesNo($rule->isDisabled()) );
         }
 
+        if( $fieldName == 'src_resolved_sum' )
+        {
+            if( $rule->source->isAny() )
+                return self::enclose('');
+
+            $mapping = $rule->source->getIP4Mapping();
+            $strMapping = explode( ',',$mapping->dumpToString());
+
+            foreach( array_keys($mapping->unresolved) as $unresolved )
+                $strMapping[] = $unresolved;
+
+            return self::enclose($strMapping);
+        }
+
+        if( $fieldName == 'dst_resolved_sum' )
+        {
+            if( $rule->destination->isAny() )
+                return self::enclose('');
+
+            $mapping = $rule->destination->getIP4Mapping();
+            $strMapping = explode( ',',$mapping->dumpToString());
+
+            foreach( array_keys($mapping->unresolved) as $unresolved )
+                $strMapping[] = $unresolved;
+
+            return self::enclose($strMapping);
+        }
+
+        if( $fieldName == 'dnat_host_resolved_sum' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+
+            if( $rule->dnathost === null )
+                return self::enclose('');
+
+            $mapping = $rule->dnathost->getIP4Mapping();
+            $strMapping = explode( ',',$mapping->dumpToString());
+
+            foreach( array_keys($mapping->unresolved) as $unresolved )
+                $strMapping[] = $unresolved;
+
+            return self::enclose($strMapping);
+        }
+
+        if( $fieldName == 'snat_address_resolved_sum' )
+        {
+            if( !$rule->isNatRule() )
+                return self::enclose('');
+
+            $mapping = $rule->snathosts->getIP4Mapping();
+            $strMapping = explode( ',',$mapping->dumpToString());
+
+            foreach( array_keys($mapping->unresolved) as $unresolved )
+                $strMapping[] = $unresolved;
+
+
+            return self::enclose($strMapping);
+        }
+
 
         return self::enclose('unsupported');
 
     }
 }
-
 require_once "actions-rule.php";
+RuleCallContext::prepareSupportedActions();
+
+
+
 
 
 class ServiceCallContext extends CallContext
 {
     /** @var  Service|ServiceGroup */
     public $object;
+
+    public static $commonActionFunctions = Array();
+    public static $supportedActions = Array();
+
+    static public function prepareSupportedActions()
+    {
+        $tmpArgs = Array();
+        foreach( self::$supportedActions as &$arg )
+        {
+            $tmpArgs[strtolower($arg['name'])] = $arg;
+        }
+        self::$supportedActions = $tmpArgs;
+    }
+
 }
+require_once "actions-service.php";
+ServiceCallContext::prepareSupportedActions();
+
+
+
 
 class AddressCallContext extends CallContext
 {
     /** @var  Address|AddressGroup */
     public $object;
+
+    public static $commonActionFunctions = Array();
+    public static $supportedActions = Array();
+
+    static public function prepareSupportedActions()
+    {
+        $tmpArgs = Array();
+        foreach( self::$supportedActions as &$arg )
+        {
+            $tmpArgs[strtolower($arg['name'])] = $arg;
+        }
+        self::$supportedActions = $tmpArgs;
+    }
 }
+require_once  "actions-address.php";
+AddressCallContext::prepareSupportedActions();
 
 class TagCallContext extends CallContext
 {

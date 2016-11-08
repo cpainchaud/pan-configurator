@@ -573,25 +573,31 @@ class AddressRuleContainer extends ObjRuleContainer
      */
     public function getIP4Mapping()
     {
-        $result = Array( 'unresolved' => Array() );
         $mapObject = new IP4Map();
 
         foreach( $this->o as $member )
         {
             if( $member->isTmpAddr() && !$member->nameIsValidRuleIPEntry() )
             {
-                $result['unresolved'][] = $member;
+                $mapObject->unresolved[$member->name()] = $member;
                 continue;
             }
             elseif( $member->isAddress() )
             {
+                /** @var Address $member */
                 $localMap = $member->getIP4Mapping();
                 $mapObject->addMap($localMap, true);
             }
             elseif( $member->isGroup() )
             {
-                $localMap = $member->getIP4Mapping();
-                $mapObject->addMap($localMap, true);
+                /** @var AddressGroup $member */
+                if( $member->isDynamic() )
+                    $mapObject->unresolved[$member->name()] = $member;
+                else
+                {
+                    $localMap = $member->getIP4Mapping();
+                    $mapObject->addMap($localMap, true);
+                }
             }
             else
                 derr('unsupported type of objects '.$member->toString());
@@ -647,6 +653,44 @@ class AddressRuleContainer extends ObjRuleContainer
         }
 
         return $zones;
+    }
+
+    /**
+     * @param $zoneIP4Mapping array  array of IP start-end to zone ie  Array( 0=>Array('start'=>0, 'end'=>50, 'zone'=>'internet') 1=>...  )
+     * @param $zone string containing zones matched
+     * @return IP4Map containing address matches
+     */
+    public function &calculateIP4MappingFromZones( &$zoneIP4Mapping, $zone)
+    {
+        $coveredmapObject = new IP4Map();
+
+        $mapObject = Array();
+        foreach( $zoneIP4Mapping as &$zoneMapping )
+        {
+            $routemapObject = new IP4Map();
+            $routeMapping = IP4Map::mapFromText(long2ip($zoneMapping['start']) . '-' . long2ip($zoneMapping['end']));
+            $routemapObject->addMap($routeMapping);
+
+
+            if( !isset($mapObject[$zoneMapping['zone']]) )
+            {
+                $mapObject[$zoneMapping['zone']] = new IP4Map();
+            }
+
+
+            $tmp_routemapObject = clone $routemapObject;
+            $routemapObject->substract($coveredmapObject);
+            $mapObject[$zoneMapping['zone']]->addMap($routemapObject, TRUE);
+
+            $coveredmapObject->addMap($tmp_routemapObject, TRUE);
+            $coveredmapObject->sortAndRecalculate();
+
+        }
+
+        $mapObject = $mapObject[ $zone ];
+        $mapObject->sortAndRecalculate();
+
+        return $mapObject;
     }
 
     /**

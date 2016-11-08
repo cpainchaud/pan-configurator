@@ -26,22 +26,16 @@ class AddressGroup
 
     private $isDynamic = false;
 
-    /**
-     * @var AddressStore|null
-     */
+    /** @var AddressStore|null */
 	public $owner=null;
 
     /** @var Address[]|AddressGroup[] $members */
 	private $members = Array();
 
-	/**
-	 * @var DOMElement
-	 */
+	/** @var DOMElement */
 	private $membersRoot = null;
 
-    /**
-     * @var TagRuleContainer
-     */
+    /** @var TagRuleContainer */
     public $tags;
 
 	
@@ -713,21 +707,26 @@ class AddressGroup
      */
     public function getIP4Mapping()
     {
-        $result = Array( 'unresolved' => Array() );
         $mapObject = new IP4Map();
+
+        if( $this->isDynamic() )
+        {
+            $mapObject->unresolved[$this->name] = $this;
+            return $mapObject;
+        }
 
         foreach( $this->members as $member )
         {
             if( $member->isTmpAddr() && !$member->nameIsValidRuleIPEntry() )
             {
-                $result['unresolved'][] = $member;
+                $mapObject->unresolved[$member->name()] = $member;
                 continue;
             }
             elseif( $member->isAddress() )
             {
                 if( $member->type() == 'fqdn' )
                 {
-                    $result['unresolved'][] = $member;
+                    $mapObject->unresolved[$member->name()] = $member;
                 }
                 else
                 {

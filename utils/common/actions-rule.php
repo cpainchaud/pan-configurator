@@ -16,6 +16,281 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+RuleCallContext::$commonActionFunctions['calculate-addresses'] = Array(
+    'function' => function (RuleCallContext $context, $srcOrDST)
+    {
+        $rule = $context->object;
+
+        $zoneContainer = null;
+        $addressContainer = null;
+
+        if( $srcOrDST == 'src' )
+        {
+            $zoneContainer = $rule->from;
+            $addressContainer = $rule->source;
+        }
+        elseif( $srcOrDST == 'dst' )
+        {
+            $zoneContainer = $rule->to;
+            $addressContainer = $rule->destination;
+        }
+        else
+            derr('unsupported');
+
+        $mode = $context->arguments['mode'];
+        $system = $rule->owner->owner;
+
+        /** @var VirtualRouter $virtualRouterToProcess */
+        $virtualRouterToProcess = null;
+
+        if( !isset($context->cachedIPmapping) )
+            $context->cachedIPmapping = Array();
+
+        $serial = spl_object_hash($rule->owner);
+        $configIsOnLocalFirewall = FALSE;
+
+        if( !isset($context->cachedIPmapping[$serial]) )
+        {
+            if( $system->isDeviceGroup() || $system->isPanorama() )
+            {
+                $firewall = null;
+                $panorama = $system;
+                if( $system->isDeviceGroup() )
+                    $panorama = $system->owner;
+
+                if( $context->arguments['template'] == $context->actionRef['args']['template']['default'] )
+                    derr('with Panorama configs, you need to specify a template name');
+
+                if( $context->arguments['virtualRouter'] == $context->actionRef['args']['virtualRouter']['default'] )
+                    derr('with Panorama configs, you need to specify virtualRouter argument. Available virtual routes are: ');
+
+                $_tmp_explTemplateName = explode('@', $context->arguments['template']);
+                if( count($_tmp_explTemplateName) > 1 )
+                {
+                    $firewall = new PANConf();
+                    $configIsOnLocalFirewall = TRUE;
+                    $doc = null;
+
+                    if( strtolower($_tmp_explTemplateName[0]) == 'api' )
+                    {
+                        $panoramaConnector = findConnector($system);
+                        $connector = new PanAPIConnector($panoramaConnector->apihost, $panoramaConnector->apikey, 'panos-via-panorama', $_tmp_explTemplateName[1]);
+                        $firewall->connector = $connector;
+                        $doc = $connector->getMergedConfig();
+                        $firewall->load_from_domxml($doc);
+                        unset($connector);
+                    }
+                    elseif( strtolower($_tmp_explTemplateName[0]) == 'file' )
+                    {
+                        $filename = $_tmp_explTemplateName[1];
+                        if( !file_exists($filename) )
+                            derr("cannot read firewall configuration file '{$filename}''");
+                        $doc = new DOMDocument();
+                        if( !$doc->load($filename) )
+                            derr("invalive xml file" . libxml_get_last_error()->message);
+                        unset($filename);
+                    }
+                    else
+                        derr("unsupported method: {$_tmp_explTemplateName[0]}@");
+
+
+                    // delete rules to avoid loading all the config
+                    $deletedNodesCount = DH::removeChildrenElementsMatchingXPath("/config/devices/entry/vsys/entry/rulebase/*", $doc);
+                    if( $deletedNodesCount === FALSE )
+                        derr("xpath issue");
+                    $deletedNodesCount = DH::removeChildrenElementsMatchingXPath("/config/shared/rulebase/*", $doc);
+                    if( $deletedNodesCount === FALSE )
+                        derr("xpath issue");
+
+                    //print "\n\n deleted $deletedNodesCount nodes \n\n";
+
+                    $firewall->load_from_domxml($doc);
+
+                    unset($deletedNodesCount);
+                    unset($doc);
+                }
+
+
+                /** @var Template $template */
+                if( !$configIsOnLocalFirewall )
+                {
+                    $template = $panorama->findTemplate($context->arguments['template']);
+                    if( $template === null )
+                        derr("cannot find Template named '{$context->arguments['template']}'. Available template list:" . PH::list_to_string($panorama->templates));
+                }
+
+                if( $configIsOnLocalFirewall )
+                    $virtualRouterToProcess = $firewall->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+                else
+                    $virtualRouterToProcess = $template->deviceConfiguration->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+
+                if( $virtualRouterToProcess === null )
+                {
+                    if( $configIsOnLocalFirewall )
+                        $tmpVar = $firewall->network->virtualRouterStore->virtualRouters();
+                    else
+                        $tmpVar = $template->deviceConfiguration->network->virtualRouterStore->virtualRouters();
+
+                    derr("cannot find VirtualRouter named '{$context->arguments['virtualRouter']}' in Template '{$context->arguments['template']}'. Available VR list: " . PH::list_to_string($tmpVar));
+                }
+
+                if( (!$configIsOnLocalFirewall && count($template->deviceConfiguration->virtualSystems) == 1) || ($configIsOnLocalFirewall && count($firewall->virtualSystems) == 1) )
+                {
+                    if( $configIsOnLocalFirewall )
+                        $system = $firewall->virtualSystems[0];
+                    else
+                        $system = $template->deviceConfiguration->virtualSystems[0];
+                }
+                else
+                {
+                    $vsysConcernedByVR = $virtualRouterToProcess->findConcernedVsys();
+                    if( count($vsysConcernedByVR) == 1 )
+                    {
+                        $system = array_pop($vsysConcernedByVR);
+                    }
+                    elseif( $context->arguments['vsys'] == '*autodetermine*' )
+                    {
+                        derr("cannot autodetermine resolution context from Template '{$context->arguments['template']}' VR '{$context->arguments['virtualRouter']}'' , multiple VSYS are available: " . PH::list_to_string($vsysConcernedByVR) . ". Please provide choose a VSYS.");
+                    }
+                    else
+                    {
+                        if( $configIsOnLocalFirewall )
+                            $vsys = $firewall->findVirtualSystem($context->arguments['vsys']);
+                        else
+                            $vsys = $template->deviceConfiguration->findVirtualSystem($context->arguments['vsys']);
+                        if( $vsys === null )
+                            derr("cannot find VSYS '{$context->arguments['vsys']}' in Template '{$context->arguments['template']}'");
+                        $system = $vsys;
+                    }
+                }
+
+                //derr(DH::dom_to_xml($template->deviceConfiguration->xmlroot));
+                //$tmpVar = $system->importedInterfaces->interfaces();
+                //derr(count($tmpVar)." ".PH::list_to_string($tmpVar));
+            }
+            else if( $context->arguments['virtualRouter'] != '*autodetermine*' )
+            {
+                $virtualRouterToProcess = $system->owner->network->virtualRouterStore->findVirtualRouter($context->arguments['virtualRouter']);
+                if( $virtualRouterToProcess === null )
+                    derr("VirtualRouter named '{$context->arguments['virtualRouter']}' not found");
+            }
+            else
+            {
+                $vRouters = $system->owner->network->virtualRouterStore->virtualRouters();
+                $foundRouters = Array();
+
+                foreach( $vRouters as $router )
+                {
+                    foreach( $router->attachedInterfaces->interfaces() as $if )
+                    {
+                        if( $system->importedInterfaces->hasInterfaceNamed($if->name()) )
+                        {
+                            $foundRouters[] = $router;
+                            break;
+                        }
+                    }
+                }
+
+                print $context->padding . " - VSYS/DG '{$system->name()}' has interfaces attached to " . count($foundRouters) . " virtual routers\n";
+                if( count($foundRouters) > 1 )
+                    derr("more than 1 suitable virtual routers found, please specify one fo the following: " . PH::list_to_string($foundRouters));
+                if( count($foundRouters) == 0 )
+                    derr("no suitable VirtualRouter found, please force one or check your configuration");
+
+                $virtualRouterToProcess = $foundRouters[0];
+            }
+
+            $context->cachedIPmapping[$serial] = $virtualRouterToProcess->getIPtoZoneRouteMapping($system);
+        }
+
+        $ipMapping = &$context->cachedIPmapping[$serial];
+
+        if( $addressContainer->isAny() )
+        {
+            if( $zoneContainer->isAny() )
+            {
+                print $context->padding . " - SKIPPED : zone container is ANY()\n";
+                return;
+            }
+
+        }
+        else
+        {
+            print $context->padding . " - SKIPPED : address container is not ANY()\n";
+            return;
+        }
+
+        foreach( $zoneContainer->zones() as $zone )
+        {
+            $zonename = $zone->name();
+            print $context->padding . " - now calculate IP4Mapping based on the zone: " . $zonename . "\n";
+
+            $resolvedAddresses = &$addressContainer->calculateIP4MappingFromZones($ipMapping['ipv4'], $zonename);
+
+            if( $resolvedAddresses->count() == 0 )
+            {
+                print $context->padding . " - WARNING : no addresses resolved (Zone? Route?)\n";
+                return;
+            }
+
+            $mapArray = $resolvedAddresses->getMapArray();
+
+            $prefix = 'TMP_';
+
+            $addrgroup = $addressContainer->parentCentralStore->find($prefix . $zonename);
+            if( $addrgroup === null )
+                $addrgroup = $addressContainer->parentCentralStore->newAddressGroup($prefix . $zonename);
+
+
+            foreach( $mapArray as $addressobject )
+            {
+                $objectname = long2ip($addressobject['start']) . "-" . long2ip($addressobject['end']);
+
+                $object = $addressContainer->parentCentralStore->find($prefix . $objectname);
+                if( $object === null )
+                    $object = $addressContainer->parentCentralStore->newAddress($prefix . $objectname, 'ip-range', $objectname);
+
+                $addrgroup->addMember($object);
+            }
+
+            $addressContainer->addObject($addrgroup);
+        }
+    },
+    'args' => Array(    'mode' => Array(    'type' => 'string',
+        'default' => 'show',
+        'choices' => Array('replace', 'show'),
+        'help' =>   "Will determine what to do with resolved addresses : show them, replace SRC is.any in the rule"
+    ),
+        'virtualRouter' => Array(   'type' => 'string',
+            'default' => '*autodetermine*',
+            'help' =>   "Can optionally be provided if script cannot find which virtualRouter it should be using".
+                " (ie: there are several VR in same VSYS)"
+        ),
+        'template' => Array(    'type' => 'string',
+            'default' => '*notPanorama*',
+            'help' =>   "When you are using Panorama then 1 or more templates could apply to a DeviceGroup, in".
+                " such a case you may want to specify which Template name to use.\nBeware that if the Template is overriden".
+                " or if you are not using Templates then you will want load firewall config in lieu of specifying a template.".
+                " \nFor this, give value 'api@XXXXX' where XXXXX is serial number of the Firewall device number you want to use to".
+                " calculate zones.\nIf you don't want to use API but have firewall config file on your computer you can then".
+                " specify file@/folderXYZ/config.xml."
+        ),
+        'vsys' => Array(    'type' => 'string',
+            'default' => '*autodetermine*',
+            'help' =>   "specify vsys when script cannot autodetermine it or when you when to manually override"
+        ),
+    ),
+    'help' =>   "This Action will use routing tables to resolve zones. When the program cannot find all parameters by".
+        " itself (like vsys or template name you will have ti manually provide them.\n\n".
+        "Usage examples:\n\n".
+        "    - xxx-calculate-zones\n".
+        "    - xxx-calculate-zones:replace\n".
+        "    - xxx-calculate-zones:show,vr1\n".
+        "    - xxx-calculate-zones:replace,vr3,api@0011C890C,vsys1\n".
+        "    - xxx-calculate-zones:show,vr5,Datacenter_template\n".
+        "    - xxx-calculate-zones:replace,vr3,file@firewall.xml,vsys1\n"
+);
+
 RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
     'function' => function (RuleCallContext $context, $fromOrTo)
     {
@@ -528,7 +803,7 @@ $supportedActions = Array();
 //                                              //
 //                Zone Based Actions            //
 //                                              //
-RuleCallContext::$supportedActions['from-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Add',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -548,7 +823,7 @@ RuleCallContext::$supportedActions['from-add'] = Array(
     'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument.".
                 "Zone must be existing already or script will out an error. Use action from-add-force if you want to add a zone that does not not exist."
 );
-RuleCallContext::$supportedActions['from-add-force'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Add-Force',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -565,7 +840,7 @@ RuleCallContext::$supportedActions['from-add-force'] = Array(
     'args' => &RuleCallContext::$commonActionFunctions['zone-add']['args'],
     'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument."
 );
-RuleCallContext::$supportedActions['from-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Remove',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -594,7 +869,7 @@ RuleCallContext::$supportedActions['from-remove'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['from-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Remove-Force-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -623,7 +898,7 @@ RuleCallContext::$supportedActions['from-remove-force-any'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['from-replace'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Replace',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -633,7 +908,7 @@ RuleCallContext::$supportedActions['from-replace'] = Array(
     },
     'args' => & RuleCallContext::$commonActionFunctions['zone-replace']['args']
 );
-RuleCallContext::$supportedActions['from-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-Set-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -653,7 +928,7 @@ RuleCallContext::$supportedActions['from-set-any'] = Array(
     },
 );
 
-RuleCallContext::$supportedActions['to-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Add',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -677,7 +952,7 @@ RuleCallContext::$supportedActions['to-add'] = Array(
     'help' =>   "Adds a zone in the 'TO' field of a rule. If TO was set to ANY then it will be replaced by zone in argument.".
                 "Zone must be existing already or script will out an error. Use action to-add-force if you want to add a zone that does not not exist."
 );
-RuleCallContext::$supportedActions['to-add-force'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Add-Force',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -700,7 +975,7 @@ RuleCallContext::$supportedActions['to-add-force'] = Array(
     'args' => &RuleCallContext::$commonActionFunctions['zone-add']['args'],
     'help' =>   "Adds a zone in the 'FROM' field of a rule. If FROM was set to ANY then it will be replaced by zone in argument."
 );
-RuleCallContext::$supportedActions['to-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Remove',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -734,7 +1009,7 @@ RuleCallContext::$supportedActions['to-remove'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['to-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Remove-Force-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -768,7 +1043,7 @@ RuleCallContext::$supportedActions['to-remove-force-any'] = Array(
     },
     'args' => Array( 'zoneName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['to-replace'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Replace',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -778,7 +1053,7 @@ RuleCallContext::$supportedActions['to-replace'] = Array(
     },
     'args' => & RuleCallContext::$commonActionFunctions['zone-replace']['args']
 );
-RuleCallContext::$supportedActions['to-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-Set-Any',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -803,7 +1078,7 @@ RuleCallContext::$supportedActions['to-set-any'] = Array(
     },
 );
 
-RuleCallContext::$supportedActions['from-calculate-zones'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'from-calculate-zones',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -822,7 +1097,7 @@ RuleCallContext::$supportedActions['from-calculate-zones'] = Array(
     'args' => & RuleCallContext::$commonActionFunctions['calculate-zones']['args'],
     'help' => & RuleCallContext::$commonActionFunctions['calculate-zones']['help']
 );
-RuleCallContext::$supportedActions['to-calculate-zones'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'to-calculate-zones',
     'section' => 'zone',
     'MainFunction' => function(RuleCallContext $context)
@@ -850,7 +1125,49 @@ RuleCallContext::$supportedActions['to-calculate-zones'] = Array(
 //                                                    //
 //                Source/Dest Based Actions           //
 //                                                    //
-RuleCallContext::$supportedActions['src-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'src-calculate-addresses',
+    'section' => 'zone',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( ($rule->isPbfRule() && $rule->isZoneBased()) || ($rule->isDoSRule() && $rule->isZoneBasedFrom()) )
+        {
+            echo $context->padding." * SKIPPED: FROM is Zone based, not supported yet.\n";
+            return;
+        }
+
+        $f = RuleCallContext::$commonActionFunctions['calculate-addresses']['function'];
+        $f($context, 'src');
+    },
+    'args' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['args'],
+    'help' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['help']
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'dst-calculate-addresses',
+    'section' => 'zone',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+        {
+            echo $context->padding." * SKIPPED: TO is Zone based, not supported yet.\n";
+            return;
+        }
+        if( $rule->isPbfRule() )
+        {
+            echo $context->padding." * SKIPPED: there is no TO in PBF Rules.\n";
+            return;
+        }
+
+        $f = RuleCallContext::$commonActionFunctions['calculate-addresses']['function'];
+        $f($context, 'dst');
+    },
+    'args' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['args'],
+    'help' => & RuleCallContext::$commonActionFunctions['calculate-addresses']['help']
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Add',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -868,7 +1185,7 @@ RuleCallContext::$supportedActions['src-add'] = Array(
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
     'help' => "adds an object in the 'SOURCE' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
 );
-RuleCallContext::$supportedActions['src-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Remove',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -885,7 +1202,7 @@ RuleCallContext::$supportedActions['src-remove'] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['src-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Remove-Force-Any',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -902,7 +1219,7 @@ RuleCallContext::$supportedActions['src-remove-force-any'] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['dst-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-Add',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -920,7 +1237,7 @@ RuleCallContext::$supportedActions['dst-add'] = Array(
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
     'help' => "adds an object in the 'DESTINATION' field of a rule, if that field was set to 'ANY' it will then be replaced by this object."
 );
-RuleCallContext::$supportedActions['dst-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-Remove',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -937,7 +1254,7 @@ RuleCallContext::$supportedActions['dst-remove'] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['dst-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-Remove-Force-Any',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -954,7 +1271,7 @@ RuleCallContext::$supportedActions['dst-remove-force-any'] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['src-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-set-Any',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -966,7 +1283,7 @@ RuleCallContext::$supportedActions['src-set-any'] = Array(
             $rule->source->setAny();
     },
 );
-RuleCallContext::$supportedActions['dst-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-set-Any',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -980,7 +1297,7 @@ RuleCallContext::$supportedActions['dst-set-any'] = Array(
 );
 
 
-RuleCallContext::$supportedActions['src-negate-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Negate-Set',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -996,7 +1313,7 @@ RuleCallContext::$supportedActions['src-negate-set'] = Array(
     'help' => "manages Source Negation enablement"
 );
 
-RuleCallContext::$supportedActions['dst-negate-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'dst-Negate-Set',
     'section' => 'address',
     'MainFunction' => function(RuleCallContext $context)
@@ -1016,7 +1333,7 @@ RuleCallContext::$supportedActions['dst-negate-set'] = Array(
 //                                                 //
 //              Tag property Based Actions         //
 //                                                 //
-RuleCallContext::$supportedActions['tag-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Add',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1033,7 +1350,7 @@ RuleCallContext::$supportedActions['tag-add'] = Array(
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['tag-add-force'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Add-Force',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1055,7 +1372,7 @@ RuleCallContext::$supportedActions['tag-add-force'] = Array(
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['tag-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Remove',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1072,7 +1389,7 @@ RuleCallContext::$supportedActions['tag-remove'] = Array(
     },
     'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['tag-remove-all'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Remove-All',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1090,7 +1407,7 @@ RuleCallContext::$supportedActions['tag-remove-all'] = Array(
     },
     //'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['tag-remove-regex'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Remove-Regex',
     'section' => 'tag',
     'MainFunction' => function(RuleCallContext $context)
@@ -1120,7 +1437,7 @@ RuleCallContext::$supportedActions['tag-remove-regex'] = Array(
 //                                                   //
 //                Services Based Actions             //
 //                                                   //
-RuleCallContext::$supportedActions['service-set-appdefault'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Set-AppDefault',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1133,7 +1450,7 @@ RuleCallContext::$supportedActions['service-set-appdefault'] = Array(
             $rule->services->setApplicationDefault();
     },
 );
-RuleCallContext::$supportedActions['service-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Set-Any',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1146,7 +1463,7 @@ RuleCallContext::$supportedActions['service-set-any'] = Array(
             $rule->services->setAny();
     },
 );
-RuleCallContext::$supportedActions['service-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Add',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1163,7 +1480,7 @@ RuleCallContext::$supportedActions['service-add'] = Array(
     },
     'args' => Array( 'svcName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['service-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Remove',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1180,7 +1497,7 @@ RuleCallContext::$supportedActions['service-remove'] = Array(
     },
     'args' => Array( 'svcName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['service-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'service-Remove-Force-Any',
     'section' => 'service',
     'MainFunction' => function(RuleCallContext $context)
@@ -1202,7 +1519,7 @@ RuleCallContext::$supportedActions['service-remove-force-any'] = Array(
 //                                                   //
 //                App Based Actions                  //
 //                                                   //
-RuleCallContext::$supportedActions['app-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Set-Any',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)
@@ -1214,7 +1531,7 @@ RuleCallContext::$supportedActions['app-set-any'] = Array(
             $rule->apps->setAny();
     },
 );
-RuleCallContext::$supportedActions['app-add'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Add',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)
@@ -1231,7 +1548,7 @@ RuleCallContext::$supportedActions['app-add'] = Array(
     },
     'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['app-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Remove',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)
@@ -1248,7 +1565,7 @@ RuleCallContext::$supportedActions['app-remove'] = Array(
     },
     'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
-RuleCallContext::$supportedActions['app-remove-force-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Remove-Force-Any',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)
@@ -1270,7 +1587,7 @@ RuleCallContext::$supportedActions['app-remove-force-any'] = Array(
 //                                                 //
 //               Target based Actions                 //
 //                                                 //
-RuleCallContext::$supportedActions['target-set-any'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'target-Set-Any',
     'section' => 'target',
     'MainFunction' => function(RuleCallContext $context)
@@ -1289,7 +1606,7 @@ RuleCallContext::$supportedActions['target-set-any'] = Array(
             $rule->target_setAny();
     },
 );
-RuleCallContext::$supportedActions['target-negate-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'target-Negate-Set',
     'section' => 'target',
     'MainFunction' => function(RuleCallContext $context)
@@ -1309,7 +1626,7 @@ RuleCallContext::$supportedActions['target-negate-set'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => '*nodefault*'  ) )
 );
-RuleCallContext::$supportedActions['target-add-device'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'target-Add-Device',
     'section' => 'target',
     'MainFunction' => function(RuleCallContext $context)
@@ -1337,7 +1654,7 @@ RuleCallContext::$supportedActions['target-add-device'] = Array(
                         'vsys' => Array( 'type' => 'string', 'default' => '*NULL*'  )
                         ),
 );
-RuleCallContext::$supportedActions['target-remove-device'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'target-Remove-Device',
     'section' => 'target',
     'MainFunction' => function(RuleCallContext $context)
@@ -1370,7 +1687,7 @@ RuleCallContext::$supportedActions['target-remove-device'] = Array(
 //                                                 //
 //               Log based Actions                 //
 //                                                 //
-RuleCallContext::$supportedActions['logstart-enable'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logStart-Enable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1390,7 +1707,7 @@ RuleCallContext::$supportedActions['logstart-enable'] = Array(
     },
     'help' => 'disables "log at start" in a security rule'
 );
-RuleCallContext::$supportedActions['logstart-disable'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logStart-Disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1410,7 +1727,7 @@ RuleCallContext::$supportedActions['logstart-disable'] = Array(
     },
     'help' => 'enables "log at start" in a security rule'
 );
-RuleCallContext::$supportedActions['logstart-enable-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logStart-Enable-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1438,7 +1755,7 @@ RuleCallContext::$supportedActions['logstart-enable-fastapi'] = Array(
     },
     'help' => "enables 'log at start' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
-RuleCallContext::$supportedActions['logstart-disable-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logStart-Disable-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1467,7 +1784,7 @@ RuleCallContext::$supportedActions['logstart-disable-fastapi'] = Array(
     'help' => "disables 'log at start' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
 
-RuleCallContext::$supportedActions['logend-enable'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logEnd-Enable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1488,7 +1805,7 @@ RuleCallContext::$supportedActions['logend-enable'] = Array(
     'help' => "enables 'log at end' in a security rule."
 );
 
-RuleCallContext::$supportedActions['logend-disable'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logEnd-Disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1508,7 +1825,7 @@ RuleCallContext::$supportedActions['logend-disable'] = Array(
     },
     'help' => "disables 'log at end' in a security rule."
 );
-RuleCallContext::$supportedActions['logend-disable-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logend-Disable-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1536,7 +1853,7 @@ RuleCallContext::$supportedActions['logend-disable-fastapi'] = Array(
     },
     'help' => "disables 'log at end' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
-RuleCallContext::$supportedActions['logend-enable-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logend-Enable-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1564,7 +1881,7 @@ RuleCallContext::$supportedActions['logend-enable-fastapi'] = Array(
     },
     'help' => "enables 'log at end' in a security rule.\n'FastAPI' allows API commands to be sent all at once instead of a single call per rule, allowing much faster execution time."
 );
-RuleCallContext::$supportedActions['logsetting-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logSetting-set',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1586,12 +1903,33 @@ RuleCallContext::$supportedActions['logsetting-set'] = Array(
     'help' => "Sets log setting/forwarding profile of a Security rule to the value specified."
 );
 
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'logSetting-disable',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setLogSetting(null);
+        else
+            $rule->setLogSetting(null);
+    },
+    'help' => "Remove log setting/forwarding profile of a Security rule if any."
+);
+
 
 
 //                                                   //
 //                Security profile Based Actions     //
 //                                                   //
-RuleCallContext::$supportedActions['securityprofile-group-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Group-Set',
     'MainFunction' =>  function(RuleCallContext $context)
     {
@@ -1610,7 +1948,7 @@ RuleCallContext::$supportedActions['securityprofile-group-set'] = Array(
     },
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
-RuleCallContext::$supportedActions['securityprofile-remove'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Remove',
     'MainFunction' =>  function(RuleCallContext $context)
     {
@@ -1628,7 +1966,7 @@ RuleCallContext::$supportedActions['securityprofile-remove'] = Array(
             $rule->removeSecurityProfile();
     },
 );
-RuleCallContext::$supportedActions['securityprofile-group-set-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Group-Set-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1657,7 +1995,7 @@ RuleCallContext::$supportedActions['securityprofile-group-set-fastapi'] = Array(
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 
-RuleCallContext::$supportedActions['description-append'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'description-Append',
     'MainFunction' =>  function(RuleCallContext $context)
     {
@@ -1684,7 +2022,7 @@ RuleCallContext::$supportedActions['description-append'] = Array(
 //                                                   //
 //                Other property Based Actions       //
 //                                                   //
-RuleCallContext::$supportedActions['enabled-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'enabled-Set',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1696,7 +2034,7 @@ RuleCallContext::$supportedActions['enabled-set'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-RuleCallContext::$supportedActions['enabled-set-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'enabled-Set-FastAPI',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1716,7 +2054,7 @@ RuleCallContext::$supportedActions['enabled-set-fastapi'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-RuleCallContext::$supportedActions['disabled-set'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'disabled-Set',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1728,7 +2066,7 @@ RuleCallContext::$supportedActions['disabled-set'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-RuleCallContext::$supportedActions['disabled-set-fastapi'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'disabled-Set-FastAPI',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1761,7 +2099,7 @@ RuleCallContext::$supportedActions['disabled-set-fastapi'] = Array(
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
-RuleCallContext::$supportedActions['delete'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'delete',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1772,7 +2110,7 @@ RuleCallContext::$supportedActions['delete'] = Array(
             $rule->owner->remove($rule);
     }
 );
-RuleCallContext::$supportedActions['bidirnat-split'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'biDirNat-Split',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1818,7 +2156,7 @@ RuleCallContext::$supportedActions['bidirnat-split'] = Array(
     'args' => Array(  'suffix' => Array( 'type' => 'string', 'default' => '-DST'  ), )
 );
 
-RuleCallContext::$supportedActions['name-prepend'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-Prepend',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1849,7 +2187,7 @@ RuleCallContext::$supportedActions['name-prepend'] = Array(
     },
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
-RuleCallContext::$supportedActions['name-append'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-Append',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1880,7 +2218,7 @@ RuleCallContext::$supportedActions['name-append'] = Array(
     },
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
-RuleCallContext::$supportedActions['ruletype-change'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'ruleType-Change',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1906,11 +2244,14 @@ RuleCallContext::$supportedActions['ruletype-change'] = Array(
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
 
-RuleCallContext::$supportedActions['display'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'display',
-    'MainFunction' => function(RuleCallContext $context) { $context->object->display(7); }
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $context->object->display(7);
+    }
 );
-RuleCallContext::$supportedActions['invertpreandpost'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'invertPreAndPost',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1936,7 +2277,7 @@ RuleCallContext::$supportedActions['invertpreandpost'] = Array(
 );
 
 
-RuleCallContext::$supportedActions['copy'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'copy',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -1978,7 +2319,7 @@ RuleCallContext::$supportedActions['copy'] = Array(
         'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
 );
 
-RuleCallContext::$supportedActions['move'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'move',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -2027,7 +2368,7 @@ RuleCallContext::$supportedActions['move'] = Array(
         'preORpost' => Array( 'type' => 'string', 'default' => 'pre', 'choices' => Array('pre','post') ) )
 );
 
-RuleCallContext::$supportedActions['exporttoexcel'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'exportToExcel',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -2044,6 +2385,19 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
         $args = &$context->arguments;
         $filename = $args['filename'];
 
+        $addResolvedAddressSummary = false;
+        $fieldsArray = explode('|',$context->arguments['additionalFields']) ;
+        foreach($fieldsArray as $fieldName)
+        {
+            $fieldName = strtolower($fieldName);
+            if( $fieldName == 'resolveaddresssummary' )
+                $addResolvedAddressSummary = true;
+            else{
+                if( $fieldName != '*none*')
+                    derr("unsupported field name '{$fieldName}' when export to Excel/HTML");
+            }
+        }
+
         $fields = Array(
             'location' => 'location',
             'type' => 'type',
@@ -2052,7 +2406,9 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             'from' => 'from',
             'to' => 'to',
             'src' => 'source',
+            'src_resolved_sum' => 'src_resolved_sum',
             'dst' => 'destination',
+            'dst_resolved_sum' => 'dst_resolved_sum',
             'service' => 'service',
             'application' => 'application',
             'action' => 'action',
@@ -2063,8 +2419,10 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
             'log end' => 'log_end',
             'log prof' => 'log_profile',
             'snat type' => 'snat_type',
-            'snat trans' => 'snat_trans',
-            'dnat host' => 'dnat_host',
+            'snat_address' => 'snat_address',
+            'snat_address_resolved_sum' => 'snat_address_resolved_sum',
+            'dnat_host' => 'dnat_host',
+            'dnat_host_resolved_sum' => 'dnat_host_resolved_sum',
             'description' => 'description'
         );
 
@@ -2085,6 +2443,9 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
 
                 foreach($fields as $fieldName => $fieldID )
                 {
+                    if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
+                            $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum' ) && !$addResolvedAddressSummary  )
+                        continue;
                     $lines .= $context->ruleFieldHtmlExport($rule, $fieldID);
                 }
 
@@ -2097,15 +2458,15 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
 
 
         $tableHeaders = '';
-        foreach($fields as $fName => $value )
-            $tableHeaders .= "<th>{$fName}</th>\n";
+        foreach($fields as $fieldName => $value )
+        {
+            if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
+                    $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum' ) && !$addResolvedAddressSummary  )
+                continue;
+            $tableHeaders .= "<th>{$fieldName}</th>\n";
+        }
 
         $content = file_get_contents(dirname(__FILE__).'/html-export-template.html');
-        /*$content = str_replace('%TableHeaders%',
-            '<th>location</th><th>type</th><th>name</th><th>from</th><th>src</th><th>to</th><th>dst</th><th>service</th><th>application</th>'.
-            '<th>action</th><th>log start</th><th>log end</th><th>disabled</th><th>description</th>'.
-            '<th>SNAT type</th><th>SNAT hosts</th><th>DNAT host</th><th>DNAT port</th>',
-            $content);*/
 
         $content = str_replace('%TableHeaders%', $tableHeaders, $content);
 
@@ -2120,10 +2481,19 @@ RuleCallContext::$supportedActions['exporttoexcel'] = Array(
 
         file_put_contents($filename, $content);
     },
-    'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ) )
+    'args' => Array(
+        'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+        'additionalFields' =>
+            Array( 'type' => 'string',
+                'default' => '*NONE*',
+                'help' =>
+                    "pipe(|) separated list of additional field to include in the report. The following is available:\n".
+                    "  - resolveAddressSummary : fields with address objects will be resolved and summarized in a new column)\n"
+            )
+    )
 );
 
-RuleCallContext::$supportedActions['clone'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'clone',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -2155,7 +2525,7 @@ RuleCallContext::$supportedActions['clone'] = Array(
                         'suffix' =>  Array( 'type' => 'string', 'default' => '-cloned' )
                     )
 );
-RuleCallContext::$supportedActions['cloneforappoverride'] = Array(
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'cloneForAppOverride',
     'MainFunction' => function(RuleCallContext $context)
     {

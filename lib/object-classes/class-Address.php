@@ -27,17 +27,13 @@ class Address
 	use XmlConvertible;
     use ObjectWithDescription;
 
-    /**
-     * @var string|null
-     */
+    /** @var string|null */
 	protected $value;
 
     /** @var AddressStore|null */
 	public $owner;
 
-	/**
-	 * @var TagRuleContainer
-	 */
+	/** @var TagRuleContainer */
 	public $tags;
 
 	const TypeTmp = 0;
@@ -124,7 +120,7 @@ class Address
 		}
 
 		if( !$typeFound )
-			derr('object type not found or not supported', $xml);
+			derr('Object type not found or not supported for object '.$this->name.'. Please check your configuration file and fix it.', $xml);
 
 		if( $this->owner->owner->version >= 60 )
 		{
@@ -402,11 +398,14 @@ class Address
         elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
         {
             $this->_ip4Map = new IP4Map();
+            $this->_ip4Map->unresolved[$this->name] = $this;
             //$this->_ip4Map->
         }
         elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
         {
             $this->_ip4Map = IP4Map::mapFromText($this->value);
+            if( $this->_ip4Map->count() == 0 )
+                $this->_ip4Map->unresolved[$this->name] = $this;
         }
         else
         {

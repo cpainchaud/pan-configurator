@@ -60,7 +60,7 @@ trait ObjectWithDescription
                 return false;
             $this->_description = $newDescription;
             $tmpRoot = DH::findFirstElementOrCreate('description', $this->xmlroot);
-            DH::setDomNodeText( $tmpRoot, $this->description() );
+            DH::setDomNodeText( $tmpRoot, $this->_description );
         }
 
         return true;

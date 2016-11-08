@@ -268,6 +268,99 @@ $supportedActions['name-removesuffix'] = Array(
     'args' => Array( 'suffix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
     ),
 );
+$supportedActions['name-touppercase'] = Array(
+    'name' => 'name-toUpperCase',
+    'MainFunction' =>  function ( TagCallContext $context )
+    {
+        $object = $context->object;
+        #$newName = $context->arguments['prefix'].$object->name();
+        $newName = mb_strtoupper($object->name(), 'UTF8' );
+        print $context->padding." - new name will be '{$newName}'\n";
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $newName === $object->name() )
+        {
+            print " *** SKIPPED : object is already uppercase\n";
+            return;
+        }
+
+        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
+            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        {
+            print " *** SKIPPED : an object with same name already exists\n";
+            #use existing uppercase TAG and replace old lowercase where used with this existing uppercase TAG
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+
+            $object->setName($newName);
+    }
+);
+$supportedActions['name-tolowercase'] = Array(
+    'name' => 'name-toLowerCase',
+    'MainFunction' =>  function ( TagCallContext $context )
+    {
+        $object = $context->object;
+        #$newName = $context->arguments['prefix'].$object->name();
+        $newName = mb_strtolower( $object->name(), 'UTF8' );
+        print $context->padding." - new name will be '{$newName}'\n";
+
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $newName === $object->name() )
+        {
+            print " *** SKIPPED : object is already lowercase\n";
+            return;
+        }
+
+        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
+            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        {
+            print " *** SKIPPED : an object with same name already exists\n";
+            #use existing lowercase TAG and replace old uppercase where used with this
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+
+            $object->setName($newName);
+    }
+);
+$supportedActions['name-toucwords'] = Array(
+    'name' => 'name-toUCWords',
+    'MainFunction' =>  function ( TagCallContext $context )
+    {
+        $object = $context->object;
+        #$newName = $context->arguments['prefix'].$object->name();
+        $newName = mb_strtolower( $object->name(), 'UTF8' );
+        $newName = ucwords( $newName );
+        print $context->padding." - new name will be '{$newName}'\n";
+
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $newName === $object->name() )
+        {
+            print " *** SKIPPED : object is already UCword\n";
+            return;
+        }
+
+        if( $rootObject->isPanorama() && $object->owner->find($newName, null, false) !== null ||
+            $rootObject->isFirewall() && $object->owner->find($newName, null, true) !== null   )
+        {
+            print " *** SKIPPED : an object with same name already exists\n";
+            #use existing lowercase TAG and replace old uppercase where used with this
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+
+            $object->setName($newName);
+    }
+);
 
 $supportedActions['displayreferences'] = Array(
     'name' => 'displayReferences',
