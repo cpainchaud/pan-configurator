@@ -2052,62 +2052,111 @@ RuleCallContext::$supportedActions[] = Array(
 );
 
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'movetotop',
+    'name' => 'position-move-to-top',
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
-        $context->ruleList[] = $rule;
+        $ruleStore = $rule->owner;
+
+        $serial = spl_object_hash($ruleStore);
+        $firstTimeHere = false;
+
+        if( $context->baseObject->isPanorama() )
+        {
+            if( $rule->isPreRule() )
+            {
+                if( isset($context->preCache[$serial]) )
+                    $referenceRule = $context->preCache[$serial];
+                else
+                {
+                    $referenceRule = $ruleStore->getRuleOnTop($rule->isPreRule());
+                    $firstTimeHere = true;
+                }
+
+                $context->preCache[$serial] = $rule;
+            }
+            else
+            {
+                if( isset($context->postCache[$serial]) )
+                    $referenceRule = $context->postCache[$serial];
+                else
+                {
+                    $referenceRule = $ruleStore->getRuleOnTop( $rule->isPreRule() );
+                    $firstTimeHere = true;
+                }
+
+                $context->postCache[$serial] = $rule;
+            }
+        }
+        else
+        {
+            if( isset($context->cache[$serial]) )
+                $referenceRule = $context->cache[$serial];
+            else
+            {
+                $referenceRule = $ruleStore->getRuleOnTop( $rule->isPreRule() );
+                $firstTimeHere = true;
+            }
+
+            $context->cache[$serial] = $rule;
+        }
+
+
+        if( $referenceRule === $rule )
+        {
+            echo $context->padding." * SKIPPED because it is already the first rule\n";
+            return;
+        }
+
+        echo $context->padding." - MOVING to top ... ";
+
+        if( $firstTimeHere )
+        {
+            if( $context->isAPI )
+                $ruleStore->API_moveRuleBefore($rule, $referenceRule);
+            else
+                $ruleStore->moveRuleBefore($rule, $referenceRule);
+        }
+        else
+        {
+            if( $context->isAPI )
+                $ruleStore->API_moveRuleAfter($rule, $referenceRule);
+            else
+                $ruleStore->moveRuleAfter($rule, $referenceRule);
+        }
+
+        echo "OK!\n";
     },
     'GlobalInitFunction' => function(RuleCallContext $context)
     {
-        $context->ruleList = Array();
+        $context->preCache = Array();
+        $context->postCache = Array();
+        $context->cache = Array();
     },
-    'GlobalFinishFunction' => function(RuleCallContext $context)
-    {
-        $rule = $context->object;
-        $ruleStore = $rule->owner;
-        $ruleRef = $ruleStore->getRuleOnTop();
-
-        foreach ($context->ruleList as $rule)
-        {
-            if( $context->isAPI )
-                $ruleStore->API_moveRuleBefore($rule, $ruleRef);
-            else
-                $ruleStore->moveRuleBefore($rule, $ruleRef);
-        }
-    }
 );
 
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'movetobottom',
+    'name' => 'position-move-to-bottom',
     'MainFunction' => function(RuleCallContext $context)
-    {
-        $rule = $context->object;
-        $context->ruleList[] = $rule;
-    },
-    'GlobalInitFunction' => function(RuleCallContext $context)
-    {
-        $context->ruleList = Array();
-    },
-    'GlobalFinishFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
         $ruleStore = $rule->owner;
 
-        foreach ($context->ruleList as $rule)
+        $referenceRule = $ruleStore->getRuleAtBottom($rule->isPreRule());
+
+        if( $referenceRule === $rule )
         {
-            if( $context->isAPI )
-            {
-                $ruleRef = $ruleStore->getRuleOnBottom();
-                $ruleStore->API_moveRuleAfter($rule, $ruleRef);
-            }
-            else
-            {
-                $ruleRef = $ruleStore->getRuleOnBottom();
-                $ruleStore->moveRuleAfter($rule, $ruleRef);
-            }
+            echo $context->padding." * SKIPPED because it is already the last rule\n";
+            return;
         }
-    }
+
+        echo $context->padding." - MOVING to bottom ... ";
+        if( $context->isAPI )
+            $ruleStore->API_moveRuleAfter($rule, $referenceRule);
+        else
+            $ruleStore->moveRuleAfter($rule, $referenceRule);
+        echo "OK!\n";
+    },
 );
 
 RuleCallContext::$supportedActions[] = Array(

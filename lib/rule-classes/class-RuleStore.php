@@ -655,9 +655,7 @@ class RuleStore
             foreach ($this->_rules as $rule)
             {
                 if ($rule === $ruleToBeMoved)
-                {
                     continue;
-                }
 
                 $newArray[$i] = $rule;
 
@@ -672,16 +670,14 @@ class RuleStore
 
             $this->_rules = &$newArray;
         }
-        elseif( ! $this->isPreOrPost )
+        else
         {
             $i = 0;
             $newArray = Array();
             foreach ($this->_postRules as $rule)
             {
                 if ($rule === $ruleToBeMoved)
-                {
                     continue;
-                }
 
                 $newArray[$i] = $rule;
 
@@ -711,7 +707,7 @@ class RuleStore
 	{
         if ($ruleToBeMoved === $ruleRef)
         {
-            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move after self!\n";
+            print "\n   - skip object '".PH::boldText($ruleToBeMoved->name())."' can't move after self!\n";
             return;
         }
 
@@ -846,7 +842,7 @@ class RuleStore
 
             $this->_rules = &$newArray;
         }
-        elseif( ! $this->isPreOrPost )
+        else
         {
             $i = 0;
             $newArray = Array();
@@ -1557,29 +1553,45 @@ class RuleStore
     }
 
     /**
-     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule
+     * @param null|bool $lookInPreRules
+     * @return null|Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule null if not found
      */
-    public function getRuleOnTop()
-    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $lrule */
+    public function getRuleOnTop($lookInPreRules = true)
+    {
+        if( !$this->isPreOrPost || $lookInPreRules === true )
+        {
+            if( count($this->_rules) == 0 )
+                return null;
 
-        foreach($this->_rules as $lrule)
-            return $lrule;
+            return reset($this->_rules);
+        }
+
+        if( count($this->_postRules) == 0 )
+            return null;
+
+        return reset($this->_postRules);
     }
 
     /**
-     * @return Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule
+     * @param null|bool $lookInPreRules
+     * @return null|Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule null if not found
      */
-    public function getRuleOnBottom()
-    {   /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $lrule */
-
-        $count = 0;
-        foreach($this->_rules as $lrule)
+    public function getRuleAtBottom($lookInPreRules = true)
+    {
+        if( !$this->isPreOrPost || $lookInPreRules === true )
         {
-            $count++;
-            if( count( $this->_rules ) == $count )
-                return $lrule;
+            if( count($this->_rules) == 0 )
+                return null;
+
+            return end($this->_rules);
         }
+
+        if( count($this->_postRules) == 0 )
+            return null;
+
+        return end($this->_postRules);
     }
+
 
     public function createXmlRoot()
     {
