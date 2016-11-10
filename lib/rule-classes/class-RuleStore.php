@@ -586,6 +586,12 @@ class RuleStore
 	 */
 	public function moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
 	{
+        if ($ruleToBeMoved === $ruleRef)
+        {
+            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move after self!\n";
+            return;
+        }
+
 		// TODO fix after pre/post suppression
 		if( is_string($ruleToBeMoved) )
 		{
@@ -649,9 +655,7 @@ class RuleStore
             foreach ($this->_rules as $rule)
             {
                 if ($rule === $ruleToBeMoved)
-                {
                     continue;
-                }
 
                 $newArray[$i] = $rule;
 
@@ -666,16 +670,14 @@ class RuleStore
 
             $this->_rules = &$newArray;
         }
-        elseif( ! $this->isPreOrPost )
+        else
         {
             $i = 0;
             $newArray = Array();
             foreach ($this->_postRules as $rule)
             {
                 if ($rule === $ruleToBeMoved)
-                {
                     continue;
-                }
 
                 $newArray[$i] = $rule;
 
@@ -703,6 +705,12 @@ class RuleStore
 	 */
 	public function API_moveRuleAfter( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
+        if ($ruleToBeMoved === $ruleRef)
+        {
+            print "\n   - skip object '".PH::boldText($ruleToBeMoved->name())."' can't move after self!\n";
+            return;
+        }
+
         $this->moveRuleAfter($ruleToBeMoved , $ruleRef, $rewritexml);
 
 		$con = findConnectorOrDie($this);
@@ -748,13 +756,19 @@ class RuleStore
 	 */
     public function moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewriteXml=true )
     {
+        if ($ruleToBeMoved === $ruleRef)
+        {
+            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move before self!\n";
+            return;
+        }
+
         // TODO fix after pre/post suppression
         if( is_string($ruleToBeMoved) )
         {
             $tmpRule = $this->find($ruleToBeMoved);
             if( $tmpRule === null )
                 derr("cannot find rule named '$ruleToBeMoved'");
-            return $this->moveRuleAfter( $tmpRule, $ruleRef, $rewriteXml );
+            return $this->moveRuleBefore( $tmpRule, $ruleRef, $rewriteXml );
         }
 
         if( is_string($ruleRef) )
@@ -762,7 +776,7 @@ class RuleStore
             $tmpRule = $this->find($ruleRef);
             if( $tmpRule === null )
                 derr("cannot find rule named '$tmpRule'");
-            return $this->moveRuleAfter( $ruleToBeMoved, $tmpRule, $rewriteXml );
+            return $this->moveRuleBefore( $ruleToBeMoved, $tmpRule, $rewriteXml );
         }
 
         $rtbmSerial = spl_object_hash($ruleToBeMoved);
@@ -815,20 +829,20 @@ class RuleStore
                     continue;
                 }
 
-                $newArray[$i] = $rule;
-
-                $i++;
-
                 if ($rule === $ruleRef)
                 {
                     $newArray[$i] = $ruleToBeMoved;
                     $i++;
                 }
+
+                $newArray[$i] = $rule;
+
+                $i++;
             }
 
             $this->_rules = &$newArray;
         }
-        elseif( ! $this->isPreOrPost )
+        else
         {
             $i = 0;
             $newArray = Array();
@@ -839,15 +853,15 @@ class RuleStore
                     continue;
                 }
 
-                $newArray[$i] = $rule;
-
-                $i++;
-
                 if ($rule === $ruleRef)
                 {
                     $newArray[$i] = $ruleToBeMoved;
                     $i++;
                 }
+
+                $newArray[$i] = $rule;
+
+                $i++;
             }
             $this->_postRules = &$newArray;
         }
@@ -865,6 +879,11 @@ class RuleStore
 	 */
 	public function API_moveRuleBefore( $ruleToBeMoved , $ruleRef, $rewritexml=true )
 	{
+        if ($ruleToBeMoved === $ruleRef)
+        {
+            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move befor self!\n";
+            return;
+        }
 		$this->moveRuleBefore($ruleToBeMoved , $ruleRef, $rewritexml);
 
 		$con = findConnectorOrDie($this);
@@ -1531,6 +1550,46 @@ class RuleStore
         else
             derr("rule '{$rule->name()}' not found");
 
+    }
+
+    /**
+     * @param null|bool $lookInPreRules
+     * @return null|Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule null if not found
+     */
+    public function getRuleOnTop($lookInPreRules = true)
+    {
+        if( !$this->isPreOrPost || $lookInPreRules === true )
+        {
+            if( count($this->_rules) == 0 )
+                return null;
+
+            return reset($this->_rules);
+        }
+
+        if( count($this->_postRules) == 0 )
+            return null;
+
+        return reset($this->_postRules);
+    }
+
+    /**
+     * @param null|bool $lookInPreRules
+     * @return null|Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule null if not found
+     */
+    public function getRuleAtBottom($lookInPreRules = true)
+    {
+        if( !$this->isPreOrPost || $lookInPreRules === true )
+        {
+            if( count($this->_rules) == 0 )
+                return null;
+
+            return end($this->_rules);
+        }
+
+        if( count($this->_postRules) == 0 )
+            return null;
+
+        return end($this->_postRules);
     }
 
 

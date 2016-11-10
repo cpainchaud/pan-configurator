@@ -2052,6 +2052,208 @@ RuleCallContext::$supportedActions[] = Array(
 );
 
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'position-Move-to-Top',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $ruleStore = $rule->owner;
+
+        $serial = spl_object_hash($ruleStore);
+        $firstTimeHere = false;
+
+        if( $context->baseObject->isPanorama() )
+        {
+            if( $rule->isPreRule() )
+            {
+                if( isset($context->preCache[$serial]) )
+                    $referenceRule = $context->preCache[$serial];
+                else
+                {
+                    $referenceRule = $ruleStore->getRuleOnTop($rule->isPreRule());
+                    $firstTimeHere = true;
+                }
+
+                $context->preCache[$serial] = $rule;
+            }
+            else
+            {
+                if( isset($context->postCache[$serial]) )
+                    $referenceRule = $context->postCache[$serial];
+                else
+                {
+                    $referenceRule = $ruleStore->getRuleOnTop( $rule->isPreRule() );
+                    $firstTimeHere = true;
+                }
+
+                $context->postCache[$serial] = $rule;
+            }
+        }
+        else
+        {
+            if( isset($context->cache[$serial]) )
+                $referenceRule = $context->cache[$serial];
+            else
+            {
+                $referenceRule = $ruleStore->getRuleOnTop( $rule->isPreRule() );
+                $firstTimeHere = true;
+            }
+
+            $context->cache[$serial] = $rule;
+        }
+
+
+        if( $referenceRule === $rule )
+        {
+            echo $context->padding." * SKIPPED because it is already the first rule\n";
+            return;
+        }
+
+        echo $context->padding." - MOVING to top ... ";
+
+        if( $firstTimeHere )
+        {
+            if( $context->isAPI )
+                $ruleStore->API_moveRuleBefore($rule, $referenceRule);
+            else
+                $ruleStore->moveRuleBefore($rule, $referenceRule);
+        }
+        else
+        {
+            if( $context->isAPI )
+                $ruleStore->API_moveRuleAfter($rule, $referenceRule);
+            else
+                $ruleStore->moveRuleAfter($rule, $referenceRule);
+        }
+
+        echo "OK!\n";
+    },
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->preCache = Array();
+        $context->postCache = Array();
+        $context->cache = Array();
+    },
+);
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'position-Move-to-Bottom',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $ruleStore = $rule->owner;
+
+        $referenceRule = $ruleStore->getRuleAtBottom($rule->isPreRule());
+
+        if( $referenceRule === $rule )
+        {
+            echo $context->padding." * SKIPPED because it is already the last rule\n";
+            return;
+        }
+
+        echo $context->padding." - MOVING to bottom ... ";
+        if( $context->isAPI )
+            $ruleStore->API_moveRuleAfter($rule, $referenceRule);
+        else
+            $ruleStore->moveRuleAfter($rule, $referenceRule);
+        echo "OK!\n";
+    },
+);
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'position-Move-Before',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $ruleStore = $rule->owner;
+
+        $referenceRule = $ruleStore->find($context->arguments['rulename']);
+
+        if( $referenceRule === null )
+        {
+            echo $context->padding." * SKIPPED reference rule '{$context->arguments['rulename']}' was not found\n";
+            return;
+        }
+
+        if( $referenceRule->isPreRule() !== $rule->isPreRule() )
+        {
+            echo $context->padding." * SKIPPED reference rule '{$context->arguments['rulename']}' and this rule should both be PRE or POST, not a mix\n";
+            return;
+        }
+
+        if( $referenceRule === $rule )
+        {
+            echo $context->padding." * SKIPPED because it is already the last rule\n";
+            return;
+        }
+
+        echo $context->padding." - MOVING to before '{$context->arguments['rulename']}' ... ";
+        if( $context->isAPI )
+            $ruleStore->API_moveRuleBefore($rule, $referenceRule);
+        else
+            $ruleStore->moveRuleBefore($rule, $referenceRule);
+        echo "OK!\n";
+    },
+    'args' => Array(
+        'rulename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+    )
+);
+
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'position-Move-After',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $ruleStore = $rule->owner;
+        $storeSerial = spl_object_hash($ruleStore);
+
+
+        if( isset($context->cache[$storeSerial]) )
+            $referenceRule = $context->cache[$storeSerial];
+        else
+        {
+            $referenceRule = $ruleStore->find($context->arguments['rulename']);
+            if( $referenceRule === null )
+            {
+                echo $context->padding." * SKIPPED reference rule '{$context->arguments['rulename']}' was not found\n";
+                return;
+            }
+            $context->cache[$storeSerial] = $referenceRule;
+        }
+
+        if( $referenceRule->isPreRule() !== $rule->isPreRule() )
+        {
+            echo $context->padding." * SKIPPED reference rule '{$context->arguments['rulename']}' and this rule should both be PRE or POST, not a mix\n";
+            return;
+        }
+
+        if( $context->arguments['rulename'] === $rule->name() )
+        {
+            echo $context->padding." * SKIPPED this was the referenced rulename in argument\n";
+            return;
+        }
+
+        $context->cache[$storeSerial] = $rule;
+
+        echo $context->padding." - MOVING to after '{$referenceRule->name()}' ... ";
+        if( $context->isAPI )
+            $ruleStore->API_moveRuleAfter($rule, $referenceRule);
+        else
+            $ruleStore->moveRuleAfter($rule, $referenceRule);
+        echo "OK!\n";
+    },
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->cache = Array();
+    },
+    'args' => Array(
+        'rulename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+    )
+);
+
+
+
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'exportToExcel',
     'MainFunction' => function(RuleCallContext $context)
     {

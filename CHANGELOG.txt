@@ -9,7 +9,7 @@ CHANGELOG
 utils:
 * new 'address-merger', 'addressgroup-merger', 'service-merger', 'servicegroup-merger' utilities. Safer, faster and find more dups than MT.
 * new tag-edit utility on the same basis as address-edit
-rules-edit: new action 'tag-remove-all'
+rules-edit: new action 'tag-Remove-All' 'position-Move-to-Top' 'position-Move-To-Bottom' 'position-Move-Before' 'position-Move-After'
 rules-edit: new filter 'service has.regex', 'rule is.dsri'
 rules-edit: action 'exportToExcel' new option to add optional fields like 'resolveAddressSummary'
 address-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:H-$$value.no-netmask-$$current.name$$'
