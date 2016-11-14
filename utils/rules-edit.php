@@ -109,6 +109,8 @@ if( isset(PH::$args['loadplugin']) )
     $pluginFile = PH::$args['loadplugin'];
     print " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
     require_once $pluginFile;
+    RuleCallContext::prepareSupportedActions();
+    RuleCallContext::prepareCommonActionFunctions();
     print "OK!\n";
 }
 

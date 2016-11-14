@@ -198,6 +198,16 @@ class RuleCallContext extends CallContext
         self::$supportedActions = $tmpArgs;
     }
 
+    static public function prepareCommonActionFunctions()
+    {
+        $tmpArgs = Array();
+        foreach( self::$commonActionFunctions as $index => &$arg )
+        {
+            $tmpArgs[strtolower($index)] = $arg;
+        }
+        self::$commonActionFunctions = $tmpArgs;
+    }
+
     public function addRuleToMergedApiChange($setValue)
     {
         $rule = $this->object;
