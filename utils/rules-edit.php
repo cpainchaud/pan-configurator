@@ -412,7 +412,7 @@ if( $configType == 'panos' )
         $inputConnector->refreshSystemInfos();
         $newDGRoot = $xpathResult->item(0);
         $panoramaString = "<config version=\"{$inputConnector->info_PANOS_version}\"><shared></shared><devices><entry name=\"localhost.localdomain\"><device-group>".DH::domlist_to_xml($newDGRoot->childNodes)."</device-group></entry></devices></config>";
-        print $panoramaString;
+        #print $panoramaString;
         $fakePanorama->load_from_xmlstring($panoramaString);
 
         $pan = new PANConf($fakePanorama);
