@@ -284,6 +284,11 @@ class Address
      */
 	public function API_setName($newName)
 	{
+        if( $this->isTmpAddr() )
+        {
+            mwarning('renaming of TMP object in API is not possible, it was ignored');
+            return;
+        }
 		$c = findConnectorOrDie($this);
 		$xpath = $this->getXPath();
         $c->sendRenameRequest($xpath, $newName);

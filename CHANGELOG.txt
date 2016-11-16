@@ -18,7 +18,7 @@ address-edit: new actions 'name-removePrefix, name-removeSuffix', 'tag-add', 'ta
 service-edit: new actions 'name-removePrefix, name-removeSuffix'
 service-edit: new filters 'object is.tcp' and 'object is.udp'
 tag-edit: new filters 'name eq', 'name contains', 'name eq.nocase', 'location is' and 'refcount - >,<,=,!'
-override-finder: when firewall is not available, instead of exit wit error, program will skip it and warn user.
+override-finder: when firewall is not available, instead of exit with error, program will skip it and warn user.
 
 bugfix:
 - added checks to prevent crash when trying to resolve an IPv6 object into an IPv4 mapping
