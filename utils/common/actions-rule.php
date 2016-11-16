@@ -2012,9 +2012,9 @@ RuleCallContext::$supportedActions[] = Array(
         $pan = PH::findRootObjectOrDie($rule);;
 
         if( $args['preORpost'] == "post" )
-            $preORpost = true;
+            $moveToPost = true;
         else
-            $preORpost = false;
+            $moveToPost = false;
 
 
         /** @var RuleStore $ruleStore */
@@ -2037,13 +2037,35 @@ RuleCallContext::$supportedActions[] = Array(
         }
         if( $context->isAPI )
         {
-            $ruleStore->API_cloneRule($rule, null, $preORpost);
-            $rule->owner->API_remove($rule);
+            if( $ruleStore === $rule->owner )
+            {
+                if( $moveToPost )
+                    $ruleStore->API_moveRuleToPostRulebase($rule);
+                else
+                    $ruleStore->API_moveRuleToPreRulebase($rule);
+
+            }
+            else
+            {
+                $ruleStore->API_cloneRule($rule, null, $moveToPost);
+                $rule->owner->API_remove($rule);
+            }
         }
         else
         {
-            $ruleStore->cloneRule($rule, null, $preORpost);
-            $rule->owner->remove($rule);
+            if( $ruleStore === $rule->owner )
+            {
+                if( $moveToPost )
+                    $ruleStore->moveRuleToPostRulebase($rule);
+                else
+                    $ruleStore->moveRuleToPreRulebase($rule);
+
+            }
+            else
+            {
+                $ruleStore->cloneRule($rule, null, $moveToPost);
+                $rule->owner->remove($rule);
+            }
         }
 
     },
