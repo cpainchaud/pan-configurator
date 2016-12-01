@@ -2476,7 +2476,7 @@ RuleCallContext::$supportedActions[] = Array(
             }
             elseif( $context->arguments['restrictToListOfServices'][0] == '@' )
             {
-                $listOfServicesQueryName = $context->arguments['restrictToListOfServices'];
+                $listOfServicesQueryName = substr($context->arguments['restrictToListOfServices'],1);
                 if( !isset($context->nestedQueries[$listOfServicesQueryName]) )
                 {
                     derr("cannot find query filter called '$listOfServicesQueryName'");
