@@ -37,7 +37,7 @@ class PH
 
     private static $library_version_major = 1;
     private static $library_version_sub = 5;
-    private static $library_version_bugfix = 11;
+    private static $library_version_bugfix = 12;
 
     static public function frameworkVersion()
     {

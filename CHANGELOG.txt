@@ -1,5 +1,9 @@
 CHANGELOG
 
+1.5.12
+
+
+
 1.5.11
 * new function AddressCommon->hasDescendants() to for objects with same name in lower level (child devicegroups)
 * new function AddressCommon->hasDescendants() to determine if objects with same name in lower level (child devicegroups) exist
