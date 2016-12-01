@@ -1902,11 +1902,11 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'name-removePrependix',
+    'name' => 'name-removePrefix',
     'MainFunction' =>  function ( RuleCallContext $context )
     {
         $object = $context->object;
-        $prefix = $context->arguments['prependix'];
+        $prefix = $context->arguments['prefix'];
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
@@ -1935,15 +1935,15 @@ RuleCallContext::$supportedActions[] = Array(
         else
             $object->setName($newName);
     },
-    'args' => Array( 'prependix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    'args' => Array( 'prefix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
     ),
 );
 RuleCallContext::$supportedActions[] = Array(
-    'name' => 'name-removeAppendix',
+    'name' => 'name-removeSuffix',
     'MainFunction' =>  function ( RuleCallContext $context )
     {
         $object = $context->object;
-        $suffix = $context->arguments['appendix'];
+        $suffix = $context->arguments['suffix'];
         $suffixStartIndex = strlen($object->name()) - strlen($suffix);
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name()) ) != $suffix )
@@ -1967,7 +1967,7 @@ RuleCallContext::$supportedActions[] = Array(
         else
             $object->setName($newName);
     },
-    'args' => Array( 'appendix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    'args' => Array( 'suffix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
     ),
 );
 RuleCallContext::$supportedActions[] = Array(
