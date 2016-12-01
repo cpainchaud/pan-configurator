@@ -1902,6 +1902,75 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'name-removePrependix',
+    'MainFunction' =>  function ( RuleCallContext $context )
+    {
+        $object = $context->object;
+        $prefix = $context->arguments['prependix'];
+
+        if( strpos($object->name(), $prefix) !== 0 )
+        {
+            echo $context->padding." *** SKIPPED : prefix not found\n";
+            return;
+        }
+        $newName = substr($object->name(), strlen($prefix));
+
+        if ( !preg_match("/^[a-zA-Z0-9]/", $newName[0]) )
+        {
+            echo $context->padding." *** SKIPPED : object name contains not allowed character at the beginning\n";
+            return;
+        }
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $object->owner->find($newName) !== null )
+        {
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+            $object->setName($newName);
+    },
+    'args' => Array( 'prependix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    ),
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'name-removeAppendix',
+    'MainFunction' =>  function ( RuleCallContext $context )
+    {
+        $object = $context->object;
+        $suffix = $context->arguments['appendix'];
+        $suffixStartIndex = strlen($object->name()) - strlen($suffix);
+
+        if( substr($object->name(), $suffixStartIndex, strlen($object->name()) ) != $suffix )
+        {
+            echo $context->padding." *** SKIPPED : suffix not found\n";
+            return;
+        }
+        $newName = substr( $object->name(), 0, $suffixStartIndex );
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $object->owner->find($newName) !== null )
+        {
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        if( $context->isAPI )
+            $object->API_setName($newName);
+        else
+            $object->setName($newName);
+    },
+    'args' => Array( 'appendix' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    ),
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'ruleType-Change',
     'MainFunction' => function(RuleCallContext $context)
     {

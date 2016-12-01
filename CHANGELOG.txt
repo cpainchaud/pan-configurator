@@ -2,6 +2,8 @@ CHANGELOG
 
 1.5.12
 
+utils:
+rules-edit: new action  'name-removePrependix' 'name-removeAppendix'
 
 
 1.5.11
