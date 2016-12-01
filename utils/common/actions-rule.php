@@ -2438,6 +2438,12 @@ RuleCallContext::$supportedActions[] = Array(
     {
         $rule = $context->object;
 
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding . " - IGNORED because rule is not type 'Security'\n";
+            return;
+        }
+
         if( $rule->actionIsNegative() )
         {
             print $context->padding . " - IGNORED because Action is DENY\n";
@@ -2452,7 +2458,7 @@ RuleCallContext::$supportedActions[] = Array(
 
         $ports = '';
 
-        if( ($rule->services->isAny() || $rule->services->isApplicationDefault()) && !$context->arguments['restrictToListOfServices'] == '*sameAsInRule*' )
+        if( ($rule->services->isAny() || $rule->services->isApplicationDefault()) && $context->arguments['restrictToListOfServices'] != '*sameAsInRule*' )
         {
             $ports = '1-65535';
             $portMapping = ServiceDstPortMapping::mappingFromText($ports, true);
@@ -2468,7 +2474,7 @@ RuleCallContext::$supportedActions[] = Array(
             {
                 $services = $rule->services->members();
             }
-            else
+            elseif( $context->arguments['restrictToListOfServices'][0] == '@' )
             {
                 $listOfServicesQueryName = $context->arguments['restrictToListOfServices'];
                 if( !isset($context->nestedQueries[$listOfServicesQueryName]) )
@@ -2491,6 +2497,23 @@ RuleCallContext::$supportedActions[] = Array(
                     }
                 }
             }
+            else
+            {
+                $listOfServices = explode('#', $context->arguments['restrictToListOfServices']);
+                $listOfServices = array_flip($listOfServices);
+
+
+                $services = Array();
+
+                foreach( $rule->services->membersExpanded() as $member )
+                {
+                    if( isset($listOfServices[$member->name()]) )
+                    {
+                        $services[] = $member;
+                    }
+                }
+            }
+
             if( count($services) == 0)
             {
                 print $context->padding." - IGNORED because NO MATCHING SERVICE FOUND\n";
@@ -2547,8 +2570,14 @@ RuleCallContext::$supportedActions[] = Array(
 
 
     },
-    'args' => Array(    'applicationName' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
-        'restrictToListOfServices' => Array( 'type' => 'string', 'default' => '*sameAsInRule*'  ), )
+    'args' => Array(    'applicationName' => Array( 'type' => 'string', 'default' => '*nodefault*',
+                                                    'help' => 'specify the application to put in the resulting App-Override rule' ),
+                        'restrictToListOfServices' => Array( 'type' => 'string', 'default' => '*sameAsInRule*',
+                                                             'help' => "you can limit which services will be included in the AppOverride rule by providing a #-separated list or a subquery prefixed with a @:\n".
+                                                                        "  - svc1#svc2#svc3... : #-separated list\n".
+                                                                        "  - @subquery1 : script will look for subquery1 filter which you have to provide as an additional argument to the script (ie: 'subquery1=(name eq tcp-50-web)')"),
+        ),
+    'help' => "This action will take a Security rule and clone it as an App-Override rule. By default all services specified in the rule will also be in the AppOverride rule."
 );
 // </editor-fold>
 /************************************ */
