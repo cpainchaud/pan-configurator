@@ -421,6 +421,22 @@ class RuleCallContext extends CallContext
             return self::enclose($rule->to->getAll(), $wrap);
         }
 
+        if( $fieldName == 'source_negated' )
+        {
+            if( !method_exists($rule, 'sourceIsNegated') || !$rule->sourceIsNegated() )
+                return self::enclose('no');
+
+            return self::enclose('yes');
+        }
+
+        if( $fieldName == 'destination_negated' )
+        {
+            if( !method_exists($rule, 'destinationIsNegated') || !$rule->destinationIsNegated() )
+                return self::enclose('no');
+
+            return self::enclose('yes');
+        }
+
         if( $fieldName == 'source' )
         {
             if( $rule->source->isAny() )
