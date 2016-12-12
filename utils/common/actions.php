@@ -21,6 +21,7 @@
 class CallContext
 {
     public $arguments = Array();
+    public $rawArguments = Array();
 
     /** @var  Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object  */
     public $object;
@@ -93,6 +94,7 @@ class CallContext
     public function prepareArgumentsForAction($arguments)
     {
         $this->arguments = Array();
+        $this->rawArguments = Array();
 
         if(strlen($arguments) != 0 && !isset($this->actionRef['args']) )
             display_error_usage_exit("error while processing argument '{$this->actionRef['name']}' : arguments were provided while they are not supported by this action");
@@ -114,6 +116,7 @@ class CallContext
             if( isset($ex[$count]) )
                 $argValue = $ex[$count];
 
+            $this->rawArguments[$argName] = $argValue;
 
             if( (!isset($properties['default']) || $properties['default'] == '*nodefault*') && ($argValue === null || strlen($argValue)) == 0 )
                 derr("action '{$this->actionRef['name']}' argument#{$count} '{$argName}' requires a value, it has no default one");

@@ -1685,7 +1685,7 @@ RuleCallContext::$supportedActions[] = Array(
         $rule = $context->object;
         $description = ' '.$rule->description();
 
-        $textToAppend = $context->arguments['text'];
+        $textToAppend = $context->rawArguments['text'];
 
         if( strlen($description) + strlen($textToAppend) > 253 )
         {
