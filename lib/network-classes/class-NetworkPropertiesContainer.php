@@ -49,22 +49,30 @@ class NetworkPropertiesContainer
     {
         $this->xmlroot = $xml;
 
-        $tmp = DH::findFirstElementOrCreate('tunnel', $this->xmlroot);
-        $tmp = DH::findFirstElementOrCreate('ipsec', $tmp);
-        $this->ipsecTunnelStore->load_from_domxml($tmp);
+        $tmp = DH::findFirstElement('tunnel', $this->xmlroot);
+        if( $tmp !== false )
+        {
+            $tmp = DH::findFirstElement('ipsec', $tmp);
+            if( $tmp !== FALSE )
+                $this->ipsecTunnelStore->load_from_domxml($tmp);
+        }
 
         $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
-        $tmp = DH::findFirstElementOrCreate('ethernet', $tmp);
+        $tmp = DH::findFirstElement('ethernet', $tmp);
         $this->ethernetIfStore->load_from_domxml($tmp);
 
         $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
-        $tmp = DH::findFirstElementOrCreate('aggregate-ethernet', $tmp);
+        $tmp = DH::findFirstElement('aggregate-ethernet', $tmp);
         $this->aggregateEthernetIfStore->load_from_domxml($tmp);
 
         $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
-        $tmp = DH::findFirstElementOrCreate('loopback', $tmp);
-        $tmp = DH::findFirstElementOrCreate('units', $tmp);
-        $this->loopbackIfStore->load_from_domxml($tmp);
+        $tmp = DH::findFirstElement('loopback', $tmp);
+        if( $tmp !== false )
+        {
+            $tmp = DH::findFirstElement('units', $tmp);
+            if( $tmp !== false )
+                $this->loopbackIfStore->load_from_domxml($tmp);
+        }
 
 
         $tmp = DH::findFirstElementOrCreate('virtual-router', $this->xmlroot);

@@ -64,6 +64,12 @@ class EthernetIfStore extends ObjStore
 
     public function load_from_domxml(DOMElement $xml)
     {
+        if( $xml === null || $xml === false )
+        {
+            $this->xmlroot = null;
+            return;
+        }
+
         parent::load_from_domxml($xml);
         foreach( $this->o as $o )
         {
