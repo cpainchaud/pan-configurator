@@ -59,11 +59,13 @@ class NetworkPropertiesContainer
 
         $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
         $tmp = DH::findFirstElement('ethernet', $tmp);
-        $this->ethernetIfStore->load_from_domxml($tmp);
+        if( $tmp !== false )
+            $this->ethernetIfStore->load_from_domxml($tmp);
 
         $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
         $tmp = DH::findFirstElement('aggregate-ethernet', $tmp);
-        $this->aggregateEthernetIfStore->load_from_domxml($tmp);
+        if( $tmp !== false )
+            $this->aggregateEthernetIfStore->load_from_domxml($tmp);
 
         $tmp = DH::findFirstElementOrCreate('interface', $this->xmlroot);
         $tmp = DH::findFirstElement('loopback', $tmp);
