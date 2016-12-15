@@ -50,13 +50,14 @@ function display_usage_and_exit($shortMessage = false)
         print "\n\n";
     }
 
+    print "\n";
     exit(1);
 }
 
 function display_error_usage_exit($msg)
 {
     fwrite(STDERR, PH::boldText("\n**ERROR** ").$msg."\n\n");
-    display_usage_and_exit(true);
+    display_usage_and_exit(false);
 }
 
 
@@ -67,7 +68,7 @@ $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments['cycleconnectedfirewalls'] = Array('niceName' => 'cycleConnectedFirewalls', 'shortHelp' => 'a listing of all devices connected to Panorama will be collected through API then each firewall will be queried for overrides' );
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
-
+$supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 PH::processCliArgs();
 
