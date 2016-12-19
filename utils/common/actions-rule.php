@@ -1689,14 +1689,18 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( strlen($description) + strlen($textToAppend) > 253 )
         {
-            print $context->padding." - SKIPPED : description is too long\n";
+            echo $context->padding." - SKIPPED : resulting description is too long\n";
             return;
         }
+
+        echo $context->padding." - new description will be: {$description}{$textToAppend}'' ... ";
 
         if( $context->isAPI )
             $rule->API_setDescription($description.$textToAppend);
         else
             $rule->setSecurityProfileGroup($description.$textToAppend);
+
+        echo "OK";
     },
     'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
