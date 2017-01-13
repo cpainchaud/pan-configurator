@@ -62,7 +62,7 @@ $actionsData = Array();
 $actionsData['rule'] = generateActionJSON(RuleCallContext::$supportedActions);
 $actionsData['address'] = generateActionJSON(AddressCallContext::$supportedActions);
 $actionsData['service'] = generateActionJSON(ServiceCallContext::$supportedActions);
-
+$actionsData['tag'] = generateActionJSON(TagCallContext::$supportedActions);
 
 function &generateFilterJSON($actions)
 {
@@ -96,7 +96,7 @@ $filtersData = Array();
 $filtersData['rule'] = generateFilterJSON(RQuery::$defaultFilters['rule']);
 $filtersData['address'] = generateFilterJSON(RQuery::$defaultFilters['address']);
 $filtersData['service'] = generateFilterJSON(RQuery::$defaultFilters['service']);
-
+$filtersData['tag'] = generateFilterJSON(RQuery::$defaultFilters['tag']);
 
 
 $data = Array('actions' => &$actionsData, 'filters' => &$filtersData );
