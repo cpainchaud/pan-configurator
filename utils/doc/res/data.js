@@ -68,16 +68,18 @@ var data = {
             },
             {
                 "name": "cloneForAppOverride",
-                "help": null,
+                "help": "This&nbspaction&nbspwill&nbsptake&nbspa&nbspSecurity&nbsprule&nbspand&nbspclone&nbspit&nbspas&nbspan&nbspApp-Override&nbsprule.&nbspBy&nbspdefault&nbspall&nbspservices&nbspspecified&nbspin&nbspthe&nbsprule&nbspwill&nbspalso&nbspbe&nbspin&nbspthe&nbspAppOverride&nbsprule.",
                 "args": [
                     {
                         "type": "string",
                         "default": "*nodefault*",
+                        "help": "specify the application to put in the resulting App-Override rule",
                         "name": "applicationName"
                     },
                     {
                         "type": "string",
                         "default": "*sameAsInRule*",
+                        "help": "you can limit which services will be included in the AppOverride rule by providing a #-separated list or a subquery prefixed with a @:\n  - svc1#svc2#svc3... : #-separated list\n  - @subquery1 : script will look for subquery1 filter which you have to provide as an additional argument to the script (ie: 'subquery1=(name eq tcp-50-web)')",
                         "name": "restrictToListOfServices"
                     }
                 ]
@@ -224,6 +226,12 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "filename"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*NONE*",
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - resolveAddressSummary : fields with address objects will be resolved and summarized in a new column)\n",
+                        "name": "additionalFields"
                     }
                 ]
             },
@@ -358,6 +366,11 @@ var data = {
                 "args": false
             },
             {
+                "name": "logSetting-disable",
+                "help": "Remove&nbsplog&nbspsetting\/forwarding&nbspprofile&nbspof&nbspa&nbspSecurity&nbsprule&nbspif&nbspany.",
+                "args": false
+            },
+            {
                 "name": "logSetting-set",
                 "help": "Sets&nbsplog&nbspsetting\/forwarding&nbspprofile&nbspof&nbspa&nbspSecurity&nbsprule&nbspto&nbspthe&nbspvalue&nbspspecified.",
                 "args": [
@@ -429,6 +442,60 @@ var data = {
                         "name": "text"
                     }
                 ]
+            },
+            {
+                "name": "name-removePrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removeSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "position-Move-After",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "rulename"
+                    }
+                ]
+            },
+            {
+                "name": "position-Move-Before",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "rulename"
+                    }
+                ]
+            },
+            {
+                "name": "position-Move-to-Bottom",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "position-Move-to-Top",
+                "help": null,
+                "args": false
             },
             {
                 "name": "ruleType-Change",
@@ -808,6 +875,12 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "filename"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*NONE*",
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n",
+                        "name": "additionalFields"
                     }
                 ]
             },
@@ -883,7 +956,7 @@ var data = {
                     {
                         "type": "string",
                         "default": "*nodefault*",
-                        "help": "This string is used to compose a name. You can use the following aliases :\n  - \\$$current.name\\$\\$ : current name of the object\n  - \\$$value\\$\\$ : value of the object\n  - \\$$value.no-netmask\\$\\$ : value truncated of netmask if any\n  - \\$$netmask\\$\\$ : netmask\n  - \\$$netmask.blank32\\$\\$ : netmask or nothing if 32\n",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - \\$$current.name\\$\\$ : current name of the object\n  - \\$$netmask\\$\\$ : netmask\n  - \\$$netmask.blank32\\$\\$ : netmask or nothing if 32\n  - \\$$reverse-dns\\$\\$ : value truncated of netmask if any\n  - \\$$value\\$\\$ : value of the object\n  - \\$$value.no-netmask\\$\\$ : value truncated of netmask if any\n",
                         "name": "stringFormula"
                     }
                 ]
@@ -931,6 +1004,55 @@ var data = {
                 "args": false
             },
             {
+                "name": "tag-Add",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "tagName"
+                    }
+                ]
+            },
+            {
+                "name": "tag-Add-Force",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "tagName"
+                    }
+                ]
+            },
+            {
+                "name": "tag-Remove",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "tagName"
+                    }
+                ]
+            },
+            {
+                "name": "tag-Remove-All",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "tag-Remove-Regex",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "regex"
+                    }
+                ]
+            },
+            {
                 "name": "z_BETA_summarize",
                 "help": null,
                 "args": false
@@ -976,6 +1098,12 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "filename"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*NONE*",
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n",
+                        "name": "additionalFields"
                     }
                 ]
             },
@@ -1331,6 +1459,10 @@ var data = {
                     },
                     {
                         "name": "is.disabled",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.dsri",
                         "argument": null
                     },
                     {
@@ -1830,7 +1962,15 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.tcp",
+                        "argument": null
+                    },
+                    {
                         "name": "is.tmp",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.udp",
                         "argument": null
                     },
                     {
