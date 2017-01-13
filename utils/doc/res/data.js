@@ -1082,5 +1082,791 @@ var data = {
                 ]
             }
         ]
+    },
+    "filters": {
+        "rule": [
+            {
+                "name": "action",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.allow",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.deny",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.negative",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "app",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.nocase",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.any",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "description",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.empty",
+                        "argument": null
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "dnathost",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "dst",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.from.query",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.only",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.recursive",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.recursive.from.query",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.recursive.regex",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full.or.partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full.or.partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.any",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.negated",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "dst-interface",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.set",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "from",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.only",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.any",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "from.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "log",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "at.end",
+                        "argument": null
+                    },
+                    {
+                        "name": "at.start",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "logprof",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.set",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "rule",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has.destination.nat",
+                        "argument": null
+                    },
+                    {
+                        "name": "has.source.nat",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.bidir.nat",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.disabled",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.interzone",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.intrazone",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.postrule",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.prerule",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.universal",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused.fast",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "secprof",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "as-profile.is",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "av-profile.is",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "group.is",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.group",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.profile",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.set",
+                        "argument": null
+                    },
+                    {
+                        "name": "not.set",
+                        "argument": null
+                    },
+                    {
+                        "name": "url-profile.is",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "vuln-profile.is",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "wf-profile.is",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "service",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.any",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.application-default",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "snat",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.dynamic-ip",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.dynamic-ip-and-port",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.static",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "snathost",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "src",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.from.query",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.only",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.recursive",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.recursive.from.query",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.recursive.regex",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full.or.partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full.or.partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.any",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.negated",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "tag",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.nocase",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "tag.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "target",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.any",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "to",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.only",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.any",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "to.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "user",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.any",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.known",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.prelogon",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unknown",
+                        "argument": null
+                    }
+                ]
+            }
+        ],
+        "address": [
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "members.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "netmask",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "object",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.fqdn",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.group",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.ip-netmask",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.ip-range",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.tmp",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused.recursive",
+                        "argument": null
+                    },
+                    {
+                        "name": "overriden.at.lower.level",
+                        "argument": null
+                    },
+                    {
+                        "name": "overrides.upper.level",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "refcount",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "tag",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.nocase",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "tag.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "value",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "ip4.included-in",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "ip4.includes-full",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "ip4.includes-full-or-partial",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "ip4.match.exact",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "string.eq",
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "service": [
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "members.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "object",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.group",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.tmp",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused.recursive",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "refcount",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "tag",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.nocase",
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ]
     }
 };
