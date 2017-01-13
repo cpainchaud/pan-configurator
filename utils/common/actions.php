@@ -198,6 +198,7 @@ class RuleCallContext extends CallContext
         {
             $tmpArgs[strtolower($arg['name'])] = $arg;
         }
+        ksort($tmpArgs);
         self::$supportedActions = $tmpArgs;
     }
 
@@ -658,6 +659,7 @@ class ServiceCallContext extends CallContext
         {
             $tmpArgs[strtolower($arg['name'])] = $arg;
         }
+        ksort($tmpArgs);
         self::$supportedActions = $tmpArgs;
     }
 
@@ -683,6 +685,7 @@ class AddressCallContext extends CallContext
         {
             $tmpArgs[strtolower($arg['name'])] = $arg;
         }
+        ksort($tmpArgs);
         self::$supportedActions = $tmpArgs;
     }
 }

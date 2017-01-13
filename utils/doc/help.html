@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>PAN-C Utilities Helper</title>
+<script src="res/jquery.min.js"></script>
+<link href="http://getbootstrap.com/dist/css/bootstrap.css" rel="stylesheet" type="text/css" />
+<script src="http://getbootstrap.com/dist/js/bootstrap.js"></script>
+<script type="text/javascript" src="res/utils.js"></script>
+<style>
+
+ body {
+    overflow-x:hidden;
+ }
+ nav {
+    margin-top:10px;
+ }
+ nav,.content {
+   margin-left:10px;
+ }
+ .table {
+    margin-left:10px;
+    width: 98%;
+    word-wrap: break-word;
+
+ }
+ 
+ .content {
+    display:none;
+ }
+ .table tbody td {
+   word-wrap: break-word; 
+ }
+  .action-arguments span{
+     white-space:nowrap;
+  }
+ .action-choices {
+	white-space:nowrap;
+ }
+ 
+ .action-name, .filter-name, .action-arg-type {
+ }
+
+
+ form {
+	margin:10px 0 10px 0;
+ }
+
+ .expander {
+   cursor:pointer;
+ }
+</style>
+</head>
+<body>
+<nav>
+ <ul class="nav nav-pills">
+  <li class="active"><a class="menu-btn"  data-key="actions" href="#">Actions</a></li>
+  <li><a href="#" data-key="arguments" class="menu-btn">Arguments</a></li>
+  <li><a href="#" data-key="filters" class="menu-btn">Filters</a></li>
+</ul>
+</nav>
+<div id="actions" class="content">
+	<form class="form-inline">
+		<div class="form-group">
+			  <label for="actions-select">Select</label>
+		<select id="actions-select" name="actions-select" class="form-control">
+
+		</select>
+		</div>
+	</form>
+
+	<table id="action-table" class="table table table-striped">
+		<thead>
+		<tr>
+			<th>name</th>
+			<th>Arguments</th>
+			<th>Arg. Type</th>
+			<th>Default Value</th>
+			<th>Choices</th>
+			<th>Description</th>
+		</tr>
+		</thead>
+		<tbody id="action-table-content">
+
+		</tbody>
+	</table>
+</div>
+<div id="filters" class="content">
+	<form class="form-inline">
+		<div class="form-group">
+			  <label for="filters-select">Select</label>
+		<select id="filters-select" name="filters-select" class="form-control">
+
+		</select>
+		</div>
+	</form>
+
+	<table id="filter-table" class="table table table-striped">
+		<thead>
+		<tr>
+			<th>Name</th>
+			<th>Operator</th>
+			<th>Description</th>
+		</tr>
+		</thead>
+		<tbody id="filter-table-content">
+
+		</tbody>
+	</table>
+</div>
+<div id="arguments" class="content">
+	
+</div>
+    <script type="text/javascript" src="res/data.js"></script>
+    <script type="text/javascript" src="res/action.js"></script>
+    <script type="text/javascript" src="res/filter.js"></script>
+    <script type="text/javascript">
+		$('.menu-btn').on('click', function() {
+			$('.nav li').removeClass('active');
+			var selected = $(this).data('key');
+			$(this).parent('li').addClass('active');
+			if(selected == 'actions') {
+				displayActionWindow();
+			} else if  (selected == 'filters') {
+				displayFilterWindow();
+			}
+			$('.content').hide();
+			$('#' + selected).show();
+		});
+		displayActionWindow();
+		$('#actions').show();
+    </script>
+
+</body>
+</html>
