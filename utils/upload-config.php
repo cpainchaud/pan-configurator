@@ -26,10 +26,10 @@ require_once("lib/panconfigurator.php");
 
 function display_usage_and_exit($shortMessage = false)
 {
-    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=file.xml|api://... out=file.xml|api://... [more arguments]".
-        "actions=action1:arg1 ['filter=(type is.group) or (name contains datacenter-)']\n";
-    print "php ".basename(__FILE__)." help          : more help messages\n";
+    print PH::boldText("USAGE: ")."php ".basename(__FILE__)." in=file.xml|api://... out=file.xml|api://... [more arguments]\n";
+
     print PH::boldText("\nExamples:\n");
+    print " - php ".basename(__FILE__)." help          : more help messages\n";
     print " - php ".basename(__FILE__)." in=api://192.169.50.10/running-config out=local.xml'\n";
     print " - php ".basename(__FILE__)." in=local.xml out=api://192.169.50.10 preserveMgmtsystem injectUserAdmin2\n";
     print " - php ".basename(__FILE__)." in=local.xml out=api://192.169.50.10 toXpath=/config/shared/address\n";
