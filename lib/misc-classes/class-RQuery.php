@@ -2403,6 +2403,30 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full-or-p
     },
     'arg' => true
 );
+RQuery::$defaultFilters['address']['description']['operators']['regex'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( strlen($value) > 0 && $value[0] == '%')
+        {
+            $value = substr($value, 1);
+            if( !isset($context->nestedQueries[$value]) )
+                derr("regular expression filter makes reference to unknown string alias '{$value}'");
+
+            $value = $context->nestedQueries[$value];
+        }
+
+        $matching = preg_match($value, $object->description());
+        if( $matching === FALSE )
+            derr("regular expression error on '{$value}'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true
+);
 
 // </editor-fold>
 
@@ -2590,6 +2614,30 @@ RQuery::$defaultFilters['service']['tag']['operators']['has.nocase'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
         return $context->object->tags->hasTag($context->value, false) === true;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['service']['description']['operators']['regex'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( strlen($value) > 0 && $value[0] == '%')
+        {
+            $value = substr($value, 1);
+            if( !isset($context->nestedQueries[$value]) )
+                derr("regular expression filter makes reference to unknown string alias '{$value}'");
+
+            $value = $context->nestedQueries[$value];
+        }
+
+        $matching = preg_match($value, $object->description());
+        if( $matching === FALSE )
+            derr("regular expression error on '{$value}'");
+        if( $matching === 1 )
+            return true;
+        return false;
     },
     'arg' => true
 );

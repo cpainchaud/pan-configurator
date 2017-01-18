@@ -6,6 +6,8 @@ CHANGELOG
 utils:
 rules-edit: action 'exportToExcel' new fields 'dst_negated' and 'src_negated' to show when some fields are negated
 rules-edit: new action  'name-removePrefix' 'name-removeSuffix'
+address-edit: new filter 'description regex'
+service-edit: new filter 'description regex'
 
 bugfix:
 - help message was not available in override-finder.php
