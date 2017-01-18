@@ -2404,7 +2404,7 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full-or-p
     'arg' => true
 );
 RQuery::$defaultFilters['address']['description']['operators']['regex'] = Array(
-    'Function' => function(ServiceRQueryContext $context )
+    'Function' => function(AddressRQueryContext $context )
     {
         $object = $context->object;
         $value = $context->value;
