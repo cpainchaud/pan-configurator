@@ -187,7 +187,7 @@ if( isset(PH::$args['listactions']) )
 {
     ksort(RuleCallContext::$supportedActions);
 
-    print "Listing of supported actions:\n\n";
+    print "Listing of supported actions (".count(RuleCallContext::$supportedActions)." available):\n\n";
 
     print str_pad('', 100, '-')."\n";
     print str_pad('Action name', 28, ' ', STR_PAD_BOTH)."|".str_pad("Argument:Type",24, ' ', STR_PAD_BOTH)." |".
@@ -236,7 +236,13 @@ if( isset(PH::$args['listfilters']) )
 {
     ksort(RQuery::$defaultFilters['rule']);
 
-    print "Listing of supported filters:\n\n";
+    $countItems = 0;
+    foreach(RQuery::$defaultFilters['rule'] as $index => &$filter )
+    {
+        $countItems += count($filter['operators']);
+    }
+
+    print "Listing of supported filters ({$countItems} available):\n\n";
 
     foreach(RQuery::$defaultFilters['rule'] as $index => &$filter )
     {

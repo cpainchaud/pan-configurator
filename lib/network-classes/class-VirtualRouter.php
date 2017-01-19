@@ -251,7 +251,7 @@ class VirtualRouter
             }
             else
             {
-                mwarning("route {$route->name()}/{$route->destination()} ignored because of unknown type '{$nextHopType}'");
+                mwarning("route {$route->name()}/{$route->destination()} ignored because of unknown type '{$route->nexthopType()}'");
                 continue;
             }
         }
