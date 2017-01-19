@@ -259,22 +259,22 @@ class VirtualRouter
             }
             else if( $route->nexthopType() == 'next-vr' )
             {
-                continue;
-                $nextvr = $route->nexthopVR();
-                if( $nextvr === null  )
+
+                $nextVR = $route->nexthopVR();
+                if( $nextVR === null  )
                 {
                     mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR is blank or invalid '", $route->xmlroot);
                     continue;
                 }
-                $nextvrObject = $this->owner->findVirtualRouter($nextvr);
+                $nextvrObject = $this->owner->findVirtualRouter($nextVR);
                 if( $nextvrObject === null  )
                 {
-                    mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR '{$nextvr}' was not found");
+                    mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR '{$nextVR}' was not found");
                     continue;
                 }
 
                 // prevent routes looping
-                if( isset($loopFilter[$nextvr]) && isset($loopFilter[$nextvr][$contextVSYS->name()]) )
+                if( isset($loopFilter[$nextVR]) && isset($loopFilter[$nextVR][$contextVSYS->name()]) )
                     continue;
 
                 $obj = $nextvrObject->getIPtoZoneRouteMapping($contextVSYS, $orderByNarrowest, $loopFilter);
