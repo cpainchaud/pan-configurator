@@ -30,6 +30,9 @@ class StaticRoute
 
     protected $_nexthopIP = null;
 
+    /** @var null|string  */
+    protected $_nexthopVR = null;
+
     /** @var VirtualRouter */
     public $owner;
 
@@ -76,7 +79,16 @@ class StaticRoute
             {
                 $this->_nexthopType = 'ip-address';
                 $this->_nexthopIP = $fhTypeNode->textContent;
+                return;
             }
+            $fhTypeNode = DH::findFirstElement('next-vr', $fhNode);
+            if( $fhTypeNode !== false )
+            {
+                $this->_nexthopType = 'next-vr';
+                $this->_nexthopVR = $fhTypeNode->textContent;
+                return;
+            }
+
         }
     }
 
@@ -99,6 +111,14 @@ class StaticRoute
     public function nexthopIP()
     {
         return $this->_nexthopIP;
+    }
+
+    /**
+     * @return null|string
+     */
+    public function nexthopVR()
+    {
+        return $this->_nexthopVR;
     }
 
     public function nexthopInterface()

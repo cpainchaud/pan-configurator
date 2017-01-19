@@ -102,12 +102,20 @@ class VirtualRouter
      * @param $orderByNarrowest bool
      * @return array
      */
-    public function getIPtoZoneRouteMapping($contextVSYS, $orderByNarrowest=true )
+    public function getIPtoZoneRouteMapping($contextVSYS, $orderByNarrowest=true, $loopFilter = null )
     {
         $ipv4 = Array();
         $ipv6 = Array();
 
         $ipv4sort = Array();
+
+        if( $loopFilter === null )
+        {
+            $loopFilter = Array();
+        }
+
+        $loopFilter[$this->name()][$contextVSYS->name()] = true;
+
 
         foreach( $this->attachedInterfaces->interfaces() as $if )
         {
@@ -248,6 +256,52 @@ class VirtualRouter
                 $record = Array( 'network' => $route->destination(), 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'static', 'priority' => 2);
                 $ipv4sort[ $record['end']-$record['start'] ][$record['start']][] = &$record;
                 unset($record);
+            }
+            else if( $route->nexthopType() == 'next-vr' )
+            {
+                continue;
+                $nextvr = $route->nexthopVR();
+                if( $nextvr === null  )
+                {
+                    mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR is blank or invalid '", $route->xmlroot);
+                    continue;
+                }
+                $nextvrObject = $this->owner->findVirtualRouter($nextvr);
+                if( $nextvrObject === null  )
+                {
+                    mwarning("route {$route->name()}/{$route->destination()} ignored because nextVR '{$nextvr}' was not found");
+                    continue;
+                }
+
+                // prevent routes looping
+                if( isset($loopFilter[$nextvr]) && isset($loopFilter[$nextvr][$contextVSYS->name()]) )
+                    continue;
+
+                $obj = $nextvrObject->getIPtoZoneRouteMapping($contextVSYS, $orderByNarrowest, $loopFilter);
+                $currentRouteRemains = IP4Map::mapFromText($route->destination());
+
+                foreach( $obj['ipv4'] as &$v4recordFromOtherVr )
+                {
+                    $intersection = $currentRouteRemains->intersection( IP4Map::mapFromText( long2ip($v4recordFromOtherVr['start']).'-'.long2ip($v4recordFromOtherVr['end'])) );
+                    $foundMatches = $currentRouteRemains->substractSingleIP4Entry($v4recordFromOtherVr);
+                    if( $intersection->count() > 0 )
+                    {
+                        foreach( $intersection->getMapArray() as $mapEntry )
+                        {
+                            $record = Array( 'network' => long2ip($mapEntry['start']).'-'.long2ip($mapEntry['end']),
+                                                'start' => $mapEntry['start'],
+                                                'end' => $mapEntry['end'],
+                                                'zone' => $v4recordFromOtherVr['zone'],
+                                                'origin' => 'static',
+                                                'priority' => 2 );
+                            $ipv4sort[ $record['end']-$record['start'] ][$record['start']][] = &$record;
+                            unset($record);
+                        }
+                    }
+
+                    if( $currentRouteRemains->count() == 0 )
+                        break;
+                }
             }
             else
             {
