@@ -1382,14 +1382,14 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['is.set'] = Array(
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.profile'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->securityProfileType() == "profile";
+        return !$context->object->securityProfileIsBlank() && $context->object->securityProfileType() == "profile";
     },
     'arg' => false
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.group'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->securityProfileType() == "group";
+        return !$context->object->securityProfileIsBlank() && $context->object->securityProfileType() == "group";
     },
     'arg' => false
 );
