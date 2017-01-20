@@ -353,7 +353,7 @@ class SecurityRule extends RuleWithUserID
 
         }
 
-        return false;
+        return true;
 
     }
 
