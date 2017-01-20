@@ -311,7 +311,7 @@ class SecurityRule extends RuleWithUserID
 				//print "Group name: ".$this->secprofgroup."\n";
 			}
 		}
-		else if( $profilesRoot !== FALSE )
+		elseif( $profilesRoot !== FALSE )
 		{
 			//print "Found SecProf <profiles> tag\n";
 			$this->secproftype = 'profile';
