@@ -343,14 +343,15 @@ class SecurityRule extends RuleWithUserID
         if( $this->secproftype == 'none' )
             return true;
 
-        if( $this->secproftype == 'group' )
+        if( $this->secproftype == 'group' && $this->secprofgroup !== null )
             return false;
 
-        if( !is_array($this->secprofProfiles) )
-            return true;
+        if( $this->secproftype == 'profile')
+        {
+            if( is_array($this->secprofProfiles) && count($this->secprofProfiles) > 0 )
+                return true;
 
-        if( count($this->secprofProfiles) < 1 )
-            return true;
+        }
 
         return false;
 
