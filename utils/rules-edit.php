@@ -861,7 +861,7 @@ if( isset(PH::$args['stats']) )
     }
 }
 
-print "\n **** PROCESSING OF $totalObjectsProcessed OBJECTS PROCESSED over {$totalObjectsOfSelectedStores} available **** \n\n";
+print "\n **** PROCESSED $totalObjectsProcessed objects over {$totalObjectsOfSelectedStores} available **** \n\n";
 
 // save our work !!!
 if( $configOutput !== null )
