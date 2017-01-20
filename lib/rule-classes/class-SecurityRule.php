@@ -349,7 +349,7 @@ class SecurityRule extends RuleWithUserID
         if( $this->secproftype == 'profile')
         {
             if( is_array($this->secprofProfiles) && count($this->secprofProfiles) > 0 )
-                return true;
+                return false;
 
         }
 
