@@ -91,30 +91,11 @@ if( isset(PH::$args['test']) )
     $noArgProvided = false;
     $checkHost = PH::$args['test'];
 
-    if( $checkHost == 'all' )
-    {
-        $connectorList = Array();
-        foreach(PanAPIConnector::$savedConnectors as $connector)
-        {
-            $checkHost = $connector->apihost;
+    echo " - requested to test Host/IP '{$checkHost}'\n";
+    $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost );
 
-            echo " - requested to test Host/IP '{$checkHost}'\n";
-            #TODO: skip not reachable host
-            $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost );
-
-            $connector->testConnectivity();
-            print "\n";
-        }
-    }
-    else
-    {
-        echo " - requested to test Host/IP '{$checkHost}'\n";
-        $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost );
-
-        $connector->testConnectivity();
-        print "\n";
-    }
-
+    $connector->testConnectivity();
+    print "\n";
 }
 
 
