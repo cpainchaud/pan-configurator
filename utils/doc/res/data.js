@@ -1209,6 +1209,87 @@ var data = {
                     }
                 ]
             }
+        ],
+        "tag": [
+            {
+                "name": "delete",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "deleteForce",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "display",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "displayReferences",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-addPrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-addSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removePrefix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "prefix"
+                    }
+                ]
+            },
+            {
+                "name": "name-removeSuffix",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-toLowerCase",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-toUCWords",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "name-toUpperCase",
+                "help": null,
+                "args": false
+            }
         ]
     },
     "filters": {
@@ -1748,6 +1829,16 @@ var data = {
         ],
         "address": [
             {
+                "name": "description",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "location",
                 "help": null,
                 "operators": [
@@ -1908,6 +1999,16 @@ var data = {
         ],
         "service": [
             {
+                "name": "description",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "location",
                 "help": null,
                 "operators": [
@@ -2003,6 +2104,68 @@ var data = {
                     },
                     {
                         "name": "has.nocase",
+                        "argument": "*required*"
+                    }
+                ]
+            }
+        ],
+        "tag": [
+            {
+                "name": "location",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "name",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "contains",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "eq.nocase",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.in.file",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "object",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.tmp",
+                        "argument": null
+                    },
+                    {
+                        "name": "is.unused",
+                        "argument": null
+                    }
+                ]
+            },
+            {
+                "name": "refcount",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
                         "argument": "*required*"
                     }
                 ]
