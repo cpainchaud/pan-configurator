@@ -68,6 +68,8 @@ class PanAPIConnector
     public $info_multiVSYS = null;
     /** @var null|string $info_serial product serial number. ie: "00C734556" */
     public $info_serial = null;
+    /** @var null|string $info_hostname device hostname. ie: "PA-200" */
+    public $info_hostname = null;
     /** @var string $info_model can be unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060|PA..... */
     public $info_model = 'unknown';
     /** @var string $info_vmlicense can be unknown|VM-100|VM-200|VM-300|VM-1000 */
@@ -89,6 +91,7 @@ class PanAPIConnector
             $this->info_PANOS_version_int = null;
             $this->info_multiVSYS = null;
             $this->info_serial = null;
+            $this->info_hostname = null;
             $this->info_vmlicense = null;
         }
 
@@ -116,6 +119,11 @@ class PanAPIConnector
         if( $serial === FALSE )
             derr("cannot find <serial>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
         $this->info_serial = $serial->textContent;
+
+        $hostname = DH::findFirstElement('hostname', $res);
+        if( $hostname === FALSE )
+            derr("cannot find <hostname>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+        $this->info_hostname = $hostname->textContent;
 
         $model = DH::findFirstElement('model', $res);
         if( $model === FALSE )
