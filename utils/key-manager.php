@@ -29,9 +29,11 @@ require_once(dirname(__FILE__).'/common/misc.php');
 
 $supportedArguments = Array();
 $supportedArguments[] = Array('niceName' => 'delete', 'shortHelp' => 'Clears API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');
+$supportedArguments[] = Array('niceName' => 'add', 'shortHelp' => 'Adds API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');
+$supportedArguments[] = Array('niceName' => 'test', 'shortHelp' => 'Tests API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');
 $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
-$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." [delete=hostOrIP]";
+$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." [delete=hostOrIP] [add=hostOrIP] [test=hostOrIP]";
 
 prepareSupportedArgumentsArray($supportedArguments);
 PH::processCliArgs();
@@ -75,6 +77,28 @@ if( isset(PH::$args['delete']) )
     if( !$foundConnector )
         echo "\n\n **WARNING** no host or IP named '{$deleteHost}' was found so it could not be deleted\n\n";
 }
+
+if( isset(PH::$args['add']) )
+{
+    $noArgProvided = false;
+    $addHost = PH::$args['add'];
+    echo " - requested to add Host/IP '{$addHost}'\n";
+    PanAPIConnector::findOrCreateConnectorFromHost( $addHost );
+}
+
+if( isset(PH::$args['test']) )
+{
+    $noArgProvided = false;
+    $checkHost = PH::$args['test'];
+
+    echo " - requested to test Host/IP '{$checkHost}'\n";
+    $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost );
+
+    $connector->testConnectivity();
+    print "\n";
+}
+
+
 
 $keyCount = count(PanAPIConnector::$savedConnectors);
 echo "Listing available keys:\n";
