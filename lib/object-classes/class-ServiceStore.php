@@ -74,17 +74,33 @@ class ServiceStore
 	{
 		$this->serviceRoot = $xml;
 
+        $duplicatesRemoval = Array();
+
 		foreach( $this->serviceRoot->childNodes as $node )
 		{
-			if( $node->nodeType != 1 ) continue;
+            /** @var DOMElement $node */
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
 			$ns = new Service('',$this);
 			$ns->load_from_domxml($node);
-			//print $this->toString()." : new service '".$ns->name."' created\n";
-			$this->_serviceObjects[] = $ns;
-			$this->all[] = $ns;
-			$this->add_Obj_inIndex( $ns, lastIndex($this->all));
+			if( isset($this->fast[$ns->name()]) )
+            {
+                mwarning("service named '{$ns->name()}' already exists and was ignored, check your XML configuration", $node);
+                if( PH::$enableXmlDuplicatesDeletion )
+                    $duplicatesRemoval[] = $node;
+
+                continue;
+            }
+
+            $this->_serviceObjects[] = $ns;
+            $this->all[] = $ns;
+            $this->add_Obj_inIndex($ns, lastIndex($this->all));
 		}
+
+        foreach( $duplicatesRemoval as $node )
+        {
+            $node->parentNode->removeChild($node);
+        }
 
 		
 		$this->regen_Indexes();
@@ -139,6 +155,7 @@ class ServiceStore
 	public function load_servicegroups_from_domxml($xml)
 	{
 		$this->serviceGroupRoot = $xml;
+        $duplicatesRemoval = Array();
 		
 		foreach( $xml->childNodes as $node )
 		{
@@ -146,6 +163,15 @@ class ServiceStore
 
 			$ns = new ServiceGroup('',$this);
 			$ns->load_from_domxml($node);
+
+            if( isset($this->fast[$ns->name()]) )
+            {
+                mwarning("service named '{$ns->name()}' already exists and was ignored, check your XML configuration", $node);
+                if( PH::$enableXmlDuplicatesDeletion )
+                    $duplicatesRemoval[] = $node;
+
+                continue;
+            }
 			
 			$f = $this->findTmpService($ns->name());
 			if( $f )
@@ -157,6 +183,11 @@ class ServiceStore
 			$this->all[] = $ns; 
 			$this->add_Obj_inIndex($ns, lastIndex($this->all));
 		}
+
+        foreach( $duplicatesRemoval as $node )
+        {
+            $node->parentNode->removeChild($node);
+        }
 		
 		$this->regen_Indexes();
 	}
@@ -598,6 +629,8 @@ class ServiceStore
 	protected function regen_Indexes()
 	{
 		unset($this->fastMemToIndex);
+		unset($this->fast);
+		$this->fast = Array();
 		$this->fastMemToIndex = Array();
 		
 		foreach($this->all as $i=>$rule)

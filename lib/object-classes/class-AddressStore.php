@@ -109,10 +109,13 @@ class AddressStore
 	public function load_addresses_from_domxml($xml)
 	{
         $this->addressRoot = $xml;
+
+        $duplicatesRemoval = Array();
 		
 		foreach( $this->addressRoot->childNodes as $node )
 		{
-			if( $node->nodeType != 1 ) continue;
+            /** @var DOMElement $node */
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
 			$ns = new Address('',$this);
 			$ns->load_from_domxml($node);
@@ -122,6 +125,8 @@ class AddressStore
 
             if( isset($this->_all[$objectName]) )
             {
+                if( PH::$enableXmlDuplicatesDeletion )
+                    $duplicatesRemoval[] = $node;
                 mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file", $node);
                 continue;
             }
@@ -129,6 +134,11 @@ class AddressStore
 			$this->_addressObjects[$objectName] = $ns;
 			$this->_all[$objectName] = $ns;
 		}
+
+		foreach( $duplicatesRemoval as $node )
+        {
+            $node->parentNode->removeChild($node);
+        }
 	}
 
 
@@ -173,6 +183,8 @@ class AddressStore
 	{
 		$this->addressGroupRoot = $xml;
 
+        $duplicatesRemoval = Array();
+
         foreach( $xml->childNodes as $node )
         {
             /** @var DOMElement $node */
@@ -193,6 +205,8 @@ class AddressStore
 
             if( isset($this->_all[$name]) )
             {
+                if( PH::$enableXmlDuplicatesDeletion )
+                    $duplicatesRemoval[] = $node;
                 mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node);
                 continue;
             }
@@ -200,6 +214,11 @@ class AddressStore
             $this->_addressGroups[$name] = $ns;
             $this->_all[$name] = $ns;
 
+        }
+
+        foreach( $duplicatesRemoval as $node )
+        {
+            $node->parentNode->removeChild($node);
         }
 		
 		foreach( $xml->childNodes as $node )

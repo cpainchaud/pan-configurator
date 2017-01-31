@@ -33,6 +33,8 @@ class PH
 
     public static $outputFormattingEnabled = true;
 
+    public static $enableXmlDuplicatesDeletion = false;
+
     public static $basedir;
 
     private static $library_version_major = 1;
@@ -400,6 +402,13 @@ foreach( $argv as $argIndex => &$arg )
     if( $arg == 'shadow-disableoutputformatting')
     {
         PH::disableOutputFormatting();
+        unset($argv[$argIndex]);
+        $argc--;
+        continue;
+    }
+    elseif( $arg == 'shadow-enablexmlduplicatesdeletion' )
+    {
+        PH::$enableXmlDuplicatesDeletion = true;
         unset($argv[$argIndex]);
         $argc--;
         continue;

@@ -128,6 +128,9 @@ class RuleStore
 	public function load_from_domxml($xml , $xmlPost=null)
 	{
 		global $PANC_DEBUG;
+
+        $duplicatesRemoval = Array();
+        $nameIndex = Array();
 		
 		if( $xml !== null )
         {
@@ -145,6 +148,17 @@ class RuleStore
                 /** @var SecurityRule|NatRule|DecryptionRule|Rule $nr */
                 $nr = new $this->type($this);
                 $nr->load_from_domxml($node);
+                if( PH::$enableXmlDuplicatesDeletion )
+                {
+                    if( isset($nameIndex[$nr->name()]) )
+                    {
+                        mwarning("rule named '{$nr->name()}' is present twice on the config and was cleaned by PAN-C");
+                        $duplicatesRemoval[] = $node;
+                        continue;
+                    }
+                }
+
+                $nameIndex[$nr->name()] = TRUE;
                 $this->_rules[] = $nr;
             }
         }
@@ -165,9 +179,25 @@ class RuleStore
                 }
 				$nr = new $this->type($this);
 				$nr->load_from_domxml($node);
-				$this->_postRules[] = $nr;
+                if( PH::$enableXmlDuplicatesDeletion )
+                {
+                    if( isset($nameIndex[$nr->name()]) )
+                    {
+                        mwarning("rule named '{$nr->name()}' is present twice on the config and was cleaned by PAN-C");
+                        $duplicatesRemoval[] = $node;
+                        continue;
+                    }
+                }
+
+                $nameIndex[$nr->name()] = TRUE;
+                $this->_postRules[] = $nr;
 			}
 		}
+
+        foreach( $duplicatesRemoval as $node )
+        {
+            $node->parentNode->removeChild($node);
+        }
 
 		$this->regen_Indexes();
 	}
