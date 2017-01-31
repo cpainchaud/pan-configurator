@@ -75,4 +75,10 @@ trait PathableName
 
         return $str;
     }
+
+    public function getLocationString()
+    {
+        $obj = PH::findLocationObjectOrDie($this);
+        return PH::getLocationString($obj);
+    }
 }
