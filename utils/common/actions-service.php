@@ -115,6 +115,11 @@ ServiceCallContext::$supportedActions[] = Array(
         foreach ($objectRefs as $objectRef)
         {
             print $context->padding." * replacing in {$objectRef->toString()}\n";
+            if( $objectRef === $foundObject)
+            {
+                print $context->padding."   - SKIPPED : cannot replace an object by itself\n";
+                continue;
+            }
             if( $context->isAPI )
                 $objectRef->API_replaceReferencedObject($object, $foundObject);
             else
