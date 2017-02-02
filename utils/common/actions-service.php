@@ -115,7 +115,7 @@ ServiceCallContext::$supportedActions[] = Array(
         foreach ($objectRefs as $objectRef)
         {
             print $context->padding." * replacing in {$objectRef->toString()}\n";
-            if( $objectRef === $foundObject)
+            if( $objectRef === $foundObject || $objectRef->name() == $foundObject->name() )
             {
                 print $context->padding."   - SKIPPED : cannot replace an object by itself\n";
                 continue;
