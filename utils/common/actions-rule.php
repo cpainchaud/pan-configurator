@@ -1232,6 +1232,24 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'app-Add-Force',
+    'section' => 'app',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        #$objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
+        $objectFind = $rule->apps->parentCentralStore->findorCreate($context->arguments['appName']);
+        if( $objectFind === null )
+            derr("application named '{$context->arguments['appName']}' not found");
+
+        if( $context->isAPI )
+            $rule->apps->API_addApp($objectFind);
+        else
+            $rule->apps->addApp($objectFind);
+    },
+    'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Remove',
     'section' => 'app',
     'MainFunction' => function(RuleCallContext $context)

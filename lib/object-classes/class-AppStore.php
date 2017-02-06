@@ -65,6 +65,23 @@ class AppStore extends ObjStore
 		return $this->findByName($name,$ref);
 	}
 
+    /**
+     * @param $name string
+     * @param $ref
+     * @return null|App
+     */
+    public function findorCreate($name, $ref=null)
+    {
+        $f = $this->findByName($name,$ref);
+
+        if( $f !== null )
+            return $f;
+
+        $f = $this->createTmp($name, $ref);
+
+        return $f;
+    }
+
 
 	/**
 	* return an array with all Apps in this store
