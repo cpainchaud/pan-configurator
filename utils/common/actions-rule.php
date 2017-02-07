@@ -1237,7 +1237,6 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
-        #$objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
         $objectFind = $rule->apps->parentCentralStore->findorCreate($context->arguments['appName']);
         if( $objectFind === null )
             derr("application named '{$context->arguments['appName']}' not found");
