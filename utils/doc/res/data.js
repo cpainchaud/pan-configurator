@@ -13,6 +13,17 @@ var data = {
                 ]
             },
             {
+                "name": "app-Add-Force",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "appName"
+                    }
+                ]
+            },
+            {
                 "name": "app-Remove",
                 "help": null,
                 "args": [
