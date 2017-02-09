@@ -7,6 +7,7 @@ CHANGELOG
 utils:
 rules-edit: action 'exportToExcel' new fields 'dst_negated' and 'src_negated' to show when some fields are negated
 rules-edit: new action  'name-removePrefix' 'name-removeSuffix' 'app-add-force'
+rules-edit: action 'from/to-calculate-zones' add new mode 'unneeded-tag-add' to add rule tag (unneeded-from/to-zone) where unneeded zones are available
 address-edit: new filter 'description regex'
 service-edit: new filter 'description regex'
 
