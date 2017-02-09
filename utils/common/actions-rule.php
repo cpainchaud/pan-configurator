@@ -213,7 +213,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
 
         if( $addressContainer->isAny() )
         {
-            print $context->padding." - SKIPPED : address continaer is ANY()\n";
+            print $context->padding." - SKIPPED : address container is ANY()\n";
             return;
         }
 
