@@ -366,12 +366,41 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                     $zoneContainer->API_sync();
             }
         }
+        elseif( $mode == 'unneeded-tag-add' )
+        {
+            print $context->padding." - UNNEEDED-TAG-ADD MODE: adding rule tag for unneeded zones.";
+
+            if( $addressContainer->isAny() )
+                print " *** IGNORED because value is 'ANY' ***\n";
+            elseif(count($plus) == 0)
+                print " *** IGNORED because no unneeded zones were found ***\n";
+            else
+            {
+                print "\n";
+
+                if( $rule->isNatRule() && $fromOrTo == 'to' )
+                {
+                    derr( $context->padding . ' NAT rules are not supported yet' );
+                }
+
+                if( $fromOrTo == 'from' )
+                    $tag_add = 'unneeded-from-zone';
+                elseif( $fromOrTo == 'to' )
+                    $tag_add = 'unneeded-to-zone';
+
+                $objectFind = $rule->tags->parentCentralStore->findOrCreate( $tag_add );
+                $rule->tags->addTag($objectFind);
+
+                if( $context->isAPI )
+                    $zoneContainer->API_sync();
+            }
+        }
     },
     'args' => Array(    'mode' => Array(    'type' => 'string',
         'default' => 'append',
-        'choices' => Array('replace', 'append', 'show'),
+        'choices' => Array('replace', 'append', 'show', 'unneeded-tag-add'),
         'help' =>   "Will determine what to do with resolved zones : show them, replace them in the rule".
-            " or only append them (removes none but adds missing ones)"
+            " , only append them (removes none but adds missing ones) or tag-add for unneeded zones"
     ),
         'virtualRouter' => Array(   'type' => 'string',
             'default' => '*autodetermine*',
