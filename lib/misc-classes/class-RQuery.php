@@ -1702,18 +1702,15 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     {
         $object = $context->object;
 
-        if( $object->isSecurityRule() )
-            $unused_flag = 'unusedSecurity';
-        elseif( $object->isNatRule())
-            $unused_flag = 'unusedNat';
-        else
-            derr("unsupported filter : this is not a security or nat rule.".$object->toString());
+        if( !$object->isSecurityRule() || !$object->isNatRule() )
+            derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. ".$object->toString());
 
-
+        $unused_flag = 'unused'.$object->ruleNature();
+        $rule_base = $object->ruleNature();
 
         $sub = $object->owner->owner;
         if( !$sub->isVirtualSystem() && !$sub->isDeviceGroup() )
-            derr("this is filter is only supported on non Shared rules".$object->toString());
+            derr("this is filter is only supported on non Shared rules ".$object->toString());
 
         $connector = findConnector($sub);
 
@@ -1728,11 +1725,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
         {
             $sub->apiCache[$unused_flag] = Array();
 
-            if( $object->isSecurityRule() )
-                $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
-            elseif( $object->isNatRule())
-                $apiCmd = '<show><running><rule-use><rule-base>nat</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
-
+            $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
 
             if( $sub->isVirtualSystem() )
             {
@@ -1758,10 +1751,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
 
                     foreach($device['vsyslist'] as $vsys)
                     {
-                        if( $object->isSecurityRule() )
-                            $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
-                        elseif( $object->isNatRule())
-                            $apiCmd = '<show><running><rule-use><rule-base>nat</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
+                        $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
                         $apiResult = $newConnector->sendCmdRequest($apiCmd);
 
                         $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
