@@ -276,6 +276,80 @@ class PH
         return $msg;
     }
 
+    static public function &underlineText($msg)
+    {
+        $term = getenv('TERM');
+
+        if( $term === false || strpos($term, 'xterm') === false || ! PH::$outputFormattingEnabled )
+        {
+            //if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            //    $msg = "\027[1;37m".$msg."\027[37m";
+        }
+        else
+            $msg = "\033[4m".$msg."\033[0m";
+
+        return $msg;
+    }
+
+    static public function &italicText($msg)
+    {
+        $term = getenv('TERM');
+
+        if( $term === false || strpos($term, 'xterm') === false || ! PH::$outputFormattingEnabled )
+        {
+            //if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            //    $msg = "\027[1;37m".$msg."\027[37m";
+        }
+        else
+            $msg = "\033[3m".$msg."\033[0m";
+
+        return $msg;
+    }
+
+    static public function &strikethroughText($msg)
+    {
+        $term = getenv('TERM');
+
+        if( $term === false || strpos($term, 'xterm') === false || ! PH::$outputFormattingEnabled )
+        {
+            //if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            //    $msg = "\027[1;37m".$msg."\027[37m";
+        }
+        else
+            $msg = "\033[9m".$msg."\033[0m";
+
+        return $msg;
+    }
+
+    static public function &coloredText($msg, $foreground_color='red', $background_color='grey')
+    {
+        $term = getenv('TERM');
+
+        $color_array = array(   "black" => "\033[30m",
+                                "red" => "\033[31m",
+                                "green" => "\033[32m",
+                                "yellow" => "\033[33m",
+                                "blue" => "\033[34m",
+                                "magenta" => "\033[35m",
+                                "cyan" => "\033[36m",
+                                "white" => "\033[37m",
+                                "grey" => "\033[47m"
+                            );
+
+        if( $term === false || strpos($term, 'xterm') === false || ! PH::$outputFormattingEnabled )
+        {
+            //if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN')
+            //    $msg = "\027[1;37m".$msg."\027[37m";
+        }
+        else
+            $msg = $color_array[$foreground_color].$color_array[$background_color].$msg."\033[0m";
+
+        return $msg;
+    }
+
+
+
+
     /**
      * @param $panConfObject
      * @return PANConf|PanoramaConf
