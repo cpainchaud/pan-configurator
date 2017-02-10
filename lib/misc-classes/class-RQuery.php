@@ -1702,8 +1702,14 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     {
         $object = $context->object;
 
-        if( !$object->isSecurityRule() )
-            derr("unsupported filter : this is not a security rule.".$object->toString());
+        if( $object->isSecurityRule() )
+            $unused_flag = 'unusedSecurity';
+        elseif( $object->isNatRule())
+            $unused_flag = 'unusedNat';
+        else
+            derr("unsupported filter : this is not a security or nat rule.".$object->toString());
+
+
 
         $sub = $object->owner->owner;
         if( !$sub->isVirtualSystem() && !$sub->isDeviceGroup() )
@@ -1718,11 +1724,15 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
             $sub->apiCache = Array();
 
         // caching results for speed improvements
-        if( !isset($sub->apiCache['unusedSecurity']) )
+        if( !isset($sub->apiCache[$unused_flag]) )
         {
-            $sub->apiCache['unusedSecurity'] = Array();
+            $sub->apiCache[$unused_flag] = Array();
 
-            $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
+            if( $object->isSecurityRule() )
+                $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
+            elseif( $object->isNatRule())
+                $apiCmd = '<show><running><rule-use><rule-base>nat</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></rule-use></running></show>';
+
 
             if( $sub->isVirtualSystem() )
             {
@@ -1732,7 +1742,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
                 for ($i = 0; $i < $rulesXml->length; $i++)
                 {
                     $ruleName = $rulesXml->item($i)->textContent;
-                    $sub->apiCache['unusedSecurity'][$ruleName] = $ruleName;
+                    $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
                 }
             }
             else
@@ -1748,7 +1758,10 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
 
                     foreach($device['vsyslist'] as $vsys)
                     {
-                        $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
+                        if( $object->isSecurityRule() )
+                            $apiCmd = '<show><running><rule-use><rule-base>security</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
+                        elseif( $object->isNatRule())
+                            $apiCmd = '<show><running><rule-use><rule-base>nat</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
                         $apiResult = $newConnector->sendCmdRequest($apiCmd);
 
                         $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
@@ -1757,7 +1770,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
                         {
                             $ruleName = $rulesXml->item($i)->textContent;
                             if( $firstLoop )
-                                $sub->apiCache['unusedSecurity'][$ruleName] = $ruleName;
+                                $sub->apiCache[$unused_flag][$ruleName] = $ruleName;
                             else
                             {
                                 $tmpCache[$ruleName] = $ruleName;
@@ -1766,10 +1779,10 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
 
                         if( !$firstLoop )
                         {
-                            foreach( $sub->apiCache['unusedSecurity'] as $unusedEntry )
+                            foreach( $sub->apiCache[$unused_flag] as $unusedEntry )
                             {
                                 if( !isset($tmpCache[$unusedEntry]) )
-                                    unset($sub->apiCache['unusedSecurity'][$unusedEntry]);
+                                    unset($sub->apiCache[$unused_flag][$unusedEntry]);
                             }
                         }
 
@@ -1779,7 +1792,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
             }
         }
 
-        if( isset($sub->apiCache['unusedSecurity'][$object->name()]) )
+        if( isset($sub->apiCache[$unused_flag][$object->name()]) )
             return true;
 
         return false;
