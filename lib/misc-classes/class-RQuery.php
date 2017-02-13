@@ -1702,7 +1702,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     {
         $object = $context->object;
 
-        if( !$object->isSecurityRule() || !$object->isNatRule() )
+        if( !$object->isSecurityRule() && !$object->isNatRule() )
             derr("unsupported filter : rule type " . $object->ruleNature() . " is not supported yet. ".$object->toString());
 
         $unused_flag = 'unused'.$object->ruleNature();
