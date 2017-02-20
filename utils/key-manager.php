@@ -31,6 +31,7 @@ $supportedArguments = Array();
 $supportedArguments[] = Array('niceName' => 'delete', 'shortHelp' => 'Clears API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');
 $supportedArguments[] = Array('niceName' => 'add', 'shortHelp' => 'Adds API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');
 $supportedArguments[] = Array('niceName' => 'test', 'shortHelp' => 'Tests API key for hostname/IP provided as an argument.', 'argDesc' => '[hostname or IP]');
+$supportedArguments[] = Array('niceName' => 'apikey', 'shortHelp' => 'can be used in combination with add argument to use specific API key provided as an argument.', 'argDesc' => '[API Key]');
 $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
 $usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." [delete=hostOrIP] [add=hostOrIP] [test=hostOrIP]";
@@ -83,7 +84,11 @@ if( isset(PH::$args['add']) )
     $noArgProvided = false;
     $addHost = PH::$args['add'];
     echo " - requested to add Host/IP '{$addHost}'\n";
-    PanAPIConnector::findOrCreateConnectorFromHost( $addHost );
+
+    if( !isset(PH::$args['apikey']) )
+        PanAPIConnector::findOrCreateConnectorFromHost( $addHost );
+    else
+        PanAPIConnector::findOrCreateConnectorFromHost( $addHost, PH::$args['apikey'] );
 }
 
 if( isset(PH::$args['test']) )
@@ -92,9 +97,13 @@ if( isset(PH::$args['test']) )
     $checkHost = PH::$args['test'];
 
     echo " - requested to test Host/IP '{$checkHost}'\n";
-    $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost );
+    if( !isset(PH::$args['apikey']) )
+        $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost );
+    else
+        $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost, PH::$args['apikey'] );
 
     $connector->testConnectivity();
+
     print "\n";
 }
 
