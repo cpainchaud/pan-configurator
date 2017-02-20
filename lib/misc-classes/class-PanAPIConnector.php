@@ -332,13 +332,24 @@ class PanAPIConnector
                 print "* you input user '$user' , please enter password now: ";
                 if( $hiddenPW )
                 {
+                    //first option; do not display
+                    /*
                     system('stty -echo');
 
                     $line = fgets($handle);
                     $password = trim($line);
 
                     system('stty echo');
+
                     print "\n";
+                    */
+                    //second option; black text on black background - possible to check typos
+                    echo "\033[30;40m";  // black text on black background
+                    $line = fgets($handle);
+                    $password = trim($line);
+                    echo "\033[0m";      // reset
+
+
                 }
                 else
                 {
