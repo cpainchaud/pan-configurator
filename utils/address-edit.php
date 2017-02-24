@@ -100,6 +100,76 @@ PH::processCliArgs();
 
 $nestedQueries = Array();
 
+
+if( isset(PH::$args['help']) )
+{
+    $pos = array_search('help', $argv);
+
+    if( $pos === false )
+        display_usage_and_exit(false);
+
+    $keys = array_keys($argv);
+
+    if( $pos == end($keys) )
+        display_usage_and_exit(false);
+
+    $action = $argv[(array_search($pos, $keys) +1)];
+
+    if( !isset(AddressCallContext::$supportedActions[strtolower($action)]) )
+        derr("request help for action '{$action}' but it does not exist");
+
+    $action = & AddressCallContext::$supportedActions[strtolower($action)];
+
+    $args = Array();
+    if( isset($action['args']) )
+    {
+        foreach( $action['args'] as $argName => &$argDetails )
+        {
+            if( $argDetails['default'] == '*nodefault*' )
+                $args[] = "{$argName}";
+            else
+                $args[] = "[{$argName}]";
+        }
+    }
+
+    $args = PH::list_to_string($args);
+    print "*** help for Action ".PH::boldText($action['name']).":".$args."\n";
+
+    if( isset($action['help']) )
+        print $action['help'];
+
+    if( !isset($args) || !isset($action['args']) )
+    {
+        print "\n\n**No arguments required**";
+    }
+    else
+    {
+        print "\nListing arguments:\n\n";
+        foreach( $action['args'] as $argName => &$argDetails )
+        {
+            print "-- ".PH::boldText($argName)." :";
+            if( $argDetails['default'] != "*nodefault" )
+                print " OPTIONAL";
+            print " type={$argDetails['type']}";
+            if( isset($argDetails['choices']) )
+            {
+                print "     choices: ".PH::list_to_string($argDetails['choices']);
+            }
+            print "\n";
+            if( isset($argDetails['help']) )
+                print " ".str_replace("\n", "\n ",$argDetails['help']);
+            else
+                print "  *no help avaiable*";
+            print "\n\n";
+        }
+    }
+
+
+    print "\n\n";
+
+    exit(0);
+}
+
 foreach ( PH::$args as $index => &$arg )
 {
     if( !isset($supportedArguments[$index]) )
@@ -112,11 +182,6 @@ foreach ( PH::$args as $index => &$arg )
         //var_dump($supportedArguments);
         display_error_usage_exit("unsupported argument provided: '$index'");
     }
-}
-
-if( isset(PH::$args['help']) )
-{
-    display_usage_and_exit();
 }
 
 if( isset(PH::$args['loadplugin']) )
