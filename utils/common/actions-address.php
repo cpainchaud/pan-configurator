@@ -450,6 +450,8 @@ AddressCallContext::$supportedActions[] = Array(
 
         $addWhereUsed = false;
         $addUsedInLocation = false;
+        $addResolveGroupIPCoverage = false;
+
         $fieldsArray = explode('|',$context->arguments['additionalFields']) ;
         foreach($fieldsArray as $fieldName)
         {
@@ -458,6 +460,8 @@ AddressCallContext::$supportedActions[] = Array(
                 $addWhereUsed = true;
             elseif( $fieldName == 'usedinlocation' )
                 $addUsedInLocation = true;
+            elseif( $fieldName == 'resolveip' )
+                $addResolveGroupIPCoverage = true;
             else{
                 if( $fieldName != '*none*')
                  derr("unsupported field name '{$fieldName}' when export to Excel/HTML");
@@ -470,6 +474,8 @@ AddressCallContext::$supportedActions[] = Array(
             $headers .= '<th>where used</th>';
         if( $addUsedInLocation )
             $headers .= '<th>location used</th>';
+        if( $addResolveGroupIPCoverage )
+            $headers .= '<th>ip resolution</th>';
 
         $lines = '';
         $encloseFunction  = function($value, $nowrap = true)
@@ -576,6 +582,16 @@ AddressCallContext::$supportedActions[] = Array(
 
                     $lines .= $encloseFunction($refTextArray);
                 }
+                if( $addResolveGroupIPCoverage )
+                {
+                    $mapping = $object->getIP4Mapping();
+                    $strMapping = explode( ',',$mapping->dumpToString());
+
+                    foreach( array_keys($mapping->unresolved) as $unresolved )
+                        $strMapping[] = $unresolved;
+
+                    $lines .= $encloseFunction($strMapping);
+                }
 
                 $lines .= "</tr>\n";
 
@@ -606,7 +622,9 @@ AddressCallContext::$supportedActions[] = Array(
                                 'help' =>
                                     "pipe(|) separated list of additional field to include in the report. The following is available:\n".
                                     "  - WhereUsed : list places where object is used (rules, groups ...)\n".
-                                    "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n")
+                                    "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n".
+                                    "  - ResolveIP\n"
+                            )
     )
 
 );

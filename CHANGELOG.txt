@@ -11,6 +11,7 @@ rules-edit: new action  'name-removePrefix' 'name-removeSuffix' 'app-add-force'
 rules-edit: action 'from/to-calculate-zones' add new mode 'unneeded-tag-add' to add rule tag (unneeded-from/to-zone) where unneeded zones are available
 rules-edit: filter 'is.unused.fast' extend for nat rules
 address-edit: new filter 'description regex'
+address-edit: new field in exportToExcel : 'resolveip'
 service-edit: new filter 'description regex'
 
 bugfix:
