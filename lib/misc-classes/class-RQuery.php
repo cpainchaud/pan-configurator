@@ -113,29 +113,61 @@ class RQuery
                 {
                     if( isset($this->refOperator['argObjectFinder']) )
                     {
-                        $eval = str_replace('!value!', $this->argument, $this->refOperator['argObjectFinder']);
-                        if( eval($eval) === FALSE )
+                        if( is_string($this->refOperator['argObjectFinder']) )
                         {
-                            derr("\neval code was : $eval\n");
-                        }
-                        if( $objectFind === null )
-                        {
-                            $locationStr = PH::getLocationString($object);
-                            fwrite(STDERR, "\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
-                            exit(1);
-                        }
-                        if( !is_string($this->refOperator['eval']) )
-                        {
-                            $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $objectFind);
-                        }
-                        else
-                        {
-                            $eval = '$boolReturn = (' . str_replace('!value!', '$objectFind', $this->refOperator['eval']) . ');';
-
+                            $eval = str_replace('!value!', $this->argument, $this->refOperator['argObjectFinder']);
                             if( eval($eval) === FALSE )
                             {
                                 derr("\neval code was : $eval\n");
                             }
+                            if( $objectFind === null )
+                            {
+                                $locationStr = PH::getLocationString($object);
+                                fwrite(STDERR, "\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+                                exit(1);
+                            }
+                            if( !is_string($this->refOperator['eval']) )
+                            {
+                                $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $objectFind);
+                            }
+                            else
+                            {
+                                $eval = '$boolReturn = (' . str_replace('!value!', '$objectFind', $this->refOperator['eval']) . ');';
+
+                                if( eval($eval) === FALSE )
+                                {
+                                    derr("\neval code was : $eval\n");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            $objectFind = $this->refOperator['argObjectFinder']($object, $this->argument);
+                            if( $objectFind === false )
+                                return false;
+                            else
+                            {
+                                if( $objectFind === null )
+                                {
+                                    $locationStr = PH::getLocationString($object);
+                                    fwrite(STDERR, "\n\n**ERROR** cannot find object with name '{$this->argument}' in location '{$locationStr}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n");
+                                    exit(1);
+                                }
+                                if( !is_string($this->refOperator['eval']) )
+                                {
+                                    $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $objectFind);
+                                }
+                                else
+                                {
+                                    $eval = '$boolReturn = (' . str_replace('!value!', '$objectFind', $this->refOperator['eval']) . ');';
+
+                                    if( eval($eval) === FALSE )
+                                    {
+                                        derr("\neval code was : $eval\n");
+                                    }
+                                }
+                            }
+
                         }
 
                         if( $this->inverted )
@@ -705,6 +737,8 @@ RQuery::$defaultFilters['rule']['from']['operators']['has'] = Array(
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->from->parentCentralStore->find('!value!');"
 
+
+
 );
 RQuery::$defaultFilters['rule']['from']['operators']['has.only'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
@@ -734,7 +768,14 @@ RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
         return $object->to->hasZone($value) === true;
     },
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->to->parentCentralStore->find('!value!');"
+    'argObjectFinder' => function($object, $argument)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        if( $object->isPbfRule() )
+            return false;
+
+        return $object->to->parentCentralStore->find($argument);
+    }
 
 );
 RQuery::$defaultFilters['rule']['to']['operators']['has.only'] = Array(
