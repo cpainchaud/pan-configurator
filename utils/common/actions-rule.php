@@ -534,6 +534,13 @@ RuleCallContext::$commonActionFunctions['zone-replace'] = Array(
                 $connector = findConnectorOrDie($rule);
                 $connector->sendEditRequest(DH::elementToPanXPath($zoneContainer->xmlroot), $zoneContainer->xmlroot);
             }
+            elseif( $fromOrTo == 'from' && $rule->isPbfRule() )
+            {
+                $zoneContainer->addZone($zoneForReplacement);
+                $zoneContainer->removeZone($zoneToReplace);
+                $connector = findConnectorOrDie($rule);
+                $connector->sendEditRequest(DH::elementToPanXPath($zoneContainer->xmlroot), $zoneContainer->xmlroot);
+            }
             else
             {
                 $zoneContainer->API_addZone($zoneForReplacement);
