@@ -47,6 +47,8 @@ class RQuery
 
     public $level = 0;
 
+    public $text = '';
+
 
     public function __construct($objectType, $level = 0)
     {
@@ -260,6 +262,8 @@ class RQuery
      */
     public function parseFromString($text, &$errorMessage)
     {
+        $this->text = $text;
+
         $supportedFilters = &self::$defaultFilters[$this->objectType];
 
         $len = strlen($text);
