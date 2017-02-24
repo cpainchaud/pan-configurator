@@ -727,9 +727,10 @@ RQuery::$defaultFilters['rule']['from']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
-        if( $object->isPbfRule() && $object->isZoneBased() )
+        if( $object->isPbfRule() && !$object->isZoneBased() )
             return $object->from->hasInterface($value) === true;
-        if( $object->isDoSRule() && $object->isZoneBasedFrom() )
+
+        if( $object->isDoSRule() && !$object->isZoneBasedFrom() )
             return $object->from->hasInterface($value) === true;
 
         return $object->from->hasZone($value) === true;
@@ -744,9 +745,9 @@ RQuery::$defaultFilters['rule']['from']['operators']['has.only'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
-        if( $object->isPbfRule() && $object->isZoneBased() )
+        if( $object->isPbfRule() && !$object->isZoneBased() )
             return $object->from->hasInterface($value) === true && $object->from->count() == 1;
-        if( $object->isDoSRule() && $object->isZoneBasedFrom() )
+        if( $object->isDoSRule() && !$object->isZoneBasedFrom() )
             return $object->from->hasInterface($value) === true && $object->from->count() == 1;
 
         return $object->from->count() == 1 && $object->from->hasZone($value) === true;
@@ -762,7 +763,7 @@ RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
         if( $object->isPbfRule() )
             return false;
 
-        if( $object->isDoSRule() && $object->isZoneBasedFrom() )
+        if( $object->isDoSRule() && !$object->isZoneBasedTo() )
             return $object->to->hasInterface($value) === true;
 
         return $object->to->hasZone($value) === true;
