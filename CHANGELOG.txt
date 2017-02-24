@@ -3,6 +3,7 @@ CHANGELOG
 1.5.12
 * introduction of UTILS help.html (utils/doc/help.html)
 * introduction of info_hostname in PanAPIConnector
+* introduction of new util : userid-mgr to register/unregister/dump userid record through api
 
 utils:
 rules-edit: action 'exportToExcel' new fields 'dst_negated' and 'src_negated' to show when some fields are negated

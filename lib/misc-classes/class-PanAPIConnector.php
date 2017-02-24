@@ -499,6 +499,54 @@ class PanAPIConnector
 
     }
 
+    /**
+     * @param string|string[] $ips
+     * @param string|string[] $users
+     * @param string $vsys
+     * @param int $timeout
+     * @return mixed
+     */
+    public function userIDLogout($ips, $users, $vsys = 'vsys1', $timeout = 3600)
+    {
+        if( is_string($ips) && is_string($users) )
+        {
+            $ips = Array($ips);
+            $users = Array($users);
+        }
+        elseif( is_string($ips) )
+        {
+            derr('single IP provided but several users');
+        }
+        elseif( is_string($ips) )
+        {
+            derr('single user provided but several IPs');
+        }
+        elseif( count($ips) != count($users) )
+        {
+            derr('IPs and Users are not same numbers');
+        }
+
+        $ipsIndex = array_keys($ips);
+        $usersIndex = array_keys($users);
+
+        $cmd = '<uid-message><version>1.0</version><type>update</type><payload><logout>';
+
+        for( $i = 0; $i < count($ips); $i++ )
+        {
+            $cmd .= '<entry name="' . $users[$usersIndex[$i]] . '" ip="' . $ips[$ipsIndex[$i]] . '" timeout="' . $timeout . '"></entry>';;
+        }
+        $cmd .= '</logout></payload></uid-message>';
+
+        $params = Array();
+        $params['type'] = 'user-id';
+        $params['action'] = 'set';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
+
+        return $this->sendRequest($params, TRUE);
+
+    }
+
 
     /**
      * @param string[] $ips

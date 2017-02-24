@@ -47,5 +47,6 @@ to bring you a tailored process for your customer.
 - **upload-config.php** : tool for easy upload/download of configuration on a PANOS device. ie: if you want to
  replicate a config from a device to another but just keep management IP address. Use 'help' argument for more details.
 
+- **userid-mgr.php** : allows you to register/unregister/dump UserID record through PANOS API
 
 
