@@ -527,8 +527,19 @@ RuleCallContext::$commonActionFunctions['zone-replace'] = Array(
 
         if ($context->isAPI)
         {
-            $zoneContainer->API_addZone($zoneForReplacement);
-            $zoneContainer->API_removeZone($zoneToReplace);
+            if( $fromOrTo == 'to' && $rule->isNatRule() )
+            {
+                $zoneContainer->addZone($zoneForReplacement);
+                $zoneContainer->removeZone($zoneToReplace);
+                $connector = findConnectorOrDie($rule);
+                $connector->sendEditRequest(DH::elementToPanXPath($zoneContainer->xmlroot), $zoneContainer->xmlroot);
+            }
+            else
+            {
+                $zoneContainer->API_addZone($zoneForReplacement);
+                $zoneContainer->API_removeZone($zoneToReplace);
+            }
+
         }
         else
         {
