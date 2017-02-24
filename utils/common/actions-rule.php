@@ -482,7 +482,7 @@ RuleCallContext::$commonActionFunctions['zone-replace'] = Array(
         if( $fromOrTo == 'from' )
         {
             if( $rule->isPbfRule()  && $rule->isInterfaceBased()
-                || $rule->isDoSRule() && $rule->isZoneBasedFrom() )
+                || $rule->isDoSRule() && !$rule->isZoneBasedFrom() )
             {
                 echo $context->padding." * SKIPPED : TO is Interface based.\n";
                 return;
@@ -496,7 +496,7 @@ RuleCallContext::$commonActionFunctions['zone-replace'] = Array(
                 echo $context->padding." * SKIPPED : there is no TO in PBF rules.\n";
                 return;
             }
-            if( $rule->isDoSRule() && $rule->isZoneBasedTo() )
+            if( $rule->isDoSRule() && !$rule->isZoneBasedTo() )
             {
                 echo $context->padding." * SKIPPED : TO is Interface based.\n";
                 return;

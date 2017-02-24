@@ -786,7 +786,7 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.only'] = Array(
         if( $object->isPbfRule() )
             return false;
 
-        if( $object->isDoSRule() && $object->isZoneBasedFrom() )
+        if( $object->isDoSRule() && !$object->isZoneBasedFrom() )
             return $object->to->hasInterface($value) === true && $object->to->count() == 1;
 
         return $object->to->count() == 1 && $object->to->hasZone($value) === true;
