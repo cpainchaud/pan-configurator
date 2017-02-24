@@ -438,7 +438,7 @@ class PANConf
 
         print "- ".$numPbfRules." Pbf Rules\n";
 
-		print "- ".$numDecryptRules." Deryption Rules\n";
+		print "- ".$numDecryptRules." Decryption Rules\n";
 
         print "- ".$numAppOverrideRules." AppOverride Rules\n";
 
