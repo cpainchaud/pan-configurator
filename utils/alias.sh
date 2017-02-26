@@ -19,3 +19,6 @@ alias pa_override-finder='php -r "require_once '"'"'utils/override-finder.php'"'
 alias pa_key-manager='php -r "require_once '"'"'utils/key-manager.php'"'"';" $@'
 
 alias pa_ckp-exclude='php -r "require_once '"'"'utils/checkpoint-exclude.php'"'"';" $@'
+
+alias pa_system-log='php -r "require_once '"'"'utils/system-log.php'"'"';" $@'
+alias pa_session-browser='php -r "require_once '"'"'utils/session-browser.php'"'"';" $@'

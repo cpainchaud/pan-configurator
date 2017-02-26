@@ -966,6 +966,159 @@ class PanAPIConnector
         return $ret;
     }
 
+    public function &getSystemLog($req)
+    {
+        $ret = $this->sendRequest($req);
+
+        //print DH::dom_to_xml($ret, 0, true, 4);
+
+        $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
+        $cursor = DH::findFirstElement('result', $cursor);
+
+        if( $cursor === FALSE )
+        {
+            $cursor = DH::findFirstElement('report', DH::findXPathSingleEntryOrDie('/response', $ret));
+            if( $cursor === FALSE )
+                derr("unsupported API answer");
+
+            $report = DH::findFirstElement('result', $cursor);
+            if( $report === FALSE )
+                derr("unsupported API answer");
+
+        }
+
+
+        if( !isset($report) )
+        {
+
+            $cursor = DH::findFirstElement('job', $cursor);
+
+            if( $cursor === FALSE )
+                derr("unsupported API answer, no JOB ID found");
+
+            $jobid = $cursor->textContent;
+
+            while( TRUE )
+            {
+                sleep(1);
+
+                $query = '&type=log&action=get&job-id=' . $jobid;
+                if( isset($req['type']) )
+                    $query = '&type='.$req['type'].'&action=get&job-id=' . $jobid;
+
+                $ret = $this->sendRequest($query);
+                //print DH::dom_to_xml($ret, 0, true, 5);
+
+                $cursor = DH::findFirstElement('result', DH::findXPathSingleEntryOrDie('/response', $ret));
+
+                if( $cursor === FALSE )
+                    derr("unsupported API answer", $ret);
+
+                $jobcur = DH::findFirstElement('job', $cursor);
+                if( $jobcur === FALSE )
+                    derr("unsupported API answer", $cursor);
+
+                $logcur = DH::findFirstElement('log', $cursor);
+                if( $logcur === FALSE )
+                    derr("unsupported API answer", $cursor);
+
+                $logscur = DH::findFirstElement('logs', $logcur);
+                if( $logscur === FALSE )
+                    derr("unsupported API answer", $logscur);
+
+
+                $valueprogress = $logscur->getAttribute('progress');
+                if( $valueprogress != '100' )
+                {
+                    sleep(9);
+                    continue;
+                }
+
+                $logscur = DH::findFirstElement('logs', $logcur);
+                if( $logscur === FALSE )
+                    derr("unsupported API answer", $logscur);
+
+                $report = $logscur;
+
+                break;
+
+            }
+        }
+
+
+        $ret = Array();
+
+        foreach( $report->childNodes as $line )
+        {
+            if( $line->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $newline = Array();
+
+            foreach( $line->childNodes as $item )
+            {
+                if( $item->nodeType != XML_ELEMENT_NODE )
+                    continue;
+                /** @var DOMElement $item */
+
+                $newline[$item->nodeName] = $item->textContent;
+            }
+
+            $ret[] = $newline;
+        }
+
+        //print_r($ret);
+
+        return $ret;
+    }
+
+    public function &getSession($req)
+    {
+        $ret = $this->sendRequest($req);
+
+        //print DH::dom_to_xml($ret, 0, true, 4);
+
+        $cursor = DH::findXPathSingleEntryOrDie('/response', $ret);
+        $cursor = DH::findFirstElement('result', $cursor);
+
+        if( $cursor === FALSE )
+        {
+            $cursor = DH::findFirstElement('report', DH::findXPathSingleEntryOrDie('/response', $ret));
+            if( $cursor === FALSE )
+                derr("unsupported API answer");
+
+            $report = DH::findFirstElement('result', $cursor);
+            if( $report === FALSE )
+                derr("unsupported API answer");
+
+        }
+
+        $report = $cursor;
+        $ret = Array();
+
+        foreach( $report->childNodes as $line )
+        {
+            if( $line->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $newline = Array();
+
+            foreach( $line->childNodes as $item )
+            {
+                if( $item->nodeType != XML_ELEMENT_NODE )
+                    continue;
+                /** @var DOMElement $item */
+
+                $newline[$item->nodeName] = $item->textContent;
+            }
+
+            $ret[] = $newline;
+        }
+
+        //print_r($ret);
+
+        return $ret;
+    }
 
     public function getRunningConfig()
     {
