@@ -1742,7 +1742,19 @@ RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
     },
     'arg' => true
 );
-
+RQuery::$defaultFilters['rule']['location']['operators']['regex'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $name = $context->object->getLocationString();
+        $matching = preg_match($context->value, $name);
+        if( $matching === FALSE )
+            derr("regular expression error on '{$context->value}'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
@@ -2327,6 +2339,19 @@ RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['address']['location']['operators']['regex'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $name = $context->object->getLocationString();
+        $matching = preg_match($context->value, $name);
+        if( $matching === FALSE )
+            derr("regular expression error on '{$context->value}'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
@@ -2709,6 +2734,19 @@ RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['service']['location']['operators']['regex'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $name = $context->object->getLocationString();
+        $matching = preg_match($context->value, $name);
+        if( $matching === FALSE )
+            derr("regular expression error on '{$context->value}'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true
+);
 // </editor-fold>
 
 
@@ -2825,6 +2863,19 @@ RQuery::$defaultFilters['tag']['location']['operators']['is'] = Array(
         if( strtolower($context->value) == strtolower($owner->name()) )
             return true;
 
+        return false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['tag']['location']['operators']['regex'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $name = $context->object->getLocationString();
+        $matching = preg_match($context->value, $name);
+        if( $matching === FALSE )
+            derr("regular expression error on '{$context->value}'");
+        if( $matching === 1 )
+            return true;
         return false;
     },
     'arg' => true

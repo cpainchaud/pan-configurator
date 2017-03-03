@@ -302,7 +302,7 @@ class ZoneRuleContainer extends ObjRuleContainer
     {
         $str = $this->owner->getXPath().'/'.$this->name;
 
-        if( $this->owner !== null && $this->owner->isPbfRule() && $this->name === 'from' )
+        if( $this->owner !== null && $this->owner->isPbfRule() && $this->name == 'from' )
             $str .= '/zone';
 
         return $str;
