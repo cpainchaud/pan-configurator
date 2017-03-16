@@ -1974,7 +1974,7 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( RuleCallContext $context )
     {
         $object = $context->object;
-        $prefix = $context->rawArgument['prefix'];
+        $prefix = $context->rawArguments['prefix'];
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
