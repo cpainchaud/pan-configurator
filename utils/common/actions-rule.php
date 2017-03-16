@@ -1913,7 +1913,7 @@ RuleCallContext::$supportedActions[] = Array(
     {
         $rule = $context->object;
 
-        $newName = $context->arguments['text'].$rule->name();
+        $newName = $context->rawArguments['text'].$rule->name();
 
         if( strlen($newName) > 31 )
         {
@@ -1944,7 +1944,7 @@ RuleCallContext::$supportedActions[] = Array(
     {
         $rule = $context->object;
 
-        $newName = $rule->name().$context->arguments['text'];
+        $newName = $rule->name().$context->rawArguments['text'];
 
         if( strlen($newName) > 31 )
         {
@@ -1974,7 +1974,7 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( RuleCallContext $context )
     {
         $object = $context->object;
-        $prefix = $context->arguments['prefix'];
+        $prefix = $context->rawArgument['prefix'];
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
@@ -2011,7 +2011,7 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( RuleCallContext $context )
     {
         $object = $context->object;
-        $suffix = $context->arguments['suffix'];
+        $suffix = $context->rawArguments['suffix'];
         $suffixStartIndex = strlen($object->name()) - strlen($suffix);
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name()) ) != $suffix )
