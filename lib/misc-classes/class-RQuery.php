@@ -2174,6 +2174,25 @@ RQuery::$defaultFilters['address']['object']['operators']['overriden.at.lower.le
     },
     'arg' => false
 );
+RQuery::$defaultFilters['address']['object']['operators']['is.member.of'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        if( !$context->object->isGroup() )
+        {
+            $address_group = $context->object->owner->find( $context->value );
+
+            if( $address_group->has( $context->object ) )
+            {
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
