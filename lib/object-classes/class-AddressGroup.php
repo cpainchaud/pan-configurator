@@ -393,7 +393,7 @@ class AddressGroup
 	 */
 	public function has($obj)
 	{
-		return ! array_search($obj, $this->members, true) === false;
+        return array_search($obj, $this->members, true) !== false;
 	}
 	
 	/**
