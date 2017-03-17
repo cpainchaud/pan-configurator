@@ -86,6 +86,7 @@ class Address
 	/**
 	* @ignore
 	* @param DOMElement $xml
+     * @return bool TRUE if loaded ok, FALSE if not
 	*/
 	public function load_from_domxml(DOMElement $xml)
 	{
@@ -120,7 +121,13 @@ class Address
 		}
 
 		if( !$typeFound )
-			derr('Object type not found or not supported for object '.$this->name.'. Please check your configuration file and fix it.', $xml);
+        {
+            if( !PH::$ignoreInvalidAddressObjects )
+                derr('Object type not found or not supported for address object ' . $this->name . '. Please check your configuration file and fix it or invoke ith argument "shadow-ignoreInvalidAddressObjects"', $xml);
+
+            mwarning('Object type not found or not supported for address object ' . $this->name . ' but you manually did bypass this error', $xml);
+            return false;
+        }
 
 		if( $this->owner->owner->version >= 60 )
 		{
@@ -129,6 +136,8 @@ class Address
 				$this->tags->load_from_domxml($tagRoot);
 		}
 
+
+		return true;
 	}
 
     /**

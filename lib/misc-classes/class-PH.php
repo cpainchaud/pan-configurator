@@ -35,6 +35,9 @@ class PH
 
     public static $enableXmlDuplicatesDeletion = false;
 
+    /** @var bool set to true if you want to ignore invalid address objects but print a warning instead */
+    public static $ignoreInvalidAddressObjects = false;
+
     public static $basedir;
 
     private static $library_version_major = 1;
@@ -471,8 +474,9 @@ class PH
 
 }
 
-foreach( $argv as $argIndex => &$arg )
+foreach( $argv as $argIndex => $arg )
 {
+    $arg = strtolower($arg);
     if( $arg == 'shadow-disableoutputformatting')
     {
         PH::disableOutputFormatting();
@@ -483,6 +487,13 @@ foreach( $argv as $argIndex => &$arg )
     elseif( $arg == 'shadow-enablexmlduplicatesdeletion' )
     {
         PH::$enableXmlDuplicatesDeletion = true;
+        unset($argv[$argIndex]);
+        $argc--;
+        continue;
+    }
+    elseif( $arg == 'shadow-ignoreinvalidaddressobjects' )
+    {
+        PH::$ignoreInvalidAddressObjects = true;
         unset($argv[$argIndex]);
         $argc--;
         continue;

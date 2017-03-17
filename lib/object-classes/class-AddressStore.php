@@ -118,8 +118,10 @@ class AddressStore
             if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
 			$ns = new Address('',$this);
-			$ns->load_from_domxml($node);
-			//print $this->toString()." : new service '".$ns->name()."' created\n";
+			$loadedOK = $ns->load_from_domxml($node);
+
+			if( !$loadedOK )
+			    continue;
 
 			$objectName = $ns->name();
 
@@ -127,7 +129,7 @@ class AddressStore
             {
                 if( PH::$enableXmlDuplicatesDeletion )
                     $duplicatesRemoval[] = $node;
-                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file", $node);
+                mwarning("an object with name '{$objectName}' already exists in this store, please investigate your xml file as this will be ignored and could eventually be lost.", $node);
                 continue;
             }
 
