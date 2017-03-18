@@ -2177,22 +2177,16 @@ RQuery::$defaultFilters['address']['object']['operators']['overriden.at.lower.le
 RQuery::$defaultFilters['address']['object']['operators']['is.member.of'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
-        if( !$context->object->isGroup() )
-        {
-            $addressGroup = $context->object->owner->find( $context->value );
+        $addressGroup = $context->object->owner->find( $context->value );
 
-            if( $addressGroup === null )
-                return false;
-
-            if( $addressGroup->has( $context->object ) )
-            {
-                return true;
-            }
-            else
-                return false;
-        }
-        else
+        if( $addressGroup === null )
             return false;
+
+        if( $addressGroup->has( $context->object ) )
+            return true;
+
+        return false;
+
     },
     'arg' => true
 );
