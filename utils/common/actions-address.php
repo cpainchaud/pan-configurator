@@ -1226,7 +1226,7 @@ AddressCallContext::$supportedActions[] = Array(
                 echo $context->padding."* " . get_class($object) . " '{$object->name()}' ({$object->count()} members)\n";
 
                 foreach ($object->members() as $member)
-                    echo "          - {$member->name()}'  value: '{$member->value()}'\n";
+                    echo "          - {$member->name()}\n";
             }
         }
         else
