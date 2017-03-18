@@ -2179,9 +2179,12 @@ RQuery::$defaultFilters['address']['object']['operators']['is.member.of'] = Arra
     {
         if( !$context->object->isGroup() )
         {
-            $address_group = $context->object->owner->find( $context->value );
+            $addressGroup = $context->object->owner->find( $context->value );
 
-            if( $address_group->has( $context->object ) )
+            if( $addressGroup === null )
+                return false;
+
+            if( $addressGroup->has( $context->object ) )
             {
                 return true;
             }
