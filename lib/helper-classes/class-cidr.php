@@ -84,6 +84,7 @@ class cidr
         {
             self::$_cidr2maskInt= Array();
             self::$_cidr2maskInt[0] = 0;
+            self::$_cidr2maskInt[32] = 4294967295;
             for($i=1; $i<=31; $i++)
                 self::$_cidr2maskInt[$i] = self::$_cidr2maskInt[$i-1] + pow(2, 32-$i);
         }
