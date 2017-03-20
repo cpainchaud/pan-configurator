@@ -28,6 +28,8 @@ class Tag
     /** @var string|null */
     public $color;
 
+    /** @var string|null */
+    public $comments;
 
     const NONE = 'none';
     const color1 = 'red';
@@ -154,6 +156,7 @@ class Tag
         if( $rewriteXml)
         {
             $valueRoot = DH::findFirstElement('color', $this->xmlroot);
+            $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
             if( $valueRoot == false )
             {
                 $child = new DOMElement('color');
@@ -162,13 +165,18 @@ class Tag
                 $valueRoot = DH::findFirstElement('color', $this->xmlroot);
             }
 
+
+
             if( $newColor != 'none' )
                 DH::setDomNodeText($valueRoot, $this->color);
             else
             {
                 $this->xmlroot->removeChild( $valueRoot);
-                $this->xmlroot->nodeValue = "";
+
+                if( $commentsRoot === false )
+                    $this->xmlroot->nodeValue = "";
             }
+
         }
 
         return true;
@@ -186,6 +194,7 @@ class Tag
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
+        #$commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
         if( $newColor != 'none' )
         {
             $valueRoot = DH::findFirstElement('color', $this->xmlroot);
@@ -193,7 +202,10 @@ class Tag
             $this->setColor($newColor);
         }
         else
+        {
             $c->sendEditRequest($xpath,  DH::dom_to_xml($this->xmlroot,-1,false) );
+        }
+
 
         return true;
     }
@@ -238,24 +250,30 @@ class Tag
         if( strlen($this->name) < 1  )
             derr("Tag name '".$this->name."' is not valid.", $xml);
 
-        //color
+
         $colorRoot = DH::findFirstElement('color', $xml);
         if( $colorRoot !== false )
             $this->color = $colorRoot->textContent;
 
         if( $this->color === FALSE || $this->color == '')
             $this->color = 'none';
-            #derr("tag color not found\n", $colorRoot);
 
         if( strlen($this->color) < 1  )
             derr("Tag color '".$this->color."' is not valid.", $colorRoot);
 
+
+        $commentsRoot = DH::findFirstElement('comments', $xml);
+        if( $commentsRoot !== false )
+            $this->comments = $commentsRoot->textContent;
+
+        if( $this->comments === FALSE || $this->comments == '')
+            $this->comments = '';
     }
 
     /**
      * @return string
      */
-    public function color()
+    public function getColor()
     {
         $ret = $this->color;
 
@@ -267,6 +285,17 @@ class Tag
 
         return $ret;
     }
+
+    /**
+     * @return string
+     */
+    public function getComments()
+    {
+        $ret = $this->comments;
+
+        return $ret;
+    }
+
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
 }
