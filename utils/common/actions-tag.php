@@ -288,11 +288,10 @@ TagCallContext::$supportedActions['display'] = Array(
     'MainFunction' => function ( TagCallContext $context )
     {
         $object = $context->object;
-        print "     * ".get_class($object)." '{$object->name()}'  color: '{$object->color()}' \n";
+        print "     * ".get_class($object)." '{$object->name()}'  color: '{$object->getColor()}'  comments: '{$object->getComments()}' \n";
         print "\n\n";
     },
 );
-
 TagCallContext::$supportedActions['setcolor'] = Array(
     'name' => 'setColor',
     'MainFunction' => function ( TagCallContext $context )
