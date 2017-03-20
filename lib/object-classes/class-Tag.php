@@ -165,7 +165,10 @@ class Tag
             if( $newColor != 'none' )
                 DH::setDomNodeText($valueRoot, $this->color);
             else
+            {
                 $this->xmlroot->removeChild( $valueRoot);
+                $this->xmlroot->nodeValue = "";
+            }
         }
 
         return true;
