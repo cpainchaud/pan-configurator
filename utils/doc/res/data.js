@@ -278,9 +278,10 @@ var data = {
                         "choices": [
                             "replace",
                             "append",
-                            "show"
+                            "show",
+                            "unneeded-tag-add"
                         ],
-                        "help": "Will determine what to do with resolved zones : show them, replace them in the rule or only append them (removes none but adds missing ones)",
+                        "help": "Will determine what to do with resolved zones : show them, replace them in the rule , only append them (removes none but adds missing ones) or tag-add for unneeded zones",
                         "name": "mode"
                     },
                     {
@@ -767,9 +768,10 @@ var data = {
                         "choices": [
                             "replace",
                             "append",
-                            "show"
+                            "show",
+                            "unneeded-tag-add"
                         ],
-                        "help": "Will determine what to do with resolved zones : show them, replace them in the rule or only append them (removes none but adds missing ones)",
+                        "help": "Will determine what to do with resolved zones : show them, replace them in the rule , only append them (removes none but adds missing ones) or tag-add for unneeded zones",
                         "name": "mode"
                     },
                     {
@@ -890,7 +892,7 @@ var data = {
                     {
                         "type": "string",
                         "default": "*NONE*",
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n",
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - ResolveIP\n",
                         "name": "additionalFields"
                     }
                 ]
@@ -1476,6 +1478,10 @@ var data = {
                     {
                         "name": "is",
                         "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
                     }
                 ]
             },
@@ -1856,6 +1862,10 @@ var data = {
                     {
                         "name": "is",
                         "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
                     }
                 ]
             },
@@ -1924,6 +1934,10 @@ var data = {
                     {
                         "name": "is.ip-range",
                         "argument": null
+                    },
+                    {
+                        "name": "is.member.of",
+                        "argument": "*required*"
                     },
                     {
                         "name": "is.tmp",
@@ -2026,6 +2040,10 @@ var data = {
                     {
                         "name": "is",
                         "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
                     }
                 ]
             },
@@ -2127,6 +2145,10 @@ var data = {
                 "operators": [
                     {
                         "name": "is",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "regex",
                         "argument": "*required*"
                     }
                 ]
