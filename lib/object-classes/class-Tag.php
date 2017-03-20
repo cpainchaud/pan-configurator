@@ -71,29 +71,6 @@ class Tag
                                         self::color17 => 'color17'
                                     );
 
-
-
-    /*
-     * Tag 'red'  color: 'color1'
-     * Tag 'green'  color: 'color2'
-     * Tag 'blue'  color: 'color3'
-     * Tag 'yellow'  color: 'color4'
-     * Tag 'copper'  color: 'color5'
-     * Tag 'orange'  color: 'color6'
-     * Tag 'purple'  color: 'color7'
-     * Tag 'gray'  color: 'color8'
-     * Tag 'Light Green'  color: 'color9'
-     * Tag 'Cyan'  color: 'color10'
-     * Tag 'Light Gray'  color: 'color11'
-     * Tag 'Blue Gray'  color: 'color12'
-     * Tag 'Lime'  color: 'color13'
-     * Tag 'Black'  color: 'color14'
-     * Tag 'Gold'  color: 'color15'
-     * Tag 'Brown'  color: 'color16'
-     * Tag 'Green'  color: 'color2'         //BUG available in PAN-OS this is another GREEN with same color
-
-*/
-
     /**
      * @param string $name
      * @param TagStore|null $owner
