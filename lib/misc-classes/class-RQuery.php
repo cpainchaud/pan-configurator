@@ -2896,6 +2896,13 @@ RQuery::$defaultFilters['tag']['location']['operators']['regex'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['tag']['color']['operators']['eq'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        return $context->object->color() == strtolower( $context->value );
+    },
+    'arg' => true
+);
 // </editor-fold>
 
 
