@@ -288,11 +288,25 @@ TagCallContext::$supportedActions['display'] = Array(
     'MainFunction' => function ( TagCallContext $context )
     {
         $object = $context->object;
-        print "     * ".get_class($object)." '{$object->name()}' \n";
+        print "     * ".get_class($object)." '{$object->name()}'  color: '{$object->color()}' \n";
         print "\n\n";
     },
 );
 
+TagCallContext::$supportedActions['setcolor'] = Array(
+    'name' => 'setColor',
+    'MainFunction' => function ( TagCallContext $context )
+    {
+        $color = strtolower( $context->arguments['color'] );
 
+        $object = $context->object;
 
+        if( $context->isAPI )
+            $object->API_setColor( $color );
+        else
+            $object->setColor( $color );
 
+    },
+    'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*', 'choices' => array_flip( Tag::$TagColors )  )
+    ),
+);

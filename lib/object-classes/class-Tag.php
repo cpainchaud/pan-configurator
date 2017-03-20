@@ -25,13 +25,58 @@ class Tag
     /** @var TagStore|null */
 	public $owner = null;
 
+    /** @var string|null */
+    public $color;
+
+
+    const NONE = 'none';
+    const color1 = 'red';
+    const color2 = 'green';
+    const color3 = 'blue';
+    const color4 = 'yellow';
+    const color5 = 'copper';
+    const color6 = 'orange';
+    const color7 = 'purple';
+    const color8 = 'gray';
+    const color9 = 'light green';
+    const color10 = 'cyan';
+    const color11 = 'light gray';
+    const color12 = 'blue gray';
+    const color13 = 'lime';
+    const color14 = 'black';
+    const color15 = 'gold';
+    const color16 = 'brown';
+    const color17 = 'dark green';
+    
+    
+
+    static public $TagColors = Array(
+                                        self::NONE => 'none',
+                                        self::color1 => 'color1',
+                                        self::color2 => 'color2',
+                                        self::color3 => 'color3',
+                                        self::color4 => 'color4',
+                                        self::color5 => 'color5',
+                                        self::color6 => 'color6',
+                                        self::color7 => 'color7',
+                                        self::color8 => 'color8',
+                                        self::color9 => 'color9',
+                                        self::color10 => 'color10',
+                                        self::color11 => 'color11',
+                                        self::color12 => 'color12',
+                                        self::color13 => 'color13',
+                                        self::color14 => 'color14',
+                                        self::color15 => 'color15',
+                                        self::color16 => 'color16',
+                                        self::color17 => 'color17'
+                                    );
 
     /**
      * @param string $name
      * @param TagStore|null $owner
      * @param bool $fromXmlTemplate
      */
-	public function __construct($name, $owner, $fromXmlTemplate=false)
+	public function __construct($name, $owner, $fromXmlTemplate=false )
 	{
         $this->name = $name;
 
@@ -85,6 +130,84 @@ class Tag
         $this->setName($newName);
     }
 
+
+    /**
+     * @param string $newColor
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function setColor( $newColor, $rewriteXml = true )
+    {
+        if( !is_string($newColor) )
+            derr('value can be text only');
+
+        if( !isset(self::$TagColors[$newColor]) )
+            derr("color '".$newColor."' not available");
+        else
+            $newColor = self::$TagColors[$newColor];
+
+        if( $newColor == $this->color )
+            return false;
+
+        $this->color = $newColor;
+
+        if( $rewriteXml)
+        {
+            $valueRoot = DH::findFirstElement('color', $this->xmlroot);
+            if( $valueRoot == false )
+            {
+                $child = new DOMElement('color');
+
+                $this->xmlroot->appendChild($child);
+                $valueRoot = DH::findFirstElement('color', $this->xmlroot);
+            }
+
+            if( $newColor != 'none' )
+                DH::setDomNodeText($valueRoot, $this->color);
+            else
+            {
+                $this->xmlroot->removeChild( $valueRoot);
+                $this->xmlroot->nodeValue = "";
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * @param string $newColor
+     * @return bool
+     */
+    public function API_setColor($newColor)
+    {
+        if( !$this->setColor($newColor) )
+            return false;
+
+        $c = findConnectorOrDie($this);
+        $xpath = $this->getXPath();
+
+        if( $newColor != 'none' )
+        {
+            $valueRoot = DH::findFirstElement('color', $this->xmlroot);
+            $c->sendSetRequest($xpath,  DH::dom_to_xml($valueRoot,-1,false) );
+            $this->setColor($newColor);
+        }
+        else
+            $c->sendEditRequest($xpath,  DH::dom_to_xml($this->xmlroot,-1,false) );
+
+        return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function availableColors( )
+    {
+        $ret = array_keys( self::$TagColors );
+
+        return $ret;
+    }
+
     /**
      * @return string
      */
@@ -115,8 +238,35 @@ class Tag
         if( strlen($this->name) < 1  )
             derr("Tag name '".$this->name."' is not valid.", $xml);
 
+        //color
+        $colorRoot = DH::findFirstElement('color', $xml);
+        if( $colorRoot !== false )
+            $this->color = $colorRoot->textContent;
+
+        if( $this->color === FALSE || $this->color == '')
+            $this->color = 'none';
+            #derr("tag color not found\n", $colorRoot);
+
+        if( strlen($this->color) < 1  )
+            derr("Tag color '".$this->color."' is not valid.", $colorRoot);
+
     }
 
+    /**
+     * @return string
+     */
+    public function color()
+    {
+        $ret = $this->color;
+
+        $lsearch = array_search( $this->color, self::$TagColors );
+        if( $lsearch !== FALSE )
+        {
+            $ret = $lsearch;
+        }
+
+        return $ret;
+    }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
 }
