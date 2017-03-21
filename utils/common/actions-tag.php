@@ -311,3 +311,33 @@ TagCallContext::$supportedActions['setcolor'] = Array(
     'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*', 'choices' => 'none,red,green,blue,yellow,copper,orange,purple,gray,light green,cyan,light gray,blue gray,lime,black,gold,brown,dark green'  )
     ),
 );
+TagCallContext::$supportedActions['addcomments'] = Array(
+    'name' => 'addComments',
+    'MainFunction' => function ( TagCallContext $context )
+    {
+        $comments = $context->arguments['comments'];
+
+        $object = $context->object;
+
+        if( $context->isAPI )
+            $object->API_addComments( $comments );
+        else
+            $object->addComments( $comments );
+
+    },
+    'args' => Array( 'comments' => Array( 'type' => 'string', 'default' => '*nodefault*'   )
+    ),
+);
+TagCallContext::$supportedActions['deletecomments'] = Array(
+    'name' => 'deleteComments',
+    'MainFunction' => function ( TagCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $context->isAPI )
+            $object->API_deleteComments( );
+        else
+            $object->deleteComments( );
+
+    },
+);

@@ -15,8 +15,8 @@ address-edit: new filter 'description regex'
 address-edit: new field in exportToExcel : 'resolveip'
 service-edit: new filter 'description regex'
 generic: new filters 'location regex'
-tag-edit: new action 'setColor'
-tag-edit: new filter 'color eq'
+tag-edit: new action 'setColor', 'addComments', 'deleteComments'
+tag-edit: new filter 'color eq', 'comments regex /XXX/', 'comments is.empty'
 
 bugfix:
 - help message was not available in override-finder.php
