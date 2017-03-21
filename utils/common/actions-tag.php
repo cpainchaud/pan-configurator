@@ -305,7 +305,9 @@ TagCallContext::$supportedActions['setcolor'] = Array(
         else
             $object->setColor( $color );
 
+
+
     },
-    'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*', 'choices' => array_flip( Tag::$TagColors )  )
+    'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*', 'choices' => 'none,red,green,blue,yellow,copper,orange,purple,gray,light green,cyan,light gray,blue gray,lime,black,gold,brown,dark green'  )
     ),
 );
