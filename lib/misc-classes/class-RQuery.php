@@ -2903,6 +2903,32 @@ RQuery::$defaultFilters['tag']['color']['operators']['eq'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['tag']['comments']['operators']['regex'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $name = $context->object->getComments();
+        $matching = preg_match($context->value, $name);
+        if( $matching === FALSE )
+            derr("regular expression error on '{$context->value}'");
+        if( $matching === 1 )
+            return true;
+        return false;
+    },
+    'arg' => true
+);
+
+RQuery::$defaultFilters['tag']['comments']['operators']['is.empty'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $desc = $context->object->getComments();
+
+        if( $desc === null || strlen($desc) == 0 )
+            return true;
+
+        return false;
+    },
+    'arg' => false,
+);
 // </editor-fold>
 
 
