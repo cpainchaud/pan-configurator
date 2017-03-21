@@ -618,7 +618,7 @@ class RuleStore
 	{
         if ($ruleToBeMoved === $ruleRef)
         {
-            print "\n   - skipp object '".PH::boldText($ruleToBeMoved->name())."' can't move after self!\n";
+            mwarning("Tried to move rule '{$ruleToBeMoved->name()}' after itself!");
             return;
         }
 
@@ -1348,17 +1348,22 @@ class RuleStore
 	*/
 	public function rewriteXML()
 	{
-		DH::clearDomNodeChilds($this->xmlroot);
+        if( $this->xmlroot !== null )
+            DH::clearDomNodeChilds($this->xmlroot);
+        else
+            $this->createXmlRoot();
+
 		foreach($this->_rules as $rule )
 		{
 			$this->xmlroot->appendChild($rule->xmlroot);
 		}
+
 		if( $this->isPreOrPost )
 		{
 			if( $this->postRulesRoot !== null )
                 DH::clearDomNodeChilds($this->postRulesRoot);
-            else // TODO better handling of rewrite
-                return;
+            else
+                $this->createPostXmlRoot();
 
 			foreach($this->_postRules as $rule )
 			{
