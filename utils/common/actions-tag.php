@@ -304,11 +304,8 @@ TagCallContext::$supportedActions['setcolor'] = Array(
             $object->API_setColor( $color );
         else
             $object->setColor( $color );
-
-
-
     },
-    'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*', 'choices' => 'none,red,green,blue,yellow,copper,orange,purple,gray,light green,cyan,light gray,blue gray,lime,black,gold,brown,dark green'  )
+    'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*'  )
     ),
 );
 TagCallContext::$supportedActions['addcomments'] = Array(
