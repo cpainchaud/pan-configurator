@@ -292,8 +292,8 @@ TagCallContext::$supportedActions['display'] = Array(
         print "\n\n";
     },
 );
-TagCallContext::$supportedActions['setcolor'] = Array(
-    'name' => 'setColor',
+TagCallContext::$supportedActions['color-set'] = Array(
+    'name' => 'Color-set',
     'MainFunction' => function ( TagCallContext $context )
     {
         $color = strtolower( $context->arguments['color'] );
@@ -308,8 +308,8 @@ TagCallContext::$supportedActions['setcolor'] = Array(
     'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*'  )
     ),
 );
-TagCallContext::$supportedActions['addcomments'] = Array(
-    'name' => 'addComments',
+TagCallContext::$supportedActions['comments-add'] = Array(
+    'name' => 'Comments-add',
     'MainFunction' => function ( TagCallContext $context )
     {
         $comments = $context->arguments['comments'];
@@ -325,8 +325,8 @@ TagCallContext::$supportedActions['addcomments'] = Array(
     'args' => Array( 'comments' => Array( 'type' => 'string', 'default' => '*nodefault*'   )
     ),
 );
-TagCallContext::$supportedActions['deletecomments'] = Array(
-    'name' => 'deleteComments',
+TagCallContext::$supportedActions['comments-delete'] = Array(
+    'name' => 'Comments-delete',
     'MainFunction' => function ( TagCallContext $context )
     {
         $object = $context->object;
