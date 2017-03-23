@@ -2229,6 +2229,7 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
         if( strpos( $value, '$$value$$' ) !== FALSE )
         {
             $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+
             if( !$object->isGroup() )
                 $replace = str_replace(Array('.', '/'), Array('\.', '\/'), $object->value() );
 
@@ -2238,6 +2239,7 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
         if( strpos( $value, '$$value.no-netmask$$' ) !== FALSE )
         {
             $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+
             if( !$object->isGroup() && $object->isType_ipNetmask() )
                 $replace = str_replace('.', '\.', $object->getNetworkValue() );
 
@@ -2254,6 +2256,7 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
         if( strpos( $value, '$$netmask.blank32$$' ) !== FALSE )
         {
             $replace = '%%%INVALID\.FOR\.THIS\.TYPE\.OF\.OBJECT%%%';
+
             if( !$object->isGroup() && $object->isType_ipNetmask() )
             {
                 $netmask = $object->getNetworkMask();
@@ -2263,6 +2266,7 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
 
             $value = str_replace( '$$netmask.blank32$$',  $replace, $value);
         }
+
 
         if( strlen($value) == 0 )
             return false;
