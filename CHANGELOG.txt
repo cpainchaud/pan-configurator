@@ -21,6 +21,7 @@ tag-edit: new filter 'color eq', 'comments regex /XXX/', 'comments is.empty'
 
 bugfix:
 - help message was not available in override-finder.php
+- fixed an issue with PANOS 8.0 and new DG hierarchy. OMG what did they do ? :D
 
 
 1.5.11

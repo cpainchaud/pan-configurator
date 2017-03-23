@@ -1004,7 +1004,7 @@ RuleCallContext::$supportedActions[] = Array(
         $rQuery = new RQuery('address');
         $errorMessage = '';
         if( !$rQuery->parseFromString($context->nestedQueries[$queryName], $errorMessage) )
-            derr("error while parsing query: {$context->nestedQueries[$queryName]}");
+            derr("error while parsing query: {$context->nestedQueries[$queryName]}\nError Message is: {$errorMessage}\n");
 
 
         foreach( $rule->destination->members() as $member )
