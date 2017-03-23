@@ -509,7 +509,10 @@ class PanoramaConf
         }
         else
         {
-            $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/dginfo', $this->xmlroot);
+            if( $this->version < 80 )
+                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/dg-meta-data/dginfo', $this->xmlroot);
+            else
+                $dgMetaDataNode = DH::findXPathSingleEntryOrDie('/config/readonly/devices/entry/device-group', $this->xmlroot);
 
             $dgToParent = Array();
             $parentToDG = Array();
