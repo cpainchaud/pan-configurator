@@ -203,6 +203,18 @@ var data = {
                 ]
             },
             {
+                "name": "dst-Remove-Objects-Matching-Filter",
+                "help": "this&nbspaction&nbspwill&nbspgo&nbspthrough&nbspall&nbspobjects&nbspand&nbspsee&nbspif&nbspthey&nbspmatch&nbspthe&nbspquery&nbspyou&nbspinput&nbspand&nbspthen&nbspremove&nbspthem&nbspif&nbspit's&nbspthe&nbspcase.",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "specify the query that will be used to filter the objects to be removed",
+                        "name": "filterName"
+                    }
+                ]
+            },
+            {
                 "name": "dst-set-Any",
                 "help": null,
                 "args": false
@@ -631,6 +643,18 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "objName"
+                    }
+                ]
+            },
+            {
+                "name": "src-Remove-Objects-Matching-Filter",
+                "help": "this&nbspaction&nbspwill&nbspgo&nbspthrough&nbspall&nbspobjects&nbspand&nbspsee&nbspif&nbspthey&nbspmatch&nbspthe&nbspquery&nbspyou&nbspinput&nbspand&nbspthen&nbspremove&nbspthem&nbspif&nbspit's&nbspthe&nbspcase.",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "specify the query that will be used to filter the objects to be removed",
+                        "name": "filterName"
                     }
                 ]
             },
@@ -1224,6 +1248,33 @@ var data = {
             }
         ],
         "tag": [
+            {
+                "name": "Color-set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "color"
+                    }
+                ]
+            },
+            {
+                "name": "Comments-add",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "comments"
+                    }
+                ]
+            },
+            {
+                "name": "Comments-delete",
+                "help": null,
+                "args": false
+            },
             {
                 "name": "delete",
                 "help": null,
@@ -2139,6 +2190,30 @@ var data = {
             }
         ],
         "tag": [
+            {
+                "name": "color",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "eq",
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "comments",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.empty",
+                        "argument": null
+                    },
+                    {
+                        "name": "regex",
+                        "argument": "*required*"
+                    }
+                ]
+            },
             {
                 "name": "location",
                 "help": null,
