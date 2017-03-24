@@ -64,25 +64,26 @@ $actionsData['address'] = generateActionJSON(AddressCallContext::$supportedActio
 $actionsData['service'] = generateActionJSON(ServiceCallContext::$supportedActions);
 $actionsData['tag'] = generateActionJSON(TagCallContext::$supportedActions);
 
-function &generateFilterJSON($actions)
+function &generateFilterJSON($filters)
 {
     $result = Array();
 
-    ksort($actions);
+    ksort($filters);
 
-    foreach($actions as $name => $filter)
+    foreach( $filters as $name => $filter)
     {
         $record = Array( 'name' => $name,'help' => null, 'operators' => Array() );
-
         ksort($filter['operators']);
 
         foreach( $filter['operators'] as $opName => $opDetails)
         {
-            $opRecord = Array('name' => $opName, 'argument' => null);
+            $opRecord = Array('name' => $opName, 'help' => null, 'argument' => null);
 
             if( isset($opDetails['arg']) && $opDetails['arg'] === true )
                 $opRecord['argument'] = '*required*';
 
+            if( isset($opDetails['help']) )
+                $opRecord['help'] = $opDetails['help'];
 
             $record['operators'][] = $opRecord;
         }

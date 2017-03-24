@@ -776,8 +776,8 @@ RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
             return false;
 
         return $object->to->parentCentralStore->find($argument);
-    }
-
+    },
+    'help' => 'returns TRUE if field TO is using zone mentionned in argument. Ie: "(to has Untrust)"'
 );
 RQuery::$defaultFilters['rule']['to']['operators']['has.only'] = Array(
     'eval' => function($object, &$nestedQueries, $value)

@@ -1846,7 +1846,8 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
-                        "argument": "*required*"
+                        "argument": "*required*",
+                        "help": "returns TRUE if field TO is using zone mentionned in argument. Ie: \"(to has Untrust)\""
                     },
                     {
                         "name": "has.only",
