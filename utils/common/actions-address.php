@@ -452,21 +452,19 @@ AddressCallContext::$supportedActions[] = Array(
         $addUsedInLocation = false;
         $addResolveGroupIPCoverage = false;
 
-        $fieldsArray = explode('|',$context->arguments['additionalFields']) ;
-        foreach($fieldsArray as $fieldName)
-        {
-            $fieldName = strtolower($fieldName);
-            if( $fieldName == 'whereused' )
-                $addWhereUsed = true;
-            elseif( $fieldName == 'usedinlocation' )
-                $addUsedInLocation = true;
-            elseif( $fieldName == 'resolveip' )
-                $addResolveGroupIPCoverage = true;
-            else{
-                if( $fieldName != '*none*')
-                 derr("unsupported field name '{$fieldName}' when export to Excel/HTML");
-            }
-        }
+        $optionalFields = &$context->arguments['additionalFields'];
+
+        if( isset($optionalFields['WhereUsed']) )
+            $addWhereUsed = true;
+
+        if( isset($optionalFields['UsedInLocation']) )
+            $addUsedInLocation = true;
+
+        if( isset($optionalFields['ResolveIP']) )
+            $addResolveGroupIPCoverage = true;
+
+        var_dump($optionalFields);
+
 
         $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>tags</th>';
 
@@ -617,10 +615,12 @@ AddressCallContext::$supportedActions[] = Array(
     },
     'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
                         'additionalFields' =>
-                            Array( 'type' => 'string',
+                            Array( 'type' => 'pipeSeparatedList',
+                                'subtype' => 'string',
                                 'default' => '*NONE*',
+                                'choices' => Array('WhereUsed', 'UsedInLocation', 'ResolveIP'),
                                 'help' =>
-                                    "pipe(|) separated list of additional field to include in the report. The following is available:\n".
+                                    "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n".
                                     "  - WhereUsed : list places where object is used (rules, groups ...)\n".
                                     "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n".
                                     "  - ResolveIP\n"
