@@ -42,6 +42,16 @@ class RQuery
 
     public $argument = null;
 
+    /** @var array pointer to the operator descriptor */
+    public $refOperator;
+
+    /** @var string operator of this rquery  */
+    public $operator;
+
+    /** @var  string field to which this Rquery applies */
+    public $field;
+
+
 
     public $inverted = false;
 
@@ -176,6 +186,7 @@ class RQuery
                     }
                     else
                     {
+                        $boolReturn = false;
                         if( !is_string($this->refOperator['eval']) )
                         {
                             $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $this->argument);
@@ -203,6 +214,7 @@ class RQuery
                 }
                 else
                 {
+                    $boolReturn = false;
                     if( !is_string($this->refOperator['eval']) )
                     {
                         $boolReturn = $this->refOperator['eval']($object, $nestedQueries, null);
