@@ -1608,7 +1608,8 @@ RQuery::$defaultFilters['rule']['logprof']['operators']['is'] = Array(
 
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'help' => 'return true if Log Forwarding Profile is the one specified in argument'
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.prerule'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1634,9 +1635,12 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(
 RQuery::$defaultFilters['rule']['rule']['operators']['is.dsri'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
+        if( !$context->object->isSecurityRule() )
+            return false;
         return $context->object->isDSRIEnabled();
     },
-    'arg' => false
+    'arg' => false,
+    'help' => 'return TRUE if Disable Server Response Inspection has been enabled'
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.bidir.nat'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1686,7 +1690,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.universal'] = Array(
 
         return true;
     },
-    'arg' => false
+    'arg' => false,
 );
 
 RQuery::$defaultFilters['rule']['rule']['operators']['is.intrazone'] = Array(
@@ -1740,7 +1744,8 @@ RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
 
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches the one specified in argument'
 );
 RQuery::$defaultFilters['rule']['location']['operators']['regex'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1753,7 +1758,8 @@ RQuery::$defaultFilters['rule']['location']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches the regular expression specified in argument'
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1853,7 +1859,8 @@ RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {   return $context->object->name() == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'help' => 'returns TRUE if rule name matches the one specified in argument'
 );
 RQuery::$defaultFilters['rule']['name']['operators']['regex'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1865,7 +1872,8 @@ RQuery::$defaultFilters['rule']['name']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'help' => 'returns TRUE if rule name matches the regular expression provided in argument'
 );
 RQuery::$defaultFilters['rule']['name']['operators']['eq.nocase'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1910,7 +1918,8 @@ RQuery::$defaultFilters['rule']['name']['operators']['is.in.file'] = Array(
 
         return isset($list[$object->name()]);
     },
-    'arg' => true
+    'arg' => true,
+    'help' => 'returns TRUE if rule name matches one of the names found in text file provided in argument'
 );
 
 //                                              //
