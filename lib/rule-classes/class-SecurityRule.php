@@ -33,7 +33,7 @@ class SecurityRule extends RuleWithUserID
 	protected $secproftype = 'none';
 
     /** @var null|string[]|DOMElement */
-	protected $secprofroot = null;
+	public $secprofroot = null;
 	protected $secprofgroup = null;
 	protected $secprofProfiles = Array();
 
@@ -446,6 +446,8 @@ class SecurityRule extends RuleWithUserID
 		$this->secprofProfiles['virus'] = $newAVprof;
 
 		$this->rewriteSecProfXML();
+
+		return true;
 	}
 
 	public function setSecProf_Vuln( $newAVprof )
@@ -455,6 +457,8 @@ class SecurityRule extends RuleWithUserID
 		$this->secprofProfiles['vulnerability'] = $newAVprof;
 
 		$this->rewriteSecProfXML();
+
+		return true;
 	}
 
 	public function setSecProf_URL( $newAVprof )
@@ -464,6 +468,8 @@ class SecurityRule extends RuleWithUserID
 		$this->secprofProfiles['url-filtering'] = $newAVprof;
 
 		$this->rewriteSecProfXML();
+
+		return true;
 	}
 
 	public function setSecProf_DataFilt( $newAVprof )
@@ -473,6 +479,8 @@ class SecurityRule extends RuleWithUserID
 		$this->secprofProfiles['data-filtering'] = $newAVprof;
 
 		$this->rewriteSecProfXML();
+
+		return true;
 	}
 
 	public function setSecProf_FileBlock( $newAVprof )
@@ -482,6 +490,8 @@ class SecurityRule extends RuleWithUserID
 		$this->secprofProfiles['file-blocking'] = $newAVprof;
 
 		$this->rewriteSecProfXML();
+
+		return true;
 	}
 
 	public function setSecProf_Spyware( $newAVprof )
@@ -491,7 +501,20 @@ class SecurityRule extends RuleWithUserID
 		$this->secprofProfiles['spyware'] = $newAVprof;
 
 		$this->rewriteSecProfXML();
+
+		return true;
 	}
+
+    public function setSecProf_Wildfire( $newAVprof )
+    {
+        $this->secproftype = 'profiles';
+        $this->secprofgroup = null;
+        $this->secprofProfiles['wildfire'] = $newAVprof;
+
+        $this->rewriteSecProfXML();
+
+        return true;
+    }
 
 	public function rewriteSecProfXML()
 	{

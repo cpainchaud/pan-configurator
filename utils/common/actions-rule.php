@@ -1805,6 +1805,50 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'securityProfile-Profile-Set',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $type = $context->arguments['type'];
+        $profName = $context->arguments['profName'];
+
+        $ret = true;
+
+        if( $type == 'virus' )
+            $ret = $rule->setSecProf_AV($profName);
+        elseif( $type == 'vulnerability' )
+            $ret = $rule->setSecProf_Vuln($profName);
+        elseif( $type == 'url-filtering' )
+            $ret = $rule->setSecProf_URL($profName);
+        elseif( $type == 'data-filtering' )
+            $ret = $rule->setSecProf_DataFilt($profName);
+        elseif( $type == 'file-blocking' )
+            $ret = $rule->setSecProf_FileBlock($profName);
+        elseif( $type == 'spyware' )
+            $ret = $rule->setSecProf_Spyware($profName);
+        elseif( $type == 'wildfire' )
+            $ret = $rule->setSecProf_Wildfire($profName);
+        else
+            derr("unsupported profile type '{$type}'");
+
+        if( !$ret ){
+            echo $context->padding." * SKIPPED : no change detected\n";
+            return;
+        }
+
+        $xpath = $rule->getXPath() . '/profile-setting';
+        $con = findConnectorOrDie($rule);
+
+        $con->sendEditRequest($xpath, DH::dom_to_xml($rule->secprofroot, false));
+
+
+    },
+    'args' => Array(    'type' => Array( 'type' => 'string', 'default' => '*nodefault*',
+                                            'choices' => Array( 'virus','vulnerability','url-filtering','data-filtering','file-blocking', 'spyware', 'wildfire')  ),
+                        'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Remove',
     'MainFunction' =>  function(RuleCallContext $context)
     {
