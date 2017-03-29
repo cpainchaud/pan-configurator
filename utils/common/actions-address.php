@@ -450,6 +450,7 @@ AddressCallContext::$supportedActions[] = Array(
         $addWhereUsed = false;
         $addUsedInLocation = false;
         $addResolveGroupIPCoverage = false;
+        $addNestedMembers = false;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
@@ -462,6 +463,9 @@ AddressCallContext::$supportedActions[] = Array(
         if( isset($optionalFields['ResolveIP']) )
             $addResolveGroupIPCoverage = true;
 
+        if( isset($optionalFields['NestedMembers']) )
+            $addNestedMembers= true;
+
         $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>tags</th>';
 
         if( $addWhereUsed )
@@ -470,6 +474,8 @@ AddressCallContext::$supportedActions[] = Array(
             $headers .= '<th>location used</th>';
         if( $addResolveGroupIPCoverage )
             $headers .= '<th>ip resolution</th>';
+        if( $addNestedMembers )
+            $headers .= '<th>nested members</th>';
 
         $lines = '';
         $encloseFunction  = function($value, $nowrap = true)
@@ -586,6 +592,16 @@ AddressCallContext::$supportedActions[] = Array(
 
                     $lines .= $encloseFunction($strMapping);
                 }
+                if( $addNestedMembers )
+                {
+                    if( $object->isGroup() )
+                    {
+                        $members = $object->expand(true);
+                        $lines .= $encloseFunction($members);
+                    }
+                    else
+                        $lines .= $encloseFunction('');
+                }
 
                 $lines .= "</tr>\n";
 
@@ -614,12 +630,13 @@ AddressCallContext::$supportedActions[] = Array(
                             Array( 'type' => 'pipeSeparatedList',
                                 'subtype' => 'string',
                                 'default' => '*NONE*',
-                                'choices' => Array('WhereUsed', 'UsedInLocation', 'ResolveIP'),
+                                'choices' => Array('WhereUsed', 'UsedInLocation', 'ResolveIP', 'NestedMembers'),
                                 'help' =>
                                     "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n".
-                                    "  - WhereUsed : list places where object is used (rules, groups ...)\n".
+                                    "  - NestedMembers: lists all members, even the ones that may be included in nested groups\n".
+                                    "  - ResolveIP\n".
                                     "  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n".
-                                    "  - ResolveIP\n"
+                                    "  - WhereUsed : list places where object is used (rules, groups ...)\n"
                             )
     )
 

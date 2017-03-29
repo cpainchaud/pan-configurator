@@ -15,7 +15,7 @@ rules-edit: new filters 'src is.fully.included.in.list'
 rules-edit: new actions 'dst-Remove-Objects-Matching-Filter' and 'src-Remove-Objects-Matching-Filter' to remove objects matching a specific filter
 rules-edit: new action 'securityProfile-Profile-Set' to set individual profiles
 address-edit: new filter 'description regex'
-address-edit: new field in exportToExcel : 'resolveip'
+address-edit: new fields in exportToExcel : 'ResolveIP' and 'NestedMembers'
 service-edit: new filter 'description regex'
 generic: new filters 'location regex'
 tag-edit: new action 'setColor', 'addComments', 'deleteComments'
