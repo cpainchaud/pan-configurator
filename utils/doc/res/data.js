@@ -1528,9 +1528,24 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.fully.included.in.list",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "is.negated",
                         "help": null,
                         "argument": null
+                    },
+                    {
+                        "name": "is.partially.included.in.list",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.partially.or.fully.included.in.list",
+                        "help": null,
+                        "argument": "*required*"
                     }
                 ]
             },
@@ -1906,9 +1921,24 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.fully.included.in.list",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "is.negated",
                         "help": null,
                         "argument": null
+                    },
+                    {
+                        "name": "is.partially.included.in.list",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.partially.or.fully.included.in.list",
+                        "help": null,
+                        "argument": "*required*"
                     }
                 ]
             },
