@@ -8,7 +8,7 @@ require_once("lib/panconfigurator.php");
 require_once(dirname(__FILE__).'/common/misc.php');
 
 $supportedArguments = Array();
-$supportedArguments[] = Array('niceName' => 'Action', 'shortHelp' => 'type of action you want to perform against API', 'argDesc' => 'register|unregister');
+$supportedArguments[] = Array('niceName' => 'Action', 'shortHelp' => 'type of action you want to perform against API', 'argDesc' => 'register|unregister|fakeregister');
 $supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'the target PANOS device ie: in=api://1.2.3.4', 'argDesc' => 'api://[hostname or IP]');
 $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'defines the VSYS target of the UserID request', 'argDesc' => 'vsys1[,vsys2,...]');
 $supportedArguments[] = Array('niceName' => 'records', 'shortHelp' => 'list of userid records to register/unregister in API', 'argDesc' => '10.0.0.1,domain\user2/10.2.3.4,domain\user3');
@@ -172,6 +172,28 @@ if( $action == 'register' || $action == 'unregister' )
     else
         $connector->userIDLogout(array_keys($records), $records, $location);
 
+    echo "OK!\n";
+
+}
+elseif( $action == 'fakeregister' )
+{
+    $numberOfIPs = 500;
+    $userPrefix = 'acme\\Bob_';
+    $startingIP = ip2long('10.0.0.0');
+
+    $records = Array();
+
+
+    echo "  - Generating {$numberOfIPs} fake records starting at IP ".long2ip($startingIP)."... ";
+    for($i=1; $i<= $numberOfIPs; $i++)
+    {
+        $records[long2ip($startingIP+$i)] = $userPrefix.$i;
+    }
+    echo "OK!\n";
+
+
+    echo " - now sending records to API ... ";
+    $connector->userIDLogin(array_keys($records), $records, $location);
     echo "OK!\n";
 
 }
