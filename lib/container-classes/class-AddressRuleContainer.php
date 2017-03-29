@@ -279,7 +279,7 @@ class AddressRuleContainer extends ObjRuleContainer
     /**
      * return 0 if not match, 1 if this object is fully included in $network, 2 if this object is partially matched by $ref.
      * Always return 0 (not match) if this is object = ANY
-     * @param string $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
+     * @param string|IP4Map $network ie: 192.168.0.2/24, 192.168.0.2,192.168.0.2-192.168.0.4
      * @return int
      */
     public function  includedInIP4Network($network)
@@ -573,6 +573,9 @@ class AddressRuleContainer extends ObjRuleContainer
      */
     public function getIP4Mapping()
     {
+        if( $this->isAny() )
+            return IP4Map::mapFromText('0.0.0.0/0');
+
         $mapObject = new IP4Map();
 
         foreach( $this->o as $member )

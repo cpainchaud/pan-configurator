@@ -36,11 +36,18 @@ class RQuery
 
     static public $defaultFilters = Array();
 
+    static public $commonFilters = Array();
+
     static public $mathOps = Array( '>' => '>', '<' => '<', '=' => '==', '==' => '==', '!=' => '!=', '<=' => '<=', '>=' => '>=' );
 
     public $objectType = null;
 
+    /** @var null|string filter argument */
     public $argument = null;
+
+
+    /** @var null|string[] */
+    public $argumentList = null;
 
     /** @var array pointer to the operator descriptor */
     public $refOperator;
@@ -50,7 +57,6 @@ class RQuery
 
     /** @var  string field to which this Rquery applies */
     public $field;
-
 
 
     public $inverted = false;
@@ -189,7 +195,10 @@ class RQuery
                         $boolReturn = false;
                         if( !is_string($this->refOperator['eval']) )
                         {
-                            $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $this->argument);
+                            if( $this->argumentList !== null )
+                                $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $this->argumentList);
+                            else
+                                $boolReturn = $this->refOperator['eval']($object, $nestedQueries, $this->argument);
                         }
                         else
                         {
@@ -450,14 +459,14 @@ class RQuery
 
         $subtext = substr($subtext, $pos+1);
 
-        if( $this->refOperator['arg'] === false && strlen(trim($subtext)) != 0 )
+        if( (!isset($this->refOperator['arg']) || $this->refOperator['arg'] === false ) && strlen(trim($subtext)) != 0 )
         {
             $errorMessage = "this field/operator does not support argument in expression '$text'";
             return false;
         }
 
 
-        if( $this->refOperator['arg'] === false )
+        if( !isset($this->refOperator['arg']) || $this->refOperator['arg'] === false  )
             return true;
 
 
@@ -471,6 +480,48 @@ class RQuery
 
         $this->argument = $subtext;
 
+        if( isset($this->refOperator['argType']) && $this->refOperator['argType'] == 'commaSeparatedList')
+        {
+            $this->argumentList = explode(',', $subtext);
+            if( count($this->argumentList) == 0 )
+            {
+                $errorMessage = 'expected a list but got an empty string instead';
+                return false;
+            }
+            elseif( count($this->argumentList) == 1 )
+            {
+                //
+                // if the list is only 1 argument long, may be it's a an alias to a text file
+
+                $this->argumentList[0] = trim($this->argumentList[0]);
+
+                if( strlen($this->argumentList[0]) < 1 )
+                {
+                    $errorMessage = 'expected a list but got an empty string instead';
+                    return false;
+                }
+
+                // Yes it's an alias !
+                if( $this->argumentList[0][0] == '@' )
+                {
+                    $fileContent = file_get_contents( substr($this->argumentList[0], 1) );
+                    $this->argumentList = explode("\n", $fileContent);
+                    foreach( $this->argumentList as $itemIndex => &$listItem )
+                    {
+                        $listItem = trim($listItem);
+                        if( strlen($listItem) < 1 )
+                            unset($this->argumentList[$itemIndex]);
+                    }
+                }
+            }
+            else
+            {
+                foreach( $this->argumentList as &$listItem )
+                {
+                    $listItem = trim($listItem);
+                }
+            }
+        }
 
         return true;
 
@@ -558,160 +609,13 @@ class RQuery
  */
 class RQueryContext
 {
-
-
-}
-
-/**
- * Class RuleRQueryContext
- * @ignore
- */
-class RuleRQueryContext extends RQueryContext
-{
-    /** @var  SecurityRule|NatRule|DecryptionRule|AppOverrideRule|PbfRule|CaptivePortalRule */
     public $object;
+
     public $value;
 
     public $rQueryObject;
 
     public $nestedQueries;
-
-    function __construct(RQuery $r, $value = null, $nestedQueries = null)
-    {
-        $this->rQueryObject = $r;
-        $this->value = $value;
-
-        if( $nestedQueries === null )
-            $this->nestedQueries = Array();
-        else
-            $this->nestedQueries = &$nestedQueries;
-    }
-
-    /**
-     * @param $object SecurityRule|NatRule|DecryptionRule|AppOverrideRule
-     * @return bool
-     */
-    function execute($object, $nestedQueries = null)
-    {
-        if( $nestedQueries !== null )
-            $this->nestedQueries = &$nestedQueries;
-
-        $this->object = $object;
-        $this->value = &$this->rQueryObject->argument;
-
-        return $this->rQueryObject->refOperator['Function']($this);
-    }
-
-}
-
-/**
- * Class AddressRQueryContext
- * @ignore
- */
-class AddressRQueryContext extends RQueryContext
-{
-    /** @var  Address|AddressGroup */
-    public $object;
-    public $value;
-
-    public $rQueryObject;
-
-    public $nestedQueries;
-
-    function __construct(RQuery $r, $value = null, $nestedQueries = null)
-    {
-        $this->rQueryObject = $r;
-        $this->value = $value;
-
-        if( $nestedQueries === null )
-            $this->nestedQueries = Array();
-        else
-            $this->nestedQueries = &$nestedQueries;
-    }
-
-    /**
-     * @param $object Address|AddressGroup
-     * @return bool
-     */
-    function execute($object, $nestedQueries = null)
-    {
-        if( $nestedQueries !== null )
-            $this->nestedQueries = &$nestedQueries;
-
-        $this->object = $object;
-        $this->value = &$this->rQueryObject->argument;
-
-        return $this->rQueryObject->refOperator['Function']($this);
-    }
-
-}
-
-/**
- * Class ServiceRQueryContext
- * @ignore
- */
-class ServiceRQueryContext extends RQueryContext
-{
-    /** @var  Service|ServiceGroup */
-    public $object;
-    public $value;
-
-    public $rQueryObject;
-
-    public $nestedQueries;
-
-    function __construct(RQuery $r, $value = null, $nestedQueries = null)
-    {
-        $this->rQueryObject = $r;
-        $this->value = $value;
-
-        if( $nestedQueries === null )
-            $this->nestedQueries = Array();
-        else
-            $this->nestedQueries = &$nestedQueries;
-    }
-
-    /**
-     * @param $object Service|ServiceGroup
-     * @return bool
-     */
-    function execute($object, $nestedQueries = null)
-    {
-        if( $nestedQueries !== null )
-            $this->nestedQueries = &$nestedQueries;
-
-        $this->object = $object;
-        $this->value = &$this->rQueryObject->argument;
-
-        return $this->rQueryObject->refOperator['Function']($this);
-    }
-
-}
-
-/**
- * Class ServiceRQueryContext
- * @ignore
- */
-class TagRQueryContext extends RQueryContext
-{
-    /** @var  Tag */
-    public $object;
-    public $value;
-
-    public $rQueryObject;
-
-    public $nestedQueries;
-
-    function __construct(RQuery $r, $value = null, $nestedQueries = null)
-    {
-        $this->rQueryObject = $r;
-        $this->value = $value;
-
-        if( $nestedQueries === null )
-            $this->nestedQueries = Array();
-        else
-            $this->nestedQueries = &$nestedQueries;
-    }
 
     /**
      * @param $object Tag
@@ -723,9 +627,91 @@ class TagRQueryContext extends RQueryContext
             $this->nestedQueries = &$nestedQueries;
 
         $this->object = $object;
-        $this->value = &$this->rQueryObject->argument;
+
+        if( $this->rQueryObject->argumentList !== null )
+            $this->value = &$this->rQueryObject->argumentList;
+        else
+            $this->value = &$this->rQueryObject->argument;
 
         return $this->rQueryObject->refOperator['Function']($this);
+    }
+
+}
+
+/**
+ * Class RuleRQueryContext
+ * @property Rule|SecurityRule|NatRule|PbfRule|AppOverrideRule|CaptivePortalRule|QoSRule $object
+ * @ignore
+ */
+class RuleRQueryContext extends RQueryContext
+{
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
+    }
+
+}
+
+/**
+ * Class AddressRQueryContext
+ * @property Address|AddressGroup $object
+ * @ignore
+ */
+class AddressRQueryContext extends RQueryContext
+{
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
+    }
+}
+
+/**
+ * Class ServiceRQueryContext
+ * @property Service|ServiceGroup $object
+ * @ignore
+ */
+class ServiceRQueryContext extends RQueryContext
+{
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
+    }
+}
+
+/**
+ * Class TagRQueryContext
+ * @property Tag $object
+ * @ignore
+ */
+class TagRQueryContext extends RQueryContext
+{
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
     }
 
 }
@@ -950,6 +936,80 @@ RQuery::$defaultFilters['rule']['dst-interface']['operators']['is.set'] = Array(
 //                                              //
 //                Dst/Src Based Actions            //
 //                                              //
+
+
+
+RQuery::$commonFilters['src-dst']['xxx-is.fully.included.in.list'] = function(RuleRQueryContext $context, AddressRuleContainer $srcOrDst )
+    {
+        $list = &$context->value;
+
+        /** @var IP4Map $lisMapping */
+
+        if( !isset($context->cachedIPMapping) )
+        {
+            $listMapping = new IP4Map();
+
+            foreach( $list as $item )
+                $listMapping->addMap(IP4Map::mapFromText($item), false);
+
+            $listMapping->sortAndRecalculate();
+
+            $context->cachedIP4Mapping = $listMapping;
+        }
+        else
+            $listMapping = $context->cachedIP4Mapping;
+
+        return $srcOrDst->getIP4Mapping()->includedInOtherMap($listMapping) == 1;
+    };
+
+RQuery::$commonFilters['src-dst']['xxx-is.partially.included.in.list'] = function(RuleRQueryContext $context, AddressRuleContainer $srcOrDst )
+{
+    $list = &$context->value;
+
+    /** @var IP4Map $lisMapping */
+
+    if( !isset($context->cachedIPMapping) )
+    {
+        $listMapping = new IP4Map();
+
+        foreach( $list as $item )
+            $listMapping->addMap(IP4Map::mapFromText($item), false);
+
+        $listMapping->sortAndRecalculate();
+
+        $context->cachedIP4Mapping = $listMapping;
+    }
+    else
+        $listMapping = $context->cachedIP4Mapping;
+
+    return $srcOrDst->getIP4Mapping()->includedInOtherMap($listMapping) == 2;
+};
+
+RQuery::$commonFilters['src-dst']['xxx-is.partially.or.fully.included.in.list'] = function(RuleRQueryContext $context, AddressRuleContainer $srcOrDst )
+{
+    $list = &$context->value;
+
+    /** @var IP4Map $lisMapping */
+
+    if( !isset($context->cachedIPMapping) )
+    {
+        $listMapping = new IP4Map();
+
+        foreach( $list as $item )
+            $listMapping->addMap(IP4Map::mapFromText($item), false);
+
+        $listMapping->sortAndRecalculate();
+
+        $context->cachedIP4Mapping = $listMapping;
+    }
+    else
+        $listMapping = $context->cachedIP4Mapping;
+
+    return $srcOrDst->getIP4Mapping()->includedInOtherMap($listMapping) > 0;
+};
+
+
+
 RQuery::$defaultFilters['rule']['src']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
@@ -1112,6 +1172,34 @@ RQuery::$defaultFilters['rule']['src']['operators']['includes.full.or.partial'] 
         return $context->object->source->includesIP4Network($context->value) > 0;
     },
     'arg' => true
+);
+
+RQuery::$defaultFilters['rule']['src']['operators']['is.fully.included.in.list'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $f = RQuery::$commonFilters['src-dst']['xxx-is.fully.included.in.list'];
+        return $f($context, $context->object->source);
+    },
+    'arg' => true,
+    'argType' => 'commaSeparatedList'
+);
+RQuery::$defaultFilters['rule']['src']['operators']['is.partially.or.fully.included.in.list'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $f = RQuery::$commonFilters['src-dst']['xxx-is.partially.or.fully.included.in.list'];
+        return $f($context, $context->object->source);
+    },
+    'arg' => true,
+    'argType' => 'commaSeparatedList'
+);
+RQuery::$defaultFilters['rule']['src']['operators']['is.partially.included.in.list'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $f = RQuery::$commonFilters['src-dst']['xxx-is.partially.included.in.list'];
+        return $f($context, $context->object->source);
+    },
+    'arg' => true,
+    'argType' => 'commaSeparatedList'
 );
 
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full'] = Array(
@@ -1280,6 +1368,34 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.from.query'] 
         return false;
     },
     'arg' => true
+);
+
+RQuery::$defaultFilters['rule']['dst']['operators']['is.fully.included.in.list'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $f = RQuery::$commonFilters['src-dst']['xxx-is.fully.included.in.list'];
+        return $f($context, $context->object->destination);
+    },
+    'arg' => true,
+    'argType' => 'commaSeparatedList'
+);
+RQuery::$defaultFilters['rule']['dst']['operators']['is.partially.or.fully.included.in.list'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $f = RQuery::$commonFilters['src-dst']['xxx-is.partially.or.fully.included.in.list'];
+        return $f($context, $context->object->destination);
+    },
+    'arg' => true,
+    'argType' => 'commaSeparatedList'
+);
+RQuery::$defaultFilters['rule']['dst']['operators']['is.partially.included.in.list'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $f = RQuery::$commonFilters['src-dst']['xxx-is.partially.included.in.list'];
+        return $f($context, $context->object->destination);
+    },
+    'arg' => true,
+    'argType' => 'commaSeparatedList'
 );
 
 
