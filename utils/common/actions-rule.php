@@ -2583,17 +2583,11 @@ RuleCallContext::$supportedActions[] = Array(
         $filename = $args['filename'];
 
         $addResolvedAddressSummary = false;
-        $fieldsArray = explode('|',$context->arguments['additionalFields']) ;
-        foreach($fieldsArray as $fieldName)
-        {
-            $fieldName = strtolower($fieldName);
-            if( $fieldName == 'resolveaddresssummary' )
-                $addResolvedAddressSummary = true;
-            else{
-                if( $fieldName != '*none*')
-                    derr("unsupported field name '{$fieldName}' when export to Excel/HTML");
-            }
-        }
+
+        $optionalFields = &$context->arguments['additionalFields'];
+
+        if( isset($optionalFields['ResolveAddressSummary']) )
+            $addResolvedAddressSummary = true;
 
         $fields = Array(
             'location' => 'location',
@@ -2683,11 +2677,12 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array(
         'filename' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
         'additionalFields' =>
-            Array( 'type' => 'string',
+            Array( 'type' => 'pipeSeparatedList',
+                'subtype' => 'string',
                 'default' => '*NONE*',
-                'help' =>
-                    "pipe(|) separated list of additional field to include in the report. The following is available:\n".
-                    "  - resolveAddressSummary : fields with address objects will be resolved and summarized in a new column)\n"
+                'choices' => Array('ResolveAddressSummary'),
+                'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n".
+                            "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n"
             )
     )
 );

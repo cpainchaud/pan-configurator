@@ -463,9 +463,6 @@ AddressCallContext::$supportedActions[] = Array(
         if( isset($optionalFields['ResolveIP']) )
             $addResolveGroupIPCoverage = true;
 
-        var_dump($optionalFields);
-
-
         $headers = '<th>location</th><th>name</th><th>type</th><th>value</th><th>description</th><th>tags</th>';
 
         if( $addWhereUsed )

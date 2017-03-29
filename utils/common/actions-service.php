@@ -182,19 +182,15 @@ ServiceCallContext::$supportedActions[] = Array(
 
         $addWhereUsed = false;
         $addUsedInLocation = false;
-        $fieldsArray = explode('|',$context->arguments['additionalFields']) ;
-        foreach($fieldsArray as $fieldName)
-        {
-            $fieldName = strtolower($fieldName);
-            if( $fieldName == 'whereused' )
-                $addWhereUsed = true;
-            elseif( $fieldName == 'usedinlocation' )
-                $addUsedInLocation = true;
-            else{
-                if( $fieldName != '*none*')
-                    derr("unsupported field name '{$fieldName}' when export to Excel/HTML");
-            }
-        }
+
+        $optionalFields = &$context->arguments['additionalFields'];
+
+        if( isset($optionalFields['WhereUsed']) )
+            $addWhereUsed = true;
+
+        if( isset($optionalFields['UsedInLocation']) )
+            $addUsedInLocation = true;
+
 
         $headers = '<th>location</th><th>name</th><th>type</th><th>dport</th><th>sport</th><th>members</th><th>description</th><th>tags</th>';
 
@@ -294,8 +290,10 @@ ServiceCallContext::$supportedActions[] = Array(
     },
     'args' => Array(    'filename' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
         'additionalFields' =>
-            Array( 'type' => 'string',
+            Array( 'type' => 'pipeSeparatedList',
+                'subtype' => 'string',
                 'default' => '*NONE*',
+                'choices' => Array('WhereUsed', 'UsedInLocation'),
                 'help' =>
                     "pipe(|) separated list of additional field to include in the report. The following is available:\n".
                     "  - WhereUsed : list places where object is used (rules, groups ...)\n".

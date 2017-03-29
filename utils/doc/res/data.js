@@ -251,9 +251,13 @@ var data = {
                         "name": "filename"
                     },
                     {
-                        "type": "string",
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
                         "default": "*NONE*",
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - resolveAddressSummary : fields with address objects will be resolved and summarized in a new column)\n",
+                        "choices": [
+                            "ResolveAddressSummary"
+                        ],
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n",
                         "name": "additionalFields"
                     }
                 ]
@@ -1168,8 +1172,13 @@ var data = {
                         "name": "filename"
                     },
                     {
-                        "type": "string",
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
                         "default": "*NONE*",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation"
+                        ],
                         "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n",
                         "name": "additionalFields"
                     }
