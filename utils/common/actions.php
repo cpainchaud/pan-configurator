@@ -70,6 +70,8 @@ class CallContext
             {
                 if( is_bool($argValue) )
                     print "$argName=".boolYesNo($argValue).", ";
+                elseif( is_array($argValue) )
+                    print "$argName=".PH::list_to_string($argValue, '|').", ";
                 else
                     print "$argName=$argValue, ";
             }
@@ -138,6 +140,35 @@ class CallContext
                     if( !isset($tmpChoice[$argValue]) )
                         derr("unsupported value '{$argValue}' for action '{$this->actionRef['name']}' arg#{$count} '{$argName}'");
                 }
+            }
+            elseif( $properties['type'] == 'pipeSeparatedList' )
+            {
+                $tmpArray = Array();
+
+                if( $argValue != $properties['default'] )
+                {    if( isset($properties['choices']) )
+                    {
+                        $tmpChoices = Array();
+                        foreach($properties['choices'] as $choice )
+                        {
+                            $tmpChoices[strtolower($choice)] = $choice;
+                        }
+
+                        $inputChoices = explode('|', $argValue);
+
+                        foreach( $inputChoices as $inputValue )
+                        {
+                            $inputValue = strtolower(trim($inputValue));
+
+                            if( !isset($tmpChoices[$inputValue]) )
+                                derr("unsupported value '{$argValue}' for action '{$this->actionRef['name']}' arg#{$count} '{$argName}'. Available choices are:".PH::list_to_string($properties['choices']));
+
+                            $tmpArray[$tmpChoices[$inputValue]] = $tmpChoices[$inputValue];
+                        }
+                    }
+                }
+
+                $argValue = &$tmpArray;
             }
             elseif( $properties['type'] == 'boolean' || $properties['type'] == 'bool' )
             {

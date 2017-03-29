@@ -201,7 +201,7 @@ if( isset(PH::$args['listactions']) )
     echo "Listing of supported actions:\n\n";
 
     echo str_pad('', 100, '-')."\n";
-    echo str_pad('Action name', 28, ' ', STR_PAD_BOTH)."|".str_pad("Argument:Type",24, ' ', STR_PAD_BOTH)." |".
+    echo str_pad('Action name', 29, ' ', STR_PAD_BOTH)."|".str_pad("Argument:Type",28, ' ', STR_PAD_BOTH)." |".
         str_pad("Def. Values",12, ' ', STR_PAD_BOTH)."|   Choices\n";
     echo str_pad('', 100, '-')."\n";
 
@@ -210,7 +210,7 @@ if( isset(PH::$args['listactions']) )
 
         $output = "* ".$action['name'];
 
-        $output = str_pad($output, 28).'|';
+        $output = str_pad($output, 29).'|';
 
         if( isset($action['args']) )
         {
@@ -219,9 +219,9 @@ if( isset(PH::$args['listactions']) )
             foreach($action['args'] as $argName => &$arg)
             {
                 if( !$first )
-                    $output .= "\n".str_pad('',28).'|';
+                    $output .= "\n".str_pad('',29).'|';
 
-                $output .= " ".str_pad("#$count $argName:{$arg['type']}", 24)."| ".str_pad("{$arg['default']}",12)."| ";
+                $output .= " ".str_pad("#$count $argName:{$arg['type']}", 29)."| ".str_pad("{$arg['default']}",12)."| ";
                 if( isset($arg['choices']) )
                 {
                     $output .= PH::list_to_string($arg['choices']);

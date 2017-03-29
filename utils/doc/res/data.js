@@ -203,6 +203,18 @@ var data = {
                 ]
             },
             {
+                "name": "dst-Remove-Objects-Matching-Filter",
+                "help": "this&nbspaction&nbspwill&nbspgo&nbspthrough&nbspall&nbspobjects&nbspand&nbspsee&nbspif&nbspthey&nbspmatch&nbspthe&nbspquery&nbspyou&nbspinput&nbspand&nbspthen&nbspremove&nbspthem&nbspif&nbspit's&nbspthe&nbspcase.",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "specify the query that will be used to filter the objects to be removed",
+                        "name": "filterName"
+                    }
+                ]
+            },
+            {
                 "name": "dst-set-Any",
                 "help": null,
                 "args": false
@@ -543,6 +555,31 @@ var data = {
                 ]
             },
             {
+                "name": "securityProfile-Profile-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "choices": [
+                            "virus",
+                            "vulnerability",
+                            "url-filtering",
+                            "data-filtering",
+                            "file-blocking",
+                            "spyware",
+                            "wildfire"
+                        ],
+                        "name": "type"
+                    },
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "profName"
+                    }
+                ]
+            },
+            {
                 "name": "securityProfile-Remove",
                 "help": null,
                 "args": false
@@ -631,6 +668,18 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "objName"
+                    }
+                ]
+            },
+            {
+                "name": "src-Remove-Objects-Matching-Filter",
+                "help": "this&nbspaction&nbspwill&nbspgo&nbspthrough&nbspall&nbspobjects&nbspand&nbspsee&nbspif&nbspthey&nbspmatch&nbspthe&nbspquery&nbspyou&nbspinput&nbspand&nbspthen&nbspremove&nbspthem&nbspif&nbspit's&nbspthe&nbspcase.",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "specify the query that will be used to filter the objects to be removed",
+                        "name": "filterName"
                     }
                 ]
             },
@@ -890,9 +939,15 @@ var data = {
                         "name": "filename"
                     },
                     {
-                        "type": "string",
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
                         "default": "*NONE*",
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - ResolveIP\n",
+                        "choices": [
+                            "WhereUsed",
+                            "UsedInLocation",
+                            "ResolveIP"
+                        ],
+                        "help": "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - ResolveIP\n",
                         "name": "additionalFields"
                     }
                 ]
@@ -1225,6 +1280,33 @@ var data = {
         ],
         "tag": [
             {
+                "name": "Color-set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "color"
+                    }
+                ]
+            },
+            {
+                "name": "Comments-add",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "comments"
+                    }
+                ]
+            },
+            {
+                "name": "Comments-delete",
+                "help": null,
+                "args": false
+            },
+            {
                 "name": "delete",
                 "help": null,
                 "args": false
@@ -1313,14 +1395,17 @@ var data = {
                 "operators": [
                     {
                         "name": "is.allow",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.deny",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.negative",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1331,14 +1416,17 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.nocase",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.any",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1349,10 +1437,12 @@ var data = {
                 "operators": [
                     {
                         "name": "is.empty",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1363,6 +1453,7 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1373,58 +1464,72 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.from.query",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.only",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.recursive",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.recursive.from.query",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.recursive.regex",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "included-in.full",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "included-in.full.or.partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "included-in.partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "includes.full",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "includes.full.or.partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "includes.partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.any",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.negated",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1435,6 +1540,7 @@ var data = {
                 "operators": [
                     {
                         "name": "is.set",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1445,18 +1551,22 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.only",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.regex",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.any",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1467,6 +1577,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1477,10 +1588,12 @@ var data = {
                 "operators": [
                     {
                         "name": "is",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches the one specified in argument",
                         "argument": "*required*"
                     },
                     {
                         "name": "regex",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches the regular expression specified in argument",
                         "argument": "*required*"
                     }
                 ]
@@ -1491,10 +1604,12 @@ var data = {
                 "operators": [
                     {
                         "name": "at.end",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "at.start",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1505,10 +1620,12 @@ var data = {
                 "operators": [
                     {
                         "name": "is",
+                        "help": "return true if Log Forwarding Profile is the one specified in argument",
                         "argument": "*required*"
                     },
                     {
                         "name": "is.set",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1519,22 +1636,27 @@ var data = {
                 "operators": [
                     {
                         "name": "contains",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "eq",
+                        "help": "returns TRUE if rule name matches the one specified in argument",
                         "argument": "*required*"
                     },
                     {
                         "name": "eq.nocase",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.in.file",
+                        "help": "returns TRUE if rule name matches one of the names found in text file provided in argument",
                         "argument": "*required*"
                     },
                     {
                         "name": "regex",
+                        "help": "returns TRUE if rule name matches the regular expression provided in argument",
                         "argument": "*required*"
                     }
                 ]
@@ -1545,46 +1667,57 @@ var data = {
                 "operators": [
                     {
                         "name": "has.destination.nat",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "has.source.nat",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.bidir.nat",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.disabled",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.dsri",
+                        "help": "return TRUE if Disable Server Response Inspection has been enabled",
                         "argument": null
                     },
                     {
                         "name": "is.interzone",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.intrazone",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.postrule",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.prerule",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.universal",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.unused.fast",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1595,42 +1728,52 @@ var data = {
                 "operators": [
                     {
                         "name": "as-profile.is",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "av-profile.is",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "group.is",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.group",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.profile",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.set",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "not.set",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "url-profile.is",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "vuln-profile.is",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "wf-profile.is",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1641,18 +1784,22 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.regex",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.any",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.application-default",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1663,14 +1810,17 @@ var data = {
                 "operators": [
                     {
                         "name": "is.dynamic-ip",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.dynamic-ip-and-port",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.static",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1681,6 +1831,7 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1691,58 +1842,72 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.from.query",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.only",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.recursive",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.recursive.from.query",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.recursive.regex",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "included-in.full",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "included-in.full.or.partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "included-in.partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "includes.full",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "includes.full.or.partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "includes.partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.any",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.negated",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1753,14 +1918,17 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.nocase",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1771,6 +1939,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1781,10 +1950,12 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.any",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1795,18 +1966,22 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": "returns TRUE if field TO is using zone mentionned in argument. Ie: \"(to has Untrust)\"",
                         "argument": "*required*"
                     },
                     {
                         "name": "has.only",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.regex",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.any",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1817,6 +1992,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1827,18 +2003,22 @@ var data = {
                 "operators": [
                     {
                         "name": "is.any",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.known",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.prelogon",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.unknown",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1851,6 +2031,7 @@ var data = {
                 "operators": [
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1861,10 +2042,12 @@ var data = {
                 "operators": [
                     {
                         "name": "is",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1875,6 +2058,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1885,22 +2069,27 @@ var data = {
                 "operators": [
                     {
                         "name": "contains",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "eq",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "eq.nocase",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.in.file",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1911,6 +2100,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1921,42 +2111,52 @@ var data = {
                 "operators": [
                     {
                         "name": "is.fqdn",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.group",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.ip-netmask",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.ip-range",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.member.of",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.tmp",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.unused",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.unused.recursive",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "overriden.at.lower.level",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "overrides.upper.level",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -1967,6 +2167,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1977,10 +2178,12 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.nocase",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -1991,6 +2194,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2001,22 +2205,27 @@ var data = {
                 "operators": [
                     {
                         "name": "ip4.included-in",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "ip4.includes-full",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "ip4.includes-full-or-partial",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "ip4.match.exact",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "string.eq",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2029,6 +2238,7 @@ var data = {
                 "operators": [
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2039,10 +2249,12 @@ var data = {
                 "operators": [
                     {
                         "name": "is",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2053,6 +2265,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2063,22 +2276,27 @@ var data = {
                 "operators": [
                     {
                         "name": "contains",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "eq",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "eq.nocase",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.in.file",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2089,26 +2307,32 @@ var data = {
                 "operators": [
                     {
                         "name": "is.group",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.tcp",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.tmp",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.udp",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.unused",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.unused.recursive",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -2119,6 +2343,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2129,10 +2354,12 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.nocase",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2140,15 +2367,44 @@ var data = {
         ],
         "tag": [
             {
+                "name": "color",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "eq",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "comments",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is.empty",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "location",
                 "help": null,
                 "operators": [
                     {
                         "name": "is",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2159,22 +2415,27 @@ var data = {
                 "operators": [
                     {
                         "name": "contains",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "eq",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "eq.nocase",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "is.in.file",
+                        "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "regex",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]
@@ -2185,10 +2446,12 @@ var data = {
                 "operators": [
                     {
                         "name": "is.tmp",
+                        "help": null,
                         "argument": null
                     },
                     {
                         "name": "is.unused",
+                        "help": null,
                         "argument": null
                     }
                 ]
@@ -2199,6 +2462,7 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
                         "argument": "*required*"
                     }
                 ]

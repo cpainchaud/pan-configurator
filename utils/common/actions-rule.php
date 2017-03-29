@@ -452,7 +452,7 @@ RuleCallContext::$commonActionFunctions['zone-add'] = Array(
 
         $objectFind = $zoneContainer->parentCentralStore->find($context->arguments['zoneName']);
         if ($objectFind === null && $force == false)
-            derr("zone named '{$context->arguments['zoneName']}' not found");
+            derr("zone named '{$context->arguments['zoneName']}' not found, you can try to use xxx-add-force action instead");
 
         $objectFind = $zoneContainer->parentCentralStore->findOrCreate($context->arguments['zoneName']);
         if ($objectFind === null)
@@ -932,6 +932,115 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'args' => Array( 'objName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'src-Remove-Objects-Matching-Filter',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $rule->source->count() < 1 )
+            return;
+
+        $queryName = $context->arguments['filterName'];
+
+        if( !isset($context->nestedQueries[$queryName]) )
+        {
+            derr("cannot find query filter called '{$queryName}'");
+        }
+
+        $rQuery = new RQuery('address');
+        $errorMessage = '';
+        if( !$rQuery->parseFromString($context->nestedQueries[$queryName], $errorMessage) )
+            derr("error while parsing query: {$context->nestedQueries[$queryName]}");
+
+
+        foreach( $rule->source->members() as $member )
+        {
+            if( $rQuery->matchSingleObject($member) )
+            {
+                echo $context->padding."  - removing object '{$member->name()}'... ";
+                if( $context->isAPI )
+                    $rule->source->API_remove($member, true);
+                else
+                    $rule->source->remove($member, true);
+                echo "OK\n";
+            }
+        }
+
+        if( $rule->source->count() < 1 )
+        {
+            echo $context->padding." * no objects remaining so the Rule will be disabled...";
+            if( $context->isAPI )
+                $rule->API_setDisabled(true);
+            else
+                $rule->setDisabled(true);
+            echo "OK\n";
+        }
+
+
+
+    },
+    'args' => Array(    'filterName' => Array( 'type' => 'string', 'default' => '*nodefault*',
+                                                'help' => 'specify the query that will be used to filter the objects to be removed' ),
+    ),
+    'help' => "this action will go through all objects and see if they match the query you input and then remove them if it's the case."
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'dst-Remove-Objects-Matching-Filter',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( $rule->destination->count() < 1 )
+            return;
+
+        $queryName = $context->arguments['filterName'];
+
+        if( !isset($context->nestedQueries[$queryName]) )
+        {
+            derr("cannot find query filter called '{$queryName}'");
+        }
+
+        $rQuery = new RQuery('address');
+        $errorMessage = '';
+        if( !$rQuery->parseFromString($context->nestedQueries[$queryName], $errorMessage) )
+            derr("error while parsing query: {$context->nestedQueries[$queryName]}\nError Message is: {$errorMessage}\n");
+
+
+        foreach( $rule->destination->members() as $member )
+        {
+            if( $rQuery->matchSingleObject($member) )
+            {
+                echo $context->padding."  - removing object '{$member->name()}'... ";
+                if( $context->isAPI )
+                    $rule->destination->API_remove($member, true);
+                else
+                    $rule->destination->remove($member, true);
+                echo "OK\n";
+            }
+        }
+
+        if( $rule->destination->count() < 1 )
+        {
+            echo $context->padding." * no objects remaining so the Rule will be disabled...";
+            if( $context->isAPI )
+                $rule->API_setDisabled(true);
+            else
+                $rule->setDisabled(true);
+            echo "OK\n";
+        }
+
+
+
+    },
+    'args' => Array(    'filterName' => Array( 'type' => 'string', 'default' => '*nodefault*',
+        'help' => 'specify the query that will be used to filter the objects to be removed' ),
+    ),
+    'help' => "this action will go through all objects and see if they match the query you input and then remove them if it's the case."
+);
+
+
+
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'src-Remove-Force-Any',
     'section' => 'address',
@@ -1694,6 +1803,50 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setSecurityProfileGroup($context->arguments['profName']);
     },
     'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'securityProfile-Profile-Set',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $type = $context->arguments['type'];
+        $profName = $context->arguments['profName'];
+
+        $ret = true;
+
+        if( $type == 'virus' )
+            $ret = $rule->setSecProf_AV($profName);
+        elseif( $type == 'vulnerability' )
+            $ret = $rule->setSecProf_Vuln($profName);
+        elseif( $type == 'url-filtering' )
+            $ret = $rule->setSecProf_URL($profName);
+        elseif( $type == 'data-filtering' )
+            $ret = $rule->setSecProf_DataFilt($profName);
+        elseif( $type == 'file-blocking' )
+            $ret = $rule->setSecProf_FileBlock($profName);
+        elseif( $type == 'spyware' )
+            $ret = $rule->setSecProf_Spyware($profName);
+        elseif( $type == 'wildfire' )
+            $ret = $rule->setSecProf_Wildfire($profName);
+        else
+            derr("unsupported profile type '{$type}'");
+
+        if( !$ret ){
+            echo $context->padding." * SKIPPED : no change detected\n";
+            return;
+        }
+
+        $xpath = $rule->getXPath() . '/profile-setting';
+        $con = findConnectorOrDie($rule);
+
+        $con->sendEditRequest($xpath, DH::dom_to_xml($rule->secprofroot, false));
+
+
+    },
+    'args' => Array(    'type' => Array( 'type' => 'string', 'default' => '*nodefault*',
+                                            'choices' => Array( 'virus','vulnerability','url-filtering','data-filtering','file-blocking', 'spyware', 'wildfire')  ),
+                        'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Remove',

@@ -12,15 +12,18 @@ rules-edit: new action  'name-removePrefix' 'name-removeSuffix' 'app-add-force'
 rules-edit: action 'from/to-calculate-zones' add new mode 'unneeded-tag-add' to add rule tag (unneeded-from/to-zone) where unneeded zones are available
 rules-edit: filter 'is.unused.fast' extend for nat rules
 rules-edit: new filters 'src is.fully.included.in.list'
+rules-edit: new actions 'dst-Remove-Objects-Matching-Filter' and 'src-Remove-Objects-Matching-Filter' to remove objects matching a specific filter
+rules-edit: new action 'securityProfile-Profile-Set' to set individual profiles
 address-edit: new filter 'description regex'
 address-edit: new field in exportToExcel : 'resolveip'
 service-edit: new filter 'description regex'
 generic: new filters 'location regex'
-tag-edit: new action 'setColor'
-tag-edit: new filter 'color eq'
+tag-edit: new action 'setColor', 'addComments', 'deleteComments'
+tag-edit: new filter 'color eq', 'comments regex /XXX/', 'comments is.empty'
 
 bugfix:
 - help message was not available in override-finder.php
+- fixed an issue with PANOS 8.0 and new DG hierarchy. OMG what did they do ? :D
 
 
 1.5.11

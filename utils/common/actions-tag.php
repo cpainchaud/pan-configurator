@@ -292,8 +292,8 @@ TagCallContext::$supportedActions['display'] = Array(
         print "\n\n";
     },
 );
-TagCallContext::$supportedActions['setcolor'] = Array(
-    'name' => 'setColor',
+TagCallContext::$supportedActions['color-set'] = Array(
+    'name' => 'Color-set',
     'MainFunction' => function ( TagCallContext $context )
     {
         $color = strtolower( $context->arguments['color'] );
@@ -304,8 +304,37 @@ TagCallContext::$supportedActions['setcolor'] = Array(
             $object->API_setColor( $color );
         else
             $object->setColor( $color );
+    },
+    'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*'  )
+    ),
+);
+TagCallContext::$supportedActions['comments-add'] = Array(
+    'name' => 'Comments-add',
+    'MainFunction' => function ( TagCallContext $context )
+    {
+        $comments = $context->arguments['comments'];
+
+        $object = $context->object;
+
+        if( $context->isAPI )
+            $object->API_addComments( $comments );
+        else
+            $object->addComments( $comments );
 
     },
-    'args' => Array( 'color' => Array( 'type' => 'string', 'default' => '*nodefault*', 'choices' => array_flip( Tag::$TagColors )  )
+    'args' => Array( 'comments' => Array( 'type' => 'string', 'default' => '*nodefault*'   )
     ),
+);
+TagCallContext::$supportedActions['comments-delete'] = Array(
+    'name' => 'Comments-delete',
+    'MainFunction' => function ( TagCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $context->isAPI )
+            $object->API_deleteComments( );
+        else
+            $object->deleteComments( );
+
+    },
 );

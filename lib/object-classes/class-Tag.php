@@ -194,7 +194,6 @@ class Tag
         $c = findConnectorOrDie($this);
         $xpath = $this->getXPath();
 
-        #$commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
         if( $newColor != 'none' )
         {
             $valueRoot = DH::findFirstElement('color', $this->xmlroot);
@@ -296,6 +295,90 @@ class Tag
         return $ret;
     }
 
+    /**
+     * * @param string $newComment
+     * * @param bool $rewriteXml
+     * @return bool
+     */
+    public function addComments( $newComment, $rewriteXml = true )
+    {
+        $oldComment = $this->comments;
+        $newComment = $oldComment.$newComment;
+
+
+        if( $this->xmlroot === null )
+            return false;
+
+        if( $rewriteXml )
+        {
+            $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
+            if( $commentsRoot === false)
+            {
+                $child = new DOMElement('comments');
+                $this->xmlroot->appendChild($child);
+                $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
+            }
+
+            DH::setDomNodeText($commentsRoot, $newComment );
+        }
+
+
+        return true;
+    }
+
+    /**
+     * @param string $newComment
+     * @return bool
+     */
+    public function API_addComments($newComment)
+    {
+        if( !$this->addComments($newComment) )
+            return false;
+
+        $c = findConnectorOrDie($this);
+        $xpath = $this->getXPath();
+
+        $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
+        $c->sendEditRequest($xpath."/comments",  DH::dom_to_xml($commentsRoot,-1,false) );
+        $this->addComments($newComment);
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function deleteComments( )
+    {
+        if( $this->xmlroot === null )
+            return false;
+
+        $commentsRoot = DH::findFirstElement('comments', $this->xmlroot);
+        $valueRoot = DH::findFirstElement('color', $this->xmlroot);
+        if( $commentsRoot !== false )
+            $this->xmlroot->removeChild( $commentsRoot);
+
+        if( $valueRoot === false )
+            $this->xmlroot->nodeValue = "";
+
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function API_deleteComments( )
+    {
+        if( !$this->deleteComments() )
+            return false;
+
+        $c = findConnectorOrDie($this);
+        $xpath = $this->getXPath();
+
+        $c->sendEditRequest($xpath,  DH::dom_to_xml($this->xmlroot,-1,false) );
+
+        return true;
+    }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
 }
