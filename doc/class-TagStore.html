@@ -337,20 +337,20 @@
 
 		<div class="description short">
 			
-<p>add a Zone to this store. Use at your own risk.</p>
+<p>add a Tag to this store. Use at your own risk.</p>
 
 		</div>
 
 		<div class="description detailed hidden">
 			
-<p>add a Zone to this store. Use at your own risk.</p>
+<p>add a Tag to this store. Use at your own risk.</p>
 
 
 
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$Obj</var></dt>
-					<dd><code><code><a href="class-Tag.html">Tag</a></code></code></dd>
+					<dd><code><code><a href="class-Tag.html">Tag</a></code></code><br>$Obj</dd>
 					<dt><var>$rewriteXML</var></dt>
 					<dd><code>boolean</code></dd>
 				</dl></div>
@@ -377,7 +377,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_findAvailableTagName">#</a>
-		<code><b>findAvailableTagName</b>( <span>mixed <var>$base</var></span>, <span>mixed <var>$suffix</var></span>, <span>mixed <var>$startCount</var> = <span class="php-quote">''</span></span> )</code>
+		<code><b>findAvailableTagName</b>( <span>string <var>$base</var></span>, <span>string <var>$suffix</var></span>, <span>integer|string <var>$startCount</var> = <span class="php-quote">''</span></span> )</code>
 
 		<div class="description short">
 			
@@ -390,11 +390,11 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$base</var></dt>
-					<dd><code>mixed</code><br>$base string</dd>
+					<dd><code>string</code><br>$base</dd>
 					<dt><var>$suffix</var></dt>
-					<dd><code>mixed</code><br>$suffix string</dd>
+					<dd><code>string</code><br>$suffix</dd>
 					<dt><var>$startCount</var></dt>
-					<dd><code>mixed</code><br>$startCount integer|string</dd>
+					<dd><code>integer|string</code><br>$startCount</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -540,6 +540,82 @@ it and return it.</p>
 		</div>
 		</div></td>
 	</tr>
+	<tr data-order="removeTag" id="_removeTag">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_removeTag">#</a>
+		<code><b>removeTag</b>( <span><code><a href="class-Tag.html">Tag</a></code> <var>$tag</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$tag</var></dt>
+					<dd><code><code><a href="class-Tag.html">Tag</a></code></code><br>$tag</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br>True if Zone was found and removed. False if not found.<br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_removeTag" id="_API_removeTag">
+
+		<td class="attributes"><code>
+			 public 
+			boolean
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_removeTag">#</a>
+		<code><b>API_removeTag</b>( <span><code><a href="class-Tag.html">Tag</a></code> <var>$tag</var></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$tag</var></dt>
+					<dd><code><code><a href="class-Tag.html">Tag</a></code></code><br>$tag</dd>
+				</dl></div>
+
+				<h4>Returns</h4>
+				<div class="list">
+					<code>boolean</code><br />
+				</div>
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
 	<tr data-order="getXPath" id="_getXPath">
 
 		<td class="attributes"><code>
@@ -552,6 +628,35 @@ it and return it.</p>
 		<td class="name"><div>
 		<a class="anchor" href="#_getXPath">#</a>
 		<code><b>getXPath</b>( )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="getTagStoreXPath" id="_getTagStoreXPath">
+
+		<td class="attributes"><code>
+			 public 
+			
+			&amp;
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_getTagStoreXPath">#</a>
+		<code><b>getTagStoreXPath</b>( )</code>
 
 		<div class="description short">
 			
@@ -626,6 +731,7 @@ it and return it.</p>
 	<tr>
 		<td><code>
 			<a href="class-PathableName.html#__PANC_shortName"><b>_PANC_shortName()</b></a>, 
+			<a href="class-PathableName.html#_getLocationString"><b>getLocationString()</b></a>, 
 			<a href="class-PathableName.html#_toString"><b>toString()</b></a>
 		</code></td>
 	</tr>

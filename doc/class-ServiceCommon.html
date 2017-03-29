@@ -300,35 +300,6 @@
 		</div>
 		</div></td>
 	</tr>
-	<tr data-order="isDynamic" id="_isDynamic">
-
-		<td class="attributes"><code>
-			 public 
-			
-			
-			</code>
-		</td>
-
-		<td class="name"><div>
-		<a class="anchor" href="#_isDynamic">#</a>
-		<code><b>isDynamic</b>( )</code>
-
-		<div class="description short">
-			
-		</div>
-
-		<div class="description detailed hidden">
-			
-
-
-
-
-
-
-
-		</div>
-		</div></td>
-	</tr>
 	<tr data-order="removeReference" id="_removeReference">
 
 		<td class="attributes"><code>
@@ -487,7 +458,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_API_removeWhereIamUsed">#</a>
-		<code><b>API_removeWhereIamUsed</b>( <span>mixed <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>mixed <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$actionIfLastInRule</var> = <span class="php-quote">'delete'</span> </span> )</code>
+		<code><b>API_removeWhereIamUsed</b>( <span>boolean <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>string <var>$outputPadding</var> = <span class="php-quote">''</span></span>, <span>mixed <var>$actionIfLastInRule</var> = <span class="php-quote">'delete'</span> </span> )</code>
 
 		<div class="description short">
 			
@@ -500,11 +471,127 @@
 				<h4>Parameters</h4>
 				<div class="list"><dl>
 					<dt><var>$displayOutput</var></dt>
-					<dd><code>mixed</code><br>$displayOutput bool</dd>
+					<dd><code>boolean</code><br>$displayOutput</dd>
 					<dt><var>$outputPadding</var></dt>
-					<dd><code>mixed</code><br>$actionIfLastInRule string can be delete|setany|disable</dd>
+					<dd><code>string</code><br>$actionIfLastInRule can be delete|setany|disable</dd>
 					<dt><var>$actionIfLastInRule</var></dt>
 					<dd><code>mixed</code><br>$outputPadding string|int</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="API_replaceWhereIamUsed" id="_API_replaceWhereIamUsed">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_API_replaceWhereIamUsed">#</a>
+		<code><b>API_replaceWhereIamUsed</b>( <span>boolean <var>$withObject</var></span>, <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>string|integer <var>$outputPadding</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$withObject</var></dt>
+					<dd><code>boolean</code><br>$displayOutput</dd>
+					<dt><var>$displayOutput</var></dt>
+					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$withObject</dd>
+					<dt><var>$outputPadding</var></dt>
+					<dd><code>string|integer</code><br>$outputPadding</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="replaceWhereIamUsed" id="_replaceWhereIamUsed">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#_replaceWhereIamUsed">#</a>
+		<code><b>replaceWhereIamUsed</b>( <span>boolean <var>$withObject</var></span>, <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>string|integer <var>$outputPadding</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$withObject</var></dt>
+					<dd><code>boolean</code><br>$displayOutput</dd>
+					<dt><var>$displayOutput</var></dt>
+					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$withObject</dd>
+					<dt><var>$outputPadding</var></dt>
+					<dd><code>string|integer</code><br>$outputPadding</dd>
+				</dl></div>
+
+
+
+
+
+		</div>
+		</div></td>
+	</tr>
+	<tr data-order="__replaceWhereIamUsed" id="___replaceWhereIamUsed">
+
+		<td class="attributes"><code>
+			 public 
+			
+			
+			</code>
+		</td>
+
+		<td class="name"><div>
+		<a class="anchor" href="#___replaceWhereIamUsed">#</a>
+		<code><b>__replaceWhereIamUsed</b>( <span>boolean <var>$apiMode</var></span>, <span>boolean <var>$withObject</var></span>, <span><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code> <var>$displayOutput</var> = <span class="php-keyword1">false</span></span>, <span>string|integer <var>$outputPadding</var> = <span class="php-quote">''</span></span> )</code>
+
+		<div class="description short">
+			
+		</div>
+
+		<div class="description detailed hidden">
+			
+
+
+				<h4>Parameters</h4>
+				<div class="list"><dl>
+					<dt><var>$apiMode</var></dt>
+					<dd><code>boolean</code><br>$displayOutput</dd>
+					<dt><var>$withObject</var></dt>
+					<dd><code>boolean</code><br>$apiMode</dd>
+					<dt><var>$displayOutput</var></dt>
+					<dd><code><code><a href="class-Service.html">Service</a></code>|<code><a href="class-ServiceGroup.html">ServiceGroup</a></code></code><br>$withObject</dd>
+					<dt><var>$outputPadding</var></dt>
+					<dd><code>string|integer</code><br>$outputPadding</dd>
 				</dl></div>
 
 
