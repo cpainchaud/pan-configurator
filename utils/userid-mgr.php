@@ -11,11 +11,11 @@ $supportedArguments = Array();
 $supportedArguments[] = Array('niceName' => 'Action', 'shortHelp' => 'type of action you want to perform against API', 'argDesc' => 'register|unregister');
 $supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'the target PANOS device ie: in=api://1.2.3.4', 'argDesc' => 'api://[hostname or IP]');
 $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'defines the VSYS target of the UserID request', 'argDesc' => 'vsys1[,vsys2,...]');
-$supportedArguments[] = Array('niceName' => 'records', 'shortHelp' => 'list of userid records to register/unregister in API', 'argDesc' => 'domain\user2,1.2.3.4[/domain\user3,10.5.4.3...]');
+$supportedArguments[] = Array('niceName' => 'records', 'shortHelp' => 'list of userid records to register/unregister in API', 'argDesc' => '10.0.0.1,domain\user2/10.2.3.4,domain\user3');
 $supportedArguments[] = Array('niceName' => 'recordFile', 'shortHelp' => 'use a text file rather than CLI to input UserID records', 'argDesc' => 'users.txt');
 $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 
-$usageMsg = PH::boldText('USAGE EXAMPLES: ')."\n - php ".basename(__FILE__)." in=api://1.2.3.4 action=register location=vsys1 records=domain\\user2,10.0.0.1/domain\\user3,10.2.3.4"
+$usageMsg = PH::boldText('USAGE EXAMPLES: ')."\n - php ".basename(__FILE__)." in=api://1.2.3.4 action=register location=vsys1 records=10.0.0.1,domain\\user2/10.2.3.4,domain\\user3"
                                             ."\n - php ".basename(__FILE__)." in=api://1.2.3.4 action=register location=vsys1 recordsFile=users.txt";
 
 prepareSupportedArgumentsArray($supportedArguments);
@@ -101,14 +101,17 @@ if( $action == 'register' || $action == 'unregister' )
             $lrecord = explode(',', $record);
             if( count($lrecord) != 2 )
                 display_error_usage_exit("the following record does not have the right syntax: '{$record}'");
-            $username = trim($lrecord[0]);
-            $ipaddress = trim($lrecord[1]);
+            $username = trim($lrecord[1]);
+            $ipaddress = trim($lrecord[0]);
 
             if( strlen($username) < 1 )
                 display_error_usage_exit("blank username in record '{$record}'");
 
             if( strlen($ipaddress) < 1 )
                 display_error_usage_exit("blank IP in record '{$record}'");
+
+            if( isset($records[$ipaddress]) && $records[$ipaddress] != $username )
+                display_error_usage_exit("record '{$ipaddress}\\{$username}' conflicts with '{$ipaddress}\\{$records[$ipaddress]}'");
 
             if( !filter_var($ipaddress, FILTER_VALIDATE_IP) )
                 display_error_usage_exit("IP address '{$ipaddress}' is not valid in record '{$record}'");
@@ -133,14 +136,17 @@ if( $action == 'register' || $action == 'unregister' )
             $lrecord = explode(',', $record);
             if( count($lrecord) != 2 )
                 display_error_usage_exit("the following record does not have the right syntax: '{$record}'");
-            $username = trim($lrecord[0]);
-            $ipaddress = trim($lrecord[1]);
+            $username = trim($lrecord[1]);
+            $ipaddress = trim($lrecord[0]);
 
             if( strlen($username) < 1 )
                 display_error_usage_exit("blank username in record '{$record}'");
 
             if( strlen($ipaddress) < 1 )
                 display_error_usage_exit("blank IP in record '{$record}'");
+
+            if( isset($records[$ipaddress]) && $records[$ipaddress] != $username )
+                display_error_usage_exit("record '{$ipaddress}\\{$username}' conflicts with '{$ipaddress}\\{$records[$ipaddress]}'");
 
             if( !filter_var($ipaddress, FILTER_VALIDATE_IP) )
                 display_error_usage_exit("IP address '{$ipaddress}' is not valid in record '{$record}'");
