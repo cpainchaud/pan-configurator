@@ -673,6 +673,23 @@ class PanAPIConnector
         return $ip_array;
     }
 
+    private function _createOrRenewCurl()
+    {
+        if( (PHP_MAJOR_VERSION <= 5 && PHP_MINOR_VERSION < 5) || $this->_curl_handle === null || $this->_curl_count > 100 )
+        {
+            if( $this->_curl_handle !== null )
+                curl_close($this->_curl_handle);
+
+            $this->_curl_handle = curl_init();
+            $this->_curl_count = 0;
+        }
+        else
+        {
+            curl_reset($this->_curl_handle);
+            $this->_curl_count++;
+        }
+    }
+
 
     /**
      * @param string $parameters
@@ -689,19 +706,7 @@ class PanAPIConnector
         if( is_array($parameters) )
             $sendThroughPost = TRUE;
 
-        if( (PHP_MAJOR_VERSION <= 5 && PHP_MINOR_VERSION < 5) || $this->_curl_handle === null || $this->_curl_count > 100 )
-        {
-            if( $this->_curl_handle !== null )
-                curl_close($this->_curl_handle);
-
-            $this->_curl_handle = curl_init();
-            $this->_curl_count = 0;
-        }
-        else
-        {
-            curl_reset($this->_curl_handle);
-            $this->_curl_count++;
-        }
+        $this->_createOrRenewCurl();
 
         curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
         curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
@@ -799,15 +804,12 @@ class PanAPIConnector
 
         $httpReplyContent = curl_exec($this->_curl_handle);
         if( $httpReplyContent === false )
-        {
             derr('Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . curl_error($this->_curl_handle));
-        }
 
         $curlHttpStatusCode = curl_getinfo($this->_curl_handle, CURLINFO_HTTP_CODE);
+
         if( $curlHttpStatusCode != 200 )
-        {
-            derr("HTTP API returned (code : {$curlHttpStatusCode}); " . curl_exec($this->_curl_handle));
-        }
+            derr("HTTP API returned (code : {$curlHttpStatusCode}); " . $httpReplyContent);
 
         $xmlDoc = new DOMDocument();
         if( !$xmlDoc->loadXML($httpReplyContent, LIBXML_PARSEHUGE) )
@@ -820,111 +822,87 @@ class PanAPIConnector
         $statusAttr = DH::findAttribute('status', $firstElement);
 
         if( $statusAttr === FALSE )
-        {
             derr('XML response has no "status" field: ' . DH::dom_to_xml($firstElement));
-        }
 
         if( $statusAttr != 'success' )
-        {
-            //var_dump($statusAttr);
             derr('API reported a failure: "' . $statusAttr . "\" with the following addition infos: " . $firstElement->nodeValue);
-        }
 
         if( $filecontent !== null )
-        {
             return $xmlDoc;
-        }
+
         if( !$checkResultTag )
-        {
             return $xmlDoc;
-        }
 
         //$cursor = &searchForName('name', 'result', $xmlarr['children']);
         $cursor = DH::findFirstElement('result', $firstElement);
 
         if( $cursor === FALSE )
-        {
             derr('XML API response has no <result> field', $xmlDoc);
-        }
 
         DH::makeElementAsRoot($cursor, $xmlDoc);
         return $xmlDoc;
     }
 
-    public function &sendExportRequest($category)
+    /**
+     * @param $category
+     * @return string
+     */
+    public function & sendExportRequest($category)
     {
-        $sendThroughPost = FALSE;
+        $this->_createOrRenewCurl();
+
+        curl_setopt($this->_curl_handle, CURLOPT_RETURNTRANSFER, TRUE);
+        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($this->_curl_handle, CURLOPT_SSL_VERIFYHOST, FALSE);
+        if( defined('CURL_SSLVERSION_TLSv1') ) // for older versions of PHP/openssl bundle
+            curl_setopt($this->_curl_handle, CURLOPT_SSLVERSION, CURL_SSLVERSION_TLSv1);
 
         $host = $this->apihost;
         if( $this->port != 443 )
             $host .= ':' . $this->port;
 
         if( isset($this->serial) && $this->serial !== null )
-        {
             $finalUrl = 'https://' . $host . '/api/';
-            if( !$sendThroughPost )
-                $finalUrl .= '?key=' . $this->apikey . '&target=' . $this->serial;
-        }
         else
-        {
             $finalUrl = 'https://' . $host . '/api/';
-            if( !$sendThroughPost )
-                $finalUrl .= '?key=' . $this->apikey;
-        }
 
-        if( !$sendThroughPost )
+        curl_setopt($this->_curl_handle, CURLOPT_URL, $finalUrl);
+
+
+        if( isset($this->serial) && $this->serial !== null )
         {
-            $finalUrl .= '&type=export&category=' . $category;
+            $parameters['target'] = $this->serial;
         }
+        $parameters['key'] = $this->apikey;
+        $parameters['category'] = $category;
+        $parameters['type'] = 'export';
+        $properParams = http_build_query($parameters);
 
 
-        $c = new mycurl($finalUrl, FALSE);
-
-
-        if( $sendThroughPost )
-        {
-            if( isset($this->serial) && $this->serial !== null )
-            {
-                $parameters['target'] = $this->serial;
-            }
-            $parameters['key'] = $this->apikey;
-            $parameters['category'] = $category;
-            $parameters['type'] = 'export';
-            $properParams = http_build_query($parameters);
-            $c->setPost($properParams);
-        }
+        curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $properParams);
 
         if( $this->showApiCalls )
         {
-            if( $sendThroughPost )
+            $paramURl = '?';
+            foreach( $parameters as $paramIndex => &$param )
             {
-                $paramURl = '?';
-                foreach( $parameters as $paramIndex => &$param )
-                {
-                    $paramURl .= '&' . $paramIndex . '=' . str_replace('#', '%23', $param);
-                }
-
-                print("API call through POST: \"" . $finalUrl . '?' . $paramURl . "\"\r\n");
+                $paramURl .= '&' . $paramIndex . '=' . str_replace('#', '%23', $param);
             }
-            else
-                print("API call: \"" . $finalUrl . "\"\r\n");
+
+            print("API call through POST: \"" . $finalUrl . '?' . $paramURl . "\"\r\n");
         }
 
 
-        if( !$c->createCurl() )
-        {
-            derr('Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . $c->last_error);
-        }
+        $httpReplyContent = curl_exec($this->_curl_handle);
+        if( $httpReplyContent === false )
+            derr('Could not retrieve URL: ' . $finalUrl . ' because of the following error: ' . curl_error($this->_curl_handle));
+
+        $curlHttpStatusCode = curl_getinfo($this->_curl_handle, CURLINFO_HTTP_CODE);
+        if( $curlHttpStatusCode != 200 )
+            derr("HTTP Status returned (code : {$curlHttpStatusCode}); " . $httpReplyContent);
 
 
-        if( $c->getHttpStatus() != 200 )
-        {
-            derr('HTTP API ret: ' . $c->__tostring());
-        }
-
-        $string = $c->__tostring();
-
-        return $string;
+        return $httpReplyContent;
     }
 
 
