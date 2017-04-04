@@ -1,0 +1,22 @@
+language: php
+php:
+  - '5.6'
+#  - '7.0'
+  
+script:
+  - cd examples
+  - php example-add-security-profile-to-all-rules.php
+  - php example-basics-panos.php
+  - php example-panorama-unused-objects.php
+  - cd ../tests
+  - php test_filters.php
+  - php test_actions.php
+
+notifications:
+  email:
+    - shellescape@gmail.com
+    - swaschkut@paloaltonetworks.com
+
+
+  
+  

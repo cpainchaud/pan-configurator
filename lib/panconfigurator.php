@@ -439,6 +439,8 @@ function derr($msg, $object=null)
         $count++;
     }
 
+    echo "\n";
+
     exit(1);
 }
 
