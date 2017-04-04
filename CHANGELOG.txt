@@ -1,6 +1,9 @@
 CHANGELOG
 
-1.5.12
+1.5.13
+
+
+1.5.12 (2017-04-04)
 * introduction of UTILS help.html (utils/doc/help.html)
 * introduction of new util : userid-mgr to register/unregister/dump userid record through api
 * introduction of info_hostname in PanAPIConnector
