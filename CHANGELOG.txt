@@ -2,6 +2,9 @@ CHANGELOG
 
 1.5.13
 
+bugfix:
+- fixed a crash when trying to move some rule types from PRE/POST
+
 
 1.5.12 (2017-04-04)
 * introduction of UTILS help.html (utils/doc/help.html)

@@ -287,4 +287,9 @@ class DoSRule extends RuleWithUserID
         return !$this->_zoneBasedTo;
     }
 
+    public function storeVariableName()
+    {
+        return "dosRules";
+    }
+
 }

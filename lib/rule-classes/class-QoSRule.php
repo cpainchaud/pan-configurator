@@ -228,4 +228,9 @@ class QoSRule extends RuleWithUserID
         return 'qos';
     }
 
+    public function storeVariableName()
+    {
+        return "qosRules";
+    }
+
 }

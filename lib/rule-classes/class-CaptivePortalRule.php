@@ -208,4 +208,9 @@ class CaptivePortalRule extends Rule
         return 'captive-portal';
     }
 
+    public function storeVariableName()
+    {
+        return "captivePortalRules";
+    }
+
 }

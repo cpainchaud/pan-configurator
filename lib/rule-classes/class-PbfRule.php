@@ -170,5 +170,10 @@ class PbfRule extends RuleWithUserID
     }
 
 
+    public function storeVariableName()
+    {
+        return "pbfRules";
+    }
+
 
 }

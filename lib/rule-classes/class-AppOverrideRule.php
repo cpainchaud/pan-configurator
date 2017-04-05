@@ -249,4 +249,9 @@ class AppOverrideRule extends Rule
         return 'app-override';
     }
 
+    public function storeVariableName()
+    {
+        return "appOverrideRules";
+    }
+
 }
