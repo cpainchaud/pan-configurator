@@ -5,6 +5,11 @@ CHANGELOG
 bugfix:
 - fixed a crash when trying to move some rule types from PRE/POST
 
+utils:
+address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,!
+service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
+service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,!
+
 
 1.5.12 (2017-04-04)
 * introduction of UTILS help.html (utils/doc/help.html)

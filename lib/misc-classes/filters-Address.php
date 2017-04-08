@@ -300,6 +300,22 @@ RQuery::$defaultFilters['address']['tag']['operators']['has.nocase'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['address']['tag']['operators']['has.regex'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        foreach($context->object->tags->tags() as $tag )
+        {
+            $matching = preg_match( $context->value, $tag->name() );
+            if( $matching === FALSE )
+                derr("regular expression error on '{$context->value}'");
+            if( $matching === 1 )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+);
 RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {

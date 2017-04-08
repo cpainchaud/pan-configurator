@@ -773,4 +773,102 @@ ServiceCallContext::$supportedActions[] = Array(
     },
 );
 
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'tag-Add',
+    'section' => 'tag',
+    'MainFunction' => function(ServiceCallContext $context)
+    {
+        $object = $context->object;
+        $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
+        if( $objectFind === null )
+            derr("tag named '{$context->arguments['tagName']}' not found");
 
+        if( $context->isAPI )
+            $object->tags->API_addTag($objectFind);
+        else
+            $object->tags->addTag($objectFind);
+    },
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'tag-Add-Force',
+    'section' => 'tag',
+    'MainFunction' => function(ServiceCallContext $context)
+    {
+        $object = $context->object;
+        if( $context->isAPI )
+        {
+            $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
+            if( $objectFind === null)
+                $objectFind = $object->tags->parentCentralStore->API_createTag($context->arguments['tagName']);
+        }
+        else
+            $objectFind = $object->tags->parentCentralStore->findOrCreate($context->arguments['tagName']);
+
+        if( $context->isAPI )
+            $object->tags->API_addTag($objectFind);
+        else
+            $object->tags->addTag($objectFind);
+    },
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'tag-Remove',
+    'section' => 'tag',
+    'MainFunction' => function(ServiceCallContext $context)
+    {
+        $object = $context->object;
+        $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
+        if( $objectFind === null )
+            derr("tag named '{$context->arguments['tagName']}' not found");
+
+        if( $context->isAPI )
+            $object->tags->API_removeTag($objectFind);
+        else
+            $object->tags->removeTag($objectFind);
+    },
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'tag-Remove-All',
+    'section' => 'tag',
+    'MainFunction' => function(ServiceCallContext $context)
+    {
+        $object = $context->object;
+        foreach($object->tags->tags() as $tag )
+        {
+            echo $context->padding."  - removing tag {$tag->name()}... ";
+            if( $context->isAPI )
+                $object->tags->API_removeTag($tag);
+            else
+                $object->tags->removeTag($tag);
+            echo "OK!\n";
+        }
+    },
+    //'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'tag-Remove-Regex',
+    'section' => 'tag',
+    'MainFunction' => function(ServiceCallContext $context)
+    {
+        $object = $context->object;
+        $pattern = '/'.$context->arguments['regex'].'/';
+        foreach($object->tags->tags() as $tag )
+        {
+            $result = preg_match($pattern, $tag->name());
+            if( $result === false )
+                derr("'$pattern' is not a valid regex");
+            if( $result == 1 )
+            {
+                echo $context->padding."  - removing tag {$tag->name()}... ";
+                if( $context->isAPI )
+                    $object->tags->API_removeTag($tag);
+                else
+                    $object->tags->removeTag($tag);
+                echo "OK!\n";
+            }
+        }
+    },
+    'args' => Array( 'regex' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);

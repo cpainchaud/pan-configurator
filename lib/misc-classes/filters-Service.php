@@ -182,6 +182,26 @@ RQuery::$defaultFilters['service']['tag']['operators']['has.nocase'] = Array(
     },
     'arg' => true
 );
+RQuery::$defaultFilters['service']['tag']['operators']['has.regex'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        foreach($context->object->tags->tags() as $tag )
+        {
+            $matching = preg_match( $context->value, $tag->name() );
+            if( $matching === FALSE )
+                derr("regular expression error on '{$context->value}'");
+            if( $matching === 1 )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+);
+RQuery::$defaultFilters['service']['tag.count']['operators']['>,<,=,!'] = Array(
+    'eval' => "\$object->tags->count() !operator! !value!",
+    'arg' => true
+);
 RQuery::$defaultFilters['service']['description']['operators']['regex'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
