@@ -150,12 +150,12 @@ class AddressGroup
                     if( strlen($memberName) < 1 )
                         derr('found a member with empty name !', $node);
 
-                    if( isset($memberIndex[$memberName]) )
+                    if( isset($membersIndex[$memberName]) )
                     {
                         mwarning("duplicated member named '{$memberName}' detected in address group '{$this->name}',  you should review your XML config file", $this->xmlroot);
                         continue;
                     }
-                    $memberIndex[$memberName] = true;
+                    $membersIndex[$memberName] = true;
 
 					$f = $this->owner->findOrCreate($memberName, $this, true);
 					$this->members[] = $f;
