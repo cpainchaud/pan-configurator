@@ -109,7 +109,7 @@ class ServiceGroup
                 foreach( $this->members as $member )
                     if( $member === $f )
                     {
-                        mwarning("service '{$memberName}' is already part of group '{$this->name}', you should review your your config file");
+                        mwarning("duplicated member named '{$memberName}' detected in service group '{$this->name}', you should review your XML config file", $this->xmlroot);
                         $alreadyInGroup = true;
                         break;
                     }
