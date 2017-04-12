@@ -228,8 +228,6 @@ RQuery::$commonFilters['src-dst']['xxx-is.fully.included.in.list'] = function(Ru
 {
     $list = &$context->value;
 
-    /** @var IP4Map $lisMapping */
-
     if( !isset($context->cachedIPMapping) )
     {
         $listMapping = new IP4Map();
@@ -250,8 +248,6 @@ RQuery::$commonFilters['src-dst']['xxx-is.fully.included.in.list'] = function(Ru
 RQuery::$commonFilters['src-dst']['xxx-is.partially.included.in.list'] = function(RuleRQueryContext $context, AddressRuleContainer $srcOrDst )
 {
     $list = &$context->value;
-
-    /** @var IP4Map $lisMapping */
 
     if( !isset($context->cachedIPMapping) )
     {
@@ -1349,7 +1345,11 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.any'] = Array(
 
         return $rule->userID_IsAny();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['user']['operators']['is.known'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1362,7 +1362,11 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.known'] = Array(
 
         return $rule->userID_IsKnown();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['user']['operators']['is.unknown'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1375,7 +1379,11 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.unknown'] = Array(
 
         return $rule->userID_IsUnknown();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['user']['operators']['is.prelogon'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1388,7 +1396,11 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.prelogon'] = Array(
 
         return $rule->userID_IsPreLogon();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 
@@ -1397,7 +1409,11 @@ RQuery::$defaultFilters['rule']['target']['operators']['is.any'] = Array(
     {
         return $context->object->target_isAny();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['target']['operators']['has'] = Array(
@@ -1420,7 +1436,11 @@ RQuery::$defaultFilters['rule']['target']['operators']['has'] = Array(
 
         return $context->object->target_hasDeviceAndVsys($serial, $vsys);
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP%  00YC25C)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 
@@ -1435,6 +1455,10 @@ RQuery::$defaultFilters['rule']['description']['operators']['is.empty'] = Array(
         return false;
     },
     'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 
@@ -1449,6 +1473,10 @@ RQuery::$defaultFilters['rule']['description']['operators']['regex'] = Array(
         return false;
     },
     'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /input a string here/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 // </editor-fold>
