@@ -46,6 +46,22 @@ RQuery::$defaultFilters['service']['object']['operators']['is.unused.recursive']
     },
     'arg' => false
 );
+RQuery::$defaultFilters['service']['object']['operators']['is.member.of'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $serviceGroup = $context->object->owner->find( $context->value );
+
+        if( $serviceGroup === null )
+            return false;
+
+        if( $serviceGroup->hasObjectRecursive( $context->object ) )
+            return true;
+
+        return false;
+
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['service']['name']['operators']['is.in.file'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
