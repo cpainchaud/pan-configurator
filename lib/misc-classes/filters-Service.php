@@ -3,14 +3,22 @@
 // <editor-fold desc=" ***** Service filters *****" defaultstate="collapsed" >
 RQuery::$defaultFilters['service']['refcount']['operators']['>,<,=,!'] = Array(
     'eval' => '$object->countReferences() !operator! !value!',
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.unused'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
         return $context->object->countReferences() == 0;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.unused.recursive'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -44,7 +52,11 @@ RQuery::$defaultFilters['service']['object']['operators']['is.unused.recursive']
         return $f($object);
 
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['name']['operators']['is.in.file'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -81,7 +93,11 @@ RQuery::$defaultFilters['service']['object']['operators']['is.group'] = Array(
     {
         return $context->object->isGroup();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.tcp'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -95,7 +111,11 @@ RQuery::$defaultFilters['service']['object']['operators']['is.tcp'] = Array(
 
         return $context->object->isTcp();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.udp'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -109,35 +129,55 @@ RQuery::$defaultFilters['service']['object']['operators']['is.udp'] = Array(
 
         return $context->object->isUdp();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['object']['operators']['is.tmp'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
         return $context->object->isTmpSrv();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
         return $context->object->name() == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% tcp-80)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['name']['operators']['eq.nocase'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
         return strtolower($context->object->name()) == strtolower($context->value);
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% udp)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['name']['operators']['contains'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
         return strpos($context->object->name(), $context->value) !== false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% udp)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['name']['operators']['regex'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -161,11 +201,19 @@ RQuery::$defaultFilters['service']['name']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /tcp/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['members.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['tag']['operators']['has'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -180,7 +228,11 @@ RQuery::$defaultFilters['service']['tag']['operators']['has.nocase'] = Array(
     {
         return $context->object->tags->hasTag($context->value, false) === true;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% test )',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['tag']['operators']['has.regex'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -197,16 +249,27 @@ RQuery::$defaultFilters['service']['tag']['operators']['has.regex'] = Array(
         return false;
     },
     'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /grp/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['tag.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->tags->count() !operator! !value!",
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['description']['operators']['regex'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
         $object = $context->object;
         $value = $context->value;
+
+        if( !$object->isService() )
+            return false;
 
         if( strlen($value) > 0 && $value[0] == '%')
         {
@@ -224,7 +287,11 @@ RQuery::$defaultFilters['service']['description']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /test/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -243,7 +310,11 @@ RQuery::$defaultFilters['service']['location']['operators']['is'] = Array(
 
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% shared)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['service']['location']['operators']['regex'] = Array(
     'Function' => function(ServiceRQueryContext $context )
@@ -256,6 +327,10 @@ RQuery::$defaultFilters['service']['location']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /shared/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 // </editor-fold>

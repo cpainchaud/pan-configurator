@@ -91,6 +91,7 @@
     <tag>
       <entry name="grp.local-group1"/>
       <entry name="grp.shared-group1"/>
+      <entry name="test.tag"/>
     </tag>
     <pre-rulebase>
       <decryption>

@@ -64,6 +64,9 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             $totalFilterWithCiCount++;
 
+            if( $operator == '>,<,=,!' )
+                $operator = '<';
+
             echo "\n\n\n *** Processing filter: {$type} / ({$fieldName} {$operator})\n";
 
             $ci = &$filter['ci'];
@@ -73,6 +76,12 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 
             if( $type == 'rule' )
                 $util = '../utils/rules-edit.php';
+            elseif( $type == 'address' )
+                $util = '../utils/address-edit.php';
+            elseif( $type == 'service' )
+                $util = '../utils/service-edit.php';
+            elseif( $type == 'tag' )
+                $util = '../utils/tag-edit.php';
             else
                 derr('unsupported');
 
@@ -80,7 +89,13 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             $output = '/dev/null';
             $ruletype = 'any';
 
-            $cli = "php $util in={$ci['input']} out={$output} ruletype={$ruletype} location={$location} actions=display 'filter={$filterString}'".' 2>&1';
+
+            $cli = "php $util in={$ci['input']} out={$output} location={$location} actions=display 'filter={$filterString}'";
+
+            if( $type == 'rule' )
+                $cli .= " ruletype={$ruletype}";
+
+            $cli .= ' 2>&1';
 
             echo " * Executing CLI: {$cli}\n";
 

@@ -4,14 +4,22 @@
 
 RQuery::$defaultFilters['address']['refcount']['operators']['>,<,=,!'] = Array(
     'eval' => '$object->countReferences() !operator! !value!',
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.unused'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         return $context->object->countReferences() == 0;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.unused.recursive'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -45,21 +53,33 @@ RQuery::$defaultFilters['address']['object']['operators']['is.unused.recursive']
         return $f($object);
 
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.group'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         return $context->object->isGroup() == true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.tmp'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         return $context->object->isTmpAddr() == true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.ip-range'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -69,7 +89,11 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ip-range'] = Array
 
         return false;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.ip-netmask'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -79,7 +103,11 @@ RQuery::$defaultFilters['address']['object']['operators']['is.ip-netmask'] = Arr
 
         return false;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.fqdn'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -89,7 +117,11 @@ RQuery::$defaultFilters['address']['object']['operators']['is.fqdn'] = Array(
         else
             return false;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['overrides.upper.level'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -110,7 +142,11 @@ RQuery::$defaultFilters['address']['object']['operators']['overrides.upper.level
         else
             return false;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['overriden.at.lower.level'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -136,7 +172,11 @@ RQuery::$defaultFilters['address']['object']['operators']['overriden.at.lower.le
 
         return false;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['object']['operators']['is.member.of'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -152,28 +192,44 @@ RQuery::$defaultFilters['address']['object']['operators']['is.member.of'] = Arra
         return false;
 
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% shared-group1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         return $context->object->name() == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% new test 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['name']['operators']['eq.nocase'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         return strtolower($context->object->name()) == strtolower($context->value);
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% new test 2)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['name']['operators']['contains'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         return strpos($context->object->name(), $context->value) !== false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% -)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -241,7 +297,11 @@ RQuery::$defaultFilters['address']['name']['operators']['regex'] = Array(
 
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /n-/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['name']['operators']['is.in.file'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -275,15 +335,27 @@ RQuery::$defaultFilters['address']['name']['operators']['is.in.file'] = Array(
 );
 RQuery::$defaultFilters['address']['netmask']['operators']['>,<,=,!'] = Array(
     'eval' => '!$object->isGroup() && $object->isType_ipNetmask() && $object->getNetworkMask() !operator! !value!',
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['members.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->isGroup() && \$object->count() !operator! !value!",
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['tag.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->tags->count() !operator! !value!",
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -291,14 +363,22 @@ RQuery::$defaultFilters['address']['tag']['operators']['has'] = Array(
         return $context->object->tags->hasTag($context->value) === true;
     },
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');",
+    'ci' => Array(
+        'fString' => '(%PROP% grp.shared-group1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has.nocase'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {
         return $context->object->tags->hasTag($context->value, false) === true;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% test)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['tag']['operators']['has.regex'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -315,6 +395,10 @@ RQuery::$defaultFilters['address']['tag']['operators']['has.regex'] = Array(
         return false;
     },
     'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /grp/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -333,7 +417,11 @@ RQuery::$defaultFilters['address']['location']['operators']['is'] = Array(
 
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% shared)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['location']['operators']['regex'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -346,7 +434,11 @@ RQuery::$defaultFilters['address']['location']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /shared/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -366,7 +458,11 @@ RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = Array(
         }
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -396,7 +492,11 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.match.exact'] = Ar
 
         return $object->getIP4Mapping()->equals($mapping);
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -421,7 +521,11 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = Ar
 
         return $object->getIP4Mapping()->includedInOtherMap($mapping) == 1;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -446,7 +550,11 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full'] = 
 
         return $mapping->includedInOtherMap($object->getIP4Mapping()) == 1;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full-or-partial'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -471,7 +579,11 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full-or-p
 
         return $mapping->includedInOtherMap($object->getIP4Mapping()) != 0;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['address']['description']['operators']['regex'] = Array(
     'Function' => function(AddressRQueryContext $context )
@@ -495,7 +607,11 @@ RQuery::$defaultFilters['address']['description']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /test/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 // </editor-fold>
