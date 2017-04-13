@@ -29,7 +29,7 @@ class ServiceStore
 	protected $appdef = false;
 
 	/** @var Service[]|ServiceGroup[] */
-	protected $all = Array();
+	protected $_all = Array();
 
 	/** @var Service[] */
 	protected $_serviceObjects = Array();
@@ -38,9 +38,6 @@ class ServiceStore
 	protected $_serviceGroups = Array();
 	/** @var Service[] */
 	protected $_tmpServices = Array();
-	
-	protected $fast = Array(); 
-	protected $fastMemToIndex = null;
 
     /**
      * @var DOMElement
@@ -60,15 +57,13 @@ class ServiceStore
             $this->parentCentralStore = $owner->parentDeviceGroup->serviceStore;
 		else
             $this->findParentCentralStore();
-		
-		$this->regen_Indexes();
+
 	}
 
 
-	/**
-	*
-	*
-	*/
+    /**
+     * @param DOMElement $xml
+     */
 	public function load_services_from_domxml($xml)
 	{
 		$this->serviceRoot = $xml;
@@ -82,7 +77,7 @@ class ServiceStore
 
 			$ns = new Service('',$this);
 			$ns->load_from_domxml($node);
-			if( isset($this->fast[$ns->name()]) )
+			if( isset($this->_all[$ns->name()]) )
             {
                 mwarning("service named '{$ns->name()}' already exists and was ignored, check your XML configuration", $node);
                 if( PH::$enableXmlDuplicatesDeletion )
@@ -91,36 +86,23 @@ class ServiceStore
                 continue;
             }
 
-            $this->_serviceObjects[] = $ns;
-            $this->all[] = $ns;
-            $this->add_Obj_inIndex($ns, lastIndex($this->all));
+            $this->_serviceObjects[$ns->name()] = $ns;
+            $this->_all[$ns->name()] = $ns;
 		}
 
         foreach( $duplicatesRemoval as $node )
         {
             $node->parentNode->removeChild($node);
         }
+	}
 
-		
-		$this->regen_Indexes();
-	}
-	
-	
-	private function remergeAll()
-	{
-		
-		$this->all = array_merge($this->_serviceObjects, $this->_serviceGroups, $this->_tmpServices);
-		
-		
-		$this->regen_Indexes();
-	}
 
 	/**
 	 * @return Service[]|ServiceGroup[]
 	 */
 	public function all()
 	{
-		return $this->all;
+		return $this->_all;
 	}
 
 	/**
@@ -153,48 +135,60 @@ class ServiceStore
      */
 	public function load_servicegroups_from_domxml($xml)
 	{
-		$this->serviceGroupRoot = $xml;
+        $this->serviceGroupRoot = $xml;
+
         $duplicatesRemoval = Array();
-		
-		foreach( $xml->childNodes as $node )
-		{
-			if( $node->nodeType != 1 ) continue;
 
-			$ns = new ServiceGroup('',$this);
-			$ns->load_from_domxml($node);
+        foreach( $xml->childNodes as $node )
+        {
+            /** @var DOMElement $node */
+            if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
-            if( isset($this->fast[$ns->name()]) )
+            $name = $node->getAttribute('name');
+            if( strlen($name) == 0 )
+                derr("unsupported empty group name", $node);
+
+            $ns = new ServiceGroup( $name, $this);
+
+            if( isset($this->_tmpServices[$name]) )
             {
-                mwarning("service named '{$ns->name()}' already exists and was ignored, check your XML configuration", $node);
+                $tmpObj = $this->_tmpServices[$name];
+                $tmpObj->replaceMeGlobally($ns);
+                $this->remove($tmpObj);
+            }
+
+            if( isset($this->_all[$name]) )
+            {
                 if( PH::$enableXmlDuplicatesDeletion )
                     $duplicatesRemoval[] = $node;
-
+                mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node);
                 continue;
             }
-			
-			$f = $this->findTmpService($ns->name());
-			if( $f )
-			{
-				$f->replaceMeGlobally($ns);
-                $this->remove($f);
-			}
-			$this->_serviceGroups[] = $ns;
-			$this->all[] = $ns; 
-			$this->add_Obj_inIndex($ns, lastIndex($this->all));
-		}
+
+            $this->_serviceGroups[$name] = $ns;
+            $this->_all[$name] = $ns;
+        }
 
         foreach( $duplicatesRemoval as $node )
         {
             $node->parentNode->removeChild($node);
         }
-		
-		$this->regen_Indexes();
+
+        foreach( $xml->childNodes as $node )
+        {
+            /** @var DOMElement $node */
+            if( $node->nodeType != 1 ) continue;
+
+            $name = $node->getAttribute('name');
+            $ns = $this->_serviceGroups[$name];
+            $ns->load_from_domxml($node);
+        }
 	}
 
 
 	public function count()
 	{
-		return count($this->all);
+		return count($this->_all);
 	}
 
 	
@@ -254,48 +248,33 @@ class ServiceStore
 	}
 
     /**
-     * @param string $fn
+     * @param string $objectName
      * @param null $ref
      * @param bool $nested
-     * @param string $type
      * @return null|Service|ServiceGroup
      */
-	public function find( $fn , $ref=null, $nested=true, $type = '')
+	public function find($objectName , $ref=null, $nested=true )
 	{
-		$f = null;
+        $f = null;
 
-        if( $type == 'tmp' )
+        if( isset($this->_all[$objectName]) )
         {
-            $a = &$this->_tmpServices;
-            foreach($a as $o)
-            {
-                if( $o->name() == $fn )
-                {
-                    $o->addReference($ref);
-                    return $o;
-                }
-            }
-        }
-
-
-        if( isset($this->fast[$fn] ) )
-        {
-            if( $ref !== null )
-                $this->fast[$fn]->addReference($ref);
-            return $this->fast[$fn];
+            $foundObject = $this->_all[$objectName];
+            $foundObject->addReference($ref);
+            return $foundObject;
         }
 
 
         if( $nested && isset($this->panoramaShared) )
         {
-            $f = $this->panoramaShared->find( $fn , $ref, false, $type);
+            $f = $this->panoramaShared->find( $objectName , $ref, false);
 
             if( $f !== null )
                 return $f;
         }
         else if( $nested && isset($this->panoramaDG) )
         {
-            $f = $this->panoramaDG->find( $fn , $ref, false, $type);
+            $f = $this->panoramaDG->find( $objectName , $ref, false);
             if( $f !== null )
                 return $f;
         }
@@ -303,13 +282,10 @@ class ServiceStore
 
         if( $nested && $this->parentCentralStore !== null )
         {
-
-            $f = $this->parentCentralStore->find( $fn , $ref, $nested);
+            $f = $this->parentCentralStore->find( $objectName , $ref, $nested);
         }
 
-
         return $f;
-
 	}
 
     /**
@@ -335,7 +311,9 @@ class ServiceStore
      */
 	public function findTmpService($name)
 	{
-		return $this->find($name , null, false, 'tmp');
+	    if( isset($this->_tmpServices[$name]) )
+	        return $this->_tmpServices[$name];
+		return null;
 	}
 
 
@@ -346,89 +324,91 @@ class ServiceStore
 	 */
 	public function remove($s, $cleanInMemory = false)
 	{
-		$class = get_class($s);
-		
-		$ser = spl_object_hash($s);
-		
-		if( isset($this->fastMemToIndex[$ser]))
-		{
-			if( $class == "Service" )
-			{
-				if( $s->type == 'tmp' )
-				{
-					$pos = array_search($s, $this->_tmpServices,true);
-					unset($this->_tmpServices[$pos]);
+        $class = get_class($s);
 
-				}
-				else
-				{
-					$pos = array_search($s, $this->_serviceObjects,true);
-					unset($this->_serviceObjects[$pos]);
-				}
-			}
-			else if( $class == "ServiceGroup" )
-			{
-				$pos = array_search($s, $this->_serviceGroups,true);
-				unset($this->_serviceGroups[$pos]);
-                if( $cleanInMemory )
-                    $s->removeAll(false);
-			}
-			else
-				derr("Class $class is not supported");
-				
-			unset($this->fast[$s->name()]);
-			unset($this->all[$this->fastMemToIndex[$ser]]);
-			unset($this->fastMemToIndex[$ser]);
+        $objectName = $s->name();
 
-			$s->owner = null;
 
-			if( !$s->isTmpSrv() )
-			{
-				if( $class == "Service" )
-				{
-                    if( count($this->_serviceObjects) > 0 )
-                        $this->serviceRoot->removeChild($s->xmlroot);
-                    else
-                        DH::clearDomNodeChilds($this->serviceRoot);
-				}
-				else if( $class == "ServiceGroup" )
-                {
-                    if( count($this->_serviceGroups) > 0 )
-                        $this->serviceGroupRoot->removeChild($s->xmlroot);
-                    else
-                        DH::clearDomNodeChilds($this->serviceGroupRoot);
-                }
+        if( !isset($this->_all[$objectName]) )
+        {
+            mdeb('Tried to remove an object that is not part of this store');
+            return false;
+        }
+
+        unset( $this->_all[$objectName]);
+
+
+        if(  $class == 'Service' )
+        {
+            if( $s->isTmpSrv() )
+            {
+                unset($this->_tmpServices[$objectName]);
+            }
+            else
+            {
+                unset($this->_serviceObjects[$objectName]);
+            }
+        }
+        else if( $class == 'ServiceGroup' )
+        {
+            unset($this->_serviceGroups[$objectName]);
+            if( $cleanInMemory )
+                $s->removeAll(false);
+        }
+        else
+            derr('invalid class found');
+
+        $s->owner = null;
+
+
+        if( !$s->isTmpSrv() )
+        {
+            if( $class == "Service" )
+            {
+                if( count($this->_serviceObjects) > 0 )
+                    $this->serviceRoot->removeChild($s->xmlroot);
                 else
-                    derr('unsupported');
+                    DH::clearDomNodeChilds($this->serviceRoot);
 
-                if( $cleanInMemory )
-                    $s->xmlroot = null;
-			}
-			return true;
-		}
-		return false;
+            }
+            else if( $class == "ServiceGroup" )
+            {
+                if( count($this->_serviceGroups) > 0 )
+                    $this->serviceGroupRoot->removeChild($s->xmlroot);
+                else
+                    DH::clearDomNodeChilds($this->serviceGroupRoot);
+            }
+            else
+                derr('unsupported');
+        }
+
+        if( $cleanInMemory )
+            $s->xmlroot = null;
+
+        return true;
 	}
 
 	/**
 	 * @param Service|ServiceGroup $s
+     * @param bool $cleanInMemory
 	 * @return bool
 	 */
 	public function API_remove($s, $cleanInMemory = false)
 	{
-		$xpath = null;
+        $xpath = null;
 
-		if( !$s->isTmpSrv() )
-			$xpath = $s->getXPath();
+        if( !$s->isTmpSrv() )
+            $xpath = $s->getXPath();
 
-		$ret = $this->remove($s, $cleanInMemory);
+        $ret = $this->remove($s, $cleanInMemory);
 
-		if( $ret && !$s->isTmpSrv())
-		{
-			$con = findConnectorOrDie($this);
-			$con->sendDeleteRequest($xpath);
-		}
+        if( $ret && !$s->isTmpSrv() )
+        {
+            $con = findConnectorOrDie($this);
+            $con->sendDeleteRequest($xpath);
+        }
 
-		return $ret;
+        return $ret;
 	}
 
 	
@@ -452,72 +432,60 @@ class ServiceStore
 
     /**
      * @param Service|ServiceGroup $s
-     * @param bool $rewritexml
+     * @param bool $rewriteXml
      * @throws Exception
+     * @return bool
      */
-	public function add($s, $rewritexml=true)
+	public function add($s, $rewriteXml=true)
 	{
-		//print "Service->add was called\n";
+        $objectName = $s->name();
 
-		if( $s === null )
-			derr('attempt to add null object?');
+        // there is already an object named like that
+        if( isset($this->_all[$objectName]) && $this->_all[$objectName] !== $s )
+        {
+            derr('You cannot add object with same name in a store');
+        }
 
-		$class = get_class($s);
-		
-		$ser = spl_object_hash($s);
-		
-		if( !isset($this->fastMemToIndex[$ser]) && !isset($this->fast[$s->name()]) )
-		{
-			//print "Service->add was continued\n";
-			
-			if( $class == 'Service' )
-			{
-				if( $s->type == 'tmp' )
-					$this->_tmpServices[] = $s;
-				else
-				{
-					$this->_serviceObjects[] = $s;
-				}
-	
-			}
-			elseif ( $class == 'ServiceGroup' )
-			{
-				$this->_serviceGroups[] = $s;
-				
-			}
-			else
-				derr('invalid class found');
-			
-			$this->all[] = $s;
-			$this->fast[$s->name()] = $s;
-			$this->fastMemToIndex[$ser] = lastIndex($this->all);
-				
+        $class = get_class($s);
 
-			$s->owner = $this;
+        if( $class == 'Service' )
+        {
+            if( $s->isTmpSrv() )
+            {
+                $this->_tmpServices[$objectName] = $s;
+            }
+            else
+            {
+                $this->_serviceObjects[$objectName] = $s;
+                if( $rewriteXml )
+                    $this->serviceRoot->appendChild($s->xmlroot);
+            }
 
-			if( $rewritexml )
-			{
-				if( $class == "Service" )
-					$this->rewriteServiceStoreXML();
-				else if( $class == "ServiceGroup" )
-					$this->rewriteServiceGroupStoreXML();
-			}
-		}
+            $this->_all[$objectName] = $s;
+        }
+        elseif ( $class == 'ServiceGroup' )
+        {
+            $this->_serviceGroups[$objectName] = $s;
+            $this->_all[$objectName] = $s;
+
+            if( $rewriteXml )
+                $this->serviceGroupRoot->appendChild($s->xmlroot);
+        }
+        else
+            derr('invalid class found');
+
+        $s->owner = $this;
+
+
+        return true;
 	}
 
 	private function &getBaseXPath()
 	{
-		$str = '';
-
 		if ($this->owner->isPanorama() ||  $this->owner->isFirewall() )
-		{
-			$str = "/config/shared";
-		}
-		else
-			$str = $this->owner->getXPath();
+			return "/config/shared";
 
-
-		return $str;
+		return $this->owner->getXPath();
 	}
 
 	public function &getServiceStoreXPath()
@@ -536,7 +504,7 @@ class ServiceStore
 	public function newService($name, $protocol, $destinationPorts)
 	{
 		
-		if( isset($this->fast[$name]) )
+		if( isset($this->_all[$name]) )
 			derr("A Service named '$name' already exists");
 		
 		$s = new Service($name, $this, true);
@@ -550,12 +518,10 @@ class ServiceStore
 	function createTmp($name, $ref=null)
 	{
 		$f = new Service($name,$this);
-		$this->_tmpServices[] = $f;
-		$this->all[] = $f;
+		$this->_tmpServices[$name] = $f;
+		$this->_all[$name] = $f;
 		$f->type = 'tmp';
 		$f->addReference($ref);
-		$this->fast[$f->name()] = $f;
-		$this->fastMemToIndex[spl_object_hash($f)] = lastIndex($this->all);
 		
 		return $f;
 	}
@@ -591,65 +557,74 @@ class ServiceStore
 
         return $objects;
     }
-	
-	
-	public function referencedObjectRenamed($h,$oldname)
-	{
 
-        if( $this->fast[$oldname] !== $h)
+    /**
+     * @param Service|ServiceGroup $h
+     * @param $oldName
+     * @return bool
+     */
+	public function referencedObjectRenamed($h,$oldName)
+	{
+        if( $this->_all[$oldName] !== $h)
         {
             mwarning("Unexpected : object is not part of this library");
             return false;
         }
 
-		unset($this->fast[$oldname]);
-		$this->fast[$h->name()] = $h;
+        $newName = $h->name();
 
-		return true;
+        unset($this->_all[$oldName]);
+        $this->_all[$newName] = $h;
 
+        $class = get_class($h);
+
+        if( $class == 'Service' )
+        {
+            if( $h->isTmpSrv() )
+            {
+                unset($this->_tmpServices[$oldName]);
+                $this->_tmpServices[$newName] = $h;
+            }
+            else
+            {
+                unset($this->_serviceObjects[$oldName]);
+                $this->_serviceObjects[$newName] = $h;
+            }
+        }
+        elseif( $class == 'ServiceGroup' )
+        {
+            unset($this->_serviceGroups[$oldName]);
+            $this->_serviceGroups[$newName] = $h;
+        }
+        else
+            derr('unsupported class');
+
+        return true;
 	}
 
-	/**
-	* returns true if $object is in this store. False if not
-	* 
-	*/
+    /**
+     * @param Service|ServiceGroup $object
+     * @return bool
+     */
 	public function inStore($object)
 	{
 		if( $object === null )
 			derr('a NULL object, really ?');
 
-		if( isset($this->fastMemToIndex[spl_object_hash($object)]) )
-			return true;
+		if( isset($this->_all[$object->name()]) )
+            if( $this->_all[$object->name()] === $object )
+                return true;
 
 		return false;
 
 	}
-	
-	protected function regen_Indexes()
-	{
-		unset($this->fastMemToIndex);
-		unset($this->fast);
-		$this->fast = Array();
-		$this->fastMemToIndex = Array();
-		
-		foreach($this->all as $i=>$rule)
-		{
-			$this->fastMemToIndex[spl_object_hash($rule)] = $i ;
-			$this->fast[$rule->name()] = $rule;
-		}
-	}
-	
-	protected function add_Obj_inIndex($f , $index)
-	{
-		$this->fast[$f->name()] = $f;
-		$this->fastMemToIndex[spl_object_hash($f)] = $index;
-	}
+
 
 
 	public function countUnused()
 	{
 		$count = 0;
-		foreach( $this->all as $o )
+		foreach( $this->_all as $o )
 		{
 			if( $o->countReferences() == 0 )
 				$count++;
@@ -685,6 +660,7 @@ class ServiceStore
 
     /**
      * @param string $base
+     * * @param bool $nested
      * @param string $suffix
      * @param integer|string $startCount
      * @return string
@@ -755,14 +731,11 @@ trait centralServiceStoreUser
 					$curo->owner->serviceStore !== null				)
 				{
 					$this->parentServiceStore = $curo->owner->serviceStore;
-					//print $this->toString()." : found a parent central store: ".$parentCentralStore->toString()."\n";
 					return;
 				}
 				$curo = $curo->owner;
 			}
 		}
-		//die($this->toString()." : not found parent central store: \n");
-					
 	}
 }
 
