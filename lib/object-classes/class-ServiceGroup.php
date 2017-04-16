@@ -317,9 +317,6 @@ class ServiceGroup
 	
 	public function rewriteXML()
 	{
-        if( $this->owner === null )
-            return;
-
         if( $this->owner->owner->version >= 60 )
         {
             $membersRoot = DH::findFirstElement('members', $this->xmlroot);

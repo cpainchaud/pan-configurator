@@ -412,9 +412,6 @@ class AddressGroup
         if( $this->isDynamic() )
             derr('unsupported');
 
-        if( $this->owner === null )
-            return;
-
 		if( $this->owner->owner->version >= 60 )
 			DH::Hosts_to_xmlDom($this->membersRoot, $this->members, 'member', false);
 		else

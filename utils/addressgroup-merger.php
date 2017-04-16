@@ -441,9 +441,9 @@ foreach( $hashMap as $index => &$hash )
                     echo "    - group '{$object->name()}' merged with its ancestor, deleting this one... ";
                     $object->replaceMeGlobally($ancestor);
                     if( $apiMode )
-                        $object->owner->API_remove($object);
+                        $object->owner->API_remove($object, true);
                     else
-                        $object->owner->remove($object);
+                        $object->owner->remove($object, true);
 
                     echo "OK!\n";
 
@@ -507,7 +507,7 @@ foreach( $hashMap as $index => &$hash )
             }
             else
             {
-                $object->owner->remove($object);
+                $object->owner->remove($object, true);
             }
         }
 
