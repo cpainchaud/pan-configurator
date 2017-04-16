@@ -55,7 +55,7 @@ $test_merger = array( 'address', 'service', 'addressgroup', 'servicegroup' );
 
 foreach( $test_merger as $merger )
 {
-    $ci['input'] = 'input/panorama-8.0.xml';
+    $ci['input'] = 'input/panorama-8.0-merger.xml';
 
     echo "\n\n\n *** Processing merger: {$merger} \n";
 
