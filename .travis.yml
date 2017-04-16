@@ -11,6 +11,7 @@ script:
   - cd ../tests
   - php test_filters.php
   - php test_actions.php
+  - php test_mergers.php
 
 notifications:
   email:
