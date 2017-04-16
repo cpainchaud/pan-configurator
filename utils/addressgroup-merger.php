@@ -33,7 +33,7 @@ $supportedArguments[] = Array(
         "  - SameMembers: groups holding same members replaced by the one picked first (default)\n".
         "  - SameIP4Mapping: groups resolving the same IP4 coverage will be replaced by the one picked first\n".
         "  - WhereUsed: groups used exactly in the same location will be merged into 1 single groups with all members together\n",
-    'argDesc'=> 'SamePorts|WhereUsed');
+    'argDesc'=> 'SameMembers|SameIP4Mapping|WhereUsed');
 $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => '=sys1|shared|dg1');
 $supportedArguments[] = Array('niceName' => 'mergeCountLimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
 $supportedArguments[] = Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '(name regex /^g/)');
@@ -441,9 +441,9 @@ foreach( $hashMap as $index => &$hash )
                     echo "    - group '{$object->name()}' merged with its ancestor, deleting this one... ";
                     $object->replaceMeGlobally($ancestor);
                     if( $apiMode )
-                        $object->owner->API_remove($object);
+                        $object->owner->API_remove($object, true);
                     else
-                        $object->owner->remove($object);
+                        $object->owner->remove($object, true);
 
                     echo "OK!\n";
 
@@ -502,11 +502,12 @@ foreach( $hashMap as $index => &$hash )
             echo "    - deleting '{$object->_PANC_shortName()}'\n";
             if( $apiMode )
             {
-                $object->owner->API_remove($object);
+                //true flag needed for nested groups in a specific constellation
+                $object->owner->API_remove($object, true);
             }
             else
             {
-                $object->owner->remove($object);
+                $object->owner->remove($object, true);
             }
         }
 
