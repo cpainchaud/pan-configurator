@@ -59,56 +59,67 @@ foreach( $test_merger as $merger )
 
     echo "\n\n\n *** Processing merger: {$merger} \n";
 
+    $dupalgorithm_array = array();
     if( $merger == 'address' )
     {
         $util = '../utils/address-merger.php';
-        #$dupalgorithm = 'SameIP4Mapping';
+        $dupalgorithm_array[] = '';
     }
     elseif( $merger == 'addressgroup' )
     {
         $util = '../utils/addressgroup-merger.php';
-        $dupalgorithm = 'SameIP4Mapping';
+        $dupalgorithm_array[] = 'SameMembers';
+        $dupalgorithm_array[] = 'SameIP4Mapping';
+        $dupalgorithm_array[] = 'Whereused';
+
     }
     elseif( $merger == 'service' )
     {
         $util = '../utils/service-merger.php';
-        $dupalgorithm = 'SamePorts';
+        $dupalgorithm_array[] = 'SamePorts';
+        $dupalgorithm_array[] = 'Whereused';
     }
     elseif( $merger == 'servicegroup' )
     {
         $util = '../utils/servicegroup-merger.php';
-        $dupalgorithm = 'SamePortMapping';
+        $dupalgorithm_array[] = 'SameMembers';
+        $dupalgorithm_array[] = 'SamePortMapping';
+        $dupalgorithm_array[] = 'Whereused';
     }
 
     else
         derr('unsupported');
 
-    $location = 'testDG';
-    $output = '/dev/null';
-
-    $cli = "php $util in={$ci['input']} out={$output} location={$location} allowMergingWithUpperLevel";
-
-    if( $merger != 'address' )
-        $cli .= " DupAlgorithm={$dupalgorithm}";
-
-    $cli .= ' 2>&1';
-
-    echo " * Executing CLI: {$cli}\n";
-
-    $output = Array();
-    $retValue = 0;
-
-    exec($cli, $output, $retValue);
-
-    foreach($output as $line)
+    foreach( $dupalgorithm_array as $dupalgorithm)
     {
-        echo '   ##  '; echo $line; echo "\n";
+        $location = 'testDG';
+        $output = '/dev/null';
+
+        $cli = "php $util in={$ci['input']} out={$output} location={$location} allowMergingWithUpperLevel";
+
+        if( $merger != 'address' )
+            $cli .= " DupAlgorithm={$dupalgorithm}";
+
+        $cli .= ' 2>&1';
+
+        echo " * Executing CLI: {$cli}\n";
+
+        $output = Array();
+        $retValue = 0;
+
+        exec($cli, $output, $retValue);
+
+        foreach($output as $line)
+        {
+            echo '   ##  '; echo $line; echo "\n";
+        }
+
+        if( $retValue != 0 )
+            derr("CLI exit with error code '{$retValue}'");
+
+        echo "\n";
     }
 
-    if( $retValue != 0 )
-        derr("CLI exit with error code '{$retValue}'");
-
-    echo "\n";
 
 }
 
