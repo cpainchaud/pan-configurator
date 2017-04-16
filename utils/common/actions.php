@@ -676,4 +676,8 @@ class TagCallContext extends CallContext
     public $object;
 }
 
-
+class SessionCallContext extends CallContext
+{
+    /** @var  Session */
+    public $object;
+}
