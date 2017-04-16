@@ -515,7 +515,7 @@ foreach( $hashMap as $index => &$hash )
             }
             else
             {
-                $object->owner->remove($object);
+                $object->owner->remove($object, true);
             }
         }
 
