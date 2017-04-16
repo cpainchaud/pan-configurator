@@ -510,6 +510,7 @@ foreach( $hashMap as $index => &$hash )
             echo "    - deleting '{$object->_PANC_shortName()}'\n";
             if( $apiMode )
             {
+                //true flag needed for nested groups in a specific constellation
                 $object->owner->API_remove($object, true);
             }
             else
