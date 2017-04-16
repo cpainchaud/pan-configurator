@@ -502,7 +502,7 @@ foreach( $hashMap as $index => &$hash )
             echo "    - deleting '{$object->_PANC_shortName()}'\n";
             if( $apiMode )
             {
-                $object->owner->API_remove($object);
+                $object->owner->API_remove($object, true);
             }
             else
             {
