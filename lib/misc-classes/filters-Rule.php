@@ -82,7 +82,7 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.only'] = Array(
 RQuery::$defaultFilters['rule']['from']['operators']['has.regex'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        foreach($context->object->from->getAll() as $zone )
+        foreach($context->object->from->zones() as $zone )
         {
             $matching = preg_match($context->value, $zone->name());
             if( $matching === FALSE )
@@ -100,7 +100,7 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.regex'] = Array(
         if( $context->object->isPbfRule() )
             return false;
 
-        foreach($context->object->to->getAll() as $zone )
+        foreach($context->object->to->zones() as $zone )
         {
             $matching = preg_match( $context->value, $zone->name() );
             if( $matching === FALSE )
@@ -115,11 +115,19 @@ RQuery::$defaultFilters['rule']['to']['operators']['has.regex'] = Array(
 
 RQuery::$defaultFilters['rule']['from.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->from->count() !operator! !value!",
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['to.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->to->count() !operator! !value!",
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['from']['operators']['is.any'] = Array(
@@ -127,7 +135,11 @@ RQuery::$defaultFilters['rule']['from']['operators']['is.any'] = Array(
     {
         return $context->object->from->isAny();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -137,7 +149,11 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
 
         return $context->object->to->isAny();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 //                                              //
@@ -178,7 +194,11 @@ RQuery::$defaultFilters['rule']['snat']['operators']['is.static'] = Array(
 
         return true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['snat']['operators']['is.dynamic-ip'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -188,7 +208,11 @@ RQuery::$defaultFilters['rule']['snat']['operators']['is.dynamic-ip'] = Array(
 
         return true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['snat']['operators']['is.dynamic-ip-and-port'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -201,7 +225,11 @@ RQuery::$defaultFilters['rule']['snat']['operators']['is.dynamic-ip-and-port'] =
 
         return true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 //                                              //
@@ -215,7 +243,11 @@ RQuery::$defaultFilters['rule']['dst-interface']['operators']['is.set'] = Array(
 
         return $context->object->hasDestinationInterface();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 //                                              //
@@ -382,14 +414,22 @@ RQuery::$defaultFilters['rule']['src']['operators']['is.any'] = Array(
     {
         return $context->object->source->count() == 0;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['is.any'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->destination->count() == 0;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['src']['operators']['is.negated'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -399,7 +439,11 @@ RQuery::$defaultFilters['rule']['src']['operators']['is.negated'] = Array(
 
         return $context->object->sourceIsNegated();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['is.negated'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -409,7 +453,11 @@ RQuery::$defaultFilters['rule']['dst']['operators']['is.negated'] = Array(
 
         return $context->object->destinationIsNegated();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['src']['operators']['included-in.full'] = Array(
@@ -417,28 +465,44 @@ RQuery::$defaultFilters['rule']['src']['operators']['included-in.full'] = Array(
     {
         return $context->object->source->includedInIP4Network($context->value) == 1;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['src']['operators']['included-in.partial'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->source->includedInIP4Network($context->value) == 2;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['src']['operators']['included-in.full.or.partial'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->source->includedInIP4Network($context->value) > 0;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['src']['operators']['includes.full'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->source->includesIP4Network($context->value) == 1;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['src']['operators']['includes.partial'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -446,13 +510,22 @@ RQuery::$defaultFilters['rule']['src']['operators']['includes.partial'] = Array(
         return $context->object->source->includesIP4Network($context->value) == 2;
     },
     'arg' => true
+,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['src']['operators']['includes.full.or.partial'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->source->includesIP4Network($context->value) > 0;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['src']['operators']['is.fully.included.in.list'] = Array(
@@ -489,42 +562,66 @@ RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full'] = Array(
         return $context->object->destination->includedInIP4Network($context->value) == 1;
     },
     'arg' => true,
-    'argDesc' => 'ie: 192.168.0.0/24 | 192.168.50.10/32 | 192.168.50.10 | 10.0.0.0-10.33.0.0'
+    'argDesc' => 'ie: 192.168.0.0/24 | 192.168.50.10/32 | 192.168.50.10 | 10.0.0.0-10.33.0.0',
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.partial'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->destination->includedInIP4Network($context->value) == 2;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['included-in.full.or.partial'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->destination->includedInIP4Network($context->value) > 0;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['includes.full'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->destination->includesIP4Network($context->value) == 1;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['includes.partial'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->destination->includesIP4Network($context->value) == 2;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['dst']['operators']['includes.full.or.partial'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->destination->includesIP4Network($context->value) > 0;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['src']['operators']['has.from.query'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -690,15 +787,23 @@ RQuery::$defaultFilters['rule']['tag']['operators']['has'] = Array(
         return $object->tags->hasTag($value) === true;
     },
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');",
+    'ci' => Array(
+        'fString' => '(%PROP% test.tag)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['tag']['operators']['has.nocase'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->tags->hasTag($context->value, false) === true;
     },
-    'arg' => true
-    //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% test.tag)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+
 );
 RQuery::$defaultFilters['rule']['tag']['operators']['has.regex'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -715,10 +820,18 @@ RQuery::$defaultFilters['rule']['tag']['operators']['has.regex'] = Array(
         return false;
     },
     'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /test-/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['tag.count']['operators']['>,<,=,!'] = Array(
     'eval' => "\$object->tags->count() !operator! !value!",
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 
@@ -729,9 +842,14 @@ RQuery::$defaultFilters['rule']['tag.count']['operators']['>,<,=,!'] = Array(
 RQuery::$defaultFilters['rule']['app']['operators']['is.any'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->apps->isAny();
+        $rule = $context->object;
+        return ($rule->isSecurityRule() || $rule->isQoSRule()) && $rule->apps->isAny();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['app']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
@@ -740,14 +858,19 @@ RQuery::$defaultFilters['rule']['app']['operators']['has'] = Array(
         return $object->apps->hasApp($value) === true;
     },
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->apps->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->apps->parentCentralStore->find('!value!');",
 );
 RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->apps->hasApp($context->value, false) === true;
+        $rule = $context->object;
+        return ($rule->isSecurityRule() || $rule->isQoSRule()) && $rule->apps->hasApp($context->value, false) === true;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% icmp)',
+        'input' => 'input/panorama-8.0.xml'
+    )
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
 
@@ -758,16 +881,28 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = Array(
 RQuery::$defaultFilters['rule']['service']['operators']['is.any'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->services->isAny();
+        $rule = $context->object;
+        if( $rule->isNatRule() )
+            return $rule->service === null;
+
+        return $rule->services->isAny();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['service']['operators']['is.application-default'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->services->isApplicationDefault();
+        return $context->object->isSecurityRule() && $context->object->services->isApplicationDefault();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
@@ -779,35 +914,38 @@ RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
 );
 RQuery::$defaultFilters['rule']['service']['operators']['has.regex'] = Array(
-    'eval' => function(RuleRQueryContext $context)
+    'Function' => function(RuleRQueryContext $context)
     {
         $rule = $context->object;
 
-        if( $rule->isSecurityRule() )
+        if( $rule->isNatRule() )
         {
-            foreach( $rule->services->getAll() as $service )
-            {
-                $matching = preg_match($context->value, $service->name() );
-                if( $matching === FALSE )
-                    derr("regular expression error on '{$context->value}'");
-                if( $matching === 1 )
-                    return true;
-            }
-        }
-        elseif( $rule->isNatRule() )
-        {
+            if( $rule->service === null )
+                return false;
             $matching = preg_match($context->value, $rule->service->name() );
             if( $matching === FALSE )
                 derr("regular expression error on '{$context->value}'");
             if( $matching === 1 )
                 return true;
+            return false;
         }
-        else
-            derr("unsupported rule type");
+
+        foreach( $rule->services->all() as $service )
+        {
+            $matching = preg_match($context->value, $service->name() );
+            if( $matching === FALSE )
+                derr("regular expression error on '{$context->value}'");
+            if( $matching === 1 )
+                return true;
+        }
 
         return false;
     },
     'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /tcp-/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 
@@ -822,7 +960,11 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['not.set'] = Array(
 
         return $context->object->securityProfileIsBlank();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.set'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -832,113 +974,178 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['is.set'] = Array(
 
         return !$context->object->securityProfileIsBlank();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.profile'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return !$context->object->securityProfileIsBlank() && $context->object->securityProfileType() == "profile";
+        $rule = $context->object;
+        return $rule->isSecurityRule()
+            && !$context->object->securityProfileIsBlank()
+            && $context->object->securityProfileType() == "profile";
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['is.group'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return !$context->object->securityProfileIsBlank() && $context->object->securityProfileType() == "group";
+        $rule = $context->object;
+        return $rule->isSecurityRule() && $context->object->isSecurityRule()
+            && !$context->object->securityProfileIsBlank()
+            && $context->object->securityProfileType() == "group";
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['group.is'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->securityProfileType() == "group" && $context->object->securityProfileGroup() == $context->value;
+        $rule = $context->object;
+        return $rule->isSecurityRule()
+            && $rule->securityProfileType() == "group"
+            && $rule->securityProfileGroup() == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% secgroup-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['av-profile.is'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        if( $context->object->securityProfileIsBlank() )
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
             return false;
 
-        if( $context->object->securityProfileType() == "group" )
+        if( $rule->securityProfileIsBlank() )
             return false;
 
-        $profiles = $context->object->securityProfiles();
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
         if( !isset($profiles['virus']) )
             return false;
 
         return $profiles['virus'] == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% av-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['as-profile.is'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        if( $context->object->securityProfileIsBlank() )
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
             return false;
 
-        if( $context->object->securityProfileType() == "group" )
+        if( $rule->securityProfileIsBlank() )
             return false;
 
-        $profiles = $context->object->securityProfiles();
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
         if( !isset($profiles['spyware']) )
             return false;
 
         return $profiles['spyware'] == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% as-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['url-profile.is'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        if( $context->object->securityProfileIsBlank() )
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
             return false;
 
-        if( $context->object->securityProfileType() == "group" )
+        if( $rule->securityProfileIsBlank() )
             return false;
 
-        $profiles = $context->object->securityProfiles();
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
         if( !isset($profiles['url-filtering']) )
             return false;
 
         return $profiles['url-filtering'] == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% url-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['wf-profile.is'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        if( $context->object->securityProfileIsBlank() )
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
             return false;
 
-        if( $context->object->securityProfileType() == "group" )
+        if( $rule->securityProfileIsBlank() )
             return false;
 
-        $profiles = $context->object->securityProfiles();
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
         if( !isset($profiles['wildfire-analysis']) )
             return false;
 
         return $profiles['wildfire-analysis'] == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% wf-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        if( $context->object->securityProfileIsBlank() )
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
             return false;
 
-        if( $context->object->securityProfileType() == "group" )
+        if( $rule->securityProfileIsBlank() )
             return false;
 
-        $profiles = $context->object->securityProfiles();
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
         if( !isset($profiles['vulnerability']) )
             return false;
 
         return $profiles['vulnerability'] == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% vuln-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 //                                              //
@@ -947,9 +1154,13 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is'] = Arr
 RQuery::$defaultFilters['rule']['action']['operators']['is.deny'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
-        return $context->object->actionIsDeny();
+        return $context->object->isSecurityRule() && $context->object->actionIsDeny();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['action']['operators']['is.negative'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -958,7 +1169,11 @@ RQuery::$defaultFilters['rule']['action']['operators']['is.negative'] = Array(
             return false;
         return $context->object->actionIsNegative();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['action']['operators']['is.allow'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -976,7 +1191,11 @@ RQuery::$defaultFilters['rule']['log']['operators']['at.start'] = Array(
             return false;
         return $context->object->logStart();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['log']['operators']['at.end'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -985,7 +1204,11 @@ RQuery::$defaultFilters['rule']['log']['operators']['at.end'] = Array(
             return false;
         return $context->object->logEnd();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['logprof']['operators']['is.set'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1000,7 +1223,11 @@ RQuery::$defaultFilters['rule']['logprof']['operators']['is.set'] = Array(
 
         return true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['logprof']['operators']['is'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1018,28 +1245,44 @@ RQuery::$defaultFilters['rule']['logprof']['operators']['is'] = Array(
         return false;
     },
     'arg' => true,
-    'help' => 'return true if Log Forwarding Profile is the one specified in argument'
+    'help' => 'return true if Log Forwarding Profile is the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  log_to_panorama)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.prerule'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->isPreRule();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.postrule'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->isPostRule();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.disabled'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return $context->object->isDisabled();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.dsri'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1059,7 +1302,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.bidir.nat'] = Array(
 
         return $context->object->isBiDirectional();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['has.source.nat'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1072,7 +1319,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['has.source.nat'] = Array(
 
         return false;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['has.destination.nat'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1085,7 +1336,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['has.destination.nat'] = Ar
 
         return true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['rule']['operators']['is.universal'] = Array(
@@ -1100,6 +1355,10 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.universal'] = Array(
         return true;
     },
     'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['rule']['operators']['is.intrazone'] = Array(
@@ -1116,7 +1375,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.intrazone'] = Array(
 
         return true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['rule']['operators']['is.interzone'] = Array(
@@ -1133,7 +1396,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.interzone'] = Array(
 
         return true;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
@@ -1154,7 +1421,11 @@ RQuery::$defaultFilters['rule']['location']['operators']['is'] = Array(
         return false;
     },
     'arg' => true,
-    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches the one specified in argument'
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  Datacenter)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['location']['operators']['regex'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1168,7 +1439,11 @@ RQuery::$defaultFilters['rule']['location']['operators']['regex'] = Array(
         return false;
     },
     'arg' => true,
-    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches the regular expression specified in argument'
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches the regular expression specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  /DC/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1269,7 +1544,11 @@ RQuery::$defaultFilters['rule']['name']['operators']['eq'] = Array(
     {   return $context->object->name() == $context->value;
     },
     'arg' => true,
-    'help' => 'returns TRUE if rule name matches the one specified in argument'
+    'help' => 'returns TRUE if rule name matches the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  rule1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['name']['operators']['regex'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -1282,21 +1561,33 @@ RQuery::$defaultFilters['rule']['name']['operators']['regex'] = Array(
         return false;
     },
     'arg' => true,
-    'help' => 'returns TRUE if rule name matches the regular expression provided in argument'
+    'help' => 'returns TRUE if rule name matches the regular expression provided in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  /^example/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['name']['operators']['eq.nocase'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return strtolower($context->object->name()) == strtolower($context->value);
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP%  rule1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['rule']['name']['operators']['contains'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         return stripos($context->object->name(), $context->value) !== false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP%  searchME)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['rule']['name']['operators']['is.in.file'] = Array(

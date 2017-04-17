@@ -3,14 +3,22 @@
 // <editor-fold desc=" ***** Tag filters *****" defaultstate="collapsed" >
 RQuery::$defaultFilters['tag']['refcount']['operators']['>,<,=,!'] = Array(
     'eval' => '$object->countReferences() !operator! !value!',
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['tag']['object']['operators']['is.unused'] = Array(
     'Function' => function(TagRQueryContext $context )
     {
         return $context->object->countReferences() == 0;
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+    'fString' => '(%PROP%)',
+    'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['tag']['name']['operators']['is.in.file'] = Array(
     'Function' => function(TagRQueryContext $context )
@@ -47,28 +55,44 @@ RQuery::$defaultFilters['tag']['object']['operators']['is.tmp'] = Array(
     {
         return $context->object->isTmp();
     },
-    'arg' => false
+    'arg' => false,
+    'ci' => Array(
+    'fString' => '(%PROP%)',
+    'input' => 'input/panorama-8.0.xml'
+)
 );
 RQuery::$defaultFilters['tag']['name']['operators']['eq'] = Array(
     'Function' => function(TagRQueryContext $context )
     {
         return $context->object->name() == $context->value;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% grp.shared-group1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['tag']['name']['operators']['eq.nocase'] = Array(
     'Function' => function(TagRQueryContext $context )
     {
         return strtolower($context->object->name()) == strtolower($context->value);
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% grp.shared-group1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['tag']['name']['operators']['contains'] = Array(
     'Function' => function(TagRQueryContext $context )
     {
         return strpos($context->object->name(), $context->value) !== false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+    'fString' => '(%PROP% grp)',
+    'input' => 'input/panorama-8.0.xml'
+)
 );
 RQuery::$defaultFilters['tag']['name']['operators']['regex'] = Array(
     'Function' => function(TagRQueryContext $context )
@@ -92,7 +116,11 @@ RQuery::$defaultFilters['tag']['name']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /-group/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['tag']['location']['operators']['is'] = Array(
     'Function' => function(TagRQueryContext $context )
@@ -111,7 +139,11 @@ RQuery::$defaultFilters['tag']['location']['operators']['is'] = Array(
 
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['tag']['location']['operators']['regex'] = Array(
     'Function' => function(TagRQueryContext $context )
@@ -124,14 +156,22 @@ RQuery::$defaultFilters['tag']['location']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /shared/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['tag']['color']['operators']['eq'] = Array(
     'Function' => function(TagRQueryContext $context )
     {
         return $context->object->getColor() == strtolower( $context->value );
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% none)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 RQuery::$defaultFilters['tag']['comments']['operators']['regex'] = Array(
     'Function' => function(TagRQueryContext $context )
@@ -144,7 +184,11 @@ RQuery::$defaultFilters['tag']['comments']['operators']['regex'] = Array(
             return true;
         return false;
     },
-    'arg' => true
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% /test/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 RQuery::$defaultFilters['tag']['comments']['operators']['is.empty'] = Array(
@@ -158,5 +202,9 @@ RQuery::$defaultFilters['tag']['comments']['operators']['is.empty'] = Array(
         return false;
     },
     'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 // </editor-fold>
