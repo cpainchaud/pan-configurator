@@ -255,9 +255,10 @@ class PanAPIConnector
      * @param string $apiKey
      * @param bool $promptForKey
      * @param bool $checkConnectivity
+     * @param bool $hiddenPW
      * @return PanAPIConnector
      */
-    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE)
+    static public function findOrCreateConnectorFromHost($host, $apiKey = null, $promptForKey = TRUE, $checkConnectivity = TRUE, $hiddenPW = FALSE)
     {
         self::loadConnectorsFromUserHome();
 
@@ -329,8 +330,29 @@ class PanAPIConnector
             {
                 $user = $apiKey;
                 print "* you input user '$user' , please enter password now: ";
-                $line = fgets($handle);
-                $password = trim($line);
+                if( $hiddenPW )
+                {
+                    //first option; do not display PW at all
+                    /*
+                    system('stty -echo');
+                    $line = fgets($handle);
+                    $password = trim($line);
+                    system('stty echo');
+                    print "\n";
+                    */
+
+                    //second option; black text on black background - possible to check typos
+                    echo "\033[30;40m";  // black text on black background
+                    $line = fgets($handle);
+                    $password = trim($line);
+                    echo "\033[0m";      // reset
+                }
+                else
+                {
+                    $line = fgets($handle);//password
+                    $password = trim($line);
+                }
+
 
                 print "* Now generating an API key from '$host'...";
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
