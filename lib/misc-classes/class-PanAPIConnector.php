@@ -331,26 +331,17 @@ class PanAPIConnector
             {
                 $user = $apiKey;
                 print "* you input user '$user' , please enter password now: ";
-                if( $hiddenPW )
+                if( $hiddenPW &&  strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')
                 {
-                    //first option; do not display PW at all
-                    /*
                     system('stty -echo');
                     $line = fgets($handle);
                     $password = trim($line);
                     system('stty echo');
                     print "\n";
-                    */
-
-                    //second option; black text on black background - possible to check typos
-                    echo "\033[30;40m";  // black text on black background
-                    $line = fgets($handle);
-                    $password = trim($line);
-                    echo "\033[0m";      // reset
                 }
                 else
                 {
-                    $line = fgets($handle);//password
+                    $line = fgets($handle);
                     $password = trim($line);
                 }
 
