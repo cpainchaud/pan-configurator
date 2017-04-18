@@ -329,21 +329,52 @@ class PanAPIConnector
             if( strlen($apiKey) < 19 )
             {
                 $user = $apiKey;
-                print "* you input user '$user' , please enter password now: ";
-                if( $hiddenPW &&  strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')
+                $pw_prompt = "* you input user ".$user." , please enter password now: ";
+                if( $hiddenPW )
                 {
-                    system('stty -echo');
-                    $line = fgets($handle);
-                    $password = trim($line);
-                    system('stty echo');
-                    print "\n";
+                    if( strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' )
+                    {
+                        $pwd = shell_exec( 'powershell.exe -Command "$Password=Read-Host -assecurestring '.$pw_prompt.' ; $PlainPassword = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($Password)) ; echo $PlainPassword;"');
+                        $pwd = explode("\n", $pwd);
+                        $password = $pwd[0];
+                    }
+                    else
+                    {
+                        print $pw_prompt;
+                        $oldStyle = shell_exec( 'stty -g' );
+                        shell_exec( 'stty -icanon -echo min 1 time 0' );
+
+                        $password = '';
+                        while( TRUE )
+                        {
+                            $char = fgetc( STDIN );
+
+                            if( $char === "\n" )
+                                break;
+                            elseif( ord( $char ) === 127 )
+                            {
+                                if( strlen( $password ) > 0 )
+                                {
+                                    fwrite( STDOUT, "\x08 \x08") ;
+                                    $password = substr( $password, 0, -1 );
+                                }
+                            }
+                            else
+                            {
+                                fwrite( STDOUT, "*" );
+                                $password .= $char;
+                            }
+                        }
+                        shell_exec( 'stty ' . $oldStyle );
+                    }
                 }
                 else
                 {
+                    print $pw_prompt;
                     $line = fgets($handle);
                     $password = trim($line);
                 }
-
+                print "\n";
 
                 print "* Now generating an API key from '$host'...";
                 $con = new PanAPIConnector($host, '', 'panos', null, $port);
