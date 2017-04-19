@@ -948,6 +948,16 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.regex'] = Array(
     )
 );
 
+RQuery::$defaultFilters['rule']['service']['operators']['has.recursive'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        return $object->services->hasObjectRecursive($value, false) === true;
+    },
+    'arg' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
+);
+
 
 //                                              //
 //                SecurityProfile properties    //

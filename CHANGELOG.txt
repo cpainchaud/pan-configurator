@@ -7,6 +7,7 @@ bugfix:
 
 utils:
 address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,!
+rules-edit: new filter 'service has.recursive'
 service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
 service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,!
 
