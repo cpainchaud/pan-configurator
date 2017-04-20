@@ -15,6 +15,8 @@
  * ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
+
+
 class ServiceGroup
 {
 	use PathableName;
@@ -593,6 +595,23 @@ class ServiceGroup
 
 		return false;
 	}
+
+    /**
+     * @param string $objectName
+     * @return bool
+     */
+    public function hasNamedObjectRecursive($objectName)
+    {
+        foreach( $this->members as $o )
+        {
+            if( $o->name() === $objectName )
+                return true;
+            if( $o->isGroup() )
+                if( $o->hasNamedObjectRecursive($objectName) ) return true;
+        }
+
+        return false;
+    }
 
 
     public function removeAll($rewriteXml = true)

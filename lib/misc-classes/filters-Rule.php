@@ -960,19 +960,18 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.recursive'] = Array
             if( $rule->service === null )
                 return false;
 
-            if( $rule->service->name() == $value->name() )
+            if( $rule->service->name() == $value )
                 return true;
 
             if( !$rule->service->isGroup() )
                 return false;
 
-            return $rule->service->hasObjectRecursive($value);
+            return $rule->service->hasNamedObjectRecursive($value);
         }
 
-        return $rule->services->hasObjectRecursive($value);
+        return $rule->services->hasNamedObjectRecursive($value);
     },
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');",
     'ci' => Array(
         'fString' => '(%PROP% tcp-80)',
         'input' => 'input/panorama-8.0.xml'

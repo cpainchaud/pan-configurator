@@ -425,6 +425,23 @@ class ServiceRuleContainer extends ObjRuleContainer
         return false;
     }
 
+    /**
+     * @param string $objectName
+     * @return bool
+     */
+    public function hasNamedObjectRecursive( $objectName)
+    {
+        foreach( $this->o as $o )
+        {
+            if( $o->name() === $objectName )
+                return true;
+            if( $o->isGroup() )
+                if( $o->hasNamedObjectRecursive($objectName) ) return true;
+        }
+
+        return false;
+    }
+
 
     /**
      * To determine if a store has all the Service from another store, it will expand ServiceGroups instead of looking for them directly. Very useful when looking to compare similar rules.
