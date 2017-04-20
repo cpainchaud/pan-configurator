@@ -74,6 +74,28 @@ RQuery::$defaultFilters['service']['object']['operators']['is.member.of'] = Arra
     },
     'arg' => true
 );
+RQuery::$defaultFilters['service']['object']['operators']['is.recursive.member.of'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $serviceGroup = $context->object->owner->find( $context->value );
+
+        if( $serviceGroup === null )
+            return false;
+
+        if( !$context->object->isGroup() )
+        {
+            if( $serviceGroup->hasObjectRecursive( $context->object ) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% grp-in-grp-srv)',
+        'input' => 'input/panorama-8.0-merger.xml'
+    )
+);
 RQuery::$defaultFilters['service']['name']['operators']['is.in.file'] = Array(
     'Function' => function(ServiceRQueryContext $context )
     {
