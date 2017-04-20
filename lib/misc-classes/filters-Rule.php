@@ -949,13 +949,34 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.regex'] = Array(
 );
 
 RQuery::$defaultFilters['rule']['service']['operators']['has.recursive'] = Array(
-    'eval' => function($object, &$nestedQueries, $value)
+    'Function' => function(RuleRQueryContext $context)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
-        return $object->services->hasObjectRecursive($value, false) === true;
+        $rule = $context->object;
+        /** @var Service|ServiceGroup $value */
+        $value = $context->value;
+
+        if( $rule->isNatRule() )
+        {
+            if( $rule->service === null )
+                return false;
+
+            if( $rule->service->name() == $value->name() )
+                return true;
+
+            if( !$rule->service->isGroup() )
+                return false;
+
+            return $rule->service->hasObjectRecursive($value);
+        }
+
+        return $rule->services->hasObjectRecursive($value);
     },
     'arg' => true,
-    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');",
+    'ci' => Array(
+        'fString' => '(%PROP% tcp-80)',
+        'input' => 'input/panorama-8.0.xml'
+    )
 );
 
 
