@@ -33,10 +33,27 @@ class ServiceGroup
     public $tags;
 
     
-	public function __construct($name,$owner=null)
+	public function __construct($name,$owner=null, $fromTemplateXml = false)
 	{
 		$this->owner = $owner;
-		$this->name = $name;
+
+        if( $fromTemplateXml )
+        {
+            $doc = new DOMDocument();
+            $doc->loadXML(self::$templatexml);
+
+            $node = DH::findFirstElement('entry',$doc);
+
+            $rootDoc = $this->owner->serviceGroupRoot->ownerDocument;
+
+            $this->xmlroot = $rootDoc->importNode($node, true);
+            $this->load_from_domxml($this->xmlroot);
+
+            $this->name = $name;
+            $this->xmlroot->setAttribute('name', $name);
+        }
+
+        $this->name = $name;
 
         $this->tags = new TagRuleContainer($this);
 	}
@@ -139,7 +156,7 @@ class ServiceGroup
 	public function setName($newName)
 	{
 		$this->setRefName($newName);
-        $this->xmlroot->setAttribute('name', $newName);
+		$this->xmlroot->setAttribute('name', $newName);
 	}
 
     /**
@@ -628,8 +645,9 @@ class ServiceGroup
             $this->rewriteXML();
         }
     }
-	
-	
+
+    static protected $templatexml = '<entry name="**temporarynamechangeme**"><members></members></entry>';
+    static protected $templatexmlroot = null;
 }
 
 

@@ -1,6 +1,8 @@
 CHANGELOG
 
 1.5.13
+* class ServiceGroup: extend __construct with $fromTemplateXml
+* class ServiceStore: extend for API_newService()/newServiceGroup()/API_newServiceGroup()
 
 bugfix:
 - fixed a crash when trying to move some rule types from PRE/POST

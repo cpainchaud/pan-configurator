@@ -500,8 +500,15 @@ class ServiceStore
 		return $path;
 	}
 
-	
-	public function newService($name, $protocol, $destinationPorts)
+    /**
+     * @param $name string
+     * @param $protocol string
+     * @param $destinationPorts string
+     * @param $description string
+     * @return Service
+     * @throws Exception
+     */
+	public function newService($name, $protocol, $destinationPorts, $description = '')
 	{
 		
 		if( isset($this->_all[$name]) )
@@ -510,10 +517,71 @@ class ServiceStore
 		$s = new Service($name, $this, true);
 		$s->setProtocol($protocol);
 		$s->setDestPort($destinationPorts);
+		$s->setDescription( $description);
 		$this->add($s);
 		return $s;
 	
 	}
+
+    /**
+     * @param $name string
+     * @param $protocol string
+     * @param $destinationPorts string
+     * @param $description string
+     * @return Service
+     * @throws Exception
+     */
+    public function API_newService($name , $protocol, $destinationPorts, $description = '')
+    {
+        $newObject = $this->newService($name, $protocol, $destinationPorts, $description);
+
+        $con = findConnectorOrDie($this);
+        $xpath = $newObject->getXPath();
+        $con->sendSetRequest($xpath, $newObject, true );
+
+        return $newObject;
+    }
+
+    /**
+     * Creates a new Service Group named '$name' . Will exit with error if a group with that
+     * name already exists
+     * @param string $name
+     * @return ServiceGroup
+     **/
+    public function newServiceGroup($name)
+    {
+        $found = $this->find($name,null,true);
+        if( $found !== null )
+            derr("cannot create ServiceGroup named '".$name."' as this name is already in use");
+
+        $newGroup = new ServiceGroup($name,$this, true);
+        $newGroup->setName($name);
+        $this->add($newGroup);
+
+        return $newGroup;
+
+    }
+
+    /**
+     * Creates a new Service Group named '$name' . Will exit with error if a group with that
+     * name already exists
+     * @param $name string
+     * @return ServiceGroup
+     **/
+    public function API_newServiceGroup($name)
+    {
+        $found = $this->find($name,null,true);
+        if( $found !== null )
+            derr("cannot create ServiceGroup named '".$name."' as this name is already in use");
+
+        $newObject = $this->newServiceGroup($name);
+
+        $con = findConnectorOrDie($this);
+        $xpath = $newObject->getXPath();
+        $con->sendSetRequest($xpath, $newObject, true );
+
+        return $newObject;
+    }
 	
 	function createTmp($name, $ref=null)
 	{
