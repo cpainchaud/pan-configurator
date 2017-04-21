@@ -161,7 +161,8 @@ class ServiceStore
             {
                 if( PH::$enableXmlDuplicatesDeletion )
                     $duplicatesRemoval[] = $node;
-                mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node);
+                else
+                    mwarning("an object with name '{$name}' already exists in this store, please investigate your xml file", $node);
                 continue;
             }
 
