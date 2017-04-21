@@ -753,6 +753,90 @@ ServiceCallContext::$supportedActions[] = Array(
 );
 
 ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'name-Rename',
+    'MainFunction' =>  function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+        if( $object->isGroup() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to Group objects\n";
+            return;
+        }
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $newName = str_replace('$$current.name$$', $object->name(), $newName);
+        }
+        if( strpos( $newName, '$$value$$' ) !== FALSE )
+        {
+            $newName = str_replace( '$$value$$', $object->value(), $newName);
+        }
+
+
+        if( strpos( $newName, '$$protocol$$' ) !== FALSE )
+        {
+            $newName = str_replace( '$$protocol$$', $object->protocol(), $newName);
+        }
+        if( strpos( $newName, '$$destinationport$$' ) !== FALSE )
+        {
+            $newName = str_replace( '$$destinationport$$', $object->getDestPort(), $newName);
+        }
+        if( strpos( $newName, '$$sourceport$$' ) !== FALSE )
+        {
+            $newName = str_replace( '$$sourceport$$', $object->getSourcePort(), $newName);
+        }
+
+
+
+        if( $object->name() == $newName )
+        {
+            echo $context->padding." *** SKIPPED : new name and old name are the same\n";
+            return;
+        }
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        $findObject = $object->owner->find($newName);
+        if( $findObject !== null )
+        {
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        else
+        {
+            echo $context->padding." - renaming object... ";
+            if( $context->isAPI )
+                $object->API_setName($newName);
+            else
+                $object->setName($newName);
+            echo "OK!\n";
+        }
+
+    },
+    'args' => Array( 'stringFormula' => Array(
+        'type' => 'string',
+        'default' => '*nodefault*',
+        'help' =>
+            "This string is used to compose a name. You can use the following aliases :\n".
+            "  - \\$\$current.name\\$\\$ : current name of the object\n".
+            "  - \\$\$destinationport\\$\\$ : destination Port\n".
+            "  - \\$\$protocol\\$\\$ : service protocol\n".
+            "  - \\$\$sourceport\\$\\$ : source Port\n".
+            "  - \\$\$value\\$\\$ : value of the object\n"
+    )
+    ),
+    'help' => ''
+);
+
+ServiceCallContext::$supportedActions[] = Array(
     'name' => 'displayReferences',
     'MainFunction' => function ( ServiceCallContext $context )
     {

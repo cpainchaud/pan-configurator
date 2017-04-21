@@ -481,13 +481,19 @@ class ServiceStore
         return true;
 	}
 
-	private function &getBaseXPath()
-	{
-		if ($this->owner->isPanorama() ||  $this->owner->isFirewall() )
-			return "/config/shared";
+    private function &getBaseXPath()
+    {
+        $class = get_class($this->owner);
 
-		return $this->owner->getXPath();
-	}
+        if ($class == 'PanoramaConf' ||  $class == 'PANConf' )
+        {
+            $str = "/config/shared";
+        }
+        else
+            $str = $this->owner->getXPath();
+
+        return $str;
+    }
 
 	public function &getServiceStoreXPath()
 	{
