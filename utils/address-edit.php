@@ -99,6 +99,14 @@ PH::processCliArgs();
 
 $nestedQueries = Array();
 
+if( isset(PH::$args['loadplugin']) )
+{
+    $pluginFile = PH::$args['loadplugin'];
+    echo " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
+    require_once $pluginFile;
+    AddressCallContext::prepareSupportedActions();
+    echo "OK!\n";
+}
 
 if( isset(PH::$args['help']) )
 {
@@ -181,15 +189,6 @@ foreach ( PH::$args as $index => &$arg )
         //var_dump($supportedArguments);
         display_error_usage_exit("unsupported argument provided: '$index'");
     }
-}
-
-if( isset(PH::$args['loadplugin']) )
-{
-    $pluginFile = PH::$args['loadplugin'];
-    echo " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
-    require_once $pluginFile;
-    AddressCallContext::prepareSupportedActions();
-    echo "OK!\n";
 }
 
 

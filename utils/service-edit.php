@@ -101,6 +101,14 @@ $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this m
 PH::processCliArgs();
 
 
+if( isset(PH::$args['loadplugin']) )
+{
+    $pluginFile = PH::$args['loadplugin'];
+    print " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
+    require_once $pluginFile;
+    ServiceCallContext::prepareSupportedActions();
+    print "OK!\n";
+}
 
 if( isset(PH::$args['help']) )
 {
@@ -183,15 +191,6 @@ foreach ( PH::$args as $index => &$arg )
         //var_dump($supportedArguments);
         display_error_usage_exit("unsupported argument provided: '$index'");
     }
-}
-
-if( isset(PH::$args['loadplugin']) )
-{
-    $pluginFile = PH::$args['loadplugin'];
-    print " * loadPlugin was used. Now loading file: '{$pluginFile}'...";
-    require_once $pluginFile;
-    ServiceCallContext::prepareSupportedActions();
-    print "OK!\n";
 }
 
 
