@@ -1115,14 +1115,10 @@ class SecurityRule extends RuleWithUserID
 
 		if( $parentClass == 'VirtualSystem' )
 		{
-			#$type = 'traffic';
 			$dvq = '(vsys eq '.$this->owner->owner->name().')';
-
 		}
 		else
 		{
-			#$type = 'panorama-traffic';
-
 			$devices = $this->owner->owner->getDevicesInGroup();
 			//print_r($devices);
 
@@ -1134,11 +1130,11 @@ class SecurityRule extends RuleWithUserID
 			$dvq = '('.array_to_devicequery($devices).')';
 		}
 
-        $query = '<type>'
-            .'<'.$type.'><aggregate-by><member>proto</member><member>dport</member></aggregate-by>'
-            .'</'.$type.'></type><period>'.$timePeriod.'</period>'
-            .'<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>'
-            .'<query>'."$dvq $query_appfilter and (rule eq '".$this->name."')</query>";
+        $query = "<type>"
+            ."<".$type."><aggregate-by><member>proto</member><member>dport</member></aggregate-by>"
+            ."</".$type."></type><period>".$timePeriod."</period>"
+            ."<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
+            ."<query>"."$dvq $query_appfilter and (rule eq '".$this->name."')</query>";
 
         $apiArgs = Array();
         $apiArgs['type'] = 'report';
@@ -1158,16 +1154,25 @@ class SecurityRule extends RuleWithUserID
 
         $parentClass = get_class($this->owner->owner);
 
+        if( $fastMode )
+            $type = 'panorama-trsum';
+        else
+            $type = 'panorama-traffic';
+
         if( $parentClass == 'VirtualSystem' )
         {
-            $type = 'traffic';
+            if( $fastMode )
+                $type = 'trsum';
+            else
+                $type = 'traffic';
+        }
+        
+        if( $parentClass == 'VirtualSystem' )
+        {
             $dvq = '(vsys eq '.$this->owner->owner->name().')';
-
         }
         else
         {
-            $type = 'panorama-traffic';
-
             $devices = $this->owner->owner->getDevicesInGroup();
             //print_r($devices);
 
@@ -1191,11 +1196,11 @@ class SecurityRule extends RuleWithUserID
             $first = false;
         }
 
-        $query = '<type>'
-            .'<'.$type.'><aggregate-by><member>'.$srcORdst.'</member></aggregate-by>'
-            .'</'.$type.'></type><period>'.$timePeriod.'</period>'
-            .'<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>'
-            .'<query>'."$dvq {$excludedAppsString} and (rule eq '".$this->name."')</query>";
+        $query = "<type>"
+            ."<".$type."><aggregate-by><member>".$srcORdst."</member></aggregate-by>"
+            ."</".$type."></type><period>".$timePeriod."</period>"
+            ."<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
+            ."<query>"."$dvq {$excludedAppsString} and (rule eq '".$this->name."')</query>";
 
 
         $apiArgs = Array();
