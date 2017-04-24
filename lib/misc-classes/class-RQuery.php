@@ -382,6 +382,13 @@ class RQuery
                 if( !$this->extractWordsFromText($this->text, $supportedFilters, $errorMessage) )
                     return false;
 
+                if( isset($this->refOperator['deprecated']) )
+                {
+                    $msg = PH::boldText("\n* ** WARNING ** * ");
+                    $msg .= $this->refOperator['deprecated']."\n\n";
+                    fwrite(STDERR, $msg);
+                }
+
                 return $findClose+1;
             }
             return $findClose+1;
