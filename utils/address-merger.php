@@ -30,8 +30,9 @@ $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify 
 $supportedArguments[] = Array(    'niceName' => 'DupAlgorithm',
     'shortHelp' => "Specifies how to detect duplicates:\n".
         "  - SameAddress: objects with same Network-Value will be replaced by the one picked (default)\n".
+        "  - Identical: objects with same network-value and same name will be replaced by the one picked\n".
         "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
-    'argDesc'=> 'SameAddress|WhereUsed');
+    'argDesc'=> 'SameAddress | Identical | WhereUsed');
 $supportedArguments[] = Array('niceName' => 'mergeCountLimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
 $supportedArguments[] = Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '(name regex /^g/)');
 $supportedArguments[] = Array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
@@ -79,7 +80,7 @@ else
 if( isset(PH::$args['dupalgorithm']) )
 {
     $dupAlg = strtolower(PH::$args['dupalgorithm']);
-    if( $dupAlg != 'sameaddress' && $dupAlg != 'whereused' )
+    if( $dupAlg != 'sameaddress' && $dupAlg != 'whereused' && $dupAlg != 'identical')
         display_error_usage_exit('unsupported value for dupAlgorithm: '.PH::$args['dupalgorithm']);
 }
 else
@@ -242,7 +243,7 @@ else
 
 $hashMap = Array();
 $upperHashMap = Array();
-if( $dupAlg == 'sameaddress' )
+if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
 {
     foreach( $objectsToSearchThrough as $object )
     {
@@ -409,6 +410,13 @@ foreach( $hashMap as $index => &$hash )
             {
                 if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
                 {
+                    if( $dupAlg == 'identical' )
+                        if( $object->name() != $ancestor->name() )
+                        {
+                            echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL to ancestor name '{$ancestor->name()}'\n";
+                            continue;
+                        }
+
                     echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
                     $object->replaceMeGlobally($ancestor);
                     if( $apiMode )
@@ -439,26 +447,31 @@ foreach( $hashMap as $index => &$hash )
         if( $object === $pickedObject )
             continue;
 
-        echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
-        $object->__replaceWhereIamUsed($apiMode, $pickedObject, TRUE, 5);
-
-        echo "    - deleting '{$object->_PANC_shortName()}'\n";
-        if( $apiMode )
+        if( $dupAlg != 'identical' )
         {
-            $object->owner->API_remove($object);
+            echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+            $object->__replaceWhereIamUsed($apiMode, $pickedObject, TRUE, 5);
+
+            echo "    - deleting '{$object->_PANC_shortName()}'\n";
+            if( $apiMode )
+            {
+                $object->owner->API_remove($object);
+            }
+            else
+            {
+                $object->owner->remove($object);
+            }
+
+            $countRemoved++;
+
+            if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+            {
+                echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+                break 2;
+            }
         }
         else
-        {
-            $object->owner->remove($object);
-        }
-
-        $countRemoved++;
-
-        if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
-        {
-            echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
-            break 2;
-        }
+            echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL\n";
     }
 }
 
