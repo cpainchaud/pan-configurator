@@ -1064,7 +1064,7 @@ class SecurityRule extends RuleWithUserID
     }
 
 
-	public function &API_getServiceStats($timePeriod, $specificApps=null)
+	public function &API_getServiceStats($timePeriod = 'last-30-days', $fastMode = true, $limit = 50, $specificApps=null)
 	{
 		$con = findConnectorOrDie($this);
 
@@ -1100,16 +1100,25 @@ class SecurityRule extends RuleWithUserID
 
 		$parentClass = get_class($this->owner->owner);
 
+        if( $fastMode )
+            $type = 'panorama-trsum';
+        else
+            $type = 'panorama-traffic';
+
+        if( $parentClass == 'VirtualSystem' )
+        {
+            if( $fastMode )
+                $type = 'trsum';
+            else
+                $type = 'traffic';
+        }
+
 		if( $parentClass == 'VirtualSystem' )
 		{
-			$type = 'traffic';
 			$dvq = '(vsys eq '.$this->owner->owner->name().')';
-
 		}
 		else
 		{
-			$type = 'panorama-traffic';
-
 			$devices = $this->owner->owner->getDevicesInGroup();
 			//print_r($devices);
 
@@ -1121,12 +1130,11 @@ class SecurityRule extends RuleWithUserID
 			$dvq = '('.array_to_devicequery($devices).')';
 		}
 
-		$query = 'type=report&reporttype=dynamic&reportname=custom-dynamic-report&cmd=<type>'
-		         .'<'.$type.'><aggregate-by><member>proto</member><member>dport</member></aggregate-by>'
-		         .'</'.$type.'></type><period>'.$timePeriod.'</period>'
-		         .'<topn>100</topn><topm>500</topm><caption>untitled</caption>'
-		         .'<query>'."$dvq $query_appfilter and (rule eq '".$this->name."')</query>";
-
+        $query = "<type>"
+            ."<".$type."><aggregate-by><member>proto</member><member>dport</member></aggregate-by>"
+            ."</".$type."></type><period>".$timePeriod."</period>"
+            ."<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
+            ."<query>"."$dvq $query_appfilter and (rule eq '".$this->name."')</query>";
 
         $apiArgs = Array();
         $apiArgs['type'] = 'report';
@@ -1139,6 +1147,73 @@ class SecurityRule extends RuleWithUserID
 
 		return $ret;
 	}
+
+    public function &API_getAddressStats($timePeriod = 'last-30-days', $srcORdst = 'src', $fastMode = true, $limit = 50, $excludedAddresses = Array())
+    {
+        $con = findConnectorOrDie($this);
+
+        $parentClass = get_class($this->owner->owner);
+
+        if( $fastMode )
+            $type = 'panorama-trsum';
+        else
+            $type = 'panorama-traffic';
+
+        if( $parentClass == 'VirtualSystem' )
+        {
+            if( $fastMode )
+                $type = 'trsum';
+            else
+                $type = 'traffic';
+        }
+        
+        if( $parentClass == 'VirtualSystem' )
+        {
+            $dvq = '(vsys eq '.$this->owner->owner->name().')';
+        }
+        else
+        {
+            $devices = $this->owner->owner->getDevicesInGroup();
+            //print_r($devices);
+
+            $first = true;
+
+            if( count($devices) == 0 )
+                derr('cannot request rule stats for a device group that has no member');
+
+            $dvq = '('.array_to_devicequery($devices).')';
+        }
+
+        $excludedAppsString = '';
+
+        $first = true;
+        foreach( $excludedAddresses as &$e )
+        {
+            if( !$first )
+                $excludedAppsString .= ' and ';
+
+            $excludedAppsString .= "(app neq $e)";
+            $first = false;
+        }
+
+        $query = "<type>"
+            ."<".$type."><aggregate-by><member>".$srcORdst."</member></aggregate-by>"
+            ."</".$type."></type><period>".$timePeriod."</period>"
+            ."<topn>{$limit}</topn><topm>50</topm><caption>untitled</caption>"
+            ."<query>"."$dvq {$excludedAppsString} and (rule eq '".$this->name."')</query>";
+
+
+        $apiArgs = Array();
+        $apiArgs['type'] = 'report';
+        $apiArgs['reporttype'] = 'dynamic';
+        $apiArgs['reportname'] = 'custom-dynamic-report';
+        $apiArgs['async'] = 'yes';
+        $apiArgs['cmd'] = $query;
+
+        $ret = $con->getReport($apiArgs);
+
+        return $ret;
+    }
 
 	public function cleanForDestruction()
 	{
