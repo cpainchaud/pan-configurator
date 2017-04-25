@@ -732,6 +732,12 @@ class AddressStore
 
         foreach( $this->_addressGroups as $group )
         {
+            if( $group->isDynamic() )
+            {
+                $result[] = $group;
+                continue;
+            }
+
             $subGroups = $group->expand(true);
 
             $sortingArray[$group->name()] = Array();

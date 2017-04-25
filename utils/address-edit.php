@@ -513,14 +513,14 @@ foreach( $objectsLocation as $location )
     {
         if( $location == 'shared' || $location == 'any'  )
         {
-            $objectsToProcess[] = Array('store' => $pan->addressStore, 'objects' => $pan->addressStore->all());
+            $objectsToProcess[] = Array('store' => $pan->addressStore, 'objects' => $pan->addressStore->all(null,true));
             $locationFound = true;
         }
         foreach ($pan->getVirtualSystems() as $sub)
         {
             if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
             {
-                $objectsToProcess[] = Array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all());
+                $objectsToProcess[] = Array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all(null,true));
                 $locationFound = true;
             }
         }
@@ -530,7 +530,7 @@ foreach( $objectsLocation as $location )
         if( $location == 'shared' || $location == 'any' )
         {
 
-            $objectsToProcess[] = Array('store' => $pan->addressStore, 'objects' => $pan->addressStore->all());
+            $objectsToProcess[] = Array('store' => $pan->addressStore, 'objects' => $pan->addressStore->all(null,true));
             $locationFound = true;
         }
 
@@ -538,7 +538,7 @@ foreach( $objectsLocation as $location )
         {
             if( ($location == 'any' || $location == 'all' || $location == $sub->name()) && !isset($ruleStoresToProcess[$sub->name().'%pre']) )
             {
-                $objectsToProcess[] = Array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all() );
+                $objectsToProcess[] = Array('store' => $sub->addressStore, 'objects' => $sub->addressStore->all(null,true) );
                 $locationFound = true;
             }
         }
