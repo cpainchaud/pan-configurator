@@ -154,9 +154,10 @@ class AddressStore
     /**
      * Returns an Array with all Address , AddressGroups, TmpAddress objects in this store
      * @param $withFilter string|null
+     * @param bool $sortByDependencies
      * @return Address[]|AddressGroup[]
      */
-	public function all($withFilter=null)
+	public function all($withFilter=null, $sortByDependencies=false)
 	{
 		$query = null;
 
@@ -176,7 +177,21 @@ class AddressStore
 			return $res;
 		}
 
-		return $this->_all;
+		if( !$sortByDependencies )
+    		return $this->_all;
+
+		$result = Array();
+
+		foreach($this->_tmpAddresses as $object)
+		    $result[] = $object;
+
+		foreach($this->_addressObjects as $object);
+		    $result[] = $object;
+
+        foreach($this->addressGroups(true) as $object)
+            $result[] = $object;
+
+        return $result;
 	}
 
 
@@ -702,12 +717,61 @@ class AddressStore
 	
 	/**
 	* Returns an Array with all AddressGroup in this store.
-	 * @return AddressGroup[]
+	 * @var bool $sortByDependencies
+     * @return AddressGroup[]
 	*
 	*/
-	public function addressGroups()
+	public function addressGroups($sortByDependencies = false)
 	{
-		return $this->_addressGroups;
+	    if( !$sortByDependencies )
+	        return $this->_addressGroups;
+
+	    $result = Array();
+
+	    $sortingArray = Array();
+
+        foreach( $this->_addressGroups as $group )
+        {
+            $subGroups = $group->expand(true);
+
+            $sortingArray[$group->name()] = Array();
+
+            foreach( $subGroups as $groupIndex => $subGroup )
+            {
+                if( !$subGroup->isGroup() || $subGroup->isDynamic() )
+                    continue;
+                if( $subGroup->owner !== $this->owner )
+                    continue;
+
+                $sortingArray[$group->name()][$subGroup->name()] = true;
+            }
+        }
+
+        $loopCount = 0;
+        while( count($sortingArray) > 0 )
+        {
+            foreach($sortingArray as $groupName => &$groupDependencies )
+            {
+                if( count($groupDependencies) == 0 )
+                {
+                    $result[] = $this->_addressGroups[$groupName];
+                    unset($sortingArray[$groupName]);
+
+                    foreach( $sortingArray as &$tmpGroupDeps )
+                    {
+                        if( isset($tmpGroupDeps[$groupName]) )
+                            unset($tmpGroupDeps[$groupName]);
+                    }
+                }
+            }
+
+
+            $loopCount++;
+            if( $loopCount > 40 )
+                derr("cannot determine groups dependencies after 40 loops iterations: is there too many nested groups?");
+        }
+
+        return $result;
 	}
 	
 	/**
