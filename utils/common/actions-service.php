@@ -352,6 +352,16 @@ ServiceCallContext::$supportedActions[] = Array(
         $conflictObject = $targetStore->find($object->name() ,null, false);
         if( $conflictObject === null )
         {
+            if( $object->isGroup() )
+            {
+                foreach($object->members() as $memberObject)
+                    if( $targetStore->find($memberObject->name()) === NULL )
+                    {
+                        echo $context->padding."   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$targetLocation}'\n";
+                        return;
+                    }
+            }
+
             print $context->padding."   * moved, no conflict\n";
             if( $context->isAPI )
             {
@@ -371,7 +381,7 @@ ServiceCallContext::$supportedActions[] = Array(
             return;
         }
 
-        print $context->padding."   - there is a conflict with type ";
+        print $context->padding."   - there is a conflict with an object of same name and type ";
         if( $conflictObject->isGroup() )
             print "Group\n";
         else

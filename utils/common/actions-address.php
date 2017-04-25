@@ -1044,6 +1044,16 @@ AddressCallContext::$supportedActions[] = Array(
         $conflictObject = $targetStore->find($object->name() ,null, false);
         if( $conflictObject === null )
         {
+            if( $object->isGroup() && !$object->isDynamic() )
+            {
+                foreach($object->members() as $memberObject)
+                    if( $targetStore->find($memberObject->name()) === NULL )
+                    {
+                        echo $context->padding."   * SKIPPED : this group has an object named '{$memberObject->name()} that does not exist in target location '{$targetLocation}'\n";
+                        return;
+                    }
+            }
+
             echo $context->padding."   * moved, no conflict\n";
             if( $context->isAPI )
             {
@@ -1067,7 +1077,7 @@ AddressCallContext::$supportedActions[] = Array(
             return;
         }
 
-        echo $context->padding."   - there is a conflict with type ";
+        echo $context->padding."   - there is a conflict with an object of same name and type ";
         if( $conflictObject->isGroup() )
             echo "Group\n";
         else
