@@ -185,7 +185,7 @@ class AddressStore
 		foreach($this->_tmpAddresses as $object)
 		    $result[] = $object;
 
-		foreach($this->_addressObjects as $object);
+		foreach($this->_addressObjects as $object)
 		    $result[] = $object;
 
         foreach($this->addressGroups(true) as $object)
