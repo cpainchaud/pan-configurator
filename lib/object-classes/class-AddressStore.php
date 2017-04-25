@@ -732,15 +732,21 @@ class AddressStore
 
         foreach( $this->_addressGroups as $group )
         {
-            $subGroups = $group->expand(true);
+            if( $group->isDynamic() )
+            {
+                $result[] = $group;
+                continue;
+            }
 
             $sortingArray[$group->name()] = Array();
 
-            foreach( $subGroups as $groupIndex => $subGroup )
+            $subGroups = $group->expand(true);
+
+            foreach( $subGroups as $subGroup )
             {
                 if( !$subGroup->isGroup() || $subGroup->isDynamic() )
                     continue;
-                if( $subGroup->owner !== $this->owner )
+                if( $subGroup->owner !== $this )
                     continue;
 
                 $sortingArray[$group->name()][$subGroup->name()] = true;
@@ -764,7 +770,6 @@ class AddressStore
                     }
                 }
             }
-
 
             $loopCount++;
             if( $loopCount > 40 )

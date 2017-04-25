@@ -98,11 +98,26 @@ class ServiceStore
 
 
 	/**
+     * @param bool $sortByDependencies
 	 * @return Service[]|ServiceGroup[]
 	 */
-	public function all()
+	public function all($sortByDependencies=false)
 	{
-		return $this->_all;
+        if( !$sortByDependencies )
+            return $this->_all;
+
+        $result = Array();
+
+        foreach($this->_tmpServices as $object)
+            $result[] = $object;
+
+        foreach($this->_serviceObjects as $object)
+            $result[] = $object;
+
+        foreach($this->serviceGroups(true) as $object)
+            $result[] = $object;
+
+        return $result;
 	}
 
 	/**
@@ -114,11 +129,59 @@ class ServiceStore
 	}
 
 	/**
+     * @var bool $sortByDependencies
 	 * @return ServiceGroup[]
 	 */
-	public function serviceGroups()
+	public function serviceGroups($sortByDependencies=true)
 	{
-		return $this->_serviceGroups;
+        if( !$sortByDependencies )
+		    return $this->_serviceGroups;
+
+        $result = Array();
+
+        $sortingArray = Array();
+
+        foreach( $this->_serviceGroups as $group )
+        {
+            $sortingArray[$group->name()] = Array();
+
+            $subGroups = $group->expand(true);
+
+            foreach( $subGroups as $subGroup )
+            {
+                if( !$subGroup->isGroup() )
+                    continue;
+                if( $subGroup->owner !== $this )
+                    continue;
+
+                $sortingArray[$group->name()][$subGroup->name()] = true;
+            }
+        }
+
+        $loopCount = 0;
+        while( count($sortingArray) > 0 )
+        {
+            foreach($sortingArray as $groupName => &$groupDependencies )
+            {
+                if( count($groupDependencies) == 0 )
+                {
+                    $result[] = $this->_serviceGroups[$groupName];
+                    unset($sortingArray[$groupName]);
+
+                    foreach( $sortingArray as &$tmpGroupDeps )
+                    {
+                        if( isset($tmpGroupDeps[$groupName]) )
+                            unset($tmpGroupDeps[$groupName]);
+                    }
+                }
+            }
+
+            $loopCount++;
+            if( $loopCount > 40 )
+                derr("cannot determine groups dependencies after 40 loops iterations: is there too many nested groups?");
+        }
+
+        return $result;
 	}
 
 	/**
