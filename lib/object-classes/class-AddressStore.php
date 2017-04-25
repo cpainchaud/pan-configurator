@@ -185,7 +185,7 @@ class AddressStore
 		foreach($this->_tmpAddresses as $object)
 		    $result[] = $object;
 
-		foreach($this->_addressObjects as $object);
+		foreach($this->_addressObjects as $object)
 		    $result[] = $object;
 
         foreach($this->addressGroups(true) as $object)
@@ -738,15 +738,15 @@ class AddressStore
                 continue;
             }
 
-            $subGroups = $group->expand(true);
-
             $sortingArray[$group->name()] = Array();
 
-            foreach( $subGroups as $groupIndex => $subGroup )
+            $subGroups = $group->expand(true);
+
+            foreach( $subGroups as $subGroup )
             {
                 if( !$subGroup->isGroup() || $subGroup->isDynamic() )
                     continue;
-                if( $subGroup->owner !== $this->owner )
+                if( $subGroup->owner !== $this )
                     continue;
 
                 $sortingArray[$group->name()][$subGroup->name()] = true;
@@ -770,7 +770,6 @@ class AddressStore
                     }
                 }
             }
-
 
             $loopCount++;
             if( $loopCount > 40 )
