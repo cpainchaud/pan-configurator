@@ -777,6 +777,12 @@ foreach( $rulesLocation as $location )
 // </editor-fold>
 
 
+foreach( $doActions as $doAction )
+{
+    if( $doAction->hasGlobalInitAction() )
+        $doAction->executeGlobalInitAction();
+}
+
 //
 // It's time to process Rules !!!!
 //
