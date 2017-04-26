@@ -231,7 +231,7 @@ class Rule
         $node = DH::findFirstElement('target', $this->xmlroot);
         if( $node !== false )
         {
-            $deviceNode = DH::findFirstElement('device', $node);
+            $deviceNode = DH::findFirstElement('devices', $node);
             if( $deviceNode !== false )
                 $node->removeChild($deviceNode);
         }
