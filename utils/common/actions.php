@@ -81,6 +81,17 @@ class CallContext
         $this->actionRef['MainFunction']($this);
     }
 
+    public function hasGlobalInitAction()
+    {
+        return isset($this->actionRef['GlobalInitFunction']);
+    }
+
+    public function executeGlobalInitAction()
+    {
+        print "   - action '{$this->actionRef['name']}' has tasks to process before start.\n";
+        $this->actionRef['GlobalInitFunction']($this);
+    }
+
     public function hasGlobalFinishAction()
     {
         return isset($this->actionRef['GlobalFinishFunction']);
