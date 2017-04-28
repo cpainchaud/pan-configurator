@@ -1157,6 +1157,20 @@ AddressCallContext::$supportedActions[] = Array(
                 $object->owner->remove($object);
             return;
         }
+        elseif( $object->isType_ipNetmask() )
+        {
+            if( str_replace('/32', '', $conflictObject->value()) == str_replace('/32', '', $object->value()) )
+            {
+                echo "    * Removed because target has same content\n";
+                $object->replaceMeGlobally($conflictObject);
+
+                if($context->isAPI)
+                    $object->owner->API_remove($object);
+                else
+                    $object->owner->remove($object);
+                return;
+            }
+        }
 
         if( $context->arguments['mode'] == 'removeifmatch' )
             return;
