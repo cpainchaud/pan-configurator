@@ -32,6 +32,8 @@ class NatRule extends Rule
 	
 	private $_snatbidir = 'no';
 
+	private $_snatUsesFloatingIP = false;
+
     /** @var null|Address|AddressGroup */
 	public $dnathost = null;
 
@@ -269,6 +271,12 @@ class NatRule extends Rule
 								$translad = $this->parentAddressStore->findOrCreate( $node->textContent );
 								$this->snathosts->addObject($translad);
 							}
+                            else if( $node->nodeName == 'floating-ip' )
+                            {
+                                $translad = $this->parentAddressStore->findOrCreate( $node->textContent );
+                                $this->snathosts->addObject($translad);
+                                $this->_snatUsesFloatingIP = true;
+                            }
 							else
 								derr("Cannot understand dynamic NAT for rule '".$this->name."'\n");
 						}
@@ -440,7 +448,10 @@ class NatRule extends Rule
                 $snatIP = $this->snathosts->all();
                 if( count($snatIP) > 0)
                 {
-                    DH::createOrResetElement($subsubroot, 'ip', reset($snatIP)->name() );
+                    if( $this->_snatUsesFloatingIP )
+                        DH::createOrResetElement($subsubroot, 'floating-ip', reset($snatIP)->name() );
+                    else
+                        DH::createOrResetElement($subsubroot, 'ip', reset($snatIP)->name() );
                 }
 				
 			}

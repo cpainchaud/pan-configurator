@@ -354,7 +354,7 @@
 
 		<td class="name"><div>
 		<a class="anchor" href="#_all">#</a>
-		<code><b>all</b>( <span>mixed <var>$withFilter</var> = <span class="php-keyword1">null</span></span> )</code>
+		<code><b>all</b>( <span>mixed <var>$withFilter</var> = <span class="php-keyword1">null</span></span>, <span>boolean <var>$sortByDependencies</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -374,6 +374,8 @@ store</p>
 				<div class="list"><dl>
 					<dt><var>$withFilter</var></dt>
 					<dd><code>mixed</code><br>$withFilter string|null</dd>
+					<dt><var>$sortByDependencies</var></dt>
+					<dd><code>boolean</code><br>$sortByDependencies</dd>
 				</dl></div>
 
 				<h4>Returns</h4>
@@ -1167,7 +1169,7 @@ with that name already exists</p>
 
 		<td class="name"><div>
 		<a class="anchor" href="#_addressGroups">#</a>
-		<code><b>addressGroups</b>( )</code>
+		<code><b>addressGroups</b>( <span>mixed <var>$sortByDependencies</var> = <span class="php-keyword1">false</span></span> )</code>
 
 		<div class="description short">
 			
@@ -1188,6 +1190,10 @@ with that name already exists</p>
 				</div>
 
 
+				<h4>Var</h4>
+				<div class="list">
+						bool $sortByDependencies<br />
+				</div>
 
 
 		</div>

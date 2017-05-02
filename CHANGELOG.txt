@@ -3,6 +3,7 @@ CHANGELOG
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml
 * class ServiceStore: extend for API_newService()/newServiceGroup()/API_newServiceGroup()
+* class NatRule: added support for floating-ip in NAT rules
 
 utils:
 address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
