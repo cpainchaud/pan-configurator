@@ -1384,7 +1384,13 @@ RuleCallContext::$supportedActions[] = Array(
         else
             $rule->apps->addApp($objectFind);
     },
-    'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+    'args' => Array( 'appName' => Array( 'type' => 'pipeSeparatedList',
+                                        'subtype' => 'string',
+                                        'default' => '*nodefault*',
+                                        'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n".
+                                            "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n"
+
+            ),
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'app-Add-Force',

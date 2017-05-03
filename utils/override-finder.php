@@ -259,8 +259,11 @@ function checkFirewallOverride($apiConnector, $padding)
     DH::makeElementAsRoot($configRoot, $candidateDoc);
 
     print $padding." - Looking for root /config/template/config xpath...";
-    $templateRoot = DH::findXPathSingleEntryOrDie('template/config', $configRoot);
+    $templateRoot = DH::findXPathSingleEntry('template/config', $configRoot);
     print "OK!\n";
+
+    if( $templateRoot === FALSE )
+        echo $padding." - SKIPPED because no template applied!\n";
 
     print "\n";
 

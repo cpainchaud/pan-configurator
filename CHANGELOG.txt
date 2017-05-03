@@ -16,6 +16,7 @@ bugfix:
 - fixed a crash when trying to move some rule types from PRE/POST
 - fixed dependencies issues when trying to move an object to another location
 - fixed action 'target-set-any' that would not update properly
+- override-finder.php : supported use case where firewall has no template applied
 
 
 1.5.12 (2017-04-04)
