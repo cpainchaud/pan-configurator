@@ -1375,20 +1375,29 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
-        $objectFind = $rule->apps->parentCentralStore->find($context->arguments['appName']);
-        if( $objectFind === null )
-            derr("application named '{$context->arguments['appName']}' not found");
 
-        if( $context->isAPI )
-            $rule->apps->API_addApp($objectFind);
-        else
-            $rule->apps->addApp($objectFind);
+        foreach($context->arguments['appName'] as $appName)
+        {
+            $objectFind = $rule->apps->parentCentralStore->find($appName);
+            if( $objectFind === null )
+                derr("application named '{$context->arguments['appName']}' not found");
+
+            echo $context->padding." - adding application '{$appName}'... ";
+
+            if( $context->isAPI )
+                $rule->apps->API_addApp($objectFind);
+            else
+                $rule->apps->addApp($objectFind);
+
+            echo "OK\n";
+        }
+
     },
     'args' => Array( 'appName' => Array( 'type' => 'pipeSeparatedList',
                                         'subtype' => 'string',
                                         'default' => '*nodefault*',
                                         'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n".
-                                            "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n"
+                                            "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n")
 
             ),
 );
