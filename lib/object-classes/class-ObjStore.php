@@ -245,7 +245,7 @@ class ObjStore
 
 
 	/**
-	 * should only be called from a Rule constructor
+	 * should only be called from a store constructor
 	 * @ignore
 	 */
 	public function load_from_domxml(DOMElement $xml)
@@ -259,7 +259,7 @@ class ObjStore
 
             /** @var DOMElement $node */
 
-            if( $this->skipEmptyXmlObjects && !$node->hasChildNodes() )
+            if( isset($this->skipEmptyXmlObjects) && !$node->hasChildNodes() )
             {
                 mwarning('XML element had no child, it was skipped', $node);
                 continue;
