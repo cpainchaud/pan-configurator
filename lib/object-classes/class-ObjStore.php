@@ -259,7 +259,7 @@ class ObjStore
 
             /** @var DOMElement $node */
 
-            if( isset($this->skipEmptyXmlObjects) && !$node->hasChildNodes() )
+            if( $this->skipEmptyXmlObjects && !$node->hasChildNodes() )
             {
                 mwarning('XML element had no child, it was skipped', $node);
                 continue;
