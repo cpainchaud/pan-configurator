@@ -101,15 +101,45 @@ if( isset(PH::$args['test']) )
     $noArgProvided = false;
     $checkHost = PH::$args['test'];
 
-    echo " - requested to test Host/IP '{$checkHost}'\n";
-    if( !isset(PH::$args['apikey']) )
-        $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost, null, TRUE, TRUE, $hiddenPW);
+    if( $checkHost == 'any' || $checkHost == 'all')
+    {
+        foreach(PanAPIConnector::$savedConnectors as $connector)
+        {
+            $checkHost = $connector->apihost;
+            echo " - requested to test Host/IP '{$checkHost}'\n";
+
+            PH::enableExceptionSupport();
+            try
+            {
+                if( !isset(PH::$args['apikey']) )
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost, null, TRUE, TRUE, $hiddenPW);
+                else
+                    $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost, PH::$args['apikey'] );
+
+                $connector->testConnectivity();
+            }
+            catch(Exception $e)
+            {
+                PH::disableExceptionSupport();
+                print "   ***** API Error occured : ".$e->getMessage()."\n\n";
+            }
+
+            PH::disableExceptionSupport();
+            print "\n";
+        }
+    }
     else
-        $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost, PH::$args['apikey'] );
+    {
+        echo " - requested to test Host/IP '{$checkHost}'\n";
+        if( !isset(PH::$args['apikey']) )
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost, null, TRUE, TRUE, $hiddenPW);
+        else
+            $connector = PanAPIConnector::findOrCreateConnectorFromHost( $checkHost, PH::$args['apikey'] );
 
-    $connector->testConnectivity();
+        $connector->testConnectivity();
 
-    print "\n";
+        print "\n";
+    }
 }
 
 $keyCount = count(PanAPIConnector::$savedConnectors);
