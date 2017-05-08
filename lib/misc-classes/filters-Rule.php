@@ -1209,6 +1209,31 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is'] = Arr
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['secprof']['operators']['url.is.set'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
+        if( !isset($profiles['url-filtering']) )
+            return false;
+
+        return isset($profiles['url-filtering']);
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 //                                              //
 //                Other properties              //
