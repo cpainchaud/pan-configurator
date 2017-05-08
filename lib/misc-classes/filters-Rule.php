@@ -1209,7 +1209,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is'] = Arr
         'input' => 'input/panorama-8.0.xml'
     )
 );
-RQuery::$defaultFilters['rule']['secprof']['operators']['url.is.set'] = Array(
+RQuery::$defaultFilters['rule']['secprof']['operators']['av-profile.is.set'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         $rule = $context->object;
@@ -1223,12 +1223,102 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['url.is.set'] = Array(
             return false;
 
         $profiles = $rule->securityProfiles();
-        if( !isset($profiles['url-filtering']) )
+
+        return isset($profiles['virus']);
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['as-profile.is.set'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
             return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
+
+        return isset($profiles['spyware']);
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP% as-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['url-profile.is.set'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
 
         return isset($profiles['url-filtering']);
     },
     'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['wf-profile.is.set'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
+
+        return isset($profiles['wildfire-analysis']);
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is.set'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
+
+        return isset($profiles['vulnerability']);
+    },
+    'arg' => true,
     'ci' => Array(
         'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'
