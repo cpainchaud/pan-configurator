@@ -1251,7 +1251,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['as-profile.is.set'] = A
     },
     'arg' => false,
     'ci' => Array(
-        'fString' => '(%PROP% as-production)',
+        'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
@@ -1318,7 +1318,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is.set'] =
 
         return isset($profiles['vulnerability']);
     },
-    'arg' => true,
+    'arg' => false,
     'ci' => Array(
         'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'
