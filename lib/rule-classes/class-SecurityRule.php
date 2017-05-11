@@ -508,7 +508,7 @@ class SecurityRule extends RuleWithUserID
     {
         $this->secproftype = 'profiles';
         $this->secprofgroup = null;
-        $this->secprofProfiles['wildfire'] = $newAVprof;
+        $this->secprofProfiles['wildfire-analysis'] = $newAVprof;
 
         $this->rewriteSecProfXML();
 
