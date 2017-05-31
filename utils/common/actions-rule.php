@@ -1929,7 +1929,7 @@ RuleCallContext::$supportedActions[] = Array(
         if( $context->isAPI )
             $rule->API_setDescription($description.$textToAppend);
         else
-            $rule->setSecurityProfileGroup($description.$textToAppend);
+            $rule->setDescription($description.$textToAppend);
 
         echo "OK";
     },
