@@ -77,7 +77,7 @@ $debugAPI = false;
 
 $supportedArguments = Array();
 $supportedArguments['in'] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
-
+$supportedArguments['location'] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS. ie: location=any or location=vsys2,vsys1', 'argDesc' => '=sub1[,sub2]');
 $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
 $supportedArguments['apitimeout'] = Array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
@@ -232,14 +232,6 @@ if( $configInput['type'] == 'file' )
     {
         derr("'loadPanoramaPushedConfig' option cannot used in API/Online mode");
     }
-    if(isset(PH::$args['out']) )
-    {
-        $configOutput = PH::$args['out'];
-        if (!is_string($configOutput) || strlen($configOutput) < 1)
-            display_error_usage_exit('"out" argument is not a valid string');
-    }
-    else
-        display_error_usage_exit('"out" is missing from arguments');
 
     if( !file_exists($configInput['filename']) )
         derr("file '{$configInput['filename']}' not found");
@@ -385,6 +377,220 @@ print "OK! ($loadElapsedTime seconds, $loadUsedMem memory)\n";
 // --------------------
 
 
+//
+// Location Filter Processing
+//
+
+// <editor-fold desc="Location Filter Processing" defaultstate="collapsed" >
+
+/**@var RuleStore[] $ruleStoresToProcess */
+$rulesLocation = explode(',', $rulesLocation);
+
+foreach( $rulesLocation as &$location )
+{
+    if( strtolower($location) == 'shared' )
+        $location = 'shared';
+    else if( strtolower($location) == 'any' )
+        $location = 'any';
+    else if( strtolower($location) == 'all' )
+        $location = 'any';
+}
+unset($location);
+
+$rulesLocation = array_unique($rulesLocation);
+$rulesToProcess = Array();
+
+foreach( $rulesLocation as $location )
+{
+    $locationFound = false;
+
+    if( $configType == 'panos')
+    {
+        foreach ($pan->getVirtualSystems() as $sub)
+        {
+            if( isset(PH::$args['loadpanoramapushedconfig']) )
+            {
+                if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
+                {
+                    if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->securityRules, 'rules' => $sub->securityRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->qosRules, 'rules' => $sub->qosRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->resultingRuleSet());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->dosRules, 'rules' => $sub->dosRules->resultingRuleSet());
+                    }
+                    $locationFound = true;
+                }
+            }
+            else
+            {
+                if( ($location == 'any' || $location == 'all' || $location == $sub->name() && !isset($ruleStoresToProcess[$sub->name()]) ))
+                {
+                    if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->securityRules, 'rules' => $sub->securityRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->qosRules, 'rules' => $sub->qosRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->dosRules, 'rules' => $sub->dosRules->rules());
+                    }
+                    $locationFound = true;
+                }
+            }
+        }
+    }
+    else
+    {
+        if( $location == 'shared' || $location == 'any' || $location == 'all'  )
+        {
+            if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->securityRules, 'rules' => $pan->securityRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->natRules, 'rules' => $pan->natRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->qosRules, 'rules' => $pan->qosRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->pbfRules, 'rules' => $pan->pbfRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->decryptionRules, 'rules' => $pan->decryptionRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->appOverrideRules, 'rules' => $pan->appOverrideRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->captivePortalRules, 'rules' => $pan->captivePortalRules->rules());
+            }
+            if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->dosRules, 'rules' => $pan->dosRules->rules());
+            }
+            $locationFound = true;
+        }
+
+        foreach( $pan->getDeviceGroups() as $sub )
+        {
+            if( $location == 'any' || $location == 'all' || $location == $sub->name() )
+            {
+                if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->securityRules, 'rules' => $sub->securityRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->natRules, 'rules' => $sub->natRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->qosRules, 'rules' => $sub->qosRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->pbfRules, 'rules' => $sub->pbfRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->decryptionRules, 'rules' => $sub->decryptionRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->appOverrideRules, 'rules' => $sub->appOverrideRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->dosRules, 'rules' => $sub->dosRules->rules());
+                }
+                $locationFound = true;
+            }
+        }
+    }
+
+    if( !$locationFound )
+    {
+        print "ERROR: location '$location' was not found. Here is a list of available ones:\n";
+        print " - shared\n";
+        if( $configType == 'panos' )
+        {
+            foreach( $pan->getVirtualSystems() as $sub )
+            {
+                print " - ".$sub->name()."\n";
+            }
+        }
+        else
+        {
+            foreach( $pan->getDeviceGroups() as $sub )
+            {
+                print " - ".$sub->name()."\n";
+            }
+        }
+        print "\n\n";
+        exit(1);
+    }
+}
+// </editor-fold>
 
 
 print "\n";
