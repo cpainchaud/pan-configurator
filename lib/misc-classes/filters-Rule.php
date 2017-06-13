@@ -260,7 +260,7 @@ RQuery::$commonFilters['src-dst']['xxx-is.fully.included.in.list'] = function(Ru
 {
     $list = &$context->value;
 
-    if( !isset($context->cachedIPMapping) )
+    if( !isset($context->cachedIP4Mapping) )
     {
         $listMapping = new IP4Map();
 
@@ -281,7 +281,7 @@ RQuery::$commonFilters['src-dst']['xxx-is.partially.included.in.list'] = functio
 {
     $list = &$context->value;
 
-    if( !isset($context->cachedIPMapping) )
+    if( !isset($context->cachedIP4Mapping) )
     {
         $listMapping = new IP4Map();
 
@@ -304,7 +304,7 @@ RQuery::$commonFilters['src-dst']['xxx-is.partially.or.fully.included.in.list'] 
 
     /** @var IP4Map $lisMapping */
 
-    if( !isset($context->cachedIPMapping) )
+    if( !isset($context->cachedIP4Mapping) )
     {
         $listMapping = new IP4Map();
 
