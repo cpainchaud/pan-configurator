@@ -195,6 +195,7 @@ function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
         foreach( $manualCheckXpathList as $excludeXPath )
         {
             $xpathResults = DH::findXPath('/config/template' . $excludeXPath, $template->ownerDocument);
+            #$xpathResults = DH::findXPath( $excludeXPath, $template);
 
             foreach( $xpathResults as $searchNode )
             {
@@ -260,16 +261,21 @@ function checkFirewallOverride($apiConnector, $padding)
 
     print $padding." - Looking for root /config/template/config xpath...";
     $templateRoot = DH::findXPathSingleEntry('template/config', $configRoot);
+
     print "OK!\n";
 
     if( $templateRoot === FALSE )
+    {
         echo $padding." - SKIPPED because no template applied!\n";
+    }
+    else
+    {
+        print "\n";
 
-    print "\n";
+        print $padding . " ** Looking for overrides **\n";
 
-    print $padding." ** Looking for overrides **\n";
-
-    diffNodes($templateRoot, $configRoot, $padding);
+        diffNodes($templateRoot, $configRoot, $padding);
+    }
 }
 
 if($cycleConnectedFirewalls)
