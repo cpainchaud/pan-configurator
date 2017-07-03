@@ -18,6 +18,7 @@ bugfix:
 - fixed action 'target-set-any' that would not update properly
 - override-finder.php : supported use case where firewall has no template applied
 - fixed action 'description-Append'
+- fixed an issue with pipeSeparatedList and actions in xxx-edit utilities
 
 
 1.5.12 (2017-04-04)

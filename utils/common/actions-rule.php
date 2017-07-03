@@ -1380,7 +1380,7 @@ RuleCallContext::$supportedActions[] = Array(
         {
             $objectFind = $rule->apps->parentCentralStore->find($appName);
             if( $objectFind === null )
-                derr("application named '{$context->arguments['appName']}' not found");
+                derr("application named '{$appName}' not found");
 
             echo $context->padding." - adding application '{$appName}'... ";
 

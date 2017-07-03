@@ -156,7 +156,8 @@ class CallContext
                 $tmpArray = Array();
 
                 if( $argValue != $properties['default'] )
-                {    if( isset($properties['choices']) )
+                {
+                    if( isset($properties['choices']) )
                     {
                         $tmpChoices = Array();
                         foreach($properties['choices'] as $choice )
@@ -174,6 +175,15 @@ class CallContext
                                 derr("unsupported value '{$argValue}' for action '{$this->actionRef['name']}' arg#{$count} '{$argName}'. Available choices are:".PH::list_to_string($properties['choices']));
 
                             $tmpArray[$tmpChoices[$inputValue]] = $tmpChoices[$inputValue];
+                        }
+                    }
+                    else
+                    {
+                        $inputChoices = explode('|', $argValue);
+
+                        foreach( $inputChoices as $inputValue )
+                        {
+                            $tmpArray[$inputValue] = $inputValue;
                         }
                     }
                 }
@@ -216,6 +226,8 @@ class CallContext
             {
                 if( is_bool($argValue) )
                     $ret .= "$argName=".boolYesNo($argValue).", ";
+                if( is_array($argValue) )
+                    $ret .= "$argName=".PH::list_to_string($argValue).", ";
                 else
                     $ret .= "$argName=$argValue, ";
             }
