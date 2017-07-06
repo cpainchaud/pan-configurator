@@ -492,7 +492,7 @@ class DeviceGroup
         print "- {$this->pbfRules->countPreRules()} / {$this->pbfRules->countPostRules()} pre/post PBF rules\n";
         print "- {$this->decryptionRules->countPreRules()} / {$this->decryptionRules->countPostRules()} pre/post Decrypt rules\n";
         print "- {$this->appOverrideRules->countPreRules()} / {$this->appOverrideRules->countPostRules()} pre/post AppOverride rules\n";
-        print "- {$this->captivePortalRules->countPreRules()} / {$this->captivePortalRules->countPostRules()} pre/post AppOverride rules\n";
+        print "- {$this->captivePortalRules->countPreRules()} / {$this->captivePortalRules->countPostRules()} pre/post Captive Portal rules\n";
         print "- {$this->dosRules->countPreRules()} / {$this->dosRules->countPostRules()} pre/post DoS rules\n";
 
         print "- {$this->addressStore->count()}/{$this->addressStore->countAddresses()}/{$this->addressStore->countAddressGroups()}/{$this->addressStore->countTmpAddresses()}/{$this->addressStore->countUnused()} total/address/group/tmp/unused objects\n";
