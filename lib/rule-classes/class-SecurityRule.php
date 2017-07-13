@@ -1018,7 +1018,7 @@ class SecurityRule extends RuleWithUserID
         }
         else
         {
-            $devices = $this->owner->owner->getDevicesInGroup();
+            $devices = $this->owner->owner->getDevicesInGroup(true);
 
             if( count($devices) == 0 )
                 derr('cannot request rule stats for a device group that has no member');

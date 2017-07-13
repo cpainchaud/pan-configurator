@@ -458,10 +458,37 @@ class DeviceGroup
     }
 
 
-
-	public function getDevicesInGroup()
+    /**
+     * @param bool $includeSubDeviceGroups look for device inside sub device-groups
+     * @return array
+     */
+	public function getDevicesInGroup($includeSubDeviceGroups = false)
 	{
-		return $this->devices;
+		$devices = $this->devices;
+
+		if( $includeSubDeviceGroups )
+        {
+            foreach( $this->_childDeviceGroups as $childDG )
+            {
+                $subDevices = $childDG->getDevicesInGroup(true);
+                foreach( $subDevices as $subDevice )
+                {
+                    $serial = $subDevice['serial'];
+
+                    if( isset($devices[$serial]) )
+                    {
+                        foreach($subDevice['vsyslist'] as $vsys)
+                        {
+                            $devices[$serial]['vsyslist'][$vsys] = $vsys;
+                        }
+                    }
+                    else
+                        $devices[$serial] = $subDevice;
+                }
+            }
+        }
+
+		return $devices;
 	}
 	
 	public function name()
