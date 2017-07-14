@@ -2206,6 +2206,37 @@ RuleCallContext::$supportedActions[] = Array(
     ),
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'name-Rename',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $newName = $context->rawArguments['text'];
+
+        if( strlen($newName) > 31 )
+        {
+            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+            return;
+        }
+
+        if( !$rule->owner->isRuleNameAvailable($newName) )
+        {
+            print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
+            return;
+        }
+
+        if( $context->isAPI )
+        {
+            $rule->API_setName($newName);
+        }
+        else
+        {
+            $rule->setName($newName);
+        }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'ruleType-Change',
     'MainFunction' => function(RuleCallContext $context)
     {

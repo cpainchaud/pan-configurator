@@ -8,6 +8,7 @@ CHANGELOG
 utils:
 address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
 rules-edit: new filter 'service has.recursive', 'secprof av-profile.is.set', 'secprof as-profile.is.set', 'secprof url-profile.is.set', 'secprof wf-profile.is.set', 'secprof vuln-profile.is.set'
+rules-edit: new action 'name-Rename'
 service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
 service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
 service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
