@@ -1203,12 +1203,20 @@ RuleCallContext::$supportedActions[] = Array(
         else
             $objectFind = $rule->tags->parentCentralStore->findOrCreate($context->arguments['tagName']);
 
+        if( $context->arguments['tagColor'] != 'none' )
+        {
+            if( $context->isAPI )
+                $objectFind->API_setColor( $context->arguments['tagColor'] );
+            else
+                $objectFind->setColor( $context->arguments['tagColor'] );
+        }
+
         if( $context->isAPI )
             $rule->tags->API_addTag($objectFind);
         else
             $rule->tags->addTag($objectFind);
     },
-    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+    'args' => Array( 'tagName' => Array( 'type' => 'string', 'default' => '*nodefault*' ), 'tagColor' => Array( 'type' => 'string', 'default' => 'none' ) ),
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'tag-Remove',
