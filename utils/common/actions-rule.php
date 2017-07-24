@@ -556,7 +556,7 @@ RuleCallContext::$commonActionFunctions['zone-replace'] = Array(
     },
     'args' => Array(    'zoneToReplaceName' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
                         'zoneForReplacementName' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
-                        'force' => Array( 'type' => 'boolean', 'default' => 'no')
+                        'force' => Array( 'type' => 'bool', 'default' => 'no')
     )
 );
 
