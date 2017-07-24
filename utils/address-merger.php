@@ -27,6 +27,12 @@ $supportedArguments = Array();
 $supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
 $supportedArguments[] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => 'vsys1|shared|dg1');
+$supportedArguments[] = Array(    'niceName' => 'DupAlgorithm',
+    'shortHelp' => "Specifies how to detect duplicates:\n".
+        "  - SameAddress: objects with same Network-Value will be replaced by the one picked (default)\n".
+        "  - Identical: objects with same network-value and same name will be replaced by the one picked\n".
+        "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
+    'argDesc'=> 'SameAddress | Identical | WhereUsed');
 $supportedArguments[] = Array('niceName' => 'mergeCountLimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
 $supportedArguments[] = Array('niceName' => 'pickFilter', 'shortHelp' => 'specify a filter a pick which object will be kept while others will be replaced by this one', 'argDesc' => '(name regex /^g/)');
 $supportedArguments[] = Array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
@@ -71,6 +77,14 @@ if( isset(PH::$args['mergecountlimit']) )
 else
     $mergeCountLimit = false;
 
+if( isset(PH::$args['dupalgorithm']) )
+{
+    $dupAlg = strtolower(PH::$args['dupalgorithm']);
+    if( $dupAlg != 'sameaddress' && $dupAlg != 'whereused' && $dupAlg != 'identical')
+        display_error_usage_exit('unsupported value for dupAlgorithm: '.PH::$args['dupalgorithm']);
+}
+else
+    $dupAlg = 'sameaddress';
 
 //
 // What kind of config input do we have.
@@ -215,6 +229,7 @@ if( isset(PH::$args['allowmergingwithupperlevel']) )
 echo " - upper level search status : ".boolYesNo($upperLevelSearch)."\n";
 echo " - location '{$location}' found\n";
 echo " - found {$store->countAddresses()} address Objects\n";
+echo " - DupAlgorithm selected: {$dupAlg}\n";
 echo " - computing address values database ... ";
 sleep(1);
 
@@ -228,54 +243,86 @@ else
 
 $hashMap = Array();
 $upperHashMap = Array();
-foreach( $objectsToSearchThrough as $object )
+if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
 {
-    if( !$object->isAddress() )
-        continue;
-    if( $object->isTmpAddr() )
-        continue;
-
-    if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
-        continue;
-
-    $skipThisOne = FALSE;
-
-    // Object with descendants in lower device groups should be excluded
-    if( $panc->isPanorama() && $object->owner === $store )
+    foreach( $objectsToSearchThrough as $object )
     {
-        foreach( $childDeviceGroups as $dg )
+        if( !$object->isAddress() )
+            continue;
+        if( $object->isTmpAddr() )
+            continue;
+
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+            continue;
+
+        $skipThisOne = FALSE;
+
+        // Object with descendants in lower device groups should be excluded
+        if( $panc->isPanorama() && $object->owner === $store )
         {
-            if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
+            foreach( $childDeviceGroups as $dg )
             {
-                $skipThisOne = TRUE;
-                break;
+                if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
+                {
+                    $skipThisOne = TRUE;
+                    break;
+                }
+            }
+            if( $skipThisOne )
+                continue;
+        }
+
+        $value = $object->value();
+
+        // if object is /32, let's remove it to match equivalent non /32 syntax
+        if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+            $value = substr($value, 0, strlen($value) - 3);
+
+        $value = $object->type() . '-' . $value;
+
+        if( $object->owner === $store )
+        {
+            $hashMap[$value][] = $object;
+            if( $parentStore !== null )
+            {
+                $findAncestor = $parentStore->find($object->name(), null, true);
+                if( $findAncestor !== null )
+                    $object->ancestor = $findAncestor;
             }
         }
-        if( $skipThisOne )
-            continue;
+        else
+            $upperHashMap[$value][] = $object;
     }
-
-    $value = $object->value();
-
-    // if object is /32, let's remove it to match equivalent non /32 syntax
-    if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
-        $value = substr($value, 0, strlen($value) - 3);
-
-    $value = $object->type() . '-' . $value;
-
-    if( $object->owner === $store )
-    {
-        $hashMap[$value][] = $object;
-        if( $parentStore !== null )
-        {
-            $findAncestor = $parentStore->find($object->name(), null, true);
-            if( $findAncestor !== null )
-                $object->ancestor = $findAncestor;
-        }
-    }
-    else
-        $upperHashMap[$value][] = $object;
 }
+elseif( $dupAlg == 'whereused' )
+    foreach( $objectsToSearchThrough as $object )
+    {
+        if( !$object->isAddress() )
+            continue;
+        if( $object->isTmpAddr() )
+            continue;
+
+        if( $object->countReferences() == 0 )
+            continue;
+
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+            continue;
+
+        $value = $object->getRefHashComp().$object->getNetworkValue();
+        if( $object->owner === $store )
+        {
+            $hashMap[$value][] = $object;
+            if( $parentStore !== null )
+            {
+                $findAncestor = $parentStore->find($object->name(), null, true);
+                if( $findAncestor !== null )
+                    $object->ancestor = $findAncestor;
+            }
+        }
+        else
+            $upperHashMap[$value][] = $object;
+    }
+else derr("unsupported use case");
 
 //
 // Hashes with single entries have no duplicate, let's remove them
@@ -358,11 +405,19 @@ foreach( $hashMap as $index => &$hash )
         if( isset($object->ancestor) )
         {
             $ancestor = $object->ancestor;
+
             /** @var Address $ancestor */
             if( $upperLevelSearch && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()) )
             {
                 if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
                 {
+                    if( $dupAlg == 'identical' )
+                        if( $pickedObject->name() != $ancestor->name() )
+                        {
+                            echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->name()}'\n";
+                            continue;
+                        }
+
                     echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
                     $object->replaceMeGlobally($ancestor);
                     if( $apiMode )
@@ -393,26 +448,31 @@ foreach( $hashMap as $index => &$hash )
         if( $object === $pickedObject )
             continue;
 
-        echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
-        $object->__replaceWhereIamUsed($apiMode, $pickedObject, true, 5);
-
-        echo "    - deleting '{$object->_PANC_shortName()}'\n";
-        if( $apiMode )
+        if( $dupAlg != 'identical' )
         {
-            $object->owner->API_remove($object);
+            echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+            $object->__replaceWhereIamUsed($apiMode, $pickedObject, TRUE, 5);
+
+            echo "    - deleting '{$object->_PANC_shortName()}'\n";
+            if( $apiMode )
+            {
+                $object->owner->API_remove($object);
+            }
+            else
+            {
+                $object->owner->remove($object);
+            }
+
+            $countRemoved++;
+
+            if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+            {
+                echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+                break 2;
+            }
         }
         else
-        {
-            $object->owner->remove($object);
-        }
-
-        $countRemoved++;
-
-        if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
-        {
-            echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
-            break 2;
-        }
+            echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL\n";
     }
 }
 
