@@ -22,7 +22,7 @@ bugfix:
 - override-finder.php : supported use case where firewall has no template applied
 - fixed action 'description-Append'
 - fixed an issue with pipeSeparatedList and actions in xxx-edit utilities
-
+- upload-confing.php : fix an issue where serial# of in=api://[SERIAL]@IP is also used for out=api://IP - but not definied
 
 1.5.12 (2017-04-04)
 * introduction of UTILS help.html (utils/doc/help.html)
