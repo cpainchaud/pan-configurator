@@ -195,7 +195,6 @@ function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
         foreach( $manualCheckXpathList as $excludeXPath )
         {
             $xpathResults = DH::findXPath('/config/template' . $excludeXPath, $template->ownerDocument);
-            #$xpathResults = DH::findXPath( $excludeXPath, $template);
 
             foreach( $xpathResults as $searchNode )
             {
