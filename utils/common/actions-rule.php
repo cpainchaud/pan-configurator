@@ -1924,10 +1924,10 @@ RuleCallContext::$supportedActions[] = Array(
         $rule = $context->object;
         $description = $rule->description();
 
+        $textToAppend = " ";
         if( $context->arguments['newline'] == 'yes' )
-            $textToAppend = "\n".$context->rawArguments['text'];
-        else
-            $textToAppend = " ".$context->rawArguments['text'];
+            $textToAppend = "\n";
+        $textToAppend .= $context->rawArguments['text'];
 
         if( strlen($description) + strlen($textToAppend) > 253 )
         {
