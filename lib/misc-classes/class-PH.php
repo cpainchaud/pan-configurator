@@ -172,6 +172,7 @@ class PH
                     $host = $fileExplode[0];
                 }
                 $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
+                $connector->setType($connector->info_deviceType);
             }
             else
             {

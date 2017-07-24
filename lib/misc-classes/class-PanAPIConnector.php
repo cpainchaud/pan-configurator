@@ -457,12 +457,13 @@ class PanAPIConnector
             {
                 if( $serial === null )
                     derr('panos-via-panorama type requires a serial number');
-                $this->serial = $serial;
             }
+            $this->serial = $serial;
         }
         elseif( $type == 'panorama' )
         {
             $this->isPANOS = 0;
+            $this->serial = null;
         }
         else
             derr('unsupported type: ' . $type);
