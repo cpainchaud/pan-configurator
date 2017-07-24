@@ -405,15 +405,16 @@ foreach( $hashMap as $index => &$hash )
         if( isset($object->ancestor) )
         {
             $ancestor = $object->ancestor;
+
             /** @var Address $ancestor */
             if( $upperLevelSearch && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()) )
             {
                 if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
                 {
                     if( $dupAlg == 'identical' )
-                        if( $object->name() != $ancestor->name() )
+                        if( $pickedObject->name() != $ancestor->name() )
                         {
-                            echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL to ancestor name '{$ancestor->name()}'\n";
+                            echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->name()}'\n";
                             continue;
                         }
 
