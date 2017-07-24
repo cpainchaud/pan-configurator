@@ -1922,9 +1922,12 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function(RuleCallContext $context)
     {
         $rule = $context->object;
-        $description = ' '.$rule->description();
+        $description = $rule->description();
 
-        $textToAppend = $context->rawArguments['text'];
+        if( $context->arguments['newline'] == 'yes' )
+            $textToAppend = "\n".$context->rawArguments['text'];
+        else
+            $textToAppend = " ".$context->rawArguments['text'];
 
         if( strlen($description) + strlen($textToAppend) > 253 )
         {
@@ -1932,7 +1935,7 @@ RuleCallContext::$supportedActions[] = Array(
             return;
         }
 
-        echo $context->padding." - new description will be: {$description}{$textToAppend}'' ... ";
+        echo $context->padding." - new description will be: '{$description}{$textToAppend}' ... ";
 
         if( $context->isAPI )
             $rule->API_setDescription($description.$textToAppend);
@@ -1941,7 +1944,7 @@ RuleCallContext::$supportedActions[] = Array(
 
         echo "OK";
     },
-    'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+    'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ), 'newline' => Array( 'type' => 'bool', 'default' => 'no'  ) )
 );
 
 

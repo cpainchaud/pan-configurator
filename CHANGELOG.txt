@@ -10,6 +10,7 @@ address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! 
 rules-edit: new filter 'service has.recursive', 'secprof av-profile.is.set', 'secprof as-profile.is.set', 'secprof url-profile.is.set', 'secprof wf-profile.is.set', 'secprof vuln-profile.is.set'
 rules-edit: new action 'name-Rename'
 rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced Tag creation
+ruled-edit: action 'description-append' new field 'newline' as boolean parameter no/yes
 service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
 service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
 service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
