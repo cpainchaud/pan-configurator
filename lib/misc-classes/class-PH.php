@@ -172,8 +172,7 @@ class PH
                     $host = $fileExplode[0];
                 }
                 $connector = PanAPIConnector::findOrCreateConnectorFromHost($host);
-                $connector->setType('panos');
-                #$connector->setType('panorama');
+                $connector->setType($connector->info_deviceType);
             }
             else
             {
