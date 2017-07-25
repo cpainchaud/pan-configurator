@@ -1264,7 +1264,10 @@ AddressCallContext::$supportedActions[] = Array(
 
                 foreach ($object->members() as $member)
                 {
-                    echo "          - {$member->name()}'  value: '{$member->value()}'\n";
+                    if($member->isAddress())
+                        echo "          - {$member->name()}'  value: '{$member->value()}'\n";
+                    else
+                        echo "          - {$member->name()}'\n";
                 }
 
             }
