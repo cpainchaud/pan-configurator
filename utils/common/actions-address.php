@@ -1256,23 +1256,63 @@ AddressCallContext::$supportedActions[] = Array(
         {
             if( $object->isDynamic() )
             {
-                echo $context->padding."* " . get_class($object) . " '{$object->name()}' (DYNAMIC)\n";
+                echo $context->padding."* " . get_class($object) . " '{$object->name()}' (DYNAMIC)    desc: '{$object->description()}'\n";
             }
             else
             {
-                echo $context->padding."* " . get_class($object) . " '{$object->name()}' ({$object->count()} members)\n";
+                echo $context->padding."* " . get_class($object) . " '{$object->name()}' ({$object->count()} members)   desc: '{$object->description()}'\n";
 
                 foreach ($object->members() as $member)
-                    echo "          - {$member->name()}\n";
+                {
+                    echo "          - {$member->name()}'  value: '{$member->value()}'\n";
+                }
+
             }
         }
         else
-            echo $context->padding."* ".get_class($object)." '{$object->name()}'  value: '{$object->value()}'\n";
+        {
+            echo $context->padding."* ".get_class($object)." '{$object->name()}'  value: '{$object->value()}'  desc: '{$object->description()}'\n";
+        }
+
 
         echo "\n";
     },
 );
 
+AddressCallContext::$supportedActions[] = Array(
+    'name' => 'description-Append',
+    'MainFunction' =>  function(AddressCallContext $context)
+    {
+        $address = $context->object;
+        $description = $address->description();
 
+        if( $address->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : object is tmp\n";
+            return;
+        }
+
+        $textToAppend = "";
+        if( $description != "" )
+            $textToAppend = " ";
+        $textToAppend .= $context->rawArguments['text'];
+
+        if( strlen($description) + strlen($textToAppend) > 253 )
+        {
+            echo $context->padding." *** SKIPPED : resulting description is too long\n";
+            return;
+        }
+
+        echo $context->padding." - new description will be: '{$description}{$textToAppend}' ... ";
+
+        if( $context->isAPI )
+            $address->API_setDescription($description.$textToAppend);
+        else
+            $address->setDescription($description.$textToAppend);
+
+        echo "OK";
+    },
+    'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ))
+);
 
 
