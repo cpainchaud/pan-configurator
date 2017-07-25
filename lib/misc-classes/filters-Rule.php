@@ -1209,6 +1209,56 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is'] = Arr
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['secprof']['operators']['file-profile.is'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
+        if( !isset($profiles['file-blocking']) )
+            return false;
+
+        return $profiles['file-blocking'] == $context->value;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% vuln-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['data-profile.is'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
+        if( !isset($profiles['data-filtering']) )
+            return false;
+
+        return $profiles['data-filtering'] == $context->value;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% vuln-production)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['secprof']['operators']['av-profile.is.set'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
@@ -1317,6 +1367,52 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['vuln-profile.is.set'] =
         $profiles = $rule->securityProfiles();
 
         return isset($profiles['vulnerability']);
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['file-profile.is.set'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
+
+        return isset($profiles['file-blocking']);
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['secprof']['operators']['data-profile.is.set'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        if( $rule->securityProfileIsBlank() )
+            return false;
+
+        if( $rule->securityProfileType() == "group" )
+            return false;
+
+        $profiles = $rule->securityProfiles();
+
+        return isset($profiles['data-filtering']);
     },
     'arg' => false,
     'ci' => Array(

@@ -1924,7 +1924,10 @@ RuleCallContext::$supportedActions[] = Array(
         $rule = $context->object;
         $description = $rule->description();
 
-        $textToAppend = " ";
+
+        $textToAppend = "";
+        if( $description != "" )
+            $textToAppend = " ";
         if( $context->arguments['newline'] == 'yes' )
             $textToAppend = "\n";
         $textToAppend .= $context->rawArguments['text'];
