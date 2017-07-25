@@ -861,8 +861,16 @@ ServiceCallContext::$supportedActions[] = Array(
     'MainFunction' => function ( ServiceCallContext $context )
     {
         $object = $context->object;
-        print "     * ".get_class($object)." '{$object->name()}' \n";
-        if( $object->isGroup() ) foreach($object->members() as $member) print "          - {$member->name()}\n";
+        print "     * ".get_class($object)." '{$object->name()}'    ";
+        if( $object->isGroup() )
+        {
+            print "\n";
+            foreach($object->members() as $member)
+                print "          - {$member->name()}   desc: '{$member->description()}''\n";
+        }
+        else
+            print "value: '{$object->protocol()}/{$object->getDestPort()}'    desc: '{$object->description()}'\n";
+
         print "\n\n";
     },
 );
@@ -965,4 +973,44 @@ ServiceCallContext::$supportedActions[] = Array(
         }
     },
     'args' => Array( 'regex' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+);
+
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'description-Append',
+    'MainFunction' =>  function(ServiceCallContext $context)
+    {
+        $service = $context->object;
+        if( $service->isGroup())
+        {
+            echo $context->padding." *** SKIPPED : a service group has no description\n";
+            return;
+        }
+        if( $service->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : object is tmp\n";
+            return;
+        }
+        $description = $service->description();
+
+        $textToAppend = "";
+        if( $description != "" )
+            $textToAppend = " ";
+        $textToAppend .= $context->rawArguments['text'];
+
+        if( strlen($description) + strlen($textToAppend) > 253 )
+        {
+            echo $context->padding." - SKIPPED : resulting description is too long\n";
+            return;
+        }
+
+        echo $context->padding." - new description will be: '{$description}{$textToAppend}' ... ";
+
+        if( $context->isAPI )
+            $service->API_setDescription($description.$textToAppend);
+        else
+            $service->setDescription($description.$textToAppend);
+
+        echo "OK";
+    },
+    'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ))
 );
