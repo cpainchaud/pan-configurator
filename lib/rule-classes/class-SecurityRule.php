@@ -823,6 +823,8 @@ class SecurityRule extends RuleWithUserID
 
         if( strlen($this->_description) > 0 )
             print $padding."  Desc:  ".$this->_description."\n";
+        else
+            print $padding."  Desc:  \n";
 
         if( !$this->securityProfileIsBlank() )
         {
@@ -836,6 +838,9 @@ class SecurityRule extends RuleWithUserID
                 print "\n";
             }
         }
+        else
+            print $padding."  SecurityProfil:\n";
+
 		print "\n";
 	}
 
