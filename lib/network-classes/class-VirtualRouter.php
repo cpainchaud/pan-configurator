@@ -131,6 +131,10 @@ class VirtualRouter
 
                 foreach( $ipAddresses as $interfaceIP )
                 {
+                    $address_object = $contextVSYS->addressStore->find( $interfaceIP );
+                    if( $address_object != null )
+                        $interfaceIP = $address_object->value();
+
                     $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
                     $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
                     $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;
