@@ -29,6 +29,7 @@ bugfix:
 - fixed an issue with pipeSeparatedList and actions in xxx-edit utilities
 - upload-confing.php : fix an issue where serial# of in=api://[SERIAL]@IP is also used for out=api://IP - but not definied
 - address-edit - xxx-calculate-zones, fixed a crash when interface IP is configured with an address object (class VirtualRouter)
+- changed SecurityRule::API_getAppContainerStats2() to use DeviceGroup name on PANOS 7.1+ instead of firewall serial numbers
 
 1.5.12 (2017-04-04)
 * introduction of UTILS help.html (utils/doc/help.html)

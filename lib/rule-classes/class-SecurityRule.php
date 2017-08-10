@@ -1018,18 +1018,22 @@ class SecurityRule extends RuleWithUserID
 
         if( $parentClass == 'VirtualSystem' )
         {
-            $dvq = ' and (vsys eq '.$this->owner->owner->name().')';
+            $dvq = ' and (vsys eq ' . $this->owner->owner->name() . ')';
 
         }
-        else
+        else if( $con->info_PANOS_version_int < 71 )
         {
-            $devices = $this->owner->owner->getDevicesInGroup(true);
+            // if PANOS < 7.1 then you need to list each device serial number
+            $devices = $this->owner->owner->getDevicesInGroup(TRUE);
 
             if( count($devices) == 0 )
                 derr('cannot request rule stats for a device group that has no member');
 
-            $dvq = ' and ('.array_to_devicequery($devices).')';
-
+            $dvq = ' and (' . array_to_devicequery($devices) . ')';
+        }
+        else
+        {
+            $dvq = " and ( device-group eq '{$this->owner->owner->name()}')";
         }
 
         $repeatOrCount = 'sessions';
