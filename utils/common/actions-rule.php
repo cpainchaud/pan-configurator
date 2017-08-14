@@ -1529,7 +1529,7 @@ RuleCallContext::$supportedActions[] = Array(
 
     },
     'args' => Array(    'serial' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
-                        'vsys' => Array( 'type' => 'string', 'default' => '*NULL*'  )
+                        'vsys' => Array( 'type' => 'string', 'default' => '*NULL*', 'help' => 'if target firewall is single VSYS you should ignore this argument, otherwise just input it'  )
                         ),
 );
 RuleCallContext::$supportedActions[] = Array(
