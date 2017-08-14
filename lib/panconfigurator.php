@@ -612,7 +612,7 @@ function findConnectorOrDie( $object )
     if( $object->owner === null )
         derr("cannot find API connector");
 
-    return findConnector($object->owner);
+    return findConnectorOrDie($object->owner);
 }
 
 
