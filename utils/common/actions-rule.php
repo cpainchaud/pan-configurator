@@ -1859,11 +1859,15 @@ RuleCallContext::$supportedActions[] = Array(
             return;
         }
 
-        $xpath = $rule->getXPath() . '/profile-setting';
-        $con = findConnectorOrDie($rule);
 
-        $con->sendEditRequest($xpath, DH::dom_to_xml($rule->secprofroot, false));
-
+        if( $context->isAPI )
+        {
+            $xpath = $rule->getXPath() . '/profile-setting';
+            $con = findConnectorOrDie($rule);
+            $con->sendEditRequest($xpath, DH::dom_to_xml($rule->secprofroot, false));
+        }
+        else
+            $rule->rewriteSecProfXML();
 
     },
     'args' => Array(    'type' => Array( 'type' => 'string', 'default' => '*nodefault*',
