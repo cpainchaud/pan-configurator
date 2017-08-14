@@ -1835,6 +1835,12 @@ RuleCallContext::$supportedActions[] = Array(
         $type = $context->arguments['type'];
         $profName = $context->arguments['profName'];
 
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
         $ret = true;
 
         if( $type == 'virus' )
