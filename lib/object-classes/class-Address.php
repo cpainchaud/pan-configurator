@@ -404,15 +404,17 @@ class Address
         {
             if( ! $this->nameIsValidRuleIPEntry()  )
             {
-                derr('cannot resolve this Temporary object !');
+                // if this object is temporary/unsupported, we send an empty mapping
+                $this->_ip4Map = new IP4Map();
+                $this->_ip4Map->unresolved[$this->name] = $this;
             }
-            $this->_ip4Map = IP4Map::mapFromText($this->name);
+            else
+                $this->_ip4Map = IP4Map::mapFromText($this->name);
         }
         elseif( $this->type != self::TypeIpRange && $this->type != self::TypeIpNetmask )
         {
             $this->_ip4Map = new IP4Map();
             $this->_ip4Map->unresolved[$this->name] = $this;
-            //$this->_ip4Map->
         }
         elseif( $this->type == self::TypeIpNetmask || $this->type == self::TypeIpRange )
         {
