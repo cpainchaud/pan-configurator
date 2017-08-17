@@ -866,7 +866,13 @@ ServiceCallContext::$supportedActions[] = Array(
         {
             print "\n";
             foreach($object->members() as $member)
-                print "          - {$member->name()}   desc: '{$member->description()}''\n";
+            {
+                if( $object->isGroup() )
+                    print "          - {$member->name()}\n";
+                else
+                    print "          - {$member->name()}   desc: '{$member->description()}'\n";
+            }
+
         }
         else
             print "value: '{$object->protocol()}/{$object->getDestPort()}'    desc: '{$object->description()}'\n";
