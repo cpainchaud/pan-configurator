@@ -921,8 +921,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.only'] = Array(
         {
             if( $object->service === null )
                 return false;
-            if( $object->service !== $value )
-                return false;
+            return $object->service === $value;
         }
         if( $object->services->count() != 1 || ! $object->services->has($value) )
             return false;
