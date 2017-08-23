@@ -913,6 +913,25 @@ RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
     'arg' => true,
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
 );
+RQuery::$defaultFilters['rule']['service']['operators']['has.only'] = Array(
+    'eval' => function($object, &$nestedQueries, $value)
+    {
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        if( $object->isNatRule() )
+        {
+            if( $object->service === null )
+                return false;
+            if( $object->service !== $value )
+                return false;
+        }
+        if( $object->services->count() != 1 || ! $object->services->has($value) )
+            return false;
+
+        return true;
+    },
+    'arg' => true,
+    'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->services->parentCentralStore->find('!value!');"
+);
 RQuery::$defaultFilters['rule']['service']['operators']['has.regex'] = Array(
     'Function' => function(RuleRQueryContext $context)
     {
