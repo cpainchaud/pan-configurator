@@ -177,8 +177,7 @@ function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
                     print $padding."* ".DH::elementToPanXPath($candidate)."\n";
                 }
                 else
-                    derr("unsupported case where template is defining an object but it's not found in candidate config", $templateNode);
-            }
+                    print $padding."* ".DH::elementToPanXPath($templateNode)." (defined in template but missing in Firewall config)\n";}
             else
                 diffNodes($templateNode, $candidateNode, $padding);
         }
@@ -274,7 +273,7 @@ function checkFirewallOverride($apiConnector, $padding)
         print $padding." ***** an error occured : ".$e->getMessage()."\n\n";
         return;
     }
-    
+
     PH::disableExceptionSupport();
 }
 
