@@ -241,41 +241,41 @@ function checkFirewallOverride($apiConnector, $padding)
     try
     {
         $candidateDoc = $apiConnector->sendSimpleRequest($request);
+
+        print "OK!\n";
+
+        print $padding." - Looking for root /config xpath...";
+        $configRoot = DH::findXPathSingleEntryOrDie('/response/result/config', $candidateDoc);
+        print "OK!\n";
+
+        DH::makeElementAsRoot($configRoot, $candidateDoc);
+
+        print $padding." - Looking for root /config/template/config xpath...";
+        $templateRoot = DH::findXPathSingleEntry('template/config', $configRoot);
+
+        print "OK!\n";
+
+        if( $templateRoot === FALSE )
+        {
+            echo $padding." - SKIPPED because no template applied!\n";
+        }
+        else
+        {
+            print "\n";
+
+            print $padding . " ** Looking for overrides **\n";
+
+            diffNodes($templateRoot, $configRoot, $padding);
+        }
     }
     catch(Exception $e)
     {
         PH::disableExceptionSupport();
-        print $padding." ***** API Error occured : ".$e->getMessage()."\n\n";
+        print $padding." ***** an error occured : ".$e->getMessage()."\n\n";
         return;
     }
+    
     PH::disableExceptionSupport();
-
-    print "OK!\n";
-
-
-    print $padding." - Looking for root /config xpath...";
-    $configRoot = DH::findXPathSingleEntryOrDie('/response/result/config', $candidateDoc);
-    print "OK!\n";
-
-    DH::makeElementAsRoot($configRoot, $candidateDoc);
-
-    print $padding." - Looking for root /config/template/config xpath...";
-    $templateRoot = DH::findXPathSingleEntry('template/config', $configRoot);
-
-    print "OK!\n";
-
-    if( $templateRoot === FALSE )
-    {
-        echo $padding." - SKIPPED because no template applied!\n";
-    }
-    else
-    {
-        print "\n";
-
-        print $padding . " ** Looking for overrides **\n";
-
-        diffNodes($templateRoot, $configRoot, $padding);
-    }
 }
 
 if($cycleConnectedFirewalls)
