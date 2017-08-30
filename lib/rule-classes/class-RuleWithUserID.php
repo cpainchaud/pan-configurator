@@ -33,6 +33,8 @@ class RuleWithUserID extends Rule
     );
 
     protected $_userIDType = self::__UserIDType_Any;
+
+    /** @var string[] */
     protected $_users = Array();
 
     function userID_IsAny()
