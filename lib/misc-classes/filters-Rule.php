@@ -2033,7 +2033,7 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = Array(
     },
     'arg' => true,
     'ci' => Array(
-        'fString' => '(%PROP% CN=xyz,OU=Network)',
+        'fString' => '(%PROP% /^test/)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
