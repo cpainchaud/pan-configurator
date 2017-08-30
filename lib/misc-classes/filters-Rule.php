@@ -2009,6 +2009,35 @@ RQuery::$defaultFilters['rule']['user']['operators']['has'] = Array(
     )
 );
 
+RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isDecryptionRule() )
+            return false;
+        if( $rule->isNatRule() )
+            return false;
+
+        $users = $rule->userID_getUsers();
+
+        foreach($users as $user)
+        {
+            $matching = preg_match($context->value, $user);
+            if( $matching === FALSE )
+                derr("regular expression error on '{$context->value}'");
+            if( $matching === 1 )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% CN=xyz,OU=Network)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 RQuery::$defaultFilters['rule']['target']['operators']['is.any'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
