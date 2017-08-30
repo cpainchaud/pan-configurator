@@ -2016,7 +2016,7 @@ RQuery::$defaultFilters['rule']['target']['operators']['is.any'] = Array(
     },
     'arg' => false,
     'ci' => Array(
-        'fString' => '(%PROP%)',
+        'fString' => '(%PROP% CN=xyz,OU=Network)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
