@@ -21,7 +21,6 @@ service-edit: new action description-append
 service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
 
 
-
 bugfix:
 - fixed a crash when trying to move some rule types from PRE/POST
 - fixed dependencies issues when trying to move an object to another location
@@ -33,6 +32,8 @@ bugfix:
 - address-edit - xxx-calculate-zones, fixed a crash when interface IP is configured with an address object (class VirtualRouter)
 - changed SecurityRule::API_getAppContainerStats2() to use DeviceGroup name on PANOS 7.1+ instead of firewall serial numbers
 - fixed a crash when displaying service objects where a service group is member of a service group
+- address-merger : fixed an issue where subQueries were ignored
+
 
 1.5.12 (2017-04-04)
 * introduction of UTILS help.html (utils/doc/help.html)

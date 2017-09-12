@@ -45,6 +45,8 @@ prepareSupportedArgumentsArray($supportedArguments);
 
 PH::processCliArgs();
 
+$nestedQueries = Array();
+
 // check that only supported arguments were provided
 foreach ( PH::$args as $index => &$arg )
 {
@@ -252,7 +254,7 @@ if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
         if( $object->isTmpAddr() )
             continue;
 
-        if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject(Array('object' =>$object, 'nestedQueries'=>&$nestedQueries)) )
             continue;
 
         $skipThisOne = FALSE;
@@ -305,7 +307,7 @@ elseif( $dupAlg == 'whereused' )
         if( $object->countReferences() == 0 )
             continue;
 
-        if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject(Array('object' =>$object, 'nestedQueries'=>&$nestedQueries)) )
             continue;
 
         $value = $object->getRefHashComp().$object->getNetworkValue();
