@@ -30,6 +30,7 @@ bugfix:
 - fixed an issue with pipeSeparatedList and actions in xxx-edit utilities
 - upload-confing.php : fix an issue where serial# of in=api://[SERIAL]@IP is also used for out=api://IP - but not definied
 - address-edit - xxx-calculate-zones, fixed a crash when interface IP is configured with an address object (class VirtualRouter)
+- address-edit: action 'move' was improperly applied to tmp objects
 - changed SecurityRule::API_getAppContainerStats2() to use DeviceGroup name on PANOS 7.1+ instead of firewall serial numbers
 - fixed a crash when displaying service objects where a service group is member of a service group
 - xxxx-merger : fixed an issue where subQueries were ignored

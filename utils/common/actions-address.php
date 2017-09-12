@@ -994,6 +994,12 @@ AddressCallContext::$supportedActions[] = Array(
     {
         $object = $context->object;
 
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." * SKIPPED this is a temporary object\n";
+            return;
+        }
+
         $localLocation = 'shared';
 
         if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isFirewall() )
