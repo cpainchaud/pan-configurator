@@ -358,7 +358,7 @@ foreach( $hashMap as $index => &$hash )
         {
             foreach( $upperHashMap[$index] as $object )
             {
-                if( $pickFilter->matchSingleObject($object) )
+                if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
                 {
                     $pickedObject = $object;
                     break;
@@ -373,7 +373,7 @@ foreach( $hashMap as $index => &$hash )
         {
             foreach( $hash as $object )
             {
-                if( $pickFilter->matchSingleObject($object) )
+                if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
                 {
                     $pickedObject = $object;
                     break;

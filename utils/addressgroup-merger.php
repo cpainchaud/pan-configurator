@@ -47,6 +47,8 @@ prepareSupportedArgumentsArray($supportedArguments);
 
 PH::processCliArgs();
 
+$nestedQueries = Array();
+
 // check that only supported arguments were provided
 foreach ( PH::$args as $index => &$arg )
 {
@@ -312,7 +314,7 @@ foreach( $objectsToSearchThrough as $object )
     if( !$object->isGroup() || $object->isDynamic() )
         continue;
 
-    if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+    if( $excludeFilter !== null && $excludeFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
         continue;
 
     $skipThisOne = false;
@@ -385,7 +387,7 @@ foreach( $hashMap as $index => &$hash )
         {
             foreach( $upperHashMap[$index] as $object )
             {
-                if( $pickFilter->matchSingleObject($object) )
+                if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
                 {
                     $pickedObject = $object;
                     break;
@@ -400,7 +402,7 @@ foreach( $hashMap as $index => &$hash )
         {
             foreach( $hash as $object )
             {
-                if( $pickFilter->matchSingleObject($object) )
+                if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
                 {
                     $pickedObject = $object;
                     break;

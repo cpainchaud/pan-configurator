@@ -46,6 +46,8 @@ prepareSupportedArgumentsArray($supportedArguments);
 
 PH::processCliArgs();
 
+$nestedQueries = Array();
+
 // check that only supported arguments were provided
 foreach ( PH::$args as $index => &$arg )
 {
@@ -245,7 +247,7 @@ if( $dupAlg == 'sameports' )
         if( $object->isTmpSrv() )
             continue;
 
-        if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
             continue;
 
         $value = $object->dstPortMapping()->mappingToText();
@@ -275,7 +277,7 @@ elseif( $dupAlg == 'whereused' )
         if( $object->countReferences() == 0 )
             continue;
 
-        if( $excludeFilter !== null && $excludeFilter->matchSingleObject($object) )
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
             continue;
 
         $value = $object->getRefHashComp().$object->protocol();
@@ -327,7 +329,7 @@ if( $dupAlg == 'sameports' )
             {
                 foreach( $upperHashMap[$index] as $object )
                 {
-                    if( $pickFilter->matchSingleObject($object) )
+                    if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
                     {
                         $pickedObject = $object;
                         break;
@@ -342,7 +344,7 @@ if( $dupAlg == 'sameports' )
             {
                 foreach( $hash as $object )
                 {
-                    if( $pickFilter->matchSingleObject($object) )
+                    if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
                     {
                         $pickedObject = $object;
                         break;
@@ -445,7 +447,7 @@ elseif( $dupAlg == 'whereused' )
         {
             foreach( $hash as $object)
             {
-                if( $pickFilter->matchSingleObject($object) )
+                if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
                 {
                     $pickedObject = $object;
                     break;

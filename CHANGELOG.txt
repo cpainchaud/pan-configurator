@@ -32,7 +32,7 @@ bugfix:
 - address-edit - xxx-calculate-zones, fixed a crash when interface IP is configured with an address object (class VirtualRouter)
 - changed SecurityRule::API_getAppContainerStats2() to use DeviceGroup name on PANOS 7.1+ instead of firewall serial numbers
 - fixed a crash when displaying service objects where a service group is member of a service group
-- address-merger : fixed an issue where subQueries were ignored
+- xxxx-merger : fixed an issue where subQueries were ignored
 
 
 1.5.12 (2017-04-04)
