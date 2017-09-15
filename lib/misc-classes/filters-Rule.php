@@ -2191,7 +2191,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['subcategory.is'] = Array(
     )
 );
 
-Query::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
+RQuery::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
         $rule = $context->object;
