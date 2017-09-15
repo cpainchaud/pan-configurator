@@ -2151,7 +2151,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['category.is'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
-            return false;
+            return null;
 
         foreach($rule->apps->apps() as $app)
         {
@@ -2174,7 +2174,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['subcategory.is'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
-            return false;
+            return null;
 
         foreach($rule->apps->apps() as $app)
         {

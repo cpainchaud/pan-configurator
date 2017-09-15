@@ -248,9 +248,17 @@ class RQuery
 
         if( count($queries) == 1 )
         {
+            $result = $queries[0]->matchSingleObject($queryContext);
+
+            if( $result === null )
+                if( $this->level = 0)
+                    return false;
+                else
+                    return null;
+
             if( $this->inverted )
-                return !$queries[0]->matchSingleObject($queryContext);
-            return $queries[0]->matchSingleObject($queryContext);
+                return !$result;
+            return $result;
         }
 
         $results = Array();
@@ -278,7 +286,11 @@ class RQuery
                 if( $operators[$Okeys[$i]] == 'and' )
                 {
                     $hasAnd = true;
-                    $results[$Rkeys[$i]] = $results[$Rkeys[$i]] && $results[$Rkeys[$i+1]];
+
+                    if( $results[$Rkeys[$i]] === null || $results[$Rkeys[$i+1]] === null )
+                        $results[$Rkeys[$i]] = null;
+                    else
+                        $results[$Rkeys[$i]] = $results[$Rkeys[$i]] && $results[$Rkeys[$i+1]];
 
                     unset($operators[$Okeys[$i]]);
                     unset($results[$Rkeys[$i+1]]);
@@ -291,17 +303,27 @@ class RQuery
         // Processing OR conditions
         foreach( $results as $res )
         {
-            if( $res == true )
+            if( $res === true )
             {
                 if( $this->inverted )
                     return false;
                 return true;
             }
         }
+        foreach( $results as $res )
+        {
+            if( $res === false )
+            {
+                if( $this->inverted )
+                    return true;
+                return false;
+            }
+        }
 
-        if( $this->inverted )
-            return true;
-        return false;
+        if( $this->level == 0 )
+            return false;
+
+        return null;
 
     }
 
