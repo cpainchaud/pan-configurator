@@ -31,6 +31,13 @@ class App
 
 	public $icmpsub = null;
 	public $proto = null;
+
+	/** @var null|string  */
+	public $category = null;
+    /** @var null|string  */
+	public $subCategory = null;
+    /** @var null|string  */
+	public $technology = null;
 	
 	//public $type = 'notfound';
 

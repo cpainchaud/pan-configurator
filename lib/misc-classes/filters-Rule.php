@@ -2063,9 +2063,9 @@ RQuery::$defaultFilters['rule']['url.category']['operators']['has'] = Array(
 
         return $rule->urlCategoriesHas($context->value);
     },
-    'arg' => false,
+    'arg' => true,
     'ci' => Array(
-        'fString' => '(%PROP%) adult',
+        'fString' => '(%PROP% adult)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
@@ -2144,6 +2144,76 @@ RQuery::$defaultFilters['rule']['description']['operators']['regex'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+Query::$defaultFilters['rule']['app']['operators']['category.is'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->category == $context->value )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% media)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+Query::$defaultFilters['rule']['app']['operators']['subcategory.is'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->subCategory == $context->value )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% gaming)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+Query::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->technology == $context->value )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% client-server)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 
 // </editor-fold>
 

@@ -152,6 +152,25 @@ class AppStore extends ObjStore
                 $app->icmpsub = $icmpcur->textContent;
             }
 
+            $tmp = DH::findFirstElement('category', $cursor);
+            if( $tmp !== false )
+            {
+                $app->category = $tmp->textContent;
+            }
+
+            $tmp = DH::findFirstElement('subcategory', $cursor);
+            if( $tmp !== false )
+            {
+                $app->subCategory = $tmp->textContent;
+            }
+
+            $tmp = DH::findFirstElement('technology', $cursor);
+            if( $tmp !== false )
+            {
+                $app->technology = $tmp->textContent;
+            }
+
+
             $cursor = DH::findFirstElement('port', $cursor);
             if( $cursor === false )
                 continue;
