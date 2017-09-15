@@ -2043,7 +2043,7 @@ RQuery::$defaultFilters['rule']['url.category']['operators']['is.any'] = Array(
     {
         $rule = $context->object;
         if( !$rule->isSecurityRule() )
-            return false;
+            return null;
 
         return $rule->urlCategoryIsAny();
     },
@@ -2059,7 +2059,7 @@ RQuery::$defaultFilters['rule']['url.category']['operators']['has'] = Array(
     {
         $rule = $context->object;
         if( !$rule->isSecurityRule() )
-            return false;
+            return null;
 
         return $rule->urlCategoriesHas($context->value);
     },
@@ -2197,7 +2197,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
-            return false;
+            return null;
 
         foreach($rule->apps->apps() as $app)
         {
