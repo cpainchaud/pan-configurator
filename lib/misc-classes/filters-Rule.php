@@ -2038,6 +2038,22 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = Array(
     )
 );
 
+RQuery::$defaultFilters['rule']['category']['operators']['is.any'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        return $rule->categoryIsAny();
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 RQuery::$defaultFilters['rule']['target']['operators']['is.any'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {

@@ -27,6 +27,9 @@ class SecurityRule extends RuleWithUserID
 
 	protected $logSetting = false;
 
+    protected $categoryroot = null;
+	protected $category = false;
+
     protected $dsri = false;
 
 	protected $secproftype = 'none';
@@ -228,6 +231,24 @@ class SecurityRule extends RuleWithUserID
         // End of <rule-type>
 
         $this->userID_loadUsersFromXml();
+
+
+        //
+        // Begin <category> extraction
+        //
+
+        /*     <category> <member>adult</member></category>      */
+
+        $this->categoryroot = DH::findFirstElement('category', $xml);
+        if( $this->categoryroot === false )
+            $this->categoryroot = null;
+        else
+        {
+            #implementation needed
+            $this->extract_category_from_domxml();
+        }
+
+        // End of <category>
 	}
 
 
@@ -276,6 +297,29 @@ class SecurityRule extends RuleWithUserID
 
         return $ret;
     }
+
+
+    protected function extract_category_from_domxml()
+    {
+
+        if( $this->categoryroot === null || $this->categoryroot === false )
+        {
+            $this->categoryroot = null;
+            return;
+        }
+
+        $xml = $this->categoryroot;
+
+
+        //print "Now trying to extract associated security profile associated to '".$this->name."'\n";
+
+        foreach( $xml->childNodes as $url_category )
+        {
+            if( $url_category->nodeType != XML_ELEMENT_NODE ) continue;
+            $this->category[$url_category->textContent] = $url_category->textContent;
+        }
+    }
+
 
 	/**
 	*
@@ -553,6 +597,17 @@ class SecurityRule extends RuleWithUserID
 			DH::removeChild($this->xmlroot, $this->secprofroot);
 
 	}
+
+
+    public function category()
+    {
+        return $this->category;
+    }
+
+    public function categoryIsAny()
+    {
+        return array_key_exists('any',$this->category());
+    }
 
 
 	public function action()
@@ -854,6 +909,10 @@ class SecurityRule extends RuleWithUserID
             print "log at end";
         print " ) \n";
 
+
+        print $padding."  URL Category: ";
+        if( !empty($this->category) )
+            print PH::list_to_string($this->category)."\n";
 
 		print "\n";
 	}
