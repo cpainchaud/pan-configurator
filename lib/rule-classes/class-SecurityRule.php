@@ -27,8 +27,11 @@ class SecurityRule extends RuleWithUserID
 
 	protected $logSetting = false;
 
+	/** @var null|DOMElement  */
     protected $categoryroot = null;
-	protected $category = false;
+
+    /** @var string[]  */
+	protected $_urlCategories = Array();
 
     protected $dsri = false;
 
@@ -243,10 +246,7 @@ class SecurityRule extends RuleWithUserID
         if( $this->categoryroot === false )
             $this->categoryroot = null;
         else
-        {
-            #implementation needed
             $this->extract_category_from_domxml();
-        }
 
         // End of <category>
 	}
@@ -301,23 +301,29 @@ class SecurityRule extends RuleWithUserID
 
     protected function extract_category_from_domxml()
     {
-
-        if( $this->categoryroot === null || $this->categoryroot === false )
-        {
-            $this->categoryroot = null;
-            return;
-        }
-
         $xml = $this->categoryroot;
-
-
-        //print "Now trying to extract associated security profile associated to '".$this->name."'\n";
 
         foreach( $xml->childNodes as $url_category )
         {
             if( $url_category->nodeType != XML_ELEMENT_NODE ) continue;
-            $this->category[$url_category->textContent] = $url_category->textContent;
+
+            $value = $url_category->textContent;
+            if( strlen($value) < 1 )
+            {
+                mwarning('This rule has empty URL Category, please check your configuration file (corrupted?):', $url_category);
+                continue;
+            }
+            $this->_urlCategories[$value] = $value;
         }
+
+        if( isset($this->_urlCategories['any']) )
+        {
+            if( count($this->_urlCategories) != 1 )
+                mwarning('This security rule has URL category = ANY but it also have categories defined. '.
+                    'Please check your configuration file (corrupted?). *ANY* will be assumed by this framework', $xml);
+            $this->_urlCategories = Array();
+        }
+
     }
 
 
@@ -599,14 +605,23 @@ class SecurityRule extends RuleWithUserID
 	}
 
 
-    public function category()
+    public function urlCategories()
     {
-        return $this->category;
+        return $this->_urlCategories;
     }
 
-    public function categoryIsAny()
+    public function urlCategoryIsAny()
     {
-        return array_key_exists('any',$this->category());
+        return count($this->_urlCategories) == 0;
+    }
+
+    /**
+     * @param string $category
+     * @return bool return TRUE if this rule is using the category defined in $category
+     */
+    public function urlCategoriesHas($category)
+    {
+        return isset($this->_urlCategories[$category]);
     }
 
 
@@ -911,8 +926,10 @@ class SecurityRule extends RuleWithUserID
 
 
         print $padding."  URL Category: ";
-        if( !empty($this->category) )
-            print PH::list_to_string($this->category)."\n";
+        if( !empty($this->_urlCategories) )
+            print PH::list_to_string($this->_urlCategories)."\n";
+        else
+            echo "*ANY*\n";
 
 		print "\n";
 	}

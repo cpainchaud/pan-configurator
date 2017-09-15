@@ -11,7 +11,7 @@ address-edit: new action description-append
 override-finder: supporting scenario where template defined objects are not present in candidate config
 rules-edit: new filter 'service has.recursive', 'secprof av-profile.is.set', 'secprof as-profile.is.set', 'secprof url-profile.is.set', 'secprof wf-profile.is.set', 'secprof vuln-profile.is.set'
 rules-edit: new filter 'secprof file-profile.is', 'secprof file-profile.is.set', 'secprof data-profile.is', 'secprof data-profile.is.set'
-rules-edit: new filter 'service has.only', 'user has', 'user has.regex', 'category is.any'
+rules-edit: new filter 'service has.only', 'user has', 'user has.regex', 'url.category is.any'
 rules-edit: new action 'name-Rename'
 rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced Tag creation
 rules-edit: action 'description-append' new field 'newline' as boolean parameter no/yes

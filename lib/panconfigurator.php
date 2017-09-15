@@ -492,6 +492,11 @@ function mdeb($msg)
     fwrite(STDERR,"\n\n");
 }
 
+/**
+ * @param string $msg
+ * @param null|DOMNode|DOMElement $object
+ * @throws Exception
+ */
 function mwarning($msg, $object = null)
 {
     global $PANC_WARN;
