@@ -118,6 +118,11 @@ class RQuery
             if( isset($this->refOperator['Function'] ) )
             {
                 $boolReturn =  $this->contextObject->execute($object, $nestedQueries);
+                if( $boolReturn === null )
+                    if( $this->level == 0 )
+                        return false;
+                    else return null;
+
                 if( $this->inverted )
                     return !$boolReturn;
                 return $boolReturn;
@@ -183,6 +188,11 @@ class RQuery
 
                         }
 
+                        if( $boolReturn === null )
+                            if( $this->level == 0 )
+                                return false;
+                            else return null;
+
                         if( $this->inverted )
                             return !$boolReturn;
                         return $boolReturn;
@@ -211,11 +221,15 @@ class RQuery
                                 derr("\neval code was : $eval\n");
                             }
                         }
-                        if ($this->inverted)
+
+                        if( $boolReturn === null )
+                            if( $this->level == 0 )
+                                return false;
+                            else return null;
+
+                        if( $this->inverted )
                             return !$boolReturn;
-
                         return $boolReturn;
-
                     }
                 }
                 else
@@ -235,6 +249,11 @@ class RQuery
                         }
 
                     }
+                    if( $boolReturn === null )
+                        if( $this->level == 0 )
+                            return false;
+                        else return null;
+
                     if( $this->inverted )
                         return !$boolReturn;
                     return $boolReturn;
