@@ -15,6 +15,7 @@ rules-edit: new filter 'service has.only', 'user has', 'user has.regex'
 rules-edit: new action 'name-Rename'
 rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced Tag creation
 rules-edit: action 'description-append' new field 'newline' as boolean parameter no/yes
+rules-edit: action 'display' extend with logsetting information
 service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
 service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
 service-edit: new action description-append

@@ -841,6 +841,20 @@ class SecurityRule extends RuleWithUserID
         else
             print $padding."  SecurityProfil:\n";
 
+
+        print $padding."  LogSetting: ";
+        if( !empty( $this->logSetting() ) )
+            print "[LogProfile] => '".$this->logSetting(). "'";
+        print " ( ";
+        if( $this->logStart() )
+            print "log at start";
+        if( $this->logStart() && $this->logEnd() )
+            print " - ";
+        if( $this->logEnd() )
+            print "log at end";
+        print " ) \n";
+
+
 		print "\n";
 	}
 
