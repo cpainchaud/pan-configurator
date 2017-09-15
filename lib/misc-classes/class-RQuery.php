@@ -264,7 +264,7 @@ class RQuery
 
         $hasAnd = true;
 
-        // processing 'and' operators
+        // processing AND operators
         while( $hasAnd )
         {
             $hasAnd = false;
@@ -288,6 +288,7 @@ class RQuery
             }
         }
 
+        // Processing OR conditions
         foreach( $results as $res )
         {
             if( $res == true )
