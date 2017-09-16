@@ -2412,5 +2412,93 @@ RQuery::$defaultFilters['rule']['app']['operators']['pervasive.use'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+
+RQuery::$defaultFilters['rule']['app']['operators']['is.virus.ident'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            return $app->virusident;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['is.file.type.ident'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            return $app->filetypeident;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['is.file.forward'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            return $app->fileforward;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['is.saas'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            return $app->issaas;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 // </editor-fold>
 

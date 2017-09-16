@@ -314,6 +314,30 @@ class AppStore extends ObjStore
             {
                 $app->risk = $tmp->textContent;
             }
+            $tmp = DH::findFirstElement('virusident-ident', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->virusident = true;
+            }
+            $tmp = DH::findFirstElement('filetype-ident', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->filetypeident = true;
+            }
+            $tmp = DH::findFirstElement('file-forward', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->fileforward = true;
+            }
+            $tmp = DH::findFirstElement('is-saas', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->issaas = true;
+            }
 
             $cursor = DH::findFirstElement('use-applications', $appx);
             if( $cursor !== false )

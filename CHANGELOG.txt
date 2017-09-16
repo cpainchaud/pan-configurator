@@ -6,6 +6,8 @@ CHANGELOG
 * class NatRule: added support for floating-ip in NAT rules
 * class SecurityRule: added support for URL Categories
 * class App : added support for technology, categories fields
+* class App : added support for evasive-behavior, consume-big-bandwidth, used-by-malware, able-to-transfer-file, has-known-vulnerability, tunnel-other-application fields
+* class App : added support for  prone-to-misuse, pervasive-use, risk, virus-ident, file-type-ident, file-forward, is-saas fields
 
 utils:
 address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
@@ -15,6 +17,8 @@ rules-edit: new filter 'service has.recursive', 'secprof av-profile.is.set', 'se
 rules-edit: new filter 'secprof file-profile.is', 'secprof file-profile.is.set', 'secprof data-profile.is', 'secprof data-profile.is.set'
 rules-edit: new filter 'service has.only', 'user has', 'user has.regex', 'url.category is.any'
 rules-edit: new filter 'app technology.is', 'app category.is', 'app subcategory.is'
+rules-edit: new filter 'app is.evasive', 'app consume.big.bandwidth', 'app used.by.malware', 'app able.to.transfer.file', 'app has.known.vulnerability', 'app tunnel.other.application'
+rules-edit: new filter 'app prone.to.misuse', 'app pervasive.use', 'app risk.is', 'app is.virus.ident', 'app is.file.type.ident', 'app is.file.forward', 'app is.saas'
 rules-edit: new action 'name-Rename'
 rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced Tag creation
 rules-edit: action 'description-append' new field 'newline' as boolean parameter no/yes

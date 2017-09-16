@@ -57,6 +57,14 @@ class App
     public $pronetomisuse = false;
     /** @var bool  */
     public $pervasiveuse = false;
+    /** @var bool  */
+    public $virusident = false;
+    /** @var bool  */
+    public $filetypeident = false;
+    /** @var bool  */
+    public $fileforward = false;
+    /** @var bool  */
+    public $issaas = false;
 
 	
 	//public $type = 'notfound';
