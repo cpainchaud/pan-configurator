@@ -38,6 +38,26 @@ class App
 	public $subCategory = null;
     /** @var null|string  */
 	public $technology = null;
+    /** @var null|string  */
+    public $risk = null;
+
+    /** @var bool  */
+    public $evasivebehavior = false;
+    /** @var bool  */
+    public $consumebigbandwidth = false;
+    /** @var bool  */
+    public $usedbymalware = false;
+    /** @var bool  */
+    public $abletotransferfile = false;
+    /** @var bool  */
+    public $hasknownvulnerability = false;
+    /** @var bool  */
+    public $tunnelotherapplication = false;
+    /** @var bool  */
+    public $pronetomisuse = false;
+    /** @var bool  */
+    public $pervasiveuse = false;
+
 	
 	//public $type = 'notfound';
 
