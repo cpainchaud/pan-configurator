@@ -568,7 +568,10 @@ foreach( $objectsLocation as $location )
 foreach( $doActions as $doAction )
 {
     if( $doAction->hasGlobalInitAction() )
+    {
+        $doAction->subSystem = $sub;
         $doAction->executeGlobalInitAction();
+    }
 }
 
 //
