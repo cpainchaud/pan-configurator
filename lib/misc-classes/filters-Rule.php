@@ -2214,6 +2214,303 @@ RQuery::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
     )
 );
 
+RQuery::$defaultFilters['rule']['app']['operators']['risk.is'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->risk == $context->value )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% client-server)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['is.evasive'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->evasiveBehavior )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['consume.big.bandwidth'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->consumeBigBandwidth )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['used.by.malware'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->usedByMalware )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['able.to.transfer.file'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->ableToTransferFile )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['has.known.vulnerability'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->hasKnownVulnerability )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['tunnel.other.application'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->tunnelOtherApplication )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['prone.to.misuse'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->proneToMisuse )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['pervasive.use'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->pervasiveUse )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['is.virus.ident'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->virusident )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['is.file.type.ident'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->filetypeident )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['is.file.forward'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->fileforward )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['is.saas'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return false;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $app->isSaas )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 // </editor-fold>
 

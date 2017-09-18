@@ -136,6 +136,7 @@ class AppStore extends ObjStore
             $app->type = 'predefined';
             $this->add($app);
 
+            #xpath /predefined/default
             $cursor = DH::findFirstElement('default', $appx);
             if ( $cursor === false )
                 continue;
@@ -151,25 +152,6 @@ class AppStore extends ObjStore
             {
                 $app->icmpsub = $icmpcur->textContent;
             }
-
-            $tmp = DH::findFirstElement('category', $appx);
-            if( $tmp !== false )
-            {
-                $app->category = $tmp->textContent;
-            }
-
-            $tmp = DH::findFirstElement('subcategory', $appx);
-            if( $tmp !== false )
-            {
-                $app->subCategory = $tmp->textContent;
-            }
-
-            $tmp = DH::findFirstElement('technology', $appx);
-            if( $tmp !== false )
-            {
-                $app->technology = $tmp->textContent;
-            }
-
 
             $cursor = DH::findFirstElement('port', $cursor);
             if( $cursor === false )
@@ -261,8 +243,104 @@ class AppStore extends ObjStore
                 }
                 else
                     derr('unsupported port description: '.$portx->textContent);
+            }
+
+            #xpath /predefined
+            $tmp = DH::findFirstElement('category', $appx);
+            if( $tmp !== false )
+            {
+                $app->category = $tmp->textContent;
+            }
+
+            $tmp = DH::findFirstElement('subcategory', $appx);
+            if( $tmp !== false )
+            {
+                $app->subCategory = $tmp->textContent;
+            }
+
+            $tmp = DH::findFirstElement('technology', $appx);
+            if( $tmp !== false )
+            {
+                $app->technology = $tmp->textContent;
+            }
 
 
+            $tmp = DH::findFirstElement('evasive-behavior', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->evasiveBehavior = true;
+            }
+            $tmp = DH::findFirstElement('consume-big-bandwidth', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->consumeBigBandwidth = true;
+            }
+            $tmp = DH::findFirstElement('used-by-malware', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->usedByMalware = true;
+            }
+            $tmp = DH::findFirstElement('able-to-transferfile', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->ableToTransferFile = true;
+            }
+            $tmp = DH::findFirstElement('has-know-vulnerability', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->hasKnownVulnerability = true;
+            }
+            $tmp = DH::findFirstElement('tunnel-other-app', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->tunnelOtherApplication = true;
+            }
+            $tmp = DH::findFirstElement('prone-to-misuse', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->proneToMisuse = true;
+            }
+            $tmp = DH::findFirstElement('pervasive-use', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->pervasiveUse = true;
+            }
+            $tmp = DH::findFirstElement('risk', $appx);
+            if( $tmp !== false )
+            {
+                $app->risk = $tmp->textContent;
+            }
+            $tmp = DH::findFirstElement('virusident-ident', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->virusident = true;
+            }
+            $tmp = DH::findFirstElement('filetype-ident', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->filetypeident = true;
+            }
+            $tmp = DH::findFirstElement('file-forward', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->fileforward = true;
+            }
+            $tmp = DH::findFirstElement('is-saas', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->isSaas = true;
             }
 
             $cursor = DH::findFirstElement('use-applications', $appx);

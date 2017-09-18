@@ -38,6 +38,34 @@ class App
 	public $subCategory = null;
     /** @var null|string  */
 	public $technology = null;
+    /** @var null|string  */
+    public $risk = null;
+
+    /** @var bool  */
+    public $evasiveBehavior = false;
+    /** @var bool  */
+    public $consumeBigBandwidth = false;
+    /** @var bool  */
+    public $usedByMalware = false;
+    /** @var bool  */
+    public $ableToTransferFile = false;
+    /** @var bool  */
+    public $hasKnownVulnerability = false;
+    /** @var bool  */
+    public $tunnelOtherApplication = false;
+    /** @var bool  */
+    public $proneToMisuse = false;
+    /** @var bool  */
+    public $pervasiveUse = false;
+    /** @var bool  */
+    public $virusident = false;
+    /** @var bool  */
+    public $filetypeident = false;
+    /** @var bool  */
+    public $fileforward = false;
+    /** @var bool  */
+    public $isSaas = false;
+
 	
 	//public $type = 'notfound';
 
