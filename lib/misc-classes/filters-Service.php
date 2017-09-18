@@ -1,6 +1,7 @@
 <?php
 
 // <editor-fold desc=" ***** Service filters *****" defaultstate="collapsed" >
+
 RQuery::$defaultFilters['service']['refcount']['operators']['>,<,=,!'] = Array(
     'eval' => '$object->countReferences() !operator! !value!',
     'arg' => true,

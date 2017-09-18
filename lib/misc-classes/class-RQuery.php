@@ -762,8 +762,29 @@ class TagRQueryContext extends RQueryContext
 
 }
 
+/**
+ * Class TagRQueryContext
+ * @property App $object
+ * @ignore
+ */
+class ApplicationRQueryContext extends RQueryContext
+{
+    function __construct(RQuery $r, $value = null, $nestedQueries = null)
+    {
+        $this->rQueryObject = $r;
+        $this->value = $value;
+
+        if( $nestedQueries === null )
+            $this->nestedQueries = Array();
+        else
+            $this->nestedQueries = &$nestedQueries;
+    }
+
+}
+
 require_once 'filters-Rule.php';
 require_once 'filters-Address.php';
 require_once 'filters-Service.php';
 require_once 'filters-Tag.php';
+require_once 'filters-Application.php';
 
