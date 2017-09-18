@@ -14,5 +14,23 @@ RQuery::$defaultFilters['app']['name']['operators']['eq'] = Array(
     )
 );
 
+RQuery::$defaultFilters['app']['characteristic']['operators']['has'] = Array(
+    'Function' => function(ApplicationRQueryContext $context )
+    {
+        $app = $context->object;
+
+        $sanitizedValue = strtolower($context->value);
+        if( $app->_characteristics[$sanitizedValue] === true )
+                return true;
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% evasive) ',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 
 // </editor-fold>
