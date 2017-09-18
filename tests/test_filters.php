@@ -82,6 +82,11 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
                 $util = '../utils/service-edit.php';
             elseif( $type == 'tag' )
                 $util = '../utils/tag-edit.php';
+            elseif( $type == 'app' )
+            {
+                echo "******* SKIPPED for now *******\n";
+                continue;
+            }
             else
                 derr('unsupported');
 
