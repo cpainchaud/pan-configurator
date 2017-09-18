@@ -16,6 +16,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
+if( PHP_MAJOR_VERSION <= 5 && PHP_MINOR_VERSION <= 4 )
+    die("\n*** ERROR **** PAN-Configurator requires PHP version >= 5.5\n");
+
 set_time_limit ( 0 );
 ini_set("memory_limit","14512M");
 error_reporting(E_ALL);
