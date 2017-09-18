@@ -65,6 +65,18 @@ class App
     public $fileforward = false;
     /** @var bool  */
     public $isSaas = false;
+	
+    static public $_supportedCharacteristics = Array(
+        'evasive' => 'evasive',
+        'excessive-bandwidth' => 'excessive-bandwidth',
+        'prone-to-misuse' => 'prone-to-misuse',
+        'saas' => 'saas',
+        'transfers-files' => 'transfers-files',
+        'tunnels-other-apps' => 'tunnels-other-apps',
+        'used-by-malware' => 'used-by-malware',
+        'vulnerabilities' => 'vulnerabilities',
+        'widely-used' => 'widely-used'
+        );
 
 	
 	//public $type = 'notfound';
