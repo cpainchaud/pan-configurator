@@ -2277,7 +2277,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['characteristic.has'] = Arra
     },
     'arg' => true,
     'ci' => Array(
-        'fString' => '(%PROP%) ',
+        'fString' => '(%PROP% evasive) ',
         'input' => 'input/panorama-8.0.xml'
     )
 );
