@@ -289,13 +289,13 @@ class AppStore extends ObjStore
                 if( $tmp->textContent == 'yes' )
                     $app->_characteristics['transfers-files'] = true;
             }
-            $tmp = DH::findFirstElement('has-know-vulnerability', $appx);
+            $tmp = DH::findFirstElement('has-known-vulnerability', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
                     $app->_characteristics['vulnerabilities'] = true;
             }
-            $tmp = DH::findFirstElement('tunnel-other-app', $appx);
+            $tmp = DH::findFirstElement('tunnel-other-application', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
