@@ -42,13 +42,13 @@ class App
     public $risk = null;
 
     /** @var bool  */
-    public $evasivebehavior = false;
+    public $evasiveBehavior = false;
     /** @var bool  */
-    public $consumebigbandwidth = false;
+    public $consumeBigBandwidth = false;
     /** @var bool  */
-    public $usedbymalware = false;
+    public $usedByMalware = false;
     /** @var bool  */
-    public $abletotransferfile = false;
+    public $ableToTransferFile = false;
     /** @var bool  */
     public $hasknownvulnerability = false;
     /** @var bool  */

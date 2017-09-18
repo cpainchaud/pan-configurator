@@ -265,25 +265,25 @@ class AppStore extends ObjStore
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->evasivebehavior = true;
+                    $app->evasiveBehavior = true;
             }
             $tmp = DH::findFirstElement('consume-big-bandwidth', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->consumebigbandwidth = true;
+                    $app->consumeBigBandwidth = true;
             }
             $tmp = DH::findFirstElement('used-by-malware', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->usedbymalware = true;
+                    $app->usedByMalware = true;
             }
             $tmp = DH::findFirstElement('able-to-transferfile', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->abletotransferfile = true;
+                    $app->ableToTransferFile = true;
             }
             $tmp = DH::findFirstElement('has-know-vulnerability', $appx);
             if( $tmp !== false )

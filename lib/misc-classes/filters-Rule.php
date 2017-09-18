@@ -2247,7 +2247,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.evasive'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->evasivebehavior;
+            return $app->evasiveBehavior;
         }
 
         return false;
@@ -2269,7 +2269,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['consume.big.bandwidth'] = A
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->consumebigbandwidth;
+            return $app->consumeBigBandwidth;
         }
 
         return false;
@@ -2291,7 +2291,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['used.by.malware'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->usedbymalware;
+            return $app->usedByMalware;
         }
 
         return false;
@@ -2313,7 +2313,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['able.to.transfer.file'] = A
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->abletotransferfile;
+            return $app->ableToTransferFile;
         }
 
         return false;
