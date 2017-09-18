@@ -289,25 +289,25 @@ class AppStore extends ObjStore
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->hasknownvulnerability = true;
+                    $app->hasKnownVulnerability = true;
             }
             $tmp = DH::findFirstElement('tunnel-other-app', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->tunnelotherapplication = true;
+                    $app->tunnelOtherApplication = true;
             }
             $tmp = DH::findFirstElement('prone-to-misuse', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->pronetomisuse = true;
+                    $app->proneToMisuse = true;
             }
             $tmp = DH::findFirstElement('pervasive-use', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->pervasiveuse = true;
+                    $app->pervasiveUse = true;
             }
             $tmp = DH::findFirstElement('risk', $appx);
             if( $tmp !== false )
@@ -336,7 +336,7 @@ class AppStore extends ObjStore
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->issaas = true;
+                    $app->isSaas = true;
             }
 
             $cursor = DH::findFirstElement('use-applications', $appx);

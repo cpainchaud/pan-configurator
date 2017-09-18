@@ -50,13 +50,13 @@ class App
     /** @var bool  */
     public $ableToTransferFile = false;
     /** @var bool  */
-    public $hasknownvulnerability = false;
+    public $hasKnownVulnerability = false;
     /** @var bool  */
-    public $tunnelotherapplication = false;
+    public $tunnelOtherApplication = false;
     /** @var bool  */
-    public $pronetomisuse = false;
+    public $proneToMisuse = false;
     /** @var bool  */
-    public $pervasiveuse = false;
+    public $pervasiveUse = false;
     /** @var bool  */
     public $virusident = false;
     /** @var bool  */
@@ -64,7 +64,7 @@ class App
     /** @var bool  */
     public $fileforward = false;
     /** @var bool  */
-    public $issaas = false;
+    public $isSaas = false;
 
 	
 	//public $type = 'notfound';

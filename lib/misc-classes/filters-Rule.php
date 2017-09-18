@@ -2247,7 +2247,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.evasive'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->evasiveBehavior;
+            if( $app->evasiveBehavior )
+                return true;
         }
 
         return false;
@@ -2269,7 +2270,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['consume.big.bandwidth'] = A
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->consumeBigBandwidth;
+            if( $app->consumeBigBandwidth )
+                return true;
         }
 
         return false;
@@ -2291,7 +2293,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['used.by.malware'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->usedByMalware;
+            if( $app->usedByMalware )
+                return true;
         }
 
         return false;
@@ -2313,7 +2316,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['able.to.transfer.file'] = A
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->ableToTransferFile;
+            if( $app->ableToTransferFile )
+                return true;
         }
 
         return false;
@@ -2335,7 +2339,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.known.vulnerability'] =
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->hasknownvulnerability;
+            if( $app->hasKnownVulnerability )
+                return true;
         }
 
         return false;
@@ -2357,7 +2362,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['tunnel.other.application'] 
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->tunnelotherapplication;
+            if( $app->tunnelOtherApplication )
+                return true;
         }
 
         return false;
@@ -2379,7 +2385,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['prone.to.misuse'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->pronetomisuse;
+            if( $app->proneToMisuse )
+                return true;
         }
 
         return false;
@@ -2401,7 +2408,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['pervasive.use'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->pervasiveuse;
+            if( $app->pervasiveUse )
+                return true;
         }
 
         return false;
@@ -2423,7 +2431,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.virus.ident'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->virusident;
+            if( $app->virusident )
+                return true;
         }
 
         return false;
@@ -2445,7 +2454,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.file.type.ident'] = Arra
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->filetypeident;
+            if( $app->filetypeident )
+                return true;
         }
 
         return false;
@@ -2467,7 +2477,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.file.forward'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->fileforward;
+            if( $app->fileforward )
+                return true;
         }
 
         return false;
@@ -2488,7 +2499,8 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.saas'] = Array(
 
         foreach($rule->apps->apps() as $app)
         {
-            return $app->issaas;
+            if( $app->isSaas )
+                return true;
         }
 
         return false;
