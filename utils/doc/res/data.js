@@ -6,8 +6,10 @@ var data = {
                 "help": null,
                 "args": [
                     {
-                        "type": "string",
+                        "type": "pipeSeparatedList",
+                        "subtype": "string",
                         "default": "*nodefault*",
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n",
                         "name": "appName"
                     }
                 ]
@@ -128,6 +130,11 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "text"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "no",
+                        "name": "newline"
                     }
                 ]
             },
@@ -357,7 +364,7 @@ var data = {
                         "name": "zoneForReplacementName"
                     },
                     {
-                        "type": "boolean",
+                        "type": "bool",
                         "default": "no",
                         "name": "force"
                     }
@@ -490,6 +497,17 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "suffix"
+                    }
+                ]
+            },
+            {
+                "name": "name-Rename",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "text"
                     }
                 ]
             },
@@ -711,6 +729,11 @@ var data = {
                         "type": "string",
                         "default": "*nodefault*",
                         "name": "tagName"
+                    },
+                    {
+                        "type": "string",
+                        "default": "none",
+                        "name": "tagColor"
                     }
                 ]
             },
@@ -753,6 +776,7 @@ var data = {
                     {
                         "type": "string",
                         "default": "*NULL*",
+                        "help": "if target firewall is single VSYS you should ignore this argument, otherwise just input it",
                         "name": "vsys"
                     }
                 ]
@@ -884,7 +908,7 @@ var data = {
                         "name": "zoneForReplacementName"
                     },
                     {
-                        "type": "boolean",
+                        "type": "bool",
                         "default": "no",
                         "name": "force"
                     }
@@ -924,6 +948,17 @@ var data = {
                 "args": false
             },
             {
+                "name": "description-Append",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "text"
+                    }
+                ]
+            },
+            {
                 "name": "display",
                 "help": null,
                 "args": false
@@ -949,9 +984,10 @@ var data = {
                         "choices": [
                             "WhereUsed",
                             "UsedInLocation",
-                            "ResolveIP"
+                            "ResolveIP",
+                            "NestedMembers"
                         ],
-                        "help": "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n  - WhereUsed : list places where object is used (rules, groups ...)\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - ResolveIP\n",
+                        "help": "pipe(|) separated list of additional fields (ie: Arg1|Arg2|Arg3...) to include in the report. The following is available:\n  - NestedMembers: lists all members, even the ones that may be included in nested groups\n  - ResolveIP\n  - UsedInLocation : list locations (vsys,dg,shared) where object is used\n  - WhereUsed : list places where object is used (rules, groups ...)\n",
                         "name": "additionalFields"
                     }
                 ]
@@ -1153,6 +1189,17 @@ var data = {
                 "args": false
             },
             {
+                "name": "description-Append",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "text"
+                    }
+                ]
+            },
+            {
                 "name": "display",
                 "help": null,
                 "args": false
@@ -1250,6 +1297,18 @@ var data = {
                 ]
             },
             {
+                "name": "name-Rename",
+                "help": "",
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - \\$$current.name\\$\\$ : current name of the object\n  - \\$$destinationport\\$\\$ : destination Port\n  - \\$$protocol\\$\\$ : service protocol\n  - \\$$sourceport\\$\\$ : source Port\n  - \\$$value\\$\\$ : value of the object\n",
+                        "name": "stringFormula"
+                    }
+                ]
+            },
+            {
                 "name": "removeWhereUsed",
                 "help": null,
                 "args": [
@@ -1285,6 +1344,55 @@ var data = {
                         "name": "objectName"
                     }
                 ]
+            },
+            {
+                "name": "tag-Add",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "tagName"
+                    }
+                ]
+            },
+            {
+                "name": "tag-Add-Force",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "tagName"
+                    }
+                ]
+            },
+            {
+                "name": "tag-Remove",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "tagName"
+                    }
+                ]
+            },
+            {
+                "name": "tag-Remove-All",
+                "help": null,
+                "args": false
+            },
+            {
+                "name": "tag-Remove-Regex",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "regex"
+                    }
+                ]
             }
         ],
         "tag": [
@@ -1295,6 +1403,26 @@ var data = {
                     {
                         "type": "string",
                         "default": "*nodefault*",
+                        "choices": [
+                            "none",
+                            "red",
+                            "green",
+                            "blue",
+                            "yellow",
+                            "copper",
+                            "orange",
+                            "purple",
+                            "gray",
+                            "light green",
+                            "cyan",
+                            "light gray",
+                            "blue gray",
+                            "lime",
+                            "black",
+                            "gold",
+                            "brown",
+                            "dark green"
+                        ],
                         "name": "color"
                     }
                 ]
@@ -1424,6 +1552,16 @@ var data = {
                 "help": null,
                 "operators": [
                     {
+                        "name": "category.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "characteristic.has",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "has",
                         "help": null,
                         "argument": "*required*"
@@ -1437,6 +1575,21 @@ var data = {
                         "name": "is.any",
                         "help": null,
                         "argument": null
+                    },
+                    {
+                        "name": "risk.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "subcategory.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "technology.is",
+                        "help": null,
+                        "argument": "*required*"
                     }
                 ]
             },
@@ -1756,9 +1909,39 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "as-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "av-profile.is",
                         "help": null,
                         "argument": "*required*"
+                    },
+                    {
+                        "name": "av-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "data-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "data-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "file-profile.is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "file-profile.is.set",
+                        "help": null,
+                        "argument": null
                     },
                     {
                         "name": "group.is",
@@ -1786,9 +1969,24 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "type.is.group",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "type.is.profile",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "url-profile.is",
                         "help": null,
                         "argument": "*required*"
+                    },
+                    {
+                        "name": "url-profile.is.set",
+                        "help": null,
+                        "argument": null
                     },
                     {
                         "name": "vuln-profile.is",
@@ -1796,9 +1994,19 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "vuln-profile.is.set",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "wf-profile.is",
                         "help": null,
                         "argument": "*required*"
+                    },
+                    {
+                        "name": "wf-profile.is.set",
+                        "help": null,
+                        "argument": null
                     }
                 ]
             },
@@ -1808,6 +2016,16 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.only",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.recursive",
                         "help": null,
                         "argument": "*required*"
                     },
@@ -2037,9 +2255,35 @@ var data = {
                 ]
             },
             {
+                "name": "url.category",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.any",
+                        "help": null,
+                        "argument": null
+                    }
+                ]
+            },
+            {
                 "name": "user",
                 "help": null,
                 "operators": [
+                    {
+                        "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
+                        "help": null,
+                        "argument": "*required*"
+                    },
                     {
                         "name": "is.any",
                         "help": null,
@@ -2174,6 +2418,11 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "is.recursive.member.of",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "is.tmp",
                         "help": null,
                         "argument": null
@@ -2222,6 +2471,11 @@ var data = {
                     },
                     {
                         "name": "has.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
                         "help": null,
                         "argument": "*required*"
                     }
@@ -2350,6 +2604,16 @@ var data = {
                         "argument": null
                     },
                     {
+                        "name": "is.member.of",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.recursive.member.of",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "is.tcp",
                         "help": null,
                         "argument": null
@@ -2398,6 +2662,22 @@ var data = {
                     },
                     {
                         "name": "has.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.regex",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "tag.count",
+                "help": null,
+                "operators": [
+                    {
+                        "name": ">,<,=,!",
                         "help": null,
                         "argument": "*required*"
                     }
