@@ -269,50 +269,58 @@ class AppStore extends ObjStore
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->evasiveBehavior = true;
+                    $app->_characteristics['evasive'] = true;
             }
             $tmp = DH::findFirstElement('consume-big-bandwidth', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->consumeBigBandwidth = true;
+                    $app->_characteristics['excessive-bandwidth'] = true;
             }
             $tmp = DH::findFirstElement('used-by-malware', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->usedByMalware = true;
+                    $app->_characteristics['used-by-malware'] = true;
             }
             $tmp = DH::findFirstElement('able-to-transferfile', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->ableToTransferFile = true;
+                    $app->_characteristics['transfers-files'] = true;
             }
             $tmp = DH::findFirstElement('has-know-vulnerability', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->hasKnownVulnerability = true;
+                    $app->_characteristics['vulnerabilities'] = true;
             }
             $tmp = DH::findFirstElement('tunnel-other-app', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->tunnelOtherApplication = true;
+                    $app->_characteristics['tunnels-other-apps'] = true;
             }
             $tmp = DH::findFirstElement('prone-to-misuse', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->proneToMisuse = true;
+                    $app->_characteristics['prone-to-misuse'] = true;
+            }
+            $tmp = DH::findFirstElement('is-saas', $appx);
+            if( $tmp !== false )
+            {
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['saas'] = true;
             }
             $tmp = DH::findFirstElement('pervasive-use', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
-                    $app->pervasiveUse = true;
+                    $app->_characteristics['widely-used'] = true;
             }
+
+
             $tmp = DH::findFirstElement('risk', $appx);
             if( $tmp !== false )
             {
@@ -336,12 +344,7 @@ class AppStore extends ObjStore
                 if( $tmp->textContent == 'yes' )
                     $app->fileforward = true;
             }
-            $tmp = DH::findFirstElement('is-saas', $appx);
-            if( $tmp !== false )
-            {
-                if( $tmp->textContent == 'yes' )
-                    $app->isSaas = true;
-            }
+
 
             $cursor = DH::findFirstElement('use-applications', $appx);
             if( $cursor !== false )

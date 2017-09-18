@@ -42,29 +42,15 @@ class App
     public $risk = null;
 
     /** @var bool  */
-    public $evasiveBehavior = false;
-    /** @var bool  */
-    public $consumeBigBandwidth = false;
-    /** @var bool  */
-    public $usedByMalware = false;
-    /** @var bool  */
-    public $ableToTransferFile = false;
-    /** @var bool  */
-    public $hasKnownVulnerability = false;
-    /** @var bool  */
-    public $tunnelOtherApplication = false;
-    /** @var bool  */
-    public $proneToMisuse = false;
-    /** @var bool  */
-    public $pervasiveUse = false;
-    /** @var bool  */
     public $virusident = false;
     /** @var bool  */
     public $filetypeident = false;
     /** @var bool  */
     public $fileforward = false;
-    /** @var bool  */
-    public $isSaas = false;
+
+
+    /** @var string[]  */
+    public $_characteristics = Array();
 	
     static public $_supportedCharacteristics = Array(
         'evasive' => 'evasive',
@@ -77,7 +63,6 @@ class App
         'vulnerabilities' => 'vulnerabilities',
         'widely-used' => 'widely-used'
         );
-
 	
 	//public $type = 'notfound';
 
@@ -85,6 +70,9 @@ class App
  	{
  		$this->owner = $owner;
 		$this->name = $name;
+
+		foreach( self::$_supportedCharacteristics as $characteristicName )
+		    $this->_characteristics[$characteristicName] = false;
  	}
 
  	public function isUsingSpecialProto()
