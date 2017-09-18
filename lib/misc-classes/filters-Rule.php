@@ -2560,5 +2560,89 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.saas'] = Array(
     )
 );
 
+RQuery::$defaultFilters['rule']['app']['operators']['characteristic.is'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        $characteristic = $context->value;
+
+        $characteristic_array[ 'evasive' ] = 'evasive';
+        $characteristic_array[ 'excessive-bandwidth' ] = 'excessive-bandwidth';
+        $characteristic_array[ 'prone-to-misuse' ] = 'prone-to-misuse';
+        $characteristic_array[ 'saas' ] = 'saas';
+        $characteristic_array[ 'transfers-files' ] = 'transfers-files';
+        $characteristic_array[ 'tunnels-other-apps' ] = 'tunnels-other-apps';
+        $characteristic_array[ 'used-by-malware' ] = 'used-by-malware';
+        $characteristic_array[ 'vulnerabilities' ] = 'vulnerabilities';
+        $characteristic_array[ 'widely-used' ] = 'widely-used';
+
+        if( !array_key_exists( $characteristic, $characteristic_array) )
+            return null;
+
+        if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
+            return null;
+
+        foreach($rule->apps->apps() as $app)
+        {
+            if( $characteristic ==  'evasive')
+            {
+                if( $app->evasiveBehavior )
+                    return true;
+            }
+            elseif( $characteristic ==  'excessive-bandwidth')
+            {
+                if( $app->consumeBigBandwidth )
+                    return true;
+            }
+            elseif( $characteristic ==  'prone-to-misuse')
+            {
+                if( $app->proneToMisuse )
+                    return true;
+            }
+            elseif( $characteristic ==  'saas')
+            {
+                if( $app->isSaas )
+                    return true;
+            }
+            elseif( $characteristic ==  'transfers-files' )
+            {
+                if( $app->ableToTransferFile )
+                    return true;
+            }
+            elseif( $characteristic ==  'tunnels-other-apps')
+            {
+                if( $app->tunnelOtherApplication )
+                    return true;
+            }
+            elseif( $characteristic ==  'used-by-malware')
+            {
+                if( $app->usedByMalware )
+                    return true;
+            }
+            elseif( $characteristic ==  'vulnerabilities')
+            {
+                if( $app->hasKnownVulnerability )
+                    return true;
+            }
+            elseif( $characteristic ==  'widely-used')
+            {
+                if( $app->pervasiveUse )
+                    return true;
+            }
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 // </editor-fold>
 
