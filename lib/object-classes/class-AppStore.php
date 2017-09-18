@@ -283,7 +283,7 @@ class AppStore extends ObjStore
                 if( $tmp->textContent == 'yes' )
                     $app->_characteristics['used-by-malware'] = true;
             }
-            $tmp = DH::findFirstElement('able-to-transferfile', $appx);
+            $tmp = DH::findFirstElement('able-to-transfer-file', $appx);
             if( $tmp !== false )
             {
                 if( $tmp->textContent == 'yes' )
