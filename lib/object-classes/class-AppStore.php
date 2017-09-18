@@ -255,6 +255,10 @@ class AppStore extends ObjStore
                 {
                     $app->icmp = $ex[1];
                 }
+                elseif( $ex[0] == 'icmp6' )
+                {
+                    $app->icmp6 = $ex[1];
+                }
                 else
                     derr('unsupported port description: '.$portx->textContent);
 
