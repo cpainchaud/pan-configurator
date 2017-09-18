@@ -2153,6 +2153,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['category.is'] = Array(
         if( !$rule->isSecurityRule() )
             return null;
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         foreach($rule->apps->apps() as $app)
         {
             if( $app->category == $context->value )
@@ -2182,6 +2185,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['subcategory.is'] = Array(
                 return true;
         }
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         return false;
     },
     'arg' => true,
@@ -2197,6 +2203,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
             return null;
 
         foreach($rule->apps->apps() as $app)
@@ -2222,6 +2231,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['risk.is'] = Array(
         if( !$rule->isSecurityRule() )
             return null;
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         foreach($rule->apps->apps() as $app)
         {
             if( $app->risk == $context->value )
@@ -2243,6 +2255,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.evasive'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
             return null;
 
         foreach($rule->apps->apps() as $app)
@@ -2268,6 +2283,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['consume.big.bandwidth'] = A
         if( !$rule->isSecurityRule() )
             return null;
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         foreach($rule->apps->apps() as $app)
         {
             if( $app->consumeBigBandwidth )
@@ -2289,6 +2307,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['used.by.malware'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
             return null;
 
         foreach($rule->apps->apps() as $app)
@@ -2314,6 +2335,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['able.to.transfer.file'] = A
         if( !$rule->isSecurityRule() )
             return null;
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         foreach($rule->apps->apps() as $app)
         {
             if( $app->ableToTransferFile )
@@ -2335,6 +2359,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.known.vulnerability'] =
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
             return null;
 
         foreach($rule->apps->apps() as $app)
@@ -2360,6 +2387,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['tunnel.other.application'] 
         if( !$rule->isSecurityRule() )
             return null;
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         foreach($rule->apps->apps() as $app)
         {
             if( $app->tunnelOtherApplication )
@@ -2381,6 +2411,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['prone.to.misuse'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
             return null;
 
         foreach($rule->apps->apps() as $app)
@@ -2406,6 +2439,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['pervasive.use'] = Array(
         if( !$rule->isSecurityRule() )
             return null;
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         foreach($rule->apps->apps() as $app)
         {
             if( $app->pervasiveUse )
@@ -2427,6 +2463,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.virus.ident'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
             return null;
 
         foreach($rule->apps->apps() as $app)
@@ -2452,6 +2491,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.file.type.ident'] = Arra
         if( !$rule->isSecurityRule() )
             return null;
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         foreach($rule->apps->apps() as $app)
         {
             if( $app->filetypeident )
@@ -2475,6 +2517,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.file.forward'] = Array(
         if( !$rule->isSecurityRule() )
             return null;
 
+        if( $rule->apps->count() < 1 )
+            return null;
+
         foreach($rule->apps->apps() as $app)
         {
             if( $app->fileforward )
@@ -2495,6 +2540,9 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.saas'] = Array(
         $rule = $context->object;
 
         if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
             return null;
 
         foreach($rule->apps->apps() as $app)
