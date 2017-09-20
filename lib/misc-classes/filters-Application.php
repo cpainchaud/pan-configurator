@@ -19,6 +19,9 @@ RQuery::$defaultFilters['app']['characteristic']['operators']['has'] = Array(
     {
         $app = $context->object;
 
+        if( $app->isContainer() )
+            return null;
+
         $sanitizedValue = strtolower($context->value);
         if( $app->_characteristics[$sanitizedValue] === true )
                 return true;
