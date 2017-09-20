@@ -227,6 +227,34 @@ class AppRuleContainer extends ObjRuleContainer
         $this->API_sync();
     }
 
+    public function members()
+    {
+        return $this->o;
+    }
+
+    public function membersExpanded($keepGroupsInList=false)
+    {
+        $localA = Array();
+
+        if( count($this->o) == 0 )
+            return $localA;
+
+        foreach( $this->o as $member )
+        {
+            if( $member->isContainer() )
+            {
+                foreach( $member->containerApps() as $containerApp )
+                    $localA[] = $containerApp;
+            }
+            else
+                $localA[] = $member;
+        }
+
+        $localA = array_unique_no_cast($localA);
+
+        return $localA;
+    }
+
 
 
     /**
