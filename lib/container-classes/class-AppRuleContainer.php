@@ -244,7 +244,15 @@ class AppRuleContainer extends ObjRuleContainer
             if( $member->isContainer() )
             {
                 foreach( $member->containerApps() as $containerApp )
-                    $localA[] = $containerApp;
+                {
+                    if( $containerApp->isContainer() )
+                    {
+                        foreach( $containerApp->containerApps() as $containerApp1 )
+                            $localA[] = $containerApp1;
+                    }
+                    else
+                        $localA[] = $containerApp;
+                }
             }
             else
                 $localA[] = $member;

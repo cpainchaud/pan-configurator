@@ -43,7 +43,8 @@ class AppStore extends ObjStore
 
         return self::$predefinedStore;
     }
-	
+
+
 	public function __construct($owner)
 	{
 		$this->classn = &self::$childn;
@@ -428,6 +429,215 @@ class AppStore extends ObjStore
 
 		}
 	}
+
+    public function load_application_group_from_domxml($xmlDom )
+    {
+        foreach( $xmlDom->childNodes as $appx )
+        {
+            if( $appx->nodeType != XML_ELEMENT_NODE ) continue;
+
+            $appName= DH::findAttribute('name', $appx);
+            if( $appName === FALSE )
+                derr("ApplicationGroup name not found in XML: ", $appx);
+
+            $app = new App($appName, $this);
+            $app->type = 'application-group';
+            $this->add($app);
+
+            $app->subapps = Array();
+
+            foreach( $appx->childNodes as $function)
+            {
+                if( $function->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $subapp = $this->findOrCreate($function->textContent);
+                $app->subapps[] = $subapp;
+            }
+        }
+    }
+
+    public function load_application_filter_from_domxml($xmlDom )
+    {
+        foreach( $xmlDom->childNodes as $appx )
+        {
+            if( $appx->nodeType != XML_ELEMENT_NODE ) continue;
+
+            $appName= DH::findAttribute('name', $appx);
+            if( $appName === FALSE )
+                derr("ApplicationFilter name not found in XML: ", $appx);
+
+            $app = new App($appName, $this);
+            $app->type = 'application-filter';
+            $this->add($app);
+
+            //only first FILTER is checked
+            //what about second/third??
+            $tmp = DH::findFirstElement('category', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    $app->category = $tmp1->textContent;
+                }
+            }
+
+            $tmp = DH::findFirstElement('subcategory', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    $app->subCategory = $tmp1->textContent;
+                }
+            }
+
+            $tmp = DH::findFirstElement('technology', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    $app->technology = $tmp1->textContent;
+                }
+            }
+
+
+            $tmp = DH::findFirstElement('evasive-behavior', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['evasive'] = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('consume-big-bandwidth', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['excessive-bandwidth'] = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('used-by-malware', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['used-by-malware'] = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('able-to-transfer-file', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['transfers-files'] = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('has-known-vulnerability', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['vulnerabilities'] = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('tunnel-other-application', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['tunnels-other-apps'] = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('prone-to-misuse', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['prone-to-misuse'] = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('is-saas', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['saas'] = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('pervasive-use', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->_characteristics['widely-used'] = TRUE;
+                }
+            }
+
+
+            $tmp = DH::findFirstElement('risk', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    $app->risk = $tmp1->textContent;
+                }
+            }
+            $tmp = DH::findFirstElement('virusident-ident', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->virusident = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('filetype-ident', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->filetypeident = TRUE;
+                }
+            }
+            $tmp = DH::findFirstElement('file-forward', $appx);
+            if( $tmp !== false )
+            {
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    if( $tmp1->textContent == 'yes' )
+                        $app->fileforward = TRUE;
+                }
+            }
+
+        }
+    }
 
 
 	public function load_from_predefinedfile( $filename = null )
