@@ -135,6 +135,22 @@ class AppStore extends ObjStore
             $app = new App($appName, $this);
             $app->type = 'predefined';
             $this->add($app);
+        }
+
+        foreach ($xml->childNodes as $appx)
+        {
+
+            if( $appx->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $appName= DH::findAttribute('name', $appx);
+            if( $appName === FALSE )
+                derr("app name not found\n");
+
+            if( !isset($this->nameIndex[$appName]) )
+                derr("Inconsistency problem : cannot match an application to its XML", $appx);
+
+            $app = $this->nameIndex[$appName];
 
             #xpath /predefined/default
             $cursor = DH::findFirstElement('default', $appx);
@@ -385,15 +401,17 @@ class AppStore extends ObjStore
 	{
 		foreach( $xmlDom->childNodes as $appx )
 		{
-			if( $appx->nodeType != 1 ) continue;
+			if( $appx->nodeType != XML_ELEMENT_NODE ) continue;
 
-			$app = new App($appx->tagName, $this);
+            $appName= DH::findAttribute('name', $appx);
+            if( $appName === FALSE )
+                derr("ApplicationContainer name not found in XML: ", $appx);
+
+            $app = new App($appName, $this);
 			$app->type = 'predefined';
 			$this->add($app);
 
 			$app->subapps = Array();
-
-			//print "found container ".$app->name()."\n";
 
 			$cursor = DH::findFirstElement('functions', $appx );
 			if( $cursor === FALSE )
@@ -401,8 +419,11 @@ class AppStore extends ObjStore
 
 			foreach( $cursor->childNodes as $function)
 			{
-				$app->subapps[] = $this->findOrCreate($function->textContent);
-				//print "  subapp: ".$subapp->name()." type :".$subapp->type."\n";
+                if( $function->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                $subapp = $this->findOrCreate($function->textContent);
+                $app->subapps[] = $subapp;
 			}
 
 		}
