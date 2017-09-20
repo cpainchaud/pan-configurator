@@ -405,7 +405,9 @@ class AppStore extends ObjStore
 
 			foreach( $cursor->childNodes as $function)
 			{
-                #print "\n   |".$function->textContent."|\n";
+                if( $function->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
                 $subapp = $this->findOrCreate($function->textContent);
                 $app->subapps[] = $subapp;
                 #print "  subapp: ".$subapp->name()." type :".$subapp->type."\n";
