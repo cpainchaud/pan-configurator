@@ -2156,7 +2156,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['category.is'] = Array(
         if( $rule->apps->count() < 1 )
             return null;
 
-        foreach($rule->apps->apps() as $app)
+        foreach($rule->apps->membersExpanded() as $app)
         {
             if( $app->category == $context->value )
                 return true;
@@ -2179,7 +2179,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['subcategory.is'] = Array(
         if( !$rule->isSecurityRule() )
             return null;
 
-        foreach($rule->apps->apps() as $app)
+        foreach($rule->apps->membersExpanded() as $app)
         {
             if( $app->subCategory == $context->value )
                 return true;
@@ -2208,7 +2208,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
         if( $rule->apps->count() < 1 )
             return null;
 
-        foreach($rule->apps->apps() as $app)
+        foreach($rule->apps->membersExpanded() as $app)
         {
             if( $app->technology == $context->value )
                 return true;
@@ -2234,7 +2234,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['risk.is'] = Array(
         if( $rule->apps->count() < 1 )
             return null;
 
-        foreach($rule->apps->apps() as $app)
+        foreach($rule->apps->membersExpanded() as $app)
         {
             if( $app->risk == $context->value )
                 return true;
@@ -2266,7 +2266,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['characteristic.has'] = Arra
         if( !isset(App::$_supportedCharacteristics[$sanitizedValue]) )
             derr("Characteristic named '{$sanitizedValue}' does not exist. Supported values are: ".PH::list_to_string(App::$_supportedCharacteristics));
 
-        foreach($rule->apps->apps() as $app)
+        foreach($rule->apps->membersExpanded() as $app)
         {
             if( $app->_characteristics[$sanitizedValue] === true )
                 return true;
