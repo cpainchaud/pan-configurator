@@ -387,7 +387,11 @@ class AppStore extends ObjStore
 		{
 			if( $appx->nodeType != 1 ) continue;
 
-			$app = new App($appx->tagName, $this);
+            $appName= DH::findAttribute('name', $appx);
+            if( $appName === FALSE )
+                derr("app name not found\n");
+
+            $app = new App($appName, $this);
 			$app->type = 'predefined';
 			$this->add($app);
 
@@ -401,8 +405,10 @@ class AppStore extends ObjStore
 
 			foreach( $cursor->childNodes as $function)
 			{
-				$app->subapps[] = $this->findOrCreate($function->textContent);
-				//print "  subapp: ".$subapp->name()." type :".$subapp->type."\n";
+                #print "\n   |".$function->textContent."|\n";
+                $subapp = $this->findOrCreate($function->textContent);
+                $app->subapps[] = $subapp;
+                #print "  subapp: ".$subapp->name()." type :".$subapp->type."\n";
 			}
 
 		}
