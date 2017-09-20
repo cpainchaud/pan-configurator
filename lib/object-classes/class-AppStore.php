@@ -385,19 +385,17 @@ class AppStore extends ObjStore
 	{
 		foreach( $xmlDom->childNodes as $appx )
 		{
-			if( $appx->nodeType != 1 ) continue;
+			if( $appx->nodeType != XML_ELEMENT_NODE ) continue;
 
             $appName= DH::findAttribute('name', $appx);
             if( $appName === FALSE )
-                derr("app name not found\n");
+                derr("ApplicationContainer name not found in XML: ", $appx);
 
             $app = new App($appName, $this);
 			$app->type = 'predefined';
 			$this->add($app);
 
 			$app->subapps = Array();
-
-			//print "found container ".$app->name()."\n";
 
 			$cursor = DH::findFirstElement('functions', $appx );
 			if( $cursor === FALSE )
@@ -410,7 +408,6 @@ class AppStore extends ObjStore
 
                 $subapp = $this->findOrCreate($function->textContent);
                 $app->subapps[] = $subapp;
-                #print "  subapp: ".$subapp->name()." type :".$subapp->type."\n";
 			}
 
 		}
