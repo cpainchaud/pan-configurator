@@ -135,6 +135,22 @@ class AppStore extends ObjStore
             $app = new App($appName, $this);
             $app->type = 'predefined';
             $this->add($app);
+        }
+
+        foreach ($xml->childNodes as $appx)
+        {
+
+            if( $appx->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $appName= DH::findAttribute('name', $appx);
+            if( $appName === FALSE )
+                derr("app name not found\n");
+
+            if( !isset($this->nameIndex[$appName]) )
+                derr("Inconsistency problem : cannot match an application to its XML", $appx);
+
+            $app = $this->nameIndex[$appName];
 
             #xpath /predefined/default
             $cursor = DH::findFirstElement('default', $appx);

@@ -39,6 +39,7 @@ bugfix:
 - changed SecurityRule::API_getAppContainerStats2() to use DeviceGroup name on PANOS 7.1+ instead of firewall serial numbers
 - fixed a crash when displaying service objects where a service group is member of a service group
 - xxxx-merger : fixed an issue where subQueries were ignored
+- fixed an issue where predefined applications were created as TMP
 
 
 1.5.12 (2017-04-04)
