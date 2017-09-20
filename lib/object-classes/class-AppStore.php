@@ -473,6 +473,7 @@ class AppStore extends ObjStore
 
             //only first FILTER is checked
             //what about second/third??
+            //- if use array how to get the information via the app filter
             $tmp = DH::findFirstElement('category', $appx);
             if( $tmp !== false )
             {
@@ -503,138 +504,63 @@ class AppStore extends ObjStore
                 }
             }
 
-
-            $tmp = DH::findFirstElement('evasive-behavior', $appx);
+            $tmp = DH::findFirstElement('evasive', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['evasive'] = TRUE;
-                }
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['evasive'] = true;
             }
-            $tmp = DH::findFirstElement('consume-big-bandwidth', $appx);
+            $tmp = DH::findFirstElement('excessive-bandwidth-use', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['excessive-bandwidth'] = TRUE;
-                }
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['excessive-bandwidth'] = true;
             }
             $tmp = DH::findFirstElement('used-by-malware', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['used-by-malware'] = TRUE;
-                }
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['used-by-malware'] = true;
             }
-            $tmp = DH::findFirstElement('able-to-transfer-file', $appx);
+            $tmp = DH::findFirstElement('transfers-files', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['transfers-files'] = TRUE;
-                }
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['transfers-files'] = true;
             }
-            $tmp = DH::findFirstElement('has-known-vulnerability', $appx);
+            $tmp = DH::findFirstElement('has-known-vulnerabilities', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['vulnerabilities'] = TRUE;
-                }
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['vulnerabilities'] = true;
             }
-            $tmp = DH::findFirstElement('tunnel-other-application', $appx);
+            $tmp = DH::findFirstElement('tunnels-other-apps', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['tunnels-other-apps'] = TRUE;
-                }
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['tunnels-other-apps'] = true;
             }
             $tmp = DH::findFirstElement('prone-to-misuse', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['prone-to-misuse'] = TRUE;
-                }
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['prone-to-misuse'] = true;
             }
-            $tmp = DH::findFirstElement('is-saas', $appx);
+
+            $tmp = DH::findFirstElement('pervasive', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['saas'] = TRUE;
-                }
-            }
-            $tmp = DH::findFirstElement('pervasive-use', $appx);
-            if( $tmp !== false )
-            {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->_characteristics['widely-used'] = TRUE;
-                }
+                if( $tmp->textContent == 'yes' )
+                    $app->_characteristics['widely-used'] = true;
             }
 
 
             $tmp = DH::findFirstElement('risk', $appx);
             if( $tmp !== false )
             {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    $app->risk = $tmp1->textContent;
-                }
+                $app->risk = $tmp->textContent;
             }
-            $tmp = DH::findFirstElement('virusident-ident', $appx);
-            if( $tmp !== false )
-            {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->virusident = TRUE;
-                }
-            }
-            $tmp = DH::findFirstElement('filetype-ident', $appx);
-            if( $tmp !== false )
-            {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->filetypeident = TRUE;
-                }
-            }
-            $tmp = DH::findFirstElement('file-forward', $appx);
-            if( $tmp !== false )
-            {
-                foreach( $tmp->childNodes as $tmp1 )
-                {
-                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
-                    if( $tmp1->textContent == 'yes' )
-                        $app->fileforward = TRUE;
-                }
-            }
+
 
         }
     }
