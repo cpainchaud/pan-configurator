@@ -2158,7 +2158,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['category.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->category == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['category'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->category == $context->value )
                 return true;
         }
 
@@ -2181,7 +2186,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['subcategory.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->subCategory == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['subcategory'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->subCategory == $context->value )
                 return true;
         }
 
@@ -2210,7 +2220,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->technology == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['technology'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->technology == $context->value )
                 return true;
         }
 
@@ -2236,7 +2251,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['risk.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->risk == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['risk'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->risk == $context->value )
                 return true;
         }
 

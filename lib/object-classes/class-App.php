@@ -32,9 +32,12 @@ class App
 	public $icmpsub = null;
 	public $proto = null;
 
+    /** @var null|array  */
+    public $app_filter_details = null;
+
 	/** @var null|string  */
 	public $category = null;
-    /** @var null|string  */
+	/** @var null|string  */
 	public $subCategory = null;
     /** @var null|string  */
 	public $technology = null;

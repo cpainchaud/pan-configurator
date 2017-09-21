@@ -474,33 +474,54 @@ class AppStore extends ObjStore
             //only first FILTER is checked
             //what about second/third??
             //- if use array how to get the information via the app filter
+            $app->app_filter_details = array();
+
             $tmp = DH::findFirstElement('category', $appx);
             if( $tmp !== false )
             {
+                $app->app_filter_details['category'] = array();
                 foreach( $tmp->childNodes as $tmp1 )
                 {
                     if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
                     $app->category = $tmp1->textContent;
+                    $app->app_filter_details['category'][$tmp1->textContent] = $tmp1->textContent;
+
                 }
             }
 
             $tmp = DH::findFirstElement('subcategory', $appx);
             if( $tmp !== false )
             {
+                $app->app_filter_details['subcategory'] = array();
                 foreach( $tmp->childNodes as $tmp1 )
                 {
                     if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
                     $app->subCategory = $tmp1->textContent;
+                    $app->app_filter_details['subcategory'][$tmp1->textContent] = $tmp1->textContent;
                 }
             }
 
             $tmp = DH::findFirstElement('technology', $appx);
             if( $tmp !== false )
             {
+                $app->app_filter_details['technology'] = array();
                 foreach( $tmp->childNodes as $tmp1 )
                 {
                     if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
                     $app->technology = $tmp1->textContent;
+                    $app->app_filter_details['technology'][$tmp1->textContent] = $tmp1->textContent;
+                }
+            }
+
+            $tmp = DH::findFirstElement('risk', $appx);
+            if( $tmp !== false )
+            {
+                $app->app_filter_details['risk'] = array();
+                foreach( $tmp->childNodes as $tmp1 )
+                {
+                    if( $tmp1->nodeType != XML_ELEMENT_NODE ) continue;
+                    $app->risk = $tmp1->textContent;
+                    $app->app_filter_details['risk'][$tmp1->textContent] = $tmp1->textContent;
                 }
             }
 
@@ -553,14 +574,6 @@ class AppStore extends ObjStore
                 if( $tmp->textContent == 'yes' )
                     $app->_characteristics['widely-used'] = true;
             }
-
-
-            $tmp = DH::findFirstElement('risk', $appx);
-            if( $tmp !== false )
-            {
-                $app->risk = $tmp->textContent;
-            }
-
 
         }
     }
