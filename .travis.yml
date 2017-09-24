@@ -15,7 +15,7 @@ script:
 
 notifications:
   email:
-    - swaschkut@paloaltonetworks.com
+    - pan-c@waschkut.net
 
 
   
