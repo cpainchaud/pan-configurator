@@ -380,5 +380,39 @@ class Tag
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
+
+    public function isTag()
+    {
+        return true;
+    }
+
+    /**
+     * @param $otherObject Tag
+     * @return bool
+     */
+    public function equals( $otherObject )
+    {
+        if( ! $otherObject->isTag() )
+            return false;
+
+        if( $otherObject->name != $this->name )
+            return false;
+
+        return $this->sameValue( $otherObject);
+    }
+
+    public function sameValue( Tag $otherObject)
+    {
+        if( $this->isTmp() && !$otherObject->isTmp() )
+            return false;
+
+        if( $otherObject->isTmp() && !$this->isTmp() )
+            return false;
+
+        if( $otherObject->color !== $this->color )
+            return false;
+
+        return true;
+    }
 }
 

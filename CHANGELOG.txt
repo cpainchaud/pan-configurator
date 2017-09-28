@@ -24,6 +24,7 @@ service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All 
 service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
 service-edit: new action description-append
 service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
+tag-edit: new action move
 
 
 bugfix:

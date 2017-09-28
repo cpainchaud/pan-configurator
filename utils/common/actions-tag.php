@@ -340,3 +340,110 @@ TagCallContext::$supportedActions['comments-delete'] = Array(
 
     },
 );
+TagCallContext::$supportedActions[] = Array(
+    'name' => 'move',
+    'MainFunction' =>  function ( TagCallContext $context )
+    {
+        $object = $context->object;
+
+        /*
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." * SKIPPED this is a temporary object\n";
+            return;
+        }
+        */
+
+        $localLocation = 'shared';
+
+        if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isFirewall() )
+            $localLocation = $object->owner->owner->name();
+
+        $targetLocation = $context->arguments['location'];
+        $targetStore = null;
+
+        if( $localLocation == $targetLocation )
+        {
+            echo $context->padding." * SKIPPED because original and target destinations are the same: $targetLocation\n";
+            return;
+        }
+
+        $rootObject = PH::findRootObjectOrDie($object->owner->owner);
+
+        if( $targetLocation == 'shared' )
+        {
+            $targetStore = $rootObject->tagStore;
+        }
+        else
+        {
+            $findSubSystem = $rootObject->findSubSystemByName($targetLocation);
+            if( $findSubSystem === null )
+                derr("cannot find VSYS/DG named '$targetLocation'");
+
+            $targetStore = $findSubSystem->tagStore;
+        }
+
+        if( $localLocation == 'shared' )
+        {
+            echo $context->padding."   * SKIPPED : moving from SHARED to sub-level is not yet supported\n";
+            return;
+        }
+
+        if( $localLocation != 'shared' && $targetLocation != 'shared' )
+        {
+            if( $context->baseObject->isFirewall() )
+            {
+                echo $context->padding."   * SKIPPED : moving between VSYS is not supported\n";
+                return;
+            }
+
+            echo $context->padding."   * SKIPPED : moving between 2 VSYS/DG is not supported yet\n";
+            return;
+        }
+
+        $conflictObject = $targetStore->find($object->name() ,null, false);
+        if( $conflictObject === null )
+        {
+            echo $context->padding."   * moved, no conflict\n";
+            if( $context->isAPI )
+            {
+                $oldXpath = $object->getXPath();
+                $object->owner->removeTag($object);
+                $targetStore->addTag($object);
+                $object->API_sync();
+                $context->connector->sendDeleteRequest($oldXpath);
+            }
+            else
+            {
+                $object->owner->removeTag($object);
+                $targetStore->addTag($object);
+            }
+            return;
+        }
+
+        if( $context->arguments['mode'] == 'skipifconflict' )
+        {
+            echo $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
+            return;
+        }
+
+        echo $context->padding."   - there is a conflict with an object of same name ";
+
+
+        if( $object->equals($conflictObject) )
+        {
+            echo "    * Removed because target has same content\n";
+            $object->replaceMeGlobally($conflictObject);
+
+            if($context->isAPI)
+                $object->owner->API_removeTag($object);
+            else
+                $object->owner->removeTag($object);
+            return;
+        }
+
+    },
+    'args' => Array( 'location' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+        'mode' => Array( 'type' => 'string', 'default' => 'skipIfConflict', 'choices' => Array( 'skipIfConflict', 'removeIfMatch') )
+    ),
+);
