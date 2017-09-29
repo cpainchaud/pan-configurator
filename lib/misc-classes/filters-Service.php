@@ -372,4 +372,71 @@ RQuery::$defaultFilters['service']['location']['operators']['regex'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['service']['reflocation']['operators']['is'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+        $owner = $context->object->owner->owner;
+
+        $reflocation_array = $object->getReferencesLocation();
+
+
+        if( strtolower($context->value) == 'shared' )
+        {
+            if( $owner->isPanorama() )
+                return true;
+            if( $owner->isFirewall() )
+                return true;
+            return false;
+        }
+
+        foreach( $reflocation_array as $reflocation )
+        {
+            if( strtolower($reflocation) == strtolower($context->value) )
+                return true;
+        }
+
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['reflocation']['operators']['is.only'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $owner = $context->object->owner->owner;
+        $reflocations = $context->object->getReferencesLocation();
+
+        if( strtolower($context->value) == 'shared' )
+        {
+            if( $owner->isPanorama() )
+                return true;
+            if( $owner->isFirewall() )
+                return true;
+            return false;
+        }
+
+        $return = false;
+        foreach( $reflocations as $reflocation )
+        {
+            if( strtolower($reflocation) == strtolower($context->value) )
+                $return = true;
+        }
+
+        if( count( $reflocations ) == 1 && $return )
+            return true;
+        else
+            return false;
+
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>

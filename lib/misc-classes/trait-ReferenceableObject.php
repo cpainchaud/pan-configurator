@@ -204,6 +204,18 @@ trait ReferencableObject
         return $this->refrules;
     }
 
+    public function getReferencesLocation()
+    {
+        $location_array = array();
+        foreach( $this->refrules as $cur )
+        {
+            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null )
+                $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
+        }
+
+        return $location_array;
+    }
+
     /**
      * @param string $className
      * @return array
