@@ -202,6 +202,9 @@ RQuery::$defaultFilters['tag']['reflocation']['operators']['is.only'] = Array(
         $owner = $context->object->owner->owner;
         $reflocations = $context->object->getReferencesLocation();
 
+        $reftypes = $context->object->getReferencesType();
+        $refstore = $context->object->getReferencesStore();
+
         if( strtolower($context->value) == 'shared' )
         {
             if( $owner->isPanorama() )
@@ -227,6 +230,50 @@ RQuery::$defaultFilters['tag']['reflocation']['operators']['is.only'] = Array(
     'arg' => true,
     'ci' => Array(
         'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['tag']['refstore']['operators']['is'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $value = $context->value;
+        $value = strtolower($value);
+
+        $context->object->ReferencesStoreValidation( $value );
+
+        $refstore = $context->object->getReferencesStore();
+
+        if( array_key_exists( $value, $refstore ) )
+            return true;
+
+        return false;
+
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% rulestore )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['tag']['reftype']['operators']['is'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $value = $context->value;
+        $value = strtolower($value);
+
+        $context->object->ReferencesTypeValidation( $value );
+
+        $reftype = $context->object->getReferencesType();
+
+        if( array_key_exists( $value, $reftype ) )
+            return true;
+
+        return false;
+
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% securityrule )',
         'input' => 'input/panorama-8.0.xml'
     )
 );

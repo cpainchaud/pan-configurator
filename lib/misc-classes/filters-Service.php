@@ -439,4 +439,48 @@ RQuery::$defaultFilters['service']['reflocation']['operators']['is.only'] = Arra
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['service']['refstore']['operators']['is'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $value = $context->value;
+        $value = strtolower($value);
+
+        $context->object->ReferencesStoreValidation( $value );
+
+        $refstore = $context->object->getReferencesStore();
+
+        if( array_key_exists( $value, $refstore ) )
+            return true;
+
+        return false;
+
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% rulestore )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['reftype']['operators']['is'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $value = $context->value;
+        $value = strtolower($value);
+
+        $context->object->ReferencesTypeValidation( $value );
+
+        $reftype = $context->object->getReferencesType();
+
+        if( array_key_exists( $value, $reftype ) )
+            return true;
+
+        return false;
+
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>

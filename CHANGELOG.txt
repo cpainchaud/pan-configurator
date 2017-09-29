@@ -11,6 +11,7 @@ CHANGELOG
 
 utils:
 address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
+address-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
 address-edit: new action description-append
 override-finder: supporting scenario where template defined objects are not present in candidate config
 rules-edit: new filter 'service has.recursive', 'secprof av-profile.is.set', 'secprof as-profile.is.set', 'secprof url-profile.is.set', 'secprof wf-profile.is.set', 'secprof vuln-profile.is.set'
@@ -24,8 +25,9 @@ service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All 
 service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
 service-edit: new action description-append
 service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
+service-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
 tag-edit: new action move
-
+tag-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
 
 bugfix:
 - fixed a crash when trying to move some rule types from PRE/POST
