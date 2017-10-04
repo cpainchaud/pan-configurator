@@ -747,6 +747,68 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.from.query'] 
     },
     'arg' => true
 );
+RQuery::$defaultFilters['rule']['service']['operators']['has.from.query'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if( $context->object->services->count() == 0 )
+            return false;
+
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
+            derr("cannot find nested query called '{$context->value}'");
+
+        $errorMessage = '';
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('service');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
+
+        foreach( $context->object->services->all() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$context->nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['service']['operators']['has.recursive.from.query'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if( $context->object->services->count() == 0 )
+            return false;
+
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
+            derr("cannot find nested query called '{$context->value}'");
+
+        $errorMessage = '';
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('service');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
+
+        foreach( $context->object->services->all() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$context->nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true
+);
 
 RQuery::$defaultFilters['rule']['dst']['operators']['is.fully.included.in.list'] = Array(
     'Function' => function(RuleRQueryContext $context )
