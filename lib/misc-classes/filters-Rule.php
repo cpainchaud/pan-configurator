@@ -1667,7 +1667,10 @@ RQuery::$defaultFilters['rule']['rule']['operators']['has.source.nat'] = Array(
         if( !$context->object->isNatRule() )
             return false;
 
-        if( $context->object->sourceNatTypeIs_None() )
+        if( $context->object->destinationNatIsEnabled() )
+            return false;
+
+        if( !$context->object->sourceNatTypeIs_None() )
             return true;
 
         return false;
