@@ -8,7 +8,9 @@ CHANGELOG
 * class App : added support for technology, categories fields
 * class App : added support for evasive-behavior, consume-big-bandwidth, used-by-malware, able-to-transfer-file, has-known-vulnerability, tunnel-other-application fields
 * class App : added support for  prone-to-misuse, pervasive-use, risk, virus-ident, file-type-ident, file-forward, is-saas fields
+* class APP : added support for timeout, tcp-timeout, udp-timeout, tcp_half_closed_timeout, tcp_time_wait_timeout, custom_signature
 * class AppStore: added support for application-group and application-filter
+* class AppStore: added support for custom application
 * class PANConf/PanoramaConf/VirtualSystem: add support for application-group and application-filter
 
 utils:

@@ -221,6 +221,13 @@ class PANConf
             // End of address groups extraction
 
             //
+            // Extract application
+            //
+            $tmp = DH::findFirstElementOrCreate('application', $this->sharedroot);
+            $this->appStore->load_application_custom_from_domxml($tmp);
+            // End of address extraction
+
+            //
             // Extract application groups
             //
             $tmp = DH::findFirstElementOrCreate('application-group', $this->sharedroot);

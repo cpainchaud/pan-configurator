@@ -30,7 +30,14 @@ class App
 	public $icmp = null;
 
 	public $icmpsub = null;
+    public $icmp6sub = null;
 	public $proto = null;
+
+	public $timeout = null;
+    public $tcp_timeout = null;
+    public $udp_timeout = null;
+    public $tcp_half_closed_timeout = null;
+    public $tcp_time_wait_timeout = null;
 
     /** @var null|array  */
     public $app_filter_details = null;
@@ -51,6 +58,8 @@ class App
     /** @var bool  */
     public $fileforward = false;
 
+    /** @var bool  */
+    public $custom_signature = false;
 
     /** @var string[]  */
     public $_characteristics = Array();
