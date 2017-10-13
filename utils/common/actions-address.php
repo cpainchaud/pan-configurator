@@ -283,6 +283,11 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+        if( $object->isTmpAddr() )
+        {
+            print "      * skipped because object is temporary\n";
+            return null;
+        }
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
         if( $objectFind === null )
             derr("tag named '{$context->arguments['tagName']}' not found");
@@ -300,6 +305,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            print "      * skipped because object is temporare\n";
+            return null;
+        }
+
         if( $context->isAPI )
         {
             $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
@@ -322,6 +334,12 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+        if( $object->isTmpAddr() )
+        {
+            print "      * skipped because object is temporary\n";
+            return null;
+        }
+
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
         if( $objectFind === null )
             derr("tag named '{$context->arguments['tagName']}' not found");
@@ -339,6 +357,12 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+        if( $object->isTmpAddr() )
+        {
+            print "      * skipped because object is temporary\n";
+            return null;
+        }
+
         foreach($object->tags->tags() as $tag )
         {
             echo $context->padding."  - removing tag {$tag->name()}... ";

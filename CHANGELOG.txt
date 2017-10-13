@@ -45,6 +45,7 @@ bugfix:
 - xxxx-merger : fixed an issue where subQueries were ignored
 - fixed an issue where predefined applications were created as TMP
 - fixed an issue with 'filter=(rule has.source.nat)' where no source NAT rule were shown
+- fixed a crash when trying to add tag to temporary address objects
 
 
 1.5.12 (2017-04-04)
