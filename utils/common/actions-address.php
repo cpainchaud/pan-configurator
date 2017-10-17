@@ -285,8 +285,8 @@ AddressCallContext::$supportedActions[] = Array(
         $object = $context->object;
         if( $object->isTmpAddr() )
         {
-            print "      * skipped because object is temporary\n";
-            return null;
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
         }
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
         if( $objectFind === null )
@@ -308,8 +308,8 @@ AddressCallContext::$supportedActions[] = Array(
 
         if( $object->isTmpAddr() )
         {
-            print "      * skipped because object is temporare\n";
-            return null;
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
         }
 
         if( $context->isAPI )
@@ -336,8 +336,8 @@ AddressCallContext::$supportedActions[] = Array(
         $object = $context->object;
         if( $object->isTmpAddr() )
         {
-            print "      * skipped because object is temporary\n";
-            return null;
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
         }
 
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
@@ -359,8 +359,8 @@ AddressCallContext::$supportedActions[] = Array(
         $object = $context->object;
         if( $object->isTmpAddr() )
         {
-            print "      * skipped because object is temporary\n";
-            return null;
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
         }
 
         foreach($object->tags->tags() as $tag )
@@ -381,6 +381,11 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
+        }
         $pattern = '/'.$context->arguments['regex'].'/';
         foreach($object->tags->tags() as $tag )
         {
