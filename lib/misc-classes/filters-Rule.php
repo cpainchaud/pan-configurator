@@ -1798,54 +1798,6 @@ RQuery::$defaultFilters['rule']['location']['operators']['regex'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
-RQuery::$defaultFilters['rule']['location']['operators']['is.child.of'] = Array(
-    'Function' => function(RuleRQueryContext $context )
-    {
-        $sub = $context->object->owner->owner;
-
-        $rule_location = $context->object->getLocationString();
-
-
-        $DG = $sub->owner->findDeviceGroup( $context->value );
-        if( $DG == null )
-        {
-            print "ERROR: location '$context->value' was not found. \n";
-            print "\n\n";
-            exit(1);
-
-        }
-
-        $childDeviceGroups = $DG->childDeviceGroups( TRUE );
-
-        if( strtolower($context->value) == 'shared' )
-        {
-            if( $sub->isPanorama() )
-                return true;
-            if( $sub->isFirewall() )
-                return true;
-            return false;
-        }
-        if( strtolower($context->value) == strtolower($rule_location) )
-            return true;
-
-
-        foreach( $childDeviceGroups as $childDeviceGroup )
-        {
-            if( $childDeviceGroup->name() == $rule_location )
-            {
-                return true;
-            }
-        }
-
-        return false;
-    },
-    'arg' => true,
-    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is child the one specified in argument',
-    'ci' => Array(
-        'fString' => '(%PROP%  Datacenter)',
-        'input' => 'input/panorama-8.0.xml'
-    )
-);
 RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
