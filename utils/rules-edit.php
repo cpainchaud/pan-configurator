@@ -96,8 +96,6 @@ $supportedArguments['stats'] = Array('niceName' => 'Stats', 'shortHelp' => 'disp
 $supportedArguments['apitimeout'] = Array('niceName' => 'apiTimeout', 'shortHelp' => 'in case API takes too long time to anwer, increase this value (default=60)');
 $supportedArguments['loadplugin'] = Array('niceName' => 'loadPlugin', 'shortHelp' => 'a PHP file which contains a plugin to expand capabilities of this script');
 $supportedArguments['loadpanoramapushedconfig'] = Array('niceName' => 'loadPanoramaPushedConfig', 'shortHelp' => 'load Panorama pushed config from the firewall to take in account panorama objects and rules' );
-$supportedArguments['loadchilddevicegroups'] = Array('niceName' => 'loadChildDeviceGroups', 'shortHelp' => 'load all configurations from Child Device Groups');
-
 
 
 
@@ -676,9 +674,6 @@ foreach( $rulesLocation as $location )
     }
     else
     {
-        if( $location == 'shared' && isset(PH::$args['loadchilddevicegroups']) )
-            $location = 'all';
-
         if( $location == 'shared' || $location == 'any' || $location == 'all'  )
         {
             if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
@@ -715,7 +710,6 @@ foreach( $rulesLocation as $location )
             }
             $locationFound = true;
         }
-
 
         foreach( $pan->getDeviceGroups() as $sub )
         {
@@ -754,48 +748,6 @@ foreach( $rulesLocation as $location )
                     $rulesToProcess[] = Array('store' => $sub->dosRules, 'rules' => $sub->dosRules->rules());
                 }
                 $locationFound = true;
-
-
-                if( $location == $sub->name() && isset(PH::$args['loadchilddevicegroups']) )
-                {
-                    $sub_childDeviceGroups = $sub->childDeviceGroups( true );
-                    foreach( $sub_childDeviceGroups as $childDG )
-                    {
-                        if( array_search('any', $ruleTypes) !== false || array_search('security', $ruleTypes) !== false )
-                        {
-                            $rulesToProcess[] = Array('store' => $childDG->securityRules, 'rules' => $childDG->securityRules->rules());
-                        }
-                        if( array_search('any', $ruleTypes) !== false || array_search('nat', $ruleTypes) !== false )
-                        {
-                            $rulesToProcess[] = Array('store' => $childDG->natRules, 'rules' => $childDG->natRules->rules());
-                        }
-                        if( array_search('any', $ruleTypes) !== false || array_search('qos', $ruleTypes) !== false )
-                        {
-                            $rulesToProcess[] = Array('store' => $childDG->qosRules, 'rules' => $childDG->qosRules->rules());
-                        }
-                        if( array_search('any', $ruleTypes) !== false || array_search('pbf', $ruleTypes) !== false )
-                        {
-                            $rulesToProcess[] = Array('store' => $childDG->pbfRules, 'rules' => $childDG->pbfRules->rules());
-                        }
-                        if( array_search('any', $ruleTypes) !== false || array_search('decryption', $ruleTypes) !== false )
-                        {
-                            $rulesToProcess[] = Array('store' => $childDG->decryptionRules, 'rules' => $childDG->decryptionRules->rules());
-                        }
-                        if( array_search('any', $ruleTypes) !== false || array_search('appoverride', $ruleTypes) !== false )
-                        {
-                            $rulesToProcess[] = Array('store' => $childDG->appOverrideRules, 'rules' => $childDG->appOverrideRules->rules());
-                        }
-                        if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
-                        {
-                            $rulesToProcess[] = Array('store' => $childDG->captivePortalRules, 'rules' => $childDG->captivePortalRules->rules());
-                        }
-                        if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
-                        {
-                            $rulesToProcess[] = Array('store' => $childDG->dosRules, 'rules' => $childDG->dosRules->rules());
-                        }
-                    }
-                }
-
             }
         }
     }

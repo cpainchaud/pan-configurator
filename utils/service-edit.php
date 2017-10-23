@@ -96,7 +96,6 @@ $supportedArguments['debugapi'] = Array('niceName' => 'DebugAPI', 'shortHelp' =>
 $supportedArguments['filter'] = Array('niceName' => 'Filter', 'shortHelp' => "filters objects based on a query. ie: 'filter=((from has external) or (source has privateNet1) and (to has external))'", 'argDesc' => '(field operator [value])');
 $supportedArguments['loadplugin'] = Array('niceName' => 'loadPlugin', 'shortHelp' => 'a PHP file which contains a plugin to expand capabilities of this script');
 $supportedArguments['help'] = Array('niceName' => 'help', 'shortHelp' => 'this message');
-$supportedArguments['loadchilddevicegroups'] = Array('niceName' => 'loadChildDeviceGroups', 'shortHelp' => 'load all configurations from Child Device Groups');
 
 
 PH::processCliArgs();
@@ -526,8 +525,6 @@ foreach( $objectsLocation as $location )
     {
         if( $location == 'shared' || $location == 'any' )
         {
-            if( $location == 'shared' && isset(PH::$args['loadchilddevicegroups']) )
-                $location = 'all';
 
             $objectsToProcess[] = Array('store' => $pan->serviceStore, 'objects' => $pan->serviceStore->all(true));
             $locationFound = true;
@@ -539,15 +536,6 @@ foreach( $objectsLocation as $location )
             {
                 $objectsToProcess[] = Array('store' => $sub->serviceStore, 'objects' => $sub->serviceStore->all(true) );
                 $locationFound = true;
-
-                if( $location == $sub->name() && isset(PH::$args['loadchilddevicegroups']) )
-                {
-                    $sub_childDeviceGroups = $sub->childDeviceGroups(TRUE);
-                    foreach( $sub_childDeviceGroups as $childDG )
-                    {
-                        $objectsToProcess[] = Array('store' => $childDG->serviceStore, 'objects' => $childDG->serviceStore->all(TRUE));
-                    }
-                }
             }
         }
     }
