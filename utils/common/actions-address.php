@@ -883,12 +883,12 @@ AddressCallContext::$supportedActions[] = Array(
         'default' => '*nodefault*',
         'help' =>
             "This string is used to compose a name. You can use the following aliases :\n".
-            "  - \\$\$current.name\\$\\$ : current name of the object\n".
-            "  - \\$\$netmask\\$\\$ : netmask\n".
-            "  - \\$\$netmask.blank32\\$\\$ : netmask or nothing if 32\n".
-            "  - \\$\$reverse-dns\\$\\$ : value truncated of netmask if any\n".
-            "  - \\$\$value\\$\\$ : value of the object\n".
-            "  - \\$\$value.no-netmask\\$\\$ : value truncated of netmask if any\n")
+            "  - \$\$current.name\$\$ : current name of the object\n".
+            "  - \$\$netmask\$\$ : netmask\n".
+            "  - \$\$netmask.blank32\$\$ : netmask or nothing if 32\n".
+            "  - \$\$reverse-dns\$\$ : value truncated of netmask if any\n".
+            "  - \$\$value\$\$ : value of the object\n".
+            "  - \$\$value.no-netmask\$\$ : value truncated of netmask if any\n")
     ),
     'help' => ''
 );
