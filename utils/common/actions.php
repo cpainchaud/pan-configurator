@@ -546,24 +546,60 @@ class RuleCallContext extends CallContext
                 return self::enclose('any');
             if( $rule->services->isApplicationDefault() )
                 return self::enclose('application-default');
-            /*
-            return self::enclose($rule->services->getAll(), $wrap);
-            */
 
             $objects = $rule->services->getAll();
+
+            $array = array();
             foreach( $objects as $object )
             {
                 $port_mapping = $object->dstPortMapping();
-                $port_mapping_text[] = $port_mapping->mappingToText();
+                $mapping_texts = $port_mapping->mappingToText();
 
+                //TODO: handle predefined service objects in a different way
+                if( $object->name() == 'service-http' )
+                    $mapping_texts = 'tcp/80';
+                if( $object->name() == 'service-https' )
+                    $mapping_texts = 'tcp/443';
+
+
+                if( strpos($mapping_texts, " ") !== FALSE )
+                    $mapping_text_array = explode(" ", $mapping_texts);
+                else
+                    $mapping_text_array[] = $mapping_texts;
+
+
+                foreach( $mapping_text_array as $mapping_text )
+                {
+                    $protocol = "tmp";
+                    if( strpos($mapping_text, "tcp/") !== FALSE )
+                        $protocol = "tcp/";
+                    elseif( strpos($mapping_text, "udp/") !== FALSE )
+                        $protocol = "udp/";
+
+                    $mapping_text = str_replace( $protocol, "", $mapping_text );
+                    $mapping_text = explode( ",", $mapping_text);
+
+                    foreach( $mapping_text as $mapping )
+                    {
+                        if( !isset( $array[$protocol.$mapping] ) )
+                        {
+                            $port_mapping_text[$protocol.$mapping] = $protocol.$mapping;
+
+                            if( strpos($mapping, "-") !== FALSE )
+                            {
+                                $array[$protocol.$mapping] = $protocol.$mapping;
+                                $range = explode( "-", $mapping );
+                                for( $i = $range[0]; $i<=$range[1]; $i++ )
+                                    $array[$protocol.$i] = $protocol.$i;
+                            }
+                            else
+                                $array[$protocol.$mapping] = $protocol.$mapping;
+                        }
+                    }
+                }
             }
 
-
-            #foreach( array_keys($mapping->unresolved) as $unresolved )
-            #    $strMapping[] = $unresolved;
-
             return self::enclose($port_mapping_text);
-
         }
         
         if( $fieldName == 'application' )
