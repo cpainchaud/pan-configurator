@@ -1414,6 +1414,10 @@ class PanAPIConnector
 
             $fw['serial'] = $entryNode->getAttribute('name');
 
+            $modelNode = DH::findFirstElement('model', $entryNode);
+            if( $modelNode !== false )
+                $fw['model'] = $modelNode->textContent;
+
             $firewalls[$fw['serial']] = $fw;
         }
 
