@@ -478,7 +478,11 @@ class AppStore extends ObjStore
 
             $app->subapps = Array();
 
-            foreach( $appx->childNodes as $function)
+            $cursor = DH::findFirstElement('members', $appx );
+            if( $cursor === FALSE )
+                continue;
+
+            foreach( $cursor->childNodes as $function)
             {
                 if( $function->nodeType != XML_ELEMENT_NODE )
                     continue;
