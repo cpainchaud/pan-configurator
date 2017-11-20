@@ -43,7 +43,10 @@ class DeviceGroup
 									<pre-rulebase><security><rules></rules></security><nat><rules></rules></nat></pre-rulebase>
 									</entry>';
 
-	
+
+    /** @var AppStore */
+    public $appStore;
+
 	/** @var TagStore */
 	public $tagStore=null;
 	
@@ -202,7 +205,26 @@ class DeviceGroup
 		//print "VirtualSystem '".$this->name."' service groups loaded\n" ;
 		// End of <service-group> extraction
 
+        //
+        // Extract application
+        //
+        $tmp = DH::findFirstElementOrCreate('application', $xml);
+        $this->appStore->load_application_custom_from_domxml($tmp);
+        // End of application extraction
 
+        //
+        // Extract application groups
+        //
+        $tmp = DH::findFirstElementOrCreate('application-group', $xml);
+        $this->appStore->load_application_group_from_domxml($tmp);
+        // End of application groups extraction
+
+        //
+        // Extract application filter
+        //
+        $tmp = DH::findFirstElementOrCreate('application-filter', $xml);
+        $this->appStore->load_application_filter_from_domxml($tmp);
+        // End of application filter groups extraction
 
         //
         // Extracting policies
