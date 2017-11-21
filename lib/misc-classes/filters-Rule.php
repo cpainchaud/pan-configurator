@@ -1842,7 +1842,7 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.child.of'] = Array(
     'arg' => true,
     'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is child the one specified in argument',
     'ci' => Array(
-        'fString' => '(%PROP%  Datacenter)',
+        'fString' => '(%PROP%  Datacenter-Firewalls)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
