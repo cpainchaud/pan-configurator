@@ -1058,6 +1058,217 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.recursive'] = Array
     )
 );
 
+RQuery::$defaultFilters['rule']['service']['operators']['is.tcp.only'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        /** @var Service|ServiceGroup $value */
+        $objects = $rule->services->all();
+
+        foreach( $objects as $object )
+        {
+            if( $object->isTmpSrv() )
+                return false;
+
+            if( $object->isGroup() )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $port_mapping_text = $port_mapping->mappingToText();
+
+                if( strpos( $port_mapping_text, "udp" ) !== false )
+                    return false;
+
+                return true;
+            }
+
+            if( $object->isUdp() )
+                return false;
+        }
+
+        return true;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['is.udp.only'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        /** @var Service|ServiceGroup $value */
+        $objects = $rule->services->all();
+        foreach( $objects as $object )
+        {
+            if( $object->isTmpSrv() )
+                return false;
+
+            if( $object->isGroup() )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $port_mapping_text = $port_mapping->mappingToText();
+
+                if( strpos( $port_mapping_text, "tcp" ) !== false )
+                    return false;
+
+                return true;
+            }
+
+            if( $object->isTcp() )
+                return false;
+        }
+
+        return true;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['is.tcp'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $isTCP = false;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        /** @var Service|ServiceGroup $value */
+        $objects = $rule->services->all();
+
+        foreach( $objects as $object )
+        {
+            if( $object->isTmpSrv() )
+                return false;
+
+            if( $object->isGroup() )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $port_mapping_text = $port_mapping->mappingToText();
+
+                if( strpos( $port_mapping_text, "tcp" ) !== false )
+                    $isTCP = true;
+                else
+                    return false;
+            }
+            elseif( $object->isTcp() )
+                $isTCP = true;
+        }
+
+        return $isTCP;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['is.udp'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $isUDP = false;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        /** @var Service|ServiceGroup $value */
+        $objects = $rule->services->all();
+        foreach( $objects as $object )
+        {
+            if( $object->isTmpSrv() )
+                return false;
+
+            if( $object->isGroup() )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $port_mapping_text = $port_mapping->mappingToText();
+
+                if( strpos( $port_mapping_text, "udp" ) !== false )
+                    return true;
+                else
+                    return false;
+            }
+            elseif( $object->isUdp() )
+                $isUDP = true;
+        }
+
+        return $isUDP;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['has.value.recursive'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $value = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        return $rule->services->hasValue( $value, true );
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['has.value'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $value = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        return $rule->services->hasValue( $value );
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 //                                              //
 //                SecurityProfile properties    //
