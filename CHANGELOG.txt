@@ -38,6 +38,7 @@ service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! 
 service-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
 tag-edit: new action move
 tag-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
+doc update
 
 bugfix:
 - fixed a crash when trying to move some rule types from PRE/POST
