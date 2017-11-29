@@ -462,6 +462,117 @@ RQuery::$defaultFilters['address']['location']['operators']['regex'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['reflocation']['operators']['is'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+        $owner = $context->object->owner->owner;
+
+        $reflocation_array = $object->getReferencesLocation();
+
+
+        if( strtolower($context->value) == 'shared' )
+        {
+            if( $owner->isPanorama() )
+                return true;
+            if( $owner->isFirewall() )
+                return true;
+            return false;
+        }
+
+        foreach( $reflocation_array as $reflocation )
+        {
+            if( strtolower($reflocation) == strtolower($context->value) )
+                return true;
+        }
+
+
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['reflocation']['operators']['is.only'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $owner = $context->object->owner->owner;
+        $reflocations = $context->object->getReferencesLocation();
+
+        if( strtolower($context->value) == 'shared' )
+        {
+            if( $owner->isPanorama() )
+                return true;
+            if( $owner->isFirewall() )
+                return true;
+            return false;
+        }
+
+        $return = false;
+        foreach( $reflocations as $reflocation )
+        {
+            if( strtolower($reflocation) == strtolower($context->value) )
+                $return = true;
+        }
+
+        if( count( $reflocations ) == 1 && $return )
+            return true;
+        else
+            return false;
+
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% shared )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['refstore']['operators']['is'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $value = $context->value;
+        $value = strtolower($value);
+
+        $context->object->ReferencesStoreValidation( $value );
+
+        $refstore = $context->object->getReferencesStore();
+
+        if( array_key_exists( $value, $refstore ) )
+            return true;
+
+        return false;
+
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% rulestore )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['address']['reftype']['operators']['is'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $value = $context->value;
+        $value = strtolower($value);
+
+        $context->object->ReferencesTypeValidation( $value );
+
+        $reftype = $context->object->getReferencesType();
+
+        if( array_key_exists( $value, $reftype ) )
+            return true;
+
+        return false;
+
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% securityrule )',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {

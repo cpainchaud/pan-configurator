@@ -169,7 +169,7 @@ if( isset(PH::$args['help']) )
             if( isset($argDetails['help']) )
                 print " ".str_replace("\n", "\n ",$argDetails['help']);
             else
-                print "  *no help avaiable*";
+                print "  *no help available*";
             print "\n\n";
         }
     }

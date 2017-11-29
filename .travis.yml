@@ -16,7 +16,7 @@ script:
 notifications:
   email:
     - shellescape@gmail.com
-    - swaschkut@paloaltonetworks.com
+    - pan-c@waschkut.net
 
 
   

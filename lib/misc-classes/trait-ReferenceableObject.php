@@ -204,6 +204,118 @@ trait ReferencableObject
         return $this->refrules;
     }
 
+    public function getReferencesLocation()
+    {
+        $location_array = array();
+        foreach( $this->refrules as $cur )
+        {
+            if( isset($cur->owner->owner->owner) && $cur->owner->owner->owner !== null )
+                $location_array[$cur->owner->owner->owner->name()] = $cur->owner->owner->owner->name();
+        }
+
+        return $location_array;
+    }
+
+    public function getReferencesStore()
+    {
+        $store_array = array();
+        foreach( $this->refrules as $cur )
+        {
+            if( isset($cur->owner->owner) && $cur->owner->owner !== null )
+            {
+                $class = get_class($cur->owner->owner);
+                $class = strtolower($class);
+                $store_array[$class] = $class;
+            }
+
+        }
+        return $store_array;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function ReferencesStoreValidation( $value )
+    {
+        $store_array = array( );
+        $store_array['addressstore'] = false;
+        $store_array['servicestore'] = false;
+        $store_array['rulestore'] = false;
+
+        if( !array_key_exists( $value, $store_array ) )
+        {
+            $store_string = "";
+            $first = true;
+            foreach(array_keys($store_array) as $storeName)
+            {
+                if( $first )
+                {
+                    $store_string .= "'".$storeName."'";
+                    $first = false;
+                }
+                else
+                    $store_string .= ", '".$storeName."'";
+            }
+
+            derr( "this is not a store name: '".$value."' | possible names: ".$store_string."\n" );
+        }
+    }
+
+    public function getReferencesType()
+    {
+        $type_array = array();
+        foreach( $this->refrules as $cur )
+        {
+            if( isset($cur->owner) && $cur->owner !== null )
+            {
+                $class = get_class($cur->owner);
+                $class = strtolower($class);
+                $type_array[$class] = $class;
+            }
+
+        }
+        return $type_array;
+    }
+
+    /**
+     * @param string $value
+     */
+    public function ReferencesTypeValidation( $value )
+    {
+        $type_array = array( );
+        $type_array['address'] = false;
+        $type_array['addressgroup'] = false;
+        $type_array['service'] = false;
+        $type_array['servicegroup'] = false;
+        $type_array['securityrule'] = false;
+        $type_array['natrule'] = false;
+        $type_array['natrule'] = false;
+        $type_array['decryptionrule'] = false;
+        $type_array['appoverriderule'] = false;
+        $type_array['captiveportalrule'] = false;
+        $type_array['pbfrule'] = false;
+        $type_array['qosrule'] = false;
+        $type_array['dosrule'] = false;
+
+        if( !array_key_exists( $value, $type_array ) )
+        {
+            $type_string = "";
+            $first = true;
+            foreach(array_keys($type_array) as $typeName)
+            {
+                if( $first )
+                {
+                    $type_string .= "'".$typeName."'";
+                    $first = false;
+                }
+                else
+                    $type_string .= ", '".$typeName."'";
+            }
+
+            derr( "this is not a type name: '".$value."' | possible names: ".$type_string."\n" );
+        }
+    }
+
     /**
      * @param string $className
      * @return array

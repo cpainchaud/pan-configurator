@@ -3,7 +3,7 @@ PAN-Configurator
 
 PAN-Configurator is a PHP library aimed at making PANOS config changes easy (and XML free ;), maintainable and allowing complex scenarios like rule merging, unused object tracking, conversion of checkpoint exclusion groups, massive rule editing, AppID conversion … to name the ones I do on a regular basis and which are not offered by our GUI. It will work seamlessly on local config file or API.
 
-**Homepage** : download latest sources on [GitHub](https://github.com/cpainchaud/pan-configurator). Windows package with PHP binaries here: [dev.zip](https://paloaltonetworks.box.com/s/rfpv0xjaeeh2hliq3j3gi1pik9vbpvna)
+**Homepage** : download latest sources on [GitHub](https://github.com/cpainchaud/pan-configurator). Windows package with PHP binaries here: [dev.zip](https://app.box.com/v/pan-configurator)
 
 **Requirements** : PHP 5.5 with curl module
 
