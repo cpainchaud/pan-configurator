@@ -935,6 +935,70 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = Array(
     )
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
+RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
+
+        /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
+        return $rule->apps->includesApp($context->value) === true;
+    },
+    'arg' => true,
+    #'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->apps->parentCentralStore->find('!value!');",
+    'ci' => Array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial.nocase'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
+
+        return $rule->apps->includesApp($context->value, false) === true;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
+
+        /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
+        return $rule->apps->includedInApp($context->value) === true;
+    },
+    'arg' => true,
+    #'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->apps->parentCentralStore->find('!value!');",
+    'ci' => Array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial.nocase'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
+
+        return $rule->apps->includedInApp($context->value, false) === true;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 
 //                                              //
@@ -2479,7 +2543,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['category.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->category == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['category'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->category == $context->value )
                 return true;
         }
 
@@ -2502,7 +2571,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['subcategory.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->subCategory == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['subcategory'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->subCategory == $context->value )
                 return true;
         }
 
@@ -2531,7 +2605,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->technology == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['technology'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->technology == $context->value )
                 return true;
         }
 
@@ -2557,7 +2636,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['risk.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->risk == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['risk'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->risk == $context->value )
                 return true;
         }
 

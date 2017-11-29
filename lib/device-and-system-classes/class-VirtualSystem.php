@@ -106,7 +106,7 @@ class VirtualSystem
 		
 		$this->addressStore = new AddressStore($this);
 		$this->addressStore->name = 'addresses';
-		
+
 		$this->securityRules = new RuleStore($this, 'SecurityRule');
 		$this->securityRules->name = 'Security';
 
@@ -216,6 +216,27 @@ class VirtualSystem
             $this->serviceStore->load_servicegroups_from_domxml($tmp);
             //print "VSYS '".$this->name."' service groups loaded\n" ;
             // End of <service-group> extraction
+
+            //
+            // Extract application
+            //
+            $tmp = DH::findFirstElementOrCreate('application', $xml);
+            $this->appStore->load_application_custom_from_domxml($tmp);
+            // End of address extraction
+
+            //
+            // Extract application groups
+            //
+            $tmp = DH::findFirstElementOrCreate('application-group', $xml);
+            $this->appStore->load_application_group_from_domxml($tmp);
+            // End of application groups groups extraction
+
+            //
+            // Extract application filter
+            //
+            $tmp = DH::findFirstElementOrCreate('application-filter', $xml);
+            $this->appStore->load_application_filter_from_domxml($tmp);
+            // End of application filter groups extraction
         }
 
         //
