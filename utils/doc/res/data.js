@@ -1593,6 +1593,26 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "included-in.full.or.partial",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full.or.partial.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full.or.partial",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full.or.partial.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "is.any",
                         "help": null,
                         "argument": null
