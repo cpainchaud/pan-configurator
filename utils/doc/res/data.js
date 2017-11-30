@@ -1583,6 +1583,11 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "custom.has.signature",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "has",
                         "help": null,
                         "argument": "*required*"

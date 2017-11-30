@@ -999,7 +999,22 @@ RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['app']['operators']['custom.has.signature'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
 
+        /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
+        return $rule->apps->customApphasSignature();
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 //                                              //
 //          Services properties                 //

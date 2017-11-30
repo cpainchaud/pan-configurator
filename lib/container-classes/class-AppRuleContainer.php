@@ -322,30 +322,15 @@ class AppRuleContainer extends ObjRuleContainer
         else
             $app = $tag;
 
-/*
-        if( $app->isContainer() )
-        {
-            foreach( $app->containerApps() as $containerApp )
-            {
-                if( $this->has($containerApp, $caseSensitive) )
-                    return TRUE;
-            }
-
-            if( $this->has($app, $caseSensitive) )
-                return true;
-        }
-        else
-        {
-            */
         if( !$app->isContainer() )
         {
             foreach( $this->apps() as $singleapp)
             {
                 if( $singleapp->isContainer() )
                 {
-                    foreach( $singleapp->containerApps() as $containerApp2 )
+                    foreach( $singleapp->containerApps() as $containerApp )
                     {
-                        if( $containerApp2 == $app )
+                        if( $containerApp == $app )
                             return TRUE;
                     }
                 }
@@ -383,30 +368,22 @@ class AppRuleContainer extends ObjRuleContainer
                 if( $this->has($containerApp, $caseSensitive) )
                     return TRUE;
             }
-
-
         }
+
         if( $this->has($app, $caseSensitive) )
             return true;
-        /*
-        else
-        {
-            foreach( $this->apps() as $singleapp)
-            {
-                if( $singleapp->isContainer() )
-                {
-                    foreach( $singleapp->containerApps() as $containerApp2 )
-                    {
-                        if( $containerApp2 == $app )
-                            return TRUE;
-                    }
-                }
-            }
 
-            if( $this->has($app, $caseSensitive) )
+        return false;
+    }
+
+    public function customApphasSignature()
+    {
+        foreach( $this->apps() as $singleapp)
+        {
+            if( $singleapp->CustomHasSignature() )
                 return true;
         }
-        */
+
         return false;
     }
 }

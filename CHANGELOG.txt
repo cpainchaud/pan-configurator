@@ -9,6 +9,7 @@ CHANGELOG
 * class App : added support for evasive-behavior, consume-big-bandwidth, used-by-malware, able-to-transfer-file, has-known-vulnerability, tunnel-other-application fields
 * class App : added support for  prone-to-misuse, pervasive-use, risk, virus-ident, file-type-ident, file-forward, is-saas fields
 * class APP : added support for timeout, tcp-timeout, udp-timeout, tcp_half_closed_timeout, tcp_time_wait_timeout, custom_signature
+* class App : extend with method iscustom() CustomHasSignature()
 * class AppStore: added support for application-group and application-filter
 * class AppStore: added support for custom application
 * class PANConf/PanoramaConf/VirtualSystem: add support for application-group and application-filter
@@ -27,6 +28,7 @@ rules-edit: new filter 'app includes.full.or.partial', 'app includes.full.or.par
 rules-edit: new filter 'service has.from.query' and 'service has.recursive.from.query'
 rules-edit: new filter 'location is.child.of [DG]'
 rules-edit: new filter 'service is.tcp','service is.tcp.only','service is.udp','service is.udp.only','service has.value [PORT_VALUE]','service has.value.recursive [PORT_VALUE]'
+rules-edit: new filter 'app custom.has.signature'
 rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced Tag creation
 rules-edit: action 'description-append' new field 'newline' as boolean parameter no/yes
 rules-edit: action 'display' extend with logsetting information / URL category

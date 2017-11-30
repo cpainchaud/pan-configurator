@@ -226,8 +226,23 @@ class App
 
 		return $ret;
 	}
- 	
-	
+
+    public function isCustom()
+    {
+        if( $this->type == 'application-custom' )
+            return true;
+
+        return false;
+    }
+
+    public function CustomHasSignature()
+    {
+        if( $this->isCustom() )
+            if( $this->custom_signature )
+                return true;
+
+        return false;
+    }
 }
 
 
