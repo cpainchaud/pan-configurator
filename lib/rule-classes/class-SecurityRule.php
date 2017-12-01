@@ -1096,16 +1096,19 @@ class SecurityRule extends RuleWithUserID
 
         if( $parentClass == 'DeviceGroup' && $con->info_PANOS_version_int < 80)
         {
-            foreach( $this->owner->owner->getDevicesInGroup(TRUE) as $serial => $device )
+            $deviceClass = get_class($this->owner->owner->owner);
+            if( $deviceClass == 'PanoramaConf')
             {
-                $connected_devices = $con->panorama_getConnectedFirewallsSerials();
-
-                if( strpos( $connected_devices[$serial]['model'], 'PA-70') !== false  )
+                $connected_devices = $this->owner->owner->owner->managedFirewallsSerialsModel;
+                foreach( $this->owner->owner->getDevicesInGroup(TRUE) as $serial => $device )
                 {
-                    if( $fastMode )
-                        $type = 'trsum';
-                    else
-                        $type = 'traffic';
+                    if( strpos( $connected_devices[$serial]['model'], 'PA-70') !== false  )
+                    {
+                        if( $fastMode )
+                            $type = 'trsum';
+                        else
+                            $type = 'traffic';
+                    }
                 }
             }
         }
