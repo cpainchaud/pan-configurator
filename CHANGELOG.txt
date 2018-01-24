@@ -36,6 +36,7 @@ rules-edit: action 'exporttoexcel' extend with additionalFields choice ResolveSe
 service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
 service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
 service-edit: new action description-append
+service-edit: improve action move - API mode now supported to move service objects to shared level
 service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
 service-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
 tag-edit: new action move
