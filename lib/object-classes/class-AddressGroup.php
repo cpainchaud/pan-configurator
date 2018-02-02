@@ -316,6 +316,42 @@ class AddressGroup
         return $ret;
     }
 
+    /**
+     * tag a member with its group membership name
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function tagMember( $newTag, $rewriteXml = true )
+    {
+        foreach( $this->members() as $member )
+        {
+            if( $member->isGroup() )
+                $member->tagMember( $newTag );
+            else
+                $member->tags->addTag( $newTag );
+        }
+
+        if( $rewriteXml )
+            $this->rewriteXML();
+
+        return true;
+    }
+
+    /**
+     * tag a member with its group membership name
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function API_tagMember( $newTag, $rewriteXml = true )
+    {
+        $ret = $this->tagMember( $newTag, $rewriteXml );
+
+        if($ret)
+            $this->API_sync();
+
+        return $ret;
+    }
+
 
 	/**
 	* Clear this Group from all its members
