@@ -579,7 +579,12 @@ class PanoramaConf
                 }
 
                 if( count($dgLoadOrder) <= $dgLoadOrderCount )
+                {
+                    print "Problems could be available with the following DeviceGroup(s)\n";
+                    print_r($dgLoadOrder);
                     derr('dg-meta-data seems to be corrupted, parent.child template cannot be calculated ', $dgMetaDataNode);
+                }
+
 
             }
 
