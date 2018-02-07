@@ -352,7 +352,48 @@ class AddressGroup
         return $ret;
     }
 
+    /**
+     * tag a member with its group membership name
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function tagRule( $rule, $prefix, $rewriteXml = true )
+    {
+        $tagStore = $rule->owner->owner->tagStore;
 
+        $newTag = $tagStore->findOrCreate($prefix . $this->name());
+
+        if( $newTag !== null )
+        {
+            $rule->tags->addTag( $newTag );
+        }
+
+        foreach( $this->members() as $member )
+        {
+            if( $member->isGroup() )
+                $member->tagRule( $rule, $prefix );
+        }
+
+        if( $rewriteXml )
+            $this->rewriteXML();
+
+        return true;
+    }
+
+    /**
+     * tag a member with its group membership name
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function API_tagRule( $rule, $prefix, $rewriteXml = true )
+    {
+        $ret = $this->tagRule( $rule, $prefix, $rewriteXml );
+
+        if($ret)
+            $this->API_sync();
+
+        return $ret;
+    }
 	/**
 	* Clear this Group from all its members
 	*
