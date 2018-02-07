@@ -373,7 +373,7 @@ class AddressGroup
             {
                 $tagStore = $rule->owner->owner->tagStore;
 
-                $newTagName = $prefix . $member->name();
+                $newTagName = $prefix . $this->name();
                 $newTag = $tagStore->findOrCreate($newTagName);
 
                 $member->tags->addTag($newTag);
