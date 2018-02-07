@@ -357,21 +357,27 @@ class AddressGroup
      * @param bool $rewriteXml
      * @return bool
      */
-    public function tagRule( $rule, $prefix, $rewriteXml = true )
+    public function tagRuleandGroupMember( $rule, $prefix, $rewriteXml = true )
     {
         $tagStore = $rule->owner->owner->tagStore;
 
         $newTag = $tagStore->findOrCreate($prefix . $this->name());
 
-        if( $newTag !== null )
-        {
-            $rule->tags->addTag( $newTag );
-        }
+        $rule->tags->addTag( $newTag );
 
         foreach( $this->members() as $member )
         {
             if( $member->isGroup() )
-                $member->tagRule( $rule, $prefix );
+                $member->tagRuleandGroupMember($rule, $prefix);
+            elseif( !$member->isTmpAddr() )
+            {
+                $tagStore = $rule->owner->owner->tagStore;
+
+                $newTagName = $prefix . $member->name();
+                $newTag = $tagStore->findOrCreate($newTagName);
+
+                $member->tags->addTag($newTag);
+            }
         }
 
         if( $rewriteXml )
@@ -385,9 +391,9 @@ class AddressGroup
      * @param bool $rewriteXml
      * @return bool
      */
-    public function API_tagRule( $rule, $prefix, $rewriteXml = true )
+    public function API_tagRuleandGroupMember( $rule, $prefix, $rewriteXml = true )
     {
-        $ret = $this->tagRule( $rule, $prefix, $rewriteXml );
+        $ret = $this->tagRuleandGroupMember( $rule, $prefix, $rewriteXml );
 
         if($ret)
             $this->API_sync();
