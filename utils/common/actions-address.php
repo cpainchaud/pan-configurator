@@ -252,6 +252,36 @@ AddressCallContext::$supportedActions[] = Array(
 );
 
 AddressCallContext::$supportedActions[] = Array(
+    'name' => 'add-member',
+    'MainFunction' => function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $addressObjectName = $context->arguments['addressobjectname'];
+
+        if( !$object->isGroup() )
+        {
+            echo $context->padding."     *  SKIPPED because object is not an address group\n";
+            return;
+        }
+
+        $address0bjectToAdd = $object->owner->find( $addressObjectName );
+        if( $address0bjectToAdd === null )
+            echo $context->padding . "     *  SKIPPED because address object name: " . $addressObjectName . " not found\n";
+
+        if( $context->isAPI )
+            $object->API_addMember( $address0bjectToAdd );
+        else
+            $object->addMember( $address0bjectToAdd );
+
+        return;
+
+    },
+    'args' => Array(
+        'addressobjectname' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    )
+);
+
+AddressCallContext::$supportedActions[] = Array(
     'name' => 'replaceWithObject',
     'MainFunction' => function ( AddressCallContext $context )
     {
@@ -671,7 +701,7 @@ AddressCallContext::$supportedActions[] = Array(
 
 );
 
-
+//TODO: does not use the filtered objects 20180202
 AddressCallContext::$supportedActions[] = Array(
     'name' => 'replaceByMembersAndDelete',
     'MainFunction' => function ( AddressCallContext $context )
