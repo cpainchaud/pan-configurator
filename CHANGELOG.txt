@@ -34,6 +34,7 @@ rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced T
 rules-edit: action 'description-append' new field 'newline' as boolean parameter no/yes
 rules-edit: action 'display' extend with logsetting information / URL category
 rules-edit: action 'exporttoexcel' extend with additionalFields choice ResolveServiceSummary
+rules-edit: action 'description-Prepend'
 service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
 service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
 service-edit: new action description-append
