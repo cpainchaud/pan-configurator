@@ -64,6 +64,7 @@ bugfix:
 - fixed a crash when trying to add tag to temporary address objects
 - fix address-edit help name-rename output
 - fix class-loopbackinterface / class-aggregateethernetinterface regarding $type variable
+- fixx for address-edit filter - value ip4.included-in/ip4.includes-full/ip4.includes-full-or-partial - regarding addressgroup with member count 0
 
 
 1.5.12 (2017-04-04)

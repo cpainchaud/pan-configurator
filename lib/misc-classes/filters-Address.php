@@ -579,7 +579,7 @@ RQuery::$defaultFilters['address']['value']['operators']['string.eq'] = Array(
         $object = $context->object;
 
         if( $object->isGroup() )
-            return false;
+            return null;
 
         if( $object->isAddress() )
         {
@@ -637,7 +637,10 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.included-in'] = Ar
         $object = $context->object;
 
         if( $object->isAddress() && $object->type() == 'fqdn' )
-            return false;
+            return null;
+
+        if( $object->isGroup() && $object->count() < 1 )
+            return null;
 
         $values = explode(',', $context->value);
         $mapping = new IP4Map();
@@ -666,7 +669,10 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full'] = 
         $object = $context->object;
 
         if( $object->isAddress() && $object->type() == 'fqdn' )
-            return false;
+            return null;
+
+        if( $object->isGroup() && $object->count() < 1 )
+            return null;
 
         $values = explode(',', $context->value);
         $mapping = new IP4Map();
@@ -695,7 +701,10 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full-or-p
         $object = $context->object;
 
         if( $object->isAddress() && $object->type() == 'fqdn' )
-            return false;
+            return null;
+
+        if( $object->isGroup() && $object->count() < 1 )
+            return null;
 
         $values = explode(',', $context->value);
         $mapping = new IP4Map();
