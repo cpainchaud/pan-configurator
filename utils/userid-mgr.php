@@ -14,6 +14,7 @@ $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'defines 
 $supportedArguments[] = Array('niceName' => 'records', 'shortHelp' => 'list of userid records to register/unregister in API', 'argDesc' => '10.0.0.1,domain\user2/10.2.3.4,domain\user3');
 $supportedArguments[] = Array('niceName' => 'recordFile', 'shortHelp' => 'use a text file rather than CLI to input UserID records', 'argDesc' => 'users.txt');
 $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
+$supportedArguments[] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 
 $usageMsg = PH::boldText('USAGE EXAMPLES: ')."\n - php ".basename(__FILE__)." in=api://1.2.3.4 action=register location=vsys1 records=10.0.0.1,domain\\user2/10.2.3.4,domain\\user3"
                                             ."\n - php ".basename(__FILE__)." in=api://1.2.3.4 action=register location=vsys1 recordsFile=users.txt";
@@ -35,6 +36,12 @@ if( isset(PH::$args['help']) )
 
 if( !isset(PH::$args['in']) )
     display_error_usage_exit(' "in=" argument is missing');
+
+
+if( isset(PH::$args['debugapi'])  )
+{
+    $debugAPI = true;
+}
 
 //
 // What kind of config input do we have.
@@ -60,6 +67,8 @@ if( $configInput['type'] == 'file' )
 elseif ( $configInput['type'] == 'api'  )
 {
     $connector = $configInput['connector'];
+    if($debugAPI)
+        $connector->setShowApiCalls(true);
 }
 else
     derr('method not supported yet');
