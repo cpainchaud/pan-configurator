@@ -183,6 +183,86 @@ RQuery::$defaultFilters['rule']['dnathost']['operators']['has'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->owner->owner->addressStore->find('!value!');"
 );
 
+RQuery::$defaultFilters['rule']['dnathost']['operators']['included-in.full'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if (!$context->object->isNatRule()) return null;
+        if ($context->object->dnathost === null) return null;
+        return $context->object->dnathost->includedInIP4Network($context->value) == 1;
+    },
+    'arg' => true,
+    'argDesc' => 'ie: 192.168.0.0/24 | 192.168.50.10/32 | 192.168.50.10 | 10.0.0.0-10.33.0.0',
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['dnathost']['operators']['included-in.partial'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if (!$context->object->isNatRule()) return null;
+        if ($context->object->dnathost === null) return null;
+        return $context->object->dnathost->includedInIP4Network($context->value) == 2;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['dnathost']['operators']['included-in.full.or.partial'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if (!$context->object->isNatRule()) return null;
+        if ($context->object->dnathost === null) return null;
+        return $context->object->dnathost->includedInIP4Network($context->value) > 0;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['dnathost']['operators']['includes.full'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if (!$context->object->isNatRule()) return null;
+        if ($context->object->dnathost === null) return null;
+        return $context->object->dnathost->includesIP4Network($context->value) == 1;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['dnathost']['operators']['includes.partial'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if (!$context->object->isNatRule()) return null;
+        if ($context->object->dnathost === null) return null;
+        return $context->object->dnathost->includesIP4Network($context->value) == 2;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['dnathost']['operators']['includes.full.or.partial'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if (!$context->object->isNatRule()) return null;
+        if ($context->object->dnathost === null) return null;
+        return $context->object->dnathost->includesIP4Network($context->value) > 0;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1.1.1.1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 //                                              //
 //                SNAT Based Actions            //
 //                                              //

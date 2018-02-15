@@ -30,6 +30,7 @@ rules-edit: new filter 'service has.from.query' and 'service has.recursive.from.
 rules-edit: new filter 'location is.child.of [DG]'
 rules-edit: new filter 'service is.tcp','service is.tcp.only','service is.udp','service is.udp.only','service has.value [PORT_VALUE]','service has.value.recursive [PORT_VALUE]'
 rules-edit: new filter 'app custom.has.signature'
+rules-edit: new filter 'dnathost included-in.full', 'dnathost included-in.partial', 'dnathost included-in.full.or.partial', 'dnathost includes.full', 'dnathost includes.partial', 'dnathost includes.full.or.partial'
 rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced Tag creation
 rules-edit: action 'description-append' new field 'newline' as boolean parameter no/yes
 rules-edit: action 'display' extend with logsetting information / URL category
