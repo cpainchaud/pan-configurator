@@ -252,6 +252,36 @@ AddressCallContext::$supportedActions[] = Array(
 );
 
 AddressCallContext::$supportedActions[] = Array(
+    'name' => 'add-member',
+    'MainFunction' => function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $addressObjectName = $context->arguments['addressobjectname'];
+
+        if( !$object->isGroup() )
+        {
+            echo $context->padding."     *  SKIPPED because object is not an address group\n";
+            return;
+        }
+
+        $address0bjectToAdd = $object->owner->find( $addressObjectName );
+        if( $address0bjectToAdd === null )
+            echo $context->padding . "     *  SKIPPED because address object name: " . $addressObjectName . " not found\n";
+
+        if( $context->isAPI )
+            $object->API_addMember( $address0bjectToAdd );
+        else
+            $object->addMember( $address0bjectToAdd );
+
+        return;
+
+    },
+    'args' => Array(
+        'addressobjectname' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    )
+);
+
+AddressCallContext::$supportedActions[] = Array(
     'name' => 'replaceWithObject',
     'MainFunction' => function ( AddressCallContext $context )
     {
@@ -283,6 +313,11 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
+        }
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
         if( $objectFind === null )
             derr("tag named '{$context->arguments['tagName']}' not found");
@@ -300,6 +335,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
+        }
+
         if( $context->isAPI )
         {
             $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
@@ -322,6 +364,12 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
+        }
+
         $objectFind = $object->tags->parentCentralStore->find($context->arguments['tagName']);
         if( $objectFind === null )
             derr("tag named '{$context->arguments['tagName']}' not found");
@@ -339,6 +387,12 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
+        }
+
         foreach($object->tags->tags() as $tag )
         {
             echo $context->padding."  - removing tag {$tag->name()}... ";
@@ -357,6 +411,11 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function(AddressCallContext $context)
     {
         $object = $context->object;
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding."     *  SKIPPED because object is temporary\n";
+            return;
+        }
         $pattern = '/'.$context->arguments['regex'].'/';
         foreach($object->tags->tags() as $tag )
         {
@@ -642,7 +701,7 @@ AddressCallContext::$supportedActions[] = Array(
 
 );
 
-
+//TODO: does not use the filtered objects 20180202
 AddressCallContext::$supportedActions[] = Array(
     'name' => 'replaceByMembersAndDelete',
     'MainFunction' => function ( AddressCallContext $context )
@@ -854,12 +913,12 @@ AddressCallContext::$supportedActions[] = Array(
         'default' => '*nodefault*',
         'help' =>
             "This string is used to compose a name. You can use the following aliases :\n".
-            "  - \\$\$current.name\\$\\$ : current name of the object\n".
-            "  - \\$\$netmask\\$\\$ : netmask\n".
-            "  - \\$\$netmask.blank32\\$\\$ : netmask or nothing if 32\n".
-            "  - \\$\$reverse-dns\\$\\$ : value truncated of netmask if any\n".
-            "  - \\$\$value\\$\\$ : value of the object\n".
-            "  - \\$\$value.no-netmask\\$\\$ : value truncated of netmask if any\n")
+            "  - \$\$current.name\$\$ : current name of the object\n".
+            "  - \$\$netmask\$\$ : netmask\n".
+            "  - \$\$netmask.blank32\$\$ : netmask or nothing if 32\n".
+            "  - \$\$reverse-dns\$\$ : value truncated of netmask if any\n".
+            "  - \$\$value\$\$ : value of the object\n".
+            "  - \$\$value.no-netmask\$\$ : value truncated of netmask if any\n")
     ),
     'help' => ''
 );

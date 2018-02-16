@@ -316,7 +316,90 @@ class AddressGroup
         return $ret;
     }
 
+    /**
+     * tag a member with its group membership name
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function tagMember( $newTag, $rewriteXml = true )
+    {
+        foreach( $this->members() as $member )
+        {
+            if( $member->isGroup() )
+                $member->tagMember( $newTag );
+            else
+                $member->tags->addTag( $newTag );
+        }
 
+        if( $rewriteXml )
+            $this->rewriteXML();
+
+        return true;
+    }
+
+    /**
+     * tag a member with its group membership name
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function API_tagMember( $newTag, $rewriteXml = true )
+    {
+        $ret = $this->tagMember( $newTag, $rewriteXml );
+
+        if($ret)
+            $this->API_sync();
+
+        return $ret;
+    }
+
+    /**
+     * tag a member with its group membership name
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function tagRuleandGroupMember( $rule, $prefix, $rewriteXml = true )
+    {
+        $tagStore = $rule->owner->owner->tagStore;
+
+        $newTag = $tagStore->findOrCreate($prefix . $this->name());
+
+        $rule->tags->addTag( $newTag );
+
+        foreach( $this->members() as $member )
+        {
+            if( $member->isGroup() )
+                $member->tagRuleandGroupMember($rule, $prefix);
+            elseif( !$member->isTmpAddr() )
+            {
+                $tagStore = $rule->owner->owner->tagStore;
+
+                $newTagName = $prefix . $this->name();
+                $newTag = $tagStore->findOrCreate($newTagName);
+
+                $member->tags->addTag($newTag);
+            }
+        }
+
+        if( $rewriteXml )
+            $this->rewriteXML();
+
+        return true;
+    }
+
+    /**
+     * tag a member with its group membership name
+     * @param bool $rewriteXml
+     * @return bool
+     */
+    public function API_tagRuleandGroupMember( $rule, $prefix, $rewriteXml = true )
+    {
+        $ret = $this->tagRuleandGroupMember( $rule, $prefix, $rewriteXml );
+
+        if($ret)
+            $this->API_sync();
+
+        return $ret;
+    }
 	/**
 	* Clear this Group from all its members
 	*

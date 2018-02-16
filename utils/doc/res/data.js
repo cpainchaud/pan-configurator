@@ -262,9 +262,10 @@ var data = {
                         "subtype": "string",
                         "default": "*NONE*",
                         "choices": [
-                            "ResolveAddressSummary"
+                            "ResolveAddressSummary",
+                            "ResolveServiceSummary"
                         ],
-                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n",
+                        "help": "pipe(|) separated list of additional field to include in the report. The following is available:\n  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n",
                         "name": "additionalFields"
                     }
                 ]
@@ -1064,7 +1065,7 @@ var data = {
                     {
                         "type": "string",
                         "default": "*nodefault*",
-                        "help": "This string is used to compose a name. You can use the following aliases :\n  - \\$$current.name\\$\\$ : current name of the object\n  - \\$$netmask\\$\\$ : netmask\n  - \\$$netmask.blank32\\$\\$ : netmask or nothing if 32\n  - \\$$reverse-dns\\$\\$ : value truncated of netmask if any\n  - \\$$value\\$\\$ : value of the object\n  - \\$$value.no-netmask\\$\\$ : value truncated of netmask if any\n",
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$netmask$$ : netmask\n  - $$netmask.blank32$$ : netmask or nothing if 32\n  - $$reverse-dns$$ : value truncated of netmask if any\n  - $$value$$ : value of the object\n  - $$value.no-netmask$$ : value truncated of netmask if any\n",
                         "name": "stringFormula"
                     }
                 ]
@@ -1464,6 +1465,26 @@ var data = {
                 "args": false
             },
             {
+                "name": "move",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "location"
+                    },
+                    {
+                        "type": "string",
+                        "default": "skipIfConflict",
+                        "choices": [
+                            "skipIfConflict",
+                            "removeIfMatch"
+                        ],
+                        "name": "mode"
+                    }
+                ]
+            },
+            {
                 "name": "name-addPrefix",
                 "help": null,
                 "args": [
@@ -1562,12 +1583,37 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "custom.has.signature",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
                         "name": "has",
                         "help": null,
                         "argument": "*required*"
                     },
                     {
                         "name": "has.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full.or.partial",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full.or.partial.nocase",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full.or.partial",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full.or.partial.nocase",
                         "help": null,
                         "argument": "*required*"
                     },
@@ -1766,6 +1812,11 @@ var data = {
                     {
                         "name": "is",
                         "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches the one specified in argument",
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.child.of",
+                        "help": "returns TRUE if object location (shared\/device-group\/vsys name) matches \/ is child the one specified in argument",
                         "argument": "*required*"
                     },
                     {
@@ -2020,6 +2071,11 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "has.from.query",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "has.only",
                         "help": null,
                         "argument": "*required*"
@@ -2030,7 +2086,22 @@ var data = {
                         "argument": "*required*"
                     },
                     {
+                        "name": "has.recursive.from.query",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
                         "name": "has.regex",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.value",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "has.value.recursive",
                         "help": null,
                         "argument": "*required*"
                     },
@@ -2041,6 +2112,26 @@ var data = {
                     },
                     {
                         "name": "is.application-default",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.tcp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.tcp.only",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.udp",
+                        "help": null,
+                        "argument": null
+                    },
+                    {
+                        "name": "is.udp.only",
                         "help": null,
                         "argument": null
                     }
@@ -2461,6 +2552,44 @@ var data = {
                 ]
             },
             {
+                "name": "reflocation",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refstore",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reftype",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "tag",
                 "help": null,
                 "operators": [
@@ -2652,6 +2781,44 @@ var data = {
                 ]
             },
             {
+                "name": "reflocation",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refstore",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reftype",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
                 "name": "tag",
                 "help": null,
                 "operators": [
@@ -2781,6 +2948,44 @@ var data = {
                 "operators": [
                     {
                         "name": ">,<,=,!",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reflocation",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "is.only",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "refstore",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
+                        "help": null,
+                        "argument": "*required*"
+                    }
+                ]
+            },
+            {
+                "name": "reftype",
+                "help": null,
+                "operators": [
+                    {
+                        "name": "is",
                         "help": null,
                         "argument": "*required*"
                     }

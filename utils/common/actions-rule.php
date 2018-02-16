@@ -2652,11 +2652,14 @@ RuleCallContext::$supportedActions[] = Array(
         $filename = $args['filename'];
 
         $addResolvedAddressSummary = false;
+        $addResolvedServiceSummary = false;
 
         $optionalFields = &$context->arguments['additionalFields'];
 
         if( isset($optionalFields['ResolveAddressSummary']) )
             $addResolvedAddressSummary = true;
+        if( isset($optionalFields['ResolveServiceSummary']) )
+            $addResolvedServiceSummary = true;
 
         $fields = Array(
             'location' => 'location',
@@ -2672,6 +2675,7 @@ RuleCallContext::$supportedActions[] = Array(
             'dst' => 'destination',
             'dst_resolved_sum' => 'dst_resolved_sum',
             'service' => 'service',
+            'service_resolved_sum' => 'service_resolved_sum',
             'application' => 'application',
             'action' => 'action',
             'security' => 'security-profile',
@@ -2705,8 +2709,10 @@ RuleCallContext::$supportedActions[] = Array(
 
                 foreach($fields as $fieldName => $fieldID )
                 {
-                    if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
-                            $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum' ) && !$addResolvedAddressSummary  )
+                    if( (($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
+                            $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum' ) && !$addResolvedAddressSummary) ||
+                        (($fieldName == 'service_resolved_sum'  ) && !$addResolvedServiceSummary)
+                    )
                         continue;
                     $lines .= $context->ruleFieldHtmlExport($rule, $fieldID);
                 }
@@ -2722,8 +2728,10 @@ RuleCallContext::$supportedActions[] = Array(
         $tableHeaders = '';
         foreach($fields as $fieldName => $value )
         {
-            if( ($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
-                    $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum' ) && !$addResolvedAddressSummary  )
+            if( (($fieldName == 'src_resolved_sum' || $fieldName == 'dst_resolved_sum' ||
+                        $fieldName == 'dnat_host_resolved_sum' || $fieldName == 'snat_address_resolved_sum' ) && !$addResolvedAddressSummary) ||
+                (($fieldName == 'service_resolved_sum'  ) && !$addResolvedServiceSummary)
+            )
                 continue;
             $tableHeaders .= "<th>{$fieldName}</th>\n";
         }
@@ -2749,9 +2757,10 @@ RuleCallContext::$supportedActions[] = Array(
             Array( 'type' => 'pipeSeparatedList',
                 'subtype' => 'string',
                 'default' => '*NONE*',
-                'choices' => Array('ResolveAddressSummary'),
+                'choices' => Array('ResolveAddressSummary', 'ResolveServiceSummary' ),
                 'help' => "pipe(|) separated list of additional field to include in the report. The following is available:\n".
-                            "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n"
+                    "  - ResolveAddressSummary : fields with address objects will be resolved to IP addressed and summarized in a new column)\n".
+                    "  - ResolveServiceSummary : fields with service objects will be resolved to their value and summarized in a new column)\n"
             )
     )
 );

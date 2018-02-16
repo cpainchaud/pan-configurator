@@ -596,6 +596,60 @@ class ServiceRuleContainer extends ObjRuleContainer
 
     }
 
+    /**
+     * @param string $value
+     * @param array $objects
+     * @param bool $check_recursive
+     * @return bool
+     */
+    function hasValue( $value, $check_recursive = false )
+    {
+        $objects = $this->o;
+        foreach( $objects as $object )
+        {
+            if( !$check_recursive )
+                if( $object->isGroup() )
+                    continue;
+
+            if( !$object->isGroup() )
+                if( $value == $object->getDestPort() )
+                    return true;
+
+            $port_mapping = $object->dstPortMapping();
+            $port_mapping_text = $port_mapping->mappingToText();
+
+            if( strpos( $port_mapping_text, " " ) !== false )
+                $port_mapping_array = explode( " ", $port_mapping_text );
+            else
+                $port_mapping_array[0] = $port_mapping_text;
+
+            foreach( $port_mapping_array as $port_mapping_text )
+            {
+                $text_replace = array( 'tcp/', 'udp/' );
+                $port_mapping_text = str_replace( $text_replace, "", $port_mapping_text );
+
+                if( strpos( $port_mapping_text, "-" ) !== false )
+                {
+                    $port_mapping_range = explode( "-", $port_mapping_text );
+                    if( intval( $port_mapping_range[0] ) <= intval($value) && intval( $port_mapping_range[1] ) >= intval($value) )
+                        return true;
+                }
+                elseif( strpos( $port_mapping_text, ",") !== false )
+                {
+                    $port_mapping_list = explode( ",", $port_mapping_text );
+                    foreach( $port_mapping_list as $list_object)
+                    {
+                        if( $value == $list_object )
+                            return true;
+                    }
+                }
+                elseif( $value == $port_mapping_text )
+                    return true;
+            }
+        }
+
+        return false;
+    }
 }
 
 

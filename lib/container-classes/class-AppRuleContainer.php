@@ -244,7 +244,15 @@ class AppRuleContainer extends ObjRuleContainer
             if( $member->isContainer() )
             {
                 foreach( $member->containerApps() as $containerApp )
-                    $localA[] = $containerApp;
+                {
+                    if( $containerApp->isContainer() )
+                    {
+                        foreach( $containerApp->containerApps() as $containerApp1 )
+                            $localA[] = $containerApp1;
+                    }
+                    else
+                        $localA[] = $containerApp;
+                }
             }
             else
                 $localA[] = $member;
@@ -296,7 +304,88 @@ class AppRuleContainer extends ObjRuleContainer
         return $this->has($tag, $caseSensitive);
     }
 
+    /**
+     * @param App|string can be Tag object or tag name (string). this is case sensitive
+     * @param bool
+     * @return bool
+     */
+    public function includesApp($tag, $caseSensitive = true )
+    {
+        if( is_string($tag) )
+        {
+            if( !$caseSensitive )
+                $tag = strtolower($tag);
+            $app = $this->parentCentralStore->find($tag);
+            if( $app == null )
+                derr( "\n\n**ERROR** cannot find object with name '{$tag}' in location '{$this->getLocationString()}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n" );
+        }
+        else
+            $app = $tag;
 
+        if( !$app->isContainer() )
+        {
+            foreach( $this->apps() as $singleapp)
+            {
+                if( $singleapp->isContainer() )
+                {
+                    foreach( $singleapp->containerApps() as $containerApp )
+                    {
+                        if( $containerApp == $app )
+                            return TRUE;
+                    }
+                }
+            }
+        }
+        if( $this->has($app, $caseSensitive) )
+            return true;
+
+        return false;
+    }
+
+    /**
+     * @param App|string can be Tag object or tag name (string). this is case sensitive
+     * @param bool
+     * @return bool
+     */
+    public function includedInApp($tag, $caseSensitive = true )
+    {
+        if( is_string($tag) )
+        {
+            if( !$caseSensitive )
+                $tag = strtolower($tag);
+            $app = $this->parentCentralStore->find($tag);
+            if( $app == null )
+                derr( "\n\n**ERROR** cannot find object with name '{$tag}' in location '{$this->getLocationString()}' or its parents. If you didn't write a typo then try a REGEX based filter instead\n\n" );
+        }
+        else
+            $app = $tag;
+
+
+        if( $app->isContainer() )
+        {
+            foreach( $app->containerApps() as $containerApp )
+            {
+                if( $this->has($containerApp, $caseSensitive) )
+                    return TRUE;
+            }
+        }
+
+        if( $this->has($app, $caseSensitive) )
+            return true;
+
+        return false;
+    }
+
+    public function customApphasSignature()
+    {
+        foreach( $this->apps() as $singleapp)
+        {
+            if( $singleapp->CustomHasSignature() )
+                return true;
+        }
+
+        return false;
+    }
 }
 
 

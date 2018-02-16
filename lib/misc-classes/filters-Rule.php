@@ -747,6 +747,68 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has.recursive.from.query'] 
     },
     'arg' => true
 );
+RQuery::$defaultFilters['rule']['service']['operators']['has.from.query'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if( $context->object->services->count() == 0 )
+            return false;
+
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
+            derr("cannot find nested query called '{$context->value}'");
+
+        $errorMessage = '';
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('service');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
+
+        foreach( $context->object->services->all() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$context->nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true
+);
+RQuery::$defaultFilters['rule']['service']['operators']['has.recursive.from.query'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if( $context->object->services->count() == 0 )
+            return false;
+
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
+            derr("cannot find nested query called '{$context->value}'");
+
+        $errorMessage = '';
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('service');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
+
+        foreach( $context->object->services->all() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$context->nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true
+);
 
 RQuery::$defaultFilters['rule']['dst']['operators']['is.fully.included.in.list'] = Array(
     'Function' => function(RuleRQueryContext $context )
@@ -873,7 +935,86 @@ RQuery::$defaultFilters['rule']['app']['operators']['has.nocase'] = Array(
     )
     //'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->tags->parentCentralStore->find('!value!');"
 );
+RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
 
+        /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
+        return $rule->apps->includesApp($context->value) === true;
+    },
+    'arg' => true,
+    #'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->apps->parentCentralStore->find('!value!');",
+    'ci' => Array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial.nocase'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
+
+        return $rule->apps->includesApp($context->value, false) === true;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
+
+        /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
+        return $rule->apps->includedInApp($context->value) === true;
+    },
+    'arg' => true,
+    #'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->apps->parentCentralStore->find('!value!');",
+    'ci' => Array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial.nocase'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
+
+        return $rule->apps->includedInApp($context->value, false) === true;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% ssl)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['app']['operators']['custom.has.signature'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+            return false;
+
+        /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
+        return $rule->apps->customApphasSignature();
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 //                                              //
 //          Services properties                 //
@@ -996,6 +1137,217 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.recursive'] = Array
     )
 );
 
+RQuery::$defaultFilters['rule']['service']['operators']['is.tcp.only'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        /** @var Service|ServiceGroup $value */
+        $objects = $rule->services->all();
+
+        foreach( $objects as $object )
+        {
+            if( $object->isTmpSrv() )
+                return false;
+
+            if( $object->isGroup() )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $port_mapping_text = $port_mapping->mappingToText();
+
+                if( strpos( $port_mapping_text, "udp" ) !== false )
+                    return false;
+
+                return true;
+            }
+
+            if( $object->isUdp() )
+                return false;
+        }
+
+        return true;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['is.udp.only'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        /** @var Service|ServiceGroup $value */
+        $objects = $rule->services->all();
+        foreach( $objects as $object )
+        {
+            if( $object->isTmpSrv() )
+                return false;
+
+            if( $object->isGroup() )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $port_mapping_text = $port_mapping->mappingToText();
+
+                if( strpos( $port_mapping_text, "tcp" ) !== false )
+                    return false;
+
+                return true;
+            }
+
+            if( $object->isTcp() )
+                return false;
+        }
+
+        return true;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['is.tcp'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $isTCP = false;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        /** @var Service|ServiceGroup $value */
+        $objects = $rule->services->all();
+
+        foreach( $objects as $object )
+        {
+            if( $object->isTmpSrv() )
+                return false;
+
+            if( $object->isGroup() )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $port_mapping_text = $port_mapping->mappingToText();
+
+                if( strpos( $port_mapping_text, "tcp" ) !== false )
+                    $isTCP = true;
+                else
+                    return false;
+            }
+            elseif( $object->isTcp() )
+                $isTCP = true;
+        }
+
+        return $isTCP;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['is.udp'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $isUDP = false;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        /** @var Service|ServiceGroup $value */
+        $objects = $rule->services->all();
+        foreach( $objects as $object )
+        {
+            if( $object->isTmpSrv() )
+                return false;
+
+            if( $object->isGroup() )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $port_mapping_text = $port_mapping->mappingToText();
+
+                if( strpos( $port_mapping_text, "udp" ) !== false )
+                    return true;
+                else
+                    return false;
+            }
+            elseif( $object->isUdp() )
+                $isUDP = true;
+        }
+
+        return $isUDP;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['has.value.recursive'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $value = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        return $rule->services->hasValue( $value, true );
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
+RQuery::$defaultFilters['rule']['service']['operators']['has.value'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $value = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        return $rule->services->hasValue( $value );
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 
 //                                              //
 //                SecurityProfile properties    //
@@ -1605,7 +1957,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['has.source.nat'] = Array(
         if( !$context->object->isNatRule() )
             return false;
 
-        if( $context->object->sourceNatTypeIs_None() )
+        if( !$context->object->sourceNatTypeIs_None() )
             return true;
 
         return false;
@@ -1733,6 +2085,54 @@ RQuery::$defaultFilters['rule']['location']['operators']['regex'] = Array(
     'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches the regular expression specified in argument',
     'ci' => Array(
         'fString' => '(%PROP%  /DC/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['rule']['location']['operators']['is.child.of'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule_location = $context->object->getLocationString();
+
+        $sub = $context->object->owner;
+        while( get_class($sub ) == "RuleStore" || get_class($sub ) == "DeviceGroup" || get_class($sub) == "VirtualSystem" )
+            $sub = $sub->owner;
+
+        if( get_class($sub) == "PANConf")
+            derr( "filter location is.child.of is not working against a firewall configuration" );
+
+        if( strtolower($context->value) == 'shared' )
+            return true;
+
+        $DG = $sub->findDeviceGroup( $context->value );
+        if( $DG == null )
+        {
+            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
+            print " - shared\n";
+            foreach( $sub->getDeviceGroups() as $sub1 )
+            {
+                print " - ".$sub1->name()."\n";
+            }
+            print "\n\n";
+            exit(1);
+        }
+
+        $childDeviceGroups = $DG->childDeviceGroups( TRUE );
+
+        if( strtolower($context->value) == strtolower($rule_location) )
+            return true;
+
+        foreach( $childDeviceGroups as $childDeviceGroup )
+        {
+            if( $childDeviceGroup->name() == $rule_location )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is child the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  Datacenter-Firewalls)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
@@ -2158,7 +2558,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['category.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->category == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['category'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->category == $context->value )
                 return true;
         }
 
@@ -2181,7 +2586,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['subcategory.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->subCategory == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['subcategory'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->subCategory == $context->value )
                 return true;
         }
 
@@ -2210,7 +2620,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['technology.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->technology == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['technology'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->technology == $context->value )
                 return true;
         }
 
@@ -2236,7 +2651,12 @@ RQuery::$defaultFilters['rule']['app']['operators']['risk.is'] = Array(
 
         foreach($rule->apps->membersExpanded() as $app)
         {
-            if( $app->risk == $context->value )
+            if( $app->type == "application-filter" )
+            {
+                if( isset( $app->app_filter_details['risk'][$context->value] ) )
+                    return true;
+            }
+            elseif( $app->risk == $context->value )
                 return true;
         }
 

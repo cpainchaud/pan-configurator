@@ -527,6 +527,81 @@ class RuleCallContext extends CallContext
             return self::enclose($rule->services->getAll(), $wrap);
         }
 
+        if( $fieldName == 'service_resolved_sum' )
+        {
+            if( $rule->isDecryptionRule() )
+                return self::enclose('');
+            if( $rule->isAppOverrideRule() )
+                return self::enclose($rule->ports());
+
+
+            if( $rule->isNatRule() )
+            {
+                if( $rule->service !== null )
+                    return self::enclose(Array($rule->service));
+                return self::enclose('any');
+            }
+
+            if( $rule->services->isAny() )
+                return self::enclose('any');
+            if( $rule->services->isApplicationDefault() )
+                return self::enclose('application-default');
+
+            $objects = $rule->services->getAll();
+
+            $array = array();
+            foreach( $objects as $object )
+            {
+                $port_mapping = $object->dstPortMapping();
+                $mapping_texts = $port_mapping->mappingToText();
+
+                //TODO: handle predefined service objects in a different way
+                if( $object->name() == 'service-http' )
+                    $mapping_texts = 'tcp/80';
+                if( $object->name() == 'service-https' )
+                    $mapping_texts = 'tcp/443';
+
+
+                if( strpos($mapping_texts, " ") !== FALSE )
+                    $mapping_text_array = explode(" ", $mapping_texts);
+                else
+                    $mapping_text_array[] = $mapping_texts;
+
+
+                foreach( $mapping_text_array as $mapping_text )
+                {
+                    $protocol = "tmp";
+                    if( strpos($mapping_text, "tcp/") !== FALSE )
+                        $protocol = "tcp/";
+                    elseif( strpos($mapping_text, "udp/") !== FALSE )
+                        $protocol = "udp/";
+
+                    $mapping_text = str_replace( $protocol, "", $mapping_text );
+                    $mapping_text = explode( ",", $mapping_text);
+
+                    foreach( $mapping_text as $mapping )
+                    {
+                        if( !isset( $array[$protocol.$mapping] ) )
+                        {
+                            $port_mapping_text[$protocol.$mapping] = $protocol.$mapping;
+
+                            if( strpos($mapping, "-") !== FALSE )
+                            {
+                                $array[$protocol.$mapping] = $protocol.$mapping;
+                                $range = explode( "-", $mapping );
+                                for( $i = $range[0]; $i<=$range[1]; $i++ )
+                                    $array[$protocol.$i] = $protocol.$i;
+                            }
+                            else
+                                $array[$protocol.$mapping] = $protocol.$mapping;
+                        }
+                    }
+                }
+            }
+
+            return self::enclose($port_mapping_text);
+        }
+        
         if( $fieldName == 'application' )
         {
             if( !$rule->isSecurityRule() )

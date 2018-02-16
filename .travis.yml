@@ -15,6 +15,7 @@ script:
 
 notifications:
   email:
+    - shellescape@gmail.com
     - pan-c@waschkut.net
 
 

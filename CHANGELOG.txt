@@ -8,23 +8,41 @@ CHANGELOG
 * class App : added support for technology, categories fields
 * class App : added support for evasive-behavior, consume-big-bandwidth, used-by-malware, able-to-transfer-file, has-known-vulnerability, tunnel-other-application fields
 * class App : added support for  prone-to-misuse, pervasive-use, risk, virus-ident, file-type-ident, file-forward, is-saas fields
+* class APP : added support for timeout, tcp-timeout, udp-timeout, tcp_half_closed_timeout, tcp_time_wait_timeout, custom_signature
+* class App : extend with method iscustom() CustomHasSignature()
+* class AppStore: added support for application-group and application-filter
+* class AppStore: added support for custom application
+* class PANConf/PanoramaConf/VirtualSystem: add support for application-group and application-filter
+* class PanAPIConnector : added support for mgmt-ip via variable info_mgmtip
 
 utils:
 address-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
+address-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
 address-edit: new action description-append
+address-edit: new action add-member
 override-finder: supporting scenario where template defined objects are not present in candidate config
 rules-edit: new filter 'service has.recursive', 'secprof av-profile.is.set', 'secprof as-profile.is.set', 'secprof url-profile.is.set', 'secprof wf-profile.is.set', 'secprof vuln-profile.is.set'
 rules-edit: new filter 'secprof file-profile.is', 'secprof file-profile.is.set', 'secprof data-profile.is', 'secprof data-profile.is.set'
 rules-edit: new filter 'service has.only', 'user has', 'user has.regex', 'url.category is.any'
 rules-edit: new filter 'app technology.is', 'app category.is', 'app subcategory.is', 'app characteristic.has xxxx'
+rules-edit: new filter 'app includes.full.or.partial', 'app includes.full.or.partial.nocase', 'app included-in.full.or.partial', 'app included-in.full.or.partial.nocase'
+rules-edit: new filter 'service has.from.query' and 'service has.recursive.from.query'
+rules-edit: new filter 'location is.child.of [DG]'
+rules-edit: new filter 'service is.tcp','service is.tcp.only','service is.udp','service is.udp.only','service has.value [PORT_VALUE]','service has.value.recursive [PORT_VALUE]'
+rules-edit: new filter 'app custom.has.signature'
 rules-edit: action 'tag-Add-Force' new field 'tagColor' to setColor for forced Tag creation
 rules-edit: action 'description-append' new field 'newline' as boolean parameter no/yes
 rules-edit: action 'display' extend with logsetting information / URL category
+rules-edit: action 'exporttoexcel' extend with additionalFields choice ResolveServiceSummary
 service-edit: new actions tag-Add | tag-Add-Force | tag-Remove | tag-Remove-All | tag-Remove-Regex
 service-edit: new action 'name-rename' to allow renaming based on template string. ie:  'name-Rename:$$protocol$$-$$current.name$$'
 service-edit: new action description-append
+service-edit: improve action move - API mode now supported to move service objects to shared level
 service-edit: new filter tag has / has.nocase / has.regex and tag.count >,<,=,! / object is.recursive.member.of
-
+service-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
+tag-edit: new action move
+tag-edit: new filter reflocation is / reflocation is.only / refstore is / reftype is
+doc update
 
 bugfix:
 - fixed a crash when trying to move some rule types from PRE/POST
@@ -40,6 +58,9 @@ bugfix:
 - fixed a crash when displaying service objects where a service group is member of a service group
 - xxxx-merger : fixed an issue where subQueries were ignored
 - fixed an issue where predefined applications were created as TMP
+- fixed an issue with 'filter=(rule has.source.nat)' where no source NAT rule were shown
+- fixed a crash when trying to add tag to temporary address objects
+- fix address-edit help name-rename output
 
 
 1.5.12 (2017-04-04)
