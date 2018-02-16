@@ -1960,6 +1960,36 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ), 'newline' => Array( 'type' => 'bool', 'default' => 'no'  ) )
 );
 
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'description-Prepend',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+        $description = $rule->description();
+
+
+        $textToPrepend = $context->rawArguments['text'];
+        if( $context->arguments['newline'] == 'yes' )
+            $textToPrepend .= "\n";
+
+        if( strlen($description) + strlen($textToPrepend) > 253 )
+        {
+            echo $context->padding." - SKIPPED : resulting description is too long\n";
+            return;
+        }
+
+        echo $context->padding." - new description will be: '{$textToPrepend}{$description}' ... ";
+
+        if( $context->isAPI )
+            $rule->API_setDescription($textToPrepend.$description);
+        else
+            $rule->setDescription($textToPrepend.$description);
+
+        echo "OK";
+    },
+    'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ), 'newline' => Array( 'type' => 'bool', 'default' => 'no'  ) )
+);
+
 
 //                                                   //
 //                Other property Based Actions       //

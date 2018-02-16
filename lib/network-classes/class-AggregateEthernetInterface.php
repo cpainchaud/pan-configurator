@@ -18,6 +18,9 @@
 class AggregateEthernetInterface extends EthernetInterface
 {
 
+    /** @var string */
+    public $type = 'aggregate';
+
     public function isEthernetType() { return false; }
 
     public function isAggregateType() { return true; }

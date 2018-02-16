@@ -266,7 +266,16 @@ AddressCallContext::$supportedActions[] = Array(
 
         $address0bjectToAdd = $object->owner->find( $addressObjectName );
         if( $address0bjectToAdd === null )
+        {
             echo $context->padding . "     *  SKIPPED because address object name: " . $addressObjectName . " not found\n";
+            return;
+        }
+
+        if( $object->has( $address0bjectToAdd ) )
+        {
+            echo $context->padding."     *  SKIPPED because address object is already a member of this address group\n";
+            return;
+        }
 
         if( $context->isAPI )
             $object->API_addMember( $address0bjectToAdd );
