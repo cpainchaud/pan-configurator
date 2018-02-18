@@ -1,4 +1,6 @@
 CHANGELOG
+1.5.14
+* class
 
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml

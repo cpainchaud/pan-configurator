@@ -1094,6 +1094,26 @@ class SecurityRule extends RuleWithUserID
                 $type = 'traffic';
         }
 
+        if( $parentClass == 'DeviceGroup' && $con->info_PANOS_version_int < 80)
+        {
+            $deviceClass = get_class($this->owner->owner->owner);
+            if( $deviceClass == 'PanoramaConf')
+            {
+                $connected_devices = $this->owner->owner->owner->managedFirewallsSerialsModel;
+                foreach( $this->owner->owner->getDevicesInGroup(TRUE) as $serial => $device )
+                {
+                    if( strpos( $connected_devices[$serial]['model'], 'PA-70') !== false  )
+                    {
+                        if( $fastMode )
+                            $type = 'trsum';
+                        else
+                            $type = 'traffic';
+                    }
+                }
+            }
+        }
+
+
         $excludedAppsString = '';
 
         $first = true;
