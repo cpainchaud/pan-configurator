@@ -1,6 +1,6 @@
 CHANGELOG
 1.5.14
-* class
+* class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
 
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml
