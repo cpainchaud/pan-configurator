@@ -43,6 +43,24 @@ class PH
     private static $library_version_sub = 5;
     private static $library_version_bugfix = 14;
 
+    public static $softwareupdate_key = "658d787f293e631196dac9fb29490f1cc1bb3827";
+    public static $softwareupdate_user_encrypt = "NmPyrGw7WYXdu5cdgm2x7HEkDf4LTHob7M/JNNhS+3CIfV5DkV7Tne8xersHIRafbXV3vzgIRECsG06Hs+O80g==";
+    public static $softwareupdate_pw_encrypt = "wbCEjb8jaYH36HHvB2PmLMNyaz27MvHgM+Bn64wnofCjrV/4G+25AkoqG+q41Cvigc9uUxBTbOUtW2EhQOPYjA==";
+
+
+    static public function decrypt( $ciphertext, $key )
+    {
+        $c = base64_decode($ciphertext);
+        $ivlen = openssl_cipher_iv_length($cipher="AES-128-CBC");
+        $iv = substr($c, 0, $ivlen);
+        $hmac = substr($c, $ivlen, $sha2len=32);
+        $ciphertext_raw = substr($c, $ivlen+$sha2len);
+        $ciphertext_2 = openssl_decrypt($ciphertext_raw, $cipher, $key, $options=OPENSSL_RAW_DATA, $iv);
+        $calcmac = hash_hmac('sha256', $ciphertext_raw, $key, $as_binary=true);
+
+        return array($ciphertext_2,$calcmac);
+    }
+
     static public function frameworkVersion()
     {
         return self::$library_version_major . '.' . self::$library_version_sub . '.' . self::$library_version_bugfix;
