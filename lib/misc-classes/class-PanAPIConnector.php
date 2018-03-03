@@ -169,26 +169,6 @@ class PanAPIConnector
             $this->info_vmcpuid = $vmcpuid->nodeValue;
         }
 
-        $app_version = DH::findFirstElement('app-version', $res);
-        if( $app_version === FALSE )
-            derr("cannot find <app-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
-        $this->info_app_version = $app_version->textContent;
-
-        $av_version = DH::findFirstElement('av-version', $res);
-        if( $av_version === FALSE )
-            derr("cannot find <av-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
-        $this->info_av_version = $av_version->textContent;
-
-        $wildfire_version = DH::findFirstElement('wildfire-version', $res);
-        if( $wildfire_version === FALSE )
-            derr("cannot find <wildfire-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
-        $this->info_wildfire_version = $wildfire_version->textContent;
-
-        $threat_version = DH::findFirstElement('threat-version', $res);
-        if( $threat_version === FALSE )
-            derr("cannot find <threat-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
-        $this->info_threat_version = $threat_version->textContent;
-
         if( $model == 'panorama' || $model == 'm-100' || $model == 'm-500' )
         {
             $this->info_deviceType = 'panorama';
@@ -196,6 +176,26 @@ class PanAPIConnector
         else
         {
             $this->info_deviceType = 'panos';
+
+            $app_version = DH::findFirstElement('app-version', $res);
+            if( $app_version === FALSE )
+                derr("cannot find <app-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            $this->info_app_version = $app_version->textContent;
+
+            $av_version = DH::findFirstElement('av-version', $res);
+            if( $av_version === FALSE )
+                derr("cannot find <av-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            $this->info_av_version = $av_version->textContent;
+
+            $wildfire_version = DH::findFirstElement('wildfire-version', $res);
+            if( $wildfire_version === FALSE )
+                derr("cannot find <wildfire-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            $this->info_wildfire_version = $wildfire_version->textContent;
+
+            $threat_version = DH::findFirstElement('threat-version', $res);
+            if( $threat_version === FALSE )
+                derr("cannot find <threat-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            $this->info_threat_version = $threat_version->textContent;
         }
 
         $vex = explode('.', $this->info_PANOS_version);
