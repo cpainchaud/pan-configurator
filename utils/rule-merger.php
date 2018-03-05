@@ -135,11 +135,7 @@ $configInput = PH::$args['in'];
 if( !is_string($configInput) || strlen($configInput) < 1 )
     display_error_usage_exit('"in" argument is not a valid string');
 
-if( ! isset(PH::$args['out']) )
-    display_error_usage_exit('"out" is missing from arguments');
-$configOutput = PH::$args['out'];
-if( !is_string($configOutput) || strlen($configOutput) < 1 )
-    display_error_usage_exit('"out" argument is not a valid string');
+
 
 //
 // What kind of config input do we have.

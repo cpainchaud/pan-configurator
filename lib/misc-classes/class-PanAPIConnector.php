@@ -873,7 +873,8 @@ class PanAPIConnector
                 . $filecontent . "\r\n"
                 . "----ABC1234--\r\n";
 
-            //print "content length = ".strlen($content)."\n";
+            #print "content length = ".strlen($encodedContent)."\n";
+            #print "content  = ".$encodedContent."\n";
             curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, Array('Content-Type: multipart/form-data; boundary=--ABC1234'));
             curl_setopt($this->_curl_handle, CURLOPT_POST, TRUE);
             curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $encodedContent);
@@ -1359,7 +1360,7 @@ class PanAPIConnector
         $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
         $ret = $this->sendRequest($req);
 
-
+        //TODO: 20180305 not working
         $found = &searchForName('name', 'result', $ret);
 
         if( $found === null )
@@ -1389,7 +1390,7 @@ class PanAPIConnector
         $ret = $this->sendRequest($request);
 
         //var_dump($ret);
-
+        //TODO: 20180305 not working
         $found = &searchForName('name', 'result', $ret);
 
         if( $found === null )
