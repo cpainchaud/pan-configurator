@@ -2087,6 +2087,13 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding." * SKIPPED it's not a security rule\n";
+            return;
+        }
+
         if( $context->isAPI )
             $rule->API_setDsri($context->arguments['trueOrFalse']);
         else
@@ -2099,6 +2106,13 @@ RuleCallContext::$supportedActions[] = Array(
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding." * SKIPPED it's not a security rule\n";
+            return;
+        }
+
         if( !$context->isAPI )
             derr('you cannot call this action without API mode');
 
