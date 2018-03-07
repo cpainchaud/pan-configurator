@@ -5,6 +5,7 @@ CHANGELOG
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool]
 rules-edit: action 'display' extend with DSRI information, if "Disable Server Response Inspection" is enabled for security rule
+rules-edit: action'nameRename' extend for additional variable usage like $$current.name$$ and $$sequential.number$$
 
 
 1.5.13

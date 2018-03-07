@@ -2320,11 +2320,22 @@ RuleCallContext::$supportedActions[] = Array(
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-Rename',
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->numCount = 0;
+    },
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
 
-        $newName = $context->rawArguments['text'];
+        $newName = $context->arguments['stringFormula'];
+        $context->numCount++;
+
+        if( strpos($newName, '$$sequential.number$$') !== FALSE )
+            $newName = str_replace('$$sequential.number$$', $context->numCount, $newName);
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+            $newName = str_replace('$$current.name$$', $rule->name(), $newName);
 
         if( strlen($newName) > 31 )
         {
@@ -2338,6 +2349,8 @@ RuleCallContext::$supportedActions[] = Array(
             return;
         }
 
+        echo $context->padding." - new name will be '{$newName}'\n";
+
         if( $context->isAPI )
         {
             $rule->API_setName($newName);
@@ -2347,7 +2360,17 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setName($newName);
         }
     },
-    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+
+    'args' => Array( 'stringFormula' => Array(
+    'type' => 'string',
+    'default' => '*nodefault*',
+    'help' =>
+        "This string is used to compose a name. You can use the following aliases :\n".
+        "  - \$\$current.name\$\$ : current name of the object\n".
+        "  - \$\$sequential.number\$\$ : sequential number - starting with 1\n"
+       )
+),
+    'help' => ''
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'ruleType-Change',
