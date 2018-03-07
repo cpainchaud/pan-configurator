@@ -1,6 +1,10 @@
 CHANGELOG
-1.5.14
+1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
+
+utils:
+rules-edit: new action dsri-set:[bool]
+
 
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml
