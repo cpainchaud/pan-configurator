@@ -3,7 +3,7 @@ CHANGELOG
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
 
 utils:
-rules-edit: new action dsri-set:[bool]
+rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool]
 
 
 1.5.13

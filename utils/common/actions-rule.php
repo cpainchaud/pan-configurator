@@ -2119,7 +2119,7 @@ RuleCallContext::$supportedActions[] = Array(
         if( $rule->setDsri($context->arguments['trueOrFalse']) )
         {
             print $context->padding." - QUEUED for bundled API call\n";
-            $context->addRuleToMergedApiChange('<disable-server-response-inspection>' . boolYesNo($context->arguments['trueOrFalse']) . '</disable-server-response-inspection>');
+            $context->addRuleToMergedApiChange('<option><disable-server-response-inspection>' . boolYesNo($context->arguments['trueOrFalse']) . '</disable-server-response-inspection></option>');
         }
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
