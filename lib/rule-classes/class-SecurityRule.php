@@ -931,6 +931,9 @@ class SecurityRule extends RuleWithUserID
         else
             echo "*ANY*\n";
 
+        if( $this->dsri )
+            print $padding."  DSRI: disabled\n";
+
 		print "\n";
 	}
 
