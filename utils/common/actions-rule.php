@@ -2083,6 +2083,65 @@ RuleCallContext::$supportedActions[] = Array(
     }
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'dsri-Set',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding." * SKIPPED it's not a security rule\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setDsri($context->arguments['trueOrFalse']);
+        else
+            $rule->setDsri($context->arguments['trueOrFalse']);
+    },
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
+);
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'dsri-Set-FastAPI',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding." * SKIPPED it's not a security rule\n";
+            return;
+        }
+
+        if( !$context->isAPI )
+            derr('you cannot call this action without API mode');
+
+        if( $rule->setDsri($context->arguments['trueOrFalse']) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<option><disable-server-response-inspection>' . boolYesNo($context->arguments['trueOrFalse']) . '</disable-server-response-inspection></option>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $setString = $context->generateRuleMergedApuChangeString(true);
+        if( $setString !== null )
+        {
+            print $context->padding . ' - sending API call for SHARED... ';
+            $context->connector->sendSetRequest('/config/shared', $setString);
+            print "OK!\n";
+        }
+        $setString = $context->generateRuleMergedApuChangeString(false);
+        if( $setString !== null )
+        {
+            print $context->padding . ' - sending API call for Device-Groups... ';
+            $context->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
+            print "OK!\n";
+        }
+    },
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'biDirNat-Split',
     'MainFunction' => function(RuleCallContext $context)
     {
@@ -2261,11 +2320,22 @@ RuleCallContext::$supportedActions[] = Array(
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-Rename',
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->numCount = 0;
+    },
     'MainFunction' => function(RuleCallContext $context)
     {
         $rule = $context->object;
 
-        $newName = $context->rawArguments['text'];
+        $newName = $context->arguments['stringFormula'];
+        $context->numCount++;
+
+        if( strpos($newName, '$$sequential.number$$') !== FALSE )
+            $newName = str_replace('$$sequential.number$$', $context->numCount, $newName);
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+            $newName = str_replace('$$current.name$$', $rule->name(), $newName);
 
         if( strlen($newName) > 31 )
         {
@@ -2279,6 +2349,8 @@ RuleCallContext::$supportedActions[] = Array(
             return;
         }
 
+        echo $context->padding." - new name will be '{$newName}'\n";
+
         if( $context->isAPI )
         {
             $rule->API_setName($newName);
@@ -2288,7 +2360,17 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setName($newName);
         }
     },
-    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+
+    'args' => Array( 'stringFormula' => Array(
+    'type' => 'string',
+    'default' => '*nodefault*',
+    'help' =>
+        "This string is used to compose a name. You can use the following aliases :\n".
+        "  - \$\$current.name\$\$ : current name of the object\n".
+        "  - \$\$sequential.number\$\$ : sequential number - starting with 1\n"
+       )
+),
+    'help' => ''
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'ruleType-Change',

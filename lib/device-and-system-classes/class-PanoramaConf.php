@@ -53,6 +53,7 @@ class PanoramaConf
     public $version = null;
 
 	protected $managedFirewallsSerials = Array();
+    public $managedFirewallsSerialsModel = Array();
 
     /** @var DeviceGroup[] */
 	public $deviceGroups = Array();
@@ -210,6 +211,9 @@ class PanoramaConf
 
 			$this->managedFirewallsSerials[] = $s;
 		}
+
+		if( is_object( $this->connector ) )
+            $this->managedFirewallsSerialsModel = $this->connector->panorama_getConnectedFirewallsSerials();
 
 		$this->sharedroot = DH::findFirstElementOrCreate('shared', $this->xmlroot);
 

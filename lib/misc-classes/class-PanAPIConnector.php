@@ -75,6 +75,13 @@ class PanAPIConnector
     public $info_model = 'unknown';
     /** @var string $info_vmlicense can be unknown|VM-100|VM-200|VM-300|VM-1000 */
     public $info_vmlicense = null;
+    public $info_vmuuid = null;
+    public $info_vmcpuid = null;
+
+    public $info_app_version = null;
+    public $info_av_version = null;
+    public $info_wildfire_version = null;
+    public $info_threat_version = null;
 
     private $_curl_handle = null;
     private $_curl_count = 0;
@@ -94,6 +101,12 @@ class PanAPIConnector
             $this->info_serial = null;
             $this->info_hostname = null;
             $this->info_vmlicense = null;
+            $this->info_vmuuid = null;
+            $this->info_vmcpuid = null;
+            $this->info_app_version = null;
+            $this->info_av_version = null;
+            $this->info_wildfire_version = null;
+            $this->info_threat_version = null;
         }
 
         if( $this->info_serial !== null )
@@ -144,6 +157,16 @@ class PanAPIConnector
             if( $vmlicense === FALSE )
                 derr('cannot find <vm-license>', $orig);
             $this->info_vmlicense = $vmlicense->nodeValue;
+
+            $vmuuid = DH::findFirstElement('vm-uuid', $res);
+            if( $vmuuid === FALSE )
+                derr('cannot find <vm-uuid>', $orig);
+            $this->info_vmuuid = $vmuuid->nodeValue;
+
+            $vmcpuid = DH::findFirstElement('vm-cpuid', $res);
+            if( $vmcpuid === FALSE )
+                derr('cannot find <vm-cpuid>', $orig);
+            $this->info_vmcpuid = $vmcpuid->nodeValue;
         }
 
         if( $model == 'panorama' || $model == 'm-100' || $model == 'm-500' )
@@ -153,6 +176,26 @@ class PanAPIConnector
         else
         {
             $this->info_deviceType = 'panos';
+
+            $app_version = DH::findFirstElement('app-version', $res);
+            if( $app_version === FALSE )
+                derr("cannot find <app-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            $this->info_app_version = $app_version->textContent;
+
+            $av_version = DH::findFirstElement('av-version', $res);
+            if( $av_version === FALSE )
+                derr("cannot find <av-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            $this->info_av_version = $av_version->textContent;
+
+            $wildfire_version = DH::findFirstElement('wildfire-version', $res);
+            if( $wildfire_version === FALSE )
+                derr("cannot find <wildfire-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            $this->info_wildfire_version = $wildfire_version->textContent;
+
+            $threat_version = DH::findFirstElement('threat-version', $res);
+            if( $threat_version === FALSE )
+                derr("cannot find <threat-version>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            $this->info_threat_version = $threat_version->textContent;
         }
 
         $vex = explode('.', $this->info_PANOS_version);
@@ -830,7 +873,8 @@ class PanAPIConnector
                 . $filecontent . "\r\n"
                 . "----ABC1234--\r\n";
 
-            //print "content length = ".strlen($content)."\n";
+            #print "content length = ".strlen($encodedContent)."\n";
+            #print "content  = ".$encodedContent."\n";
             curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, Array('Content-Type: multipart/form-data; boundary=--ABC1234'));
             curl_setopt($this->_curl_handle, CURLOPT_POST, TRUE);
             curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $encodedContent);
@@ -1316,7 +1360,7 @@ class PanAPIConnector
         $req = "type=op&cmd=<show><jobs><id>$jobID</id></jobs></show>";
         $ret = $this->sendRequest($req);
 
-
+        //TODO: 20180305 not working
         $found = &searchForName('name', 'result', $ret);
 
         if( $found === null )
@@ -1346,7 +1390,7 @@ class PanAPIConnector
         $ret = $this->sendRequest($request);
 
         //var_dump($ret);
-
+        //TODO: 20180305 not working
         $found = &searchForName('name', 'result', $ret);
 
         if( $found === null )
@@ -1413,6 +1457,10 @@ class PanAPIConnector
                 $fw['hostname'] = $entryNode->getAttribute('name');
 
             $fw['serial'] = $entryNode->getAttribute('name');
+
+            $modelNode = DH::findFirstElement('model', $entryNode);
+            if( $modelNode !== false )
+                $fw['model'] = $modelNode->textContent;
 
             $firewalls[$fw['serial']] = $fw;
         }

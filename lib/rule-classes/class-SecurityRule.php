@@ -931,6 +931,9 @@ class SecurityRule extends RuleWithUserID
         else
             echo "*ANY*\n";
 
+        if( $this->dsri )
+            print $padding."  DSRI: disabled\n";
+
 		print "\n";
 	}
 
@@ -1093,6 +1096,26 @@ class SecurityRule extends RuleWithUserID
             else
                 $type = 'traffic';
         }
+
+        if( $parentClass == 'DeviceGroup' && $con->info_PANOS_version_int < 80)
+        {
+            $deviceClass = get_class($this->owner->owner->owner);
+            if( $deviceClass == 'PanoramaConf')
+            {
+                $connected_devices = $this->owner->owner->owner->managedFirewallsSerialsModel;
+                foreach( $this->owner->owner->getDevicesInGroup(TRUE) as $serial => $device )
+                {
+                    if( strpos( $connected_devices[$serial]['model'], 'PA-70') !== false  )
+                    {
+                        if( $fastMode )
+                            $type = 'trsum';
+                        else
+                            $type = 'traffic';
+                    }
+                }
+            }
+        }
+
 
         $excludedAppsString = '';
 
@@ -1350,6 +1373,68 @@ class SecurityRule extends RuleWithUserID
         return 'security';
     }
 
+    /**
+     * For developer use only
+     *
+     */
+    protected function rewriteSDsri_XML()
+    {
+        if( $this->dsri )
+        {
+            $find_option = DH::findFirstElementOrCreate('option', $this->xmlroot);
+            $this->xmlroot = $find_option;
+            $find = DH::findFirstElementOrCreate('disable-server-response-inspection', $this->xmlroot);
+            DH::setDomNodeText($find, 'yes');
+        }
+        else
+        {
+            $find_option = DH::findFirstElementOrCreate('option', $this->xmlroot);
+            $this->xmlroot = $find_option;
+            $find = DH::findFirstElementOrCreate('disable-server-response-inspection', $this->xmlroot);
+            DH::setDomNodeText($find, 'no');
+        }
+    }
+    
+    /**
+     * disable rule if $disabled = true, enable it if not
+     * @param bool $disabled
+     * @return bool true if value has changed
+     */
+    public function setDsri($dsri)
+    {
+        $old = $this->dsri;
+        $this->dsri = $dsri;
+
+        if( $dsri != $old )
+        {
+            $this->rewriteSDsri_XML();
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * disable rule if $dsri = true, enable it if not
+     * @param bool $dsri
+     * @return bool true if value has changed
+     */
+    public function API_setDsri($dsri)
+    {
+        $ret = $this->setDsri($dsri);
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath().'/option/disable-server-response-inspection';
+            $con = findConnectorOrDie($this);
+            if( $this->dsri )
+                $con->sendEditRequest( $xpath, '<disable-server-response-inspection>yes</disable-server-response-inspection>');
+            else
+                $con->sendEditRequest( $xpath, '<disable-server-response-inspection>no</disable-server-response-inspection>');
+        }
+
+        return $ret;
+    }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**"><option><disable-server-response-inspection>no</disable-server-response-inspection></option><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination><source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application><service><member>any</member>

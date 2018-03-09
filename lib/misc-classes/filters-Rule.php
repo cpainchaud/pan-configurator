@@ -1499,7 +1499,7 @@ RQuery::$defaultFilters['rule']['secprof']['operators']['is.group'] = Array(
             && $context->object->securityProfileType() == "group";
     },
     'arg' => false,
-    'deprecated' => 'this filter "secprof is.profile" is deprecated, you should use "secprof type.is.profile" instead!',
+    'deprecated' => 'this filter "secprof is.group" is deprecated, you should use "secprof type.is.group" instead!',
     'ci' => Array(
         'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'
