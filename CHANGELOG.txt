@@ -1,6 +1,8 @@
 CHANGELOG
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
+* moved over to github project swaschkut/pan-configurator
+
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool]
