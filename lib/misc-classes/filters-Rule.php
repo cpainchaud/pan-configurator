@@ -2055,9 +2055,9 @@ RQuery::$defaultFilters['rule']['rule']['operators']['has.destination.nat'] = Ar
             return false;
 
         if( $context->object->destinationNatIsEnabled() )
-            return false;
+            return true;
 
-        return true;
+        return false;
     },
     'arg' => false,
     'ci' => Array(
