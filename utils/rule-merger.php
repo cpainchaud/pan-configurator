@@ -427,7 +427,7 @@ function updateRuleHash($rule, $method)
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 5)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->from->getFastHashComp() .
-            $rule->destination->getFastHashComp() . $rule->destination->getFastHashComp() .
+            $rule->source->getFastHashComp() . $rule->destination->getFastHashComp() .
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 6)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->to->getFastHashComp() .
@@ -439,7 +439,7 @@ function updateRuleHash($rule, $method)
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 8)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->from->getFastHashComp() .
-            $rule->destination->getFastHashComp() .
+            $rule->source->getFastHashComp() .
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 9)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->from->getFastHashComp() . $rule->to->getFastHashComp() .
