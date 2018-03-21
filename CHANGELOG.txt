@@ -10,6 +10,7 @@ rules-edit: action'nameRename' extend for additional variable usage like $$curre
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'
+- fix rule-merger - wrong calculation usage for method 5,6,8
 
 
 1.5.13

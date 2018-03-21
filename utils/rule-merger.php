@@ -399,14 +399,14 @@ function updateRuleHash($rule, $method)
     }
 
     /*          'matchFromToSrcDstApp'  => 1 ,
-                                'matchFromToSrcDstSvc'  => 2 ,
-                                'matchFromToSrcSvcApp'  => 3 ,
-                                'matchFromToDstSvcApp'  => 4 ,
-                                'matchFromSrcDstSvcApp' => 5 ,
-                                'matchToSrcDstSvcApp'   => 6 ,
-                                'matchToDstSvcApp'   => 7 ,
-                                'matchFromSrcSvcApp' => 8 ,
-                                identical' => 9 ,
+                'matchFromToSrcDstSvc'  => 2 ,
+                'matchFromToSrcSvcApp'  => 3 ,
+                'matchFromToDstSvcApp'  => 4 ,
+                'matchFromSrcDstSvcApp' => 5 ,
+                'matchToSrcDstSvcApp'   => 6 ,
+                'matchToDstSvcApp'   => 7 ,
+                'matchFromSrcSvcApp' => 8 ,
+                identical' => 9 ,
     */
 
     if( $method == 1)
@@ -427,11 +427,11 @@ function updateRuleHash($rule, $method)
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 5)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->from->getFastHashComp() .
-            $rule->destination->getFastHashComp() . $rule->destination->getFastHashComp() .
+            $rule->source->getFastHashComp() . $rule->destination->getFastHashComp() .
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 6)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->to->getFastHashComp() .
-            $rule->destination->getFastHashComp() . $rule->destination->getFastHashComp() .
+            $rule->source->getFastHashComp() . $rule->destination->getFastHashComp() .
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 7)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->to->getFastHashComp() .
@@ -439,7 +439,7 @@ function updateRuleHash($rule, $method)
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 8)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->from->getFastHashComp() .
-            $rule->destination->getFastHashComp() .
+            $rule->source->getFastHashComp() .
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 9)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->from->getFastHashComp() . $rule->to->getFastHashComp() .
