@@ -431,7 +431,7 @@ function updateRuleHash($rule, $method)
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 6)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->to->getFastHashComp() .
-            $rule->destination->getFastHashComp() . $rule->destination->getFastHashComp() .
+            $rule->source->getFastHashComp() . $rule->destination->getFastHashComp() .
             $rule->services->getFastHashComp() . $rule->apps->getFastHashComp(), true);
     elseif( $method == 7)
         $rule->mergeHash = md5('action:'.$rule->action().'.*/' . $rule->to->getFastHashComp() .
