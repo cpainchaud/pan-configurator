@@ -2,11 +2,13 @@ CHANGELOG
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
 * moved over to github project swaschkut/pan-configurator
+* new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool]
 rules-edit: action 'display' extend with DSRI information, if "Disable Server Response Inspection" is enabled for security rule
 rules-edit: action'nameRename' extend for additional variable usage like $$current.name$$ and $$sequential.number$$
+rules-edit: new filter (location is.parent.of [DeviceGroup])
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'

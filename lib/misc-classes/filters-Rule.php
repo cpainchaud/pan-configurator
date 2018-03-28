@@ -2249,6 +2249,9 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.parent.of'] = Array
         if( strtolower($context->value) == strtolower($rule_location) )
             return true;
 
+        if( $rule_location == 'shared' )
+            return true;
+
         foreach( $parentDeviceGroups as $childDeviceGroup )
         {
             if( $childDeviceGroup->name() == $rule_location )

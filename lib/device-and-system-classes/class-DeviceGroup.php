@@ -574,7 +574,6 @@ class DeviceGroup
     }
 
     /**
-     * @param bool $nested
      * @return DeviceGroup[]
      */
     public function parentDeviceGroups()
@@ -588,16 +587,11 @@ class DeviceGroup
         $dg_tmp = $this;
         $dgs = Array();
 
-        $i=0;
         while( $dg_tmp !== null )
         {
-            print $dg_tmp->name()."\n";
             $dgs[$dg_tmp->name()] = $dg_tmp;
-
             $dg_tmp = $dg_tmp->parentDeviceGroup;
-
         }
-
 
         return $dgs;
     }
