@@ -19,6 +19,7 @@ bugfix:
 - fix rules-edit filter (rule is.unused.fast) in a DeviceGroup hierarchy
 
 
+
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml
 * class ServiceStore: extend for API_newService()/newServiceGroup()/API_newServiceGroup()
