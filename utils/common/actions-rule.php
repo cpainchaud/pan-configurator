@@ -1478,26 +1478,25 @@ RuleCallContext::$supportedActions[] = Array(
         {
             $app_array[ $app->name() ] = $app->name();
             foreach( $app->calculateDependencies() as $dependency )
+            {
                 $app_depends_on[ $dependency->name() ] = $dependency->name();
+            }
         }
 
-        //TODO: 20180327 if missing app-id is added both has dependencies which are not availalbe right now
-        //=> workaround -> run script twice three time
         foreach( $app_depends_on as $app => $dependencies )
         {
             if( !isset( $app_array[ $app ] ) )
             {
+                $add_app = $rule->owner->owner->appStore->find( $app );
                 if( $context->arguments['fix'] )
                 {
-                    $add_app = $rule->owner->owner->appStore->find( $app );
                     if( $context->isAPI )
                         $rule->apps->API_addApp( $add_app );
                     else
                         $rule->apps->addApp( $add_app );
-                    print "        - app-id: ".$app." added to rule\n";
                 }
-                else
-                    print "        - app-id: ".$app." is missing in rule\n";
+
+                print "        - app-id: ".$app." is missing in rule\n";
             }
         }
     },
