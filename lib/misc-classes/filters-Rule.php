@@ -2312,6 +2312,17 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
             else
             {
                 $devices = $sub->getDevicesInGroup( true );
+
+                $connectedDevices = $connector->panorama_getConnectedFirewallsSerials();
+                foreach( $devices as $id => $device )
+                {
+                    if( !isset( $connectedDevices[ $device['serial'] ] ) )
+                    {
+                        unset( $devices[$id] );
+                        print "\n  - firewall device with serial: ".$device['serial']." is not connected.\n";
+                    }
+                }
+
                 $firstLoop = true;
 
                 foreach($devices as $device)
