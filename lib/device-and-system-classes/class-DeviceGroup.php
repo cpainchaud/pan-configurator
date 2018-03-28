@@ -573,6 +573,29 @@ class DeviceGroup
         return $this->_childDeviceGroups;
     }
 
+    /**
+     * @return DeviceGroup[]
+     */
+    public function parentDeviceGroups()
+    {
+        if( $this->name() == 'shared' )
+        {
+            $dgs[$this->name()] = $this;
+            return $dgs;
+        }
+
+        $dg_tmp = $this;
+        $dgs = Array();
+
+        while( $dg_tmp !== null )
+        {
+            $dgs[$dg_tmp->name()] = $dg_tmp;
+            $dg_tmp = $dg_tmp->parentDeviceGroup;
+        }
+
+        return $dgs;
+    }
+
 }
 
 

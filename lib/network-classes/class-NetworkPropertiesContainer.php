@@ -26,6 +26,12 @@ class NetworkPropertiesContainer
     /** @var VirtualRouterStore */
     public $virtualRouterStore;
 
+    /** @var IkeCryptoProfileStore */
+    public $ikeCryptoProfileStore;
+
+    /** @var IPSecCryptoProfileStore */
+    public $ipsecCryptoProfileStore;
+
     /** @var DOMElement|null */
     public $xmlroot = null;
 
@@ -43,12 +49,39 @@ class NetworkPropertiesContainer
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
         $this->tmpInterfaceStore = new TmpInterfaceStore('TmpIfaces', $owner);
         $this->virtualRouterStore = new VirtualRouterStore('', $owner);
+        $this->ikeCryptoProfileStore = new IkeCryptoProfileStore('IkeCryptoProfiles', $owner);
+        $this->ipsecCryptoProfileStore = new IPSecCryptoProfileStore('IPSecCryptoProfiles', $owner);
     }
 
     function load_from_domxml(DOMElement $xml)
     {
         $this->xmlroot = $xml;
 
+        $tmp = DH::findFirstElement('ike', $this->xmlroot);
+        if( $tmp !== false )
+        {
+            $tmp_crypto = DH::findFirstElement('crypto-profiles', $tmp);
+            if( $tmp_crypto !== FALSE )
+            {
+                $tmp_ike = DH::findFirstElement('ike-crypto-profiles', $tmp_crypto);
+                if( $tmp_ike !== FALSE )
+                {
+                    $this->ikeCryptoProfileStore->load_from_domxml($tmp_ike);
+                }
+
+                $tmp_ipsec = DH::findFirstElement('ipsec-crypto-profiles', $tmp_crypto);
+                if( $tmp_ipsec !== FALSE )
+                {
+                    $this->ipsecCryptoProfileStore->load_from_domxml($tmp_ipsec);
+                }
+            }
+
+            $tmp2 = DH::findFirstElement('gateway', $tmp);
+            if( $tmp2 !== FALSE )
+            {
+                #$this->ipsecTunnelStore->load_from_domxml($tmp2);
+            }
+        }
         $tmp = DH::findFirstElement('tunnel', $this->xmlroot);
         if( $tmp !== false )
         {

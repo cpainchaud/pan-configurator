@@ -156,6 +156,10 @@ require_once $basedir.'/network-classes/class-TmpInterface.php';
 require_once $basedir.'/network-classes/class-TmpInterfaceStore.php';
 require_once $basedir.'/network-classes/class-AggregateEthernetInterface.php';
 require_once $basedir.'/network-classes/class-AggregateEthernetIfStore.php';
+require_once $basedir.'/network-classes/class-IkeCryptoProfileStore.php';
+require_once $basedir.'/network-classes/class-IkeCryptoProfil.php';
+require_once $basedir.'/network-classes/class-IPSecCryptoProfileStore.php';
+require_once $basedir.'/network-classes/class-IPSecCryptoProfil.php';
 
 require_once $basedir.'/rule-classes/class-RuleStore.php';
 require_once $basedir.'/rule-classes/class-Rule.php';
