@@ -8,7 +8,9 @@ utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool]
 rules-edit: action 'display' extend with DSRI information, if "Disable Server Response Inspection" is enabled for security rule
 rules-edit: action'nameRename' extend for additional variable usage like $$current.name$$ and $$sequential.number$$
+rules-edit: new action 'app-Fix-Dependencies' to display missing dependencies, with additional argument 'app-Fix-Dependencies:yes' all missing app-id dependencies are added
 rules-edit: new filter (location is.parent.of [DeviceGroup])
+
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'

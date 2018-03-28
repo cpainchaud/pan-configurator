@@ -1460,7 +1460,50 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'app-Fix-Dependencies',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
 
+        if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
+            return null;
+
+        $app_depends_on = array();
+        $app_array = array();
+        foreach($rule->apps->membersExpanded() as $app)
+        {
+            $app_array[ $app->name() ] = $app->name();
+            foreach( $app->calculateDependencies() as $dependency )
+                $app_depends_on[ $dependency->name() ] = $dependency->name();
+        }
+
+        //TODO: 20180327 if missing app-id is added both has dependencies which are not availalbe right now
+        //=> workaround -> run script twice three time
+        foreach( $app_depends_on as $app => $dependencies )
+        {
+            if( !isset( $app_array[ $app ] ) )
+            {
+                if( $context->arguments['fix'] )
+                {
+                    $add_app = $rule->owner->owner->appStore->find( $app );
+                    if( $context->isAPI )
+                        $rule->apps->API_addApp( $add_app );
+                    else
+                        $rule->apps->addApp( $add_app );
+                    print "        - app-id: ".$app." added to rule\n";
+                }
+                else
+                    print "        - app-id: ".$app." is missing in rule\n";
+            }
+        }
+    },
+    'args' => Array(  'fix' => Array( 'type' => 'bool', 'default' => 'no'  ), )
+
+);
 
 //                                                 //
 //               Target based Actions                 //
