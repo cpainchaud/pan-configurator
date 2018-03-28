@@ -2311,7 +2311,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
             }
             else
             {
-                $devices = $sub->getDevicesInGroup();
+                $devices = $sub->getDevicesInGroup( true );
                 $firstLoop = true;
 
                 foreach($devices as $device)
