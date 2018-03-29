@@ -180,119 +180,12 @@ class AppStore extends ObjStore
                 $app->tcp_time_wait_timeout = $tcp_wait_timeoutcur->textContent;
             }
 
-            $cursor = DH::findFirstElement('default', $appx);
-            if( $cursor === FALSE )
-                continue;
-
-            $protocur = DH::findFirstElement('ident-by-ip-protocol', $cursor);
-            if( $protocur !== FALSE )
+            $obsolete = DH::findFirstElement('obsolete', $appx);
+            if( $obsolete !== false )
             {
-                $app->proto = $protocur->textContent;
+                $app->obsolete = $obsolete->textContent;
             }
 
-            $icmpcur = DH::findFirstElement('ident-by-icmp-type', $cursor);
-            if( $icmpcur !== FALSE )
-            {
-                $app->icmpsub = $icmpcur->textContent;
-            }
-
-            $icmp6cur = DH::findFirstElement('ident-by-icmp6-type', $cursor);
-            if( $icmp6cur !== FALSE )
-            {
-                $app->icmp6sub = $icmp6cur->textContent;
-            }
-
-            $cursor = DH::findFirstElement('port', $cursor);
-            if( $cursor !== FALSE )
-            {
-                foreach( $cursor->childNodes as $portx )
-                {
-                    if( $portx->nodeType != XML_ELEMENT_NODE )
-                        continue;
-
-                    /** @var  $portx DOMElement */
-
-                    $ex = explode('/', $portx->textContent);
-
-                    if( count($ex) != 2 )
-                        derr('unsupported port description: ' . $portx->textContent);
-
-                    if( $ex[0] == 'tcp' )
-                    {
-                        $exports = explode(',', $ex[1]);
-                        $ports = Array();
-
-                        if( count($exports) < 1 )
-                            derr('unsupported port description: ' . $portx->textContent);
-
-                        foreach( $exports as &$sport )
-                        {
-                            if( $sport == 'dynamic' )
-                            {
-                                $ports[] = Array(0 => 'dynamic');
-                                continue;
-                            }
-                            $tmpex = explode('-', $sport);
-                            if( count($tmpex) < 2 )
-                            {
-                                $ports[] = Array(0 => 'single', 1 => $sport);
-                                continue;
-                            }
-
-                            $ports[] = Array(0 => 'range', 1 => $tmpex[0], 2 => $tmpex[1]);
-
-                        }
-                        //print_r($ports);
-
-                        if( $app->tcp === null )
-                            $app->tcp = $ports;
-                        else
-                            $app->tcp = array_merge($app->tcp, $ports);
-                    }
-                    elseif( $ex[0] == 'udp' )
-                    {
-                        $exports = explode(',', $ex[1]);
-                        $ports = Array();
-
-                        if( count($exports) < 1 )
-                            derr('unsupported port description: ' . $portx->textContent);
-
-                        foreach( $exports as &$sport )
-                        {
-                            if( $sport == 'dynamic' )
-                            {
-                                $ports[] = Array(0 => 'dynamic');
-                                continue;
-                            }
-                            $tmpex = explode('-', $sport);
-                            if( count($tmpex) < 2 )
-                            {
-                                $ports[] = Array(0 => 'single', 1 => $sport);
-                                continue;
-                            }
-
-                            $ports[] = Array(0 => 'range', 1 => $tmpex[0], 2 => $tmpex[1]);
-
-                        }
-                        //print_r($ports);
-
-                        if( $app->udp === null )
-                            $app->udp = $ports;
-                        else
-                            $app->udp = array_merge($app->udp, $ports);
-                    }
-                    elseif( $ex[0] == 'icmp' )
-                    {
-                        $app->icmp = $ex[1];
-                    }
-                    elseif( $ex[0] == 'icmp6' )
-                    {
-                        $app->icmp6 = $ex[1];
-                    }
-                    else
-                        derr('unsupported port description: ' . $portx->textContent);
-                }
-            }
 
             #xpath /predefined
             $tmp = DH::findFirstElement('category', $appx);
@@ -426,8 +319,122 @@ class AppStore extends ObjStore
                     $app->implicitUse[] = $depApp;
                 }
             }
-        }
 
+            $cursor = DH::findFirstElement('default', $appx);
+            if( $cursor === FALSE )
+                continue;
+
+            $protocur = DH::findFirstElement('ident-by-ip-protocol', $cursor);
+            if( $protocur !== FALSE )
+            {
+                $app->proto = $protocur->textContent;
+            }
+
+            $icmpcur = DH::findFirstElement('ident-by-icmp-type', $cursor);
+            if( $icmpcur !== FALSE )
+            {
+                $app->icmpsub = $icmpcur->textContent;
+            }
+
+            $icmp6cur = DH::findFirstElement('ident-by-icmp6-type', $cursor);
+            if( $icmp6cur !== FALSE )
+            {
+                $app->icmp6sub = $icmp6cur->textContent;
+            }
+
+            $cursor = DH::findFirstElement('port', $cursor);
+            if( $cursor !== FALSE )
+            {
+                foreach( $cursor->childNodes as $portx )
+                {
+                    if( $portx->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    /** @var  $portx DOMElement */
+
+                    $ex = explode('/', $portx->textContent);
+
+                    if( count($ex) != 2 )
+                        derr('unsupported port description: ' . $portx->textContent);
+
+                    if( $ex[0] == 'tcp' )
+                    {
+                        $exports = explode(',', $ex[1]);
+                        $ports = Array();
+
+                        if( count($exports) < 1 )
+                            derr('unsupported port description: ' . $portx->textContent);
+
+                        foreach( $exports as &$sport )
+                        {
+                            if( $sport == 'dynamic' )
+                            {
+                                $ports[] = Array(0 => 'dynamic');
+                                continue;
+                            }
+                            $tmpex = explode('-', $sport);
+                            if( count($tmpex) < 2 )
+                            {
+                                $ports[] = Array(0 => 'single', 1 => $sport);
+                                continue;
+                            }
+
+                            $ports[] = Array(0 => 'range', 1 => $tmpex[0], 2 => $tmpex[1]);
+
+                        }
+                        //print_r($ports);
+
+                        if( $app->tcp === null )
+                            $app->tcp = $ports;
+                        else
+                            $app->tcp = array_merge($app->tcp, $ports);
+                    }
+                    elseif( $ex[0] == 'udp' )
+                    {
+                        $exports = explode(',', $ex[1]);
+                        $ports = Array();
+
+                        if( count($exports) < 1 )
+                            derr('unsupported port description: ' . $portx->textContent);
+
+                        foreach( $exports as &$sport )
+                        {
+                            if( $sport == 'dynamic' )
+                            {
+                                $ports[] = Array(0 => 'dynamic');
+                                continue;
+                            }
+                            $tmpex = explode('-', $sport);
+                            if( count($tmpex) < 2 )
+                            {
+                                $ports[] = Array(0 => 'single', 1 => $sport);
+                                continue;
+                            }
+
+                            $ports[] = Array(0 => 'range', 1 => $tmpex[0], 2 => $tmpex[1]);
+
+                        }
+                        //print_r($ports);
+
+                        if( $app->udp === null )
+                            $app->udp = $ports;
+                        else
+                            $app->udp = array_merge($app->udp, $ports);
+                    }
+                    elseif( $ex[0] == 'icmp' )
+                    {
+                        $app->icmp = $ex[1];
+                    }
+                    elseif( $ex[0] == 'icmp6' )
+                    {
+                        $app->icmp6 = $ex[1];
+                    }
+                    else
+                        derr('unsupported port description: ' . $portx->textContent);
+                }
+            }
+
+        }
     }
 
 	public function loadcontainers_from_domxml( &$xmlDom )

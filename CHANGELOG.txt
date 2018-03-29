@@ -3,6 +3,7 @@ CHANGELOG
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
 * moved over to github project swaschkut/pan-configurator
 * new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
+* class PanAPIConnector : added support for device uptime
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool]
@@ -17,6 +18,7 @@ bugfix:
 - fix rule-merger - wrong calculation usage for method 5,6,8
 - fix class App - calculateDependencies has missing app-id dependency calculation if explicit and implicit app-id are set
 - fix rules-edit filter (rule is.unused.fast) in a DeviceGroup hierarchy
+- fix class-AppStore - App details not imported if App has no ports
 
 
 
