@@ -212,14 +212,14 @@ class App
 		foreach( $plus as $plusApp )
 		{
 			$found = false;
-			foreach( $this->explicitUse as $explApp )
-			{
-				if( $explApp === $plusApp )
-				{
-					$found = true;
-					break;
-				}
-			}
+            foreach( $this->implicitUse as $implApp )
+            {
+                if( $implApp === $plusApp )
+                {
+                    $found = true;
+                    break;
+                }
+            }
 			if( !$found )
 				$ret[] = $plusApp;
 		}
