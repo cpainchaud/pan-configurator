@@ -29,7 +29,7 @@ class NetworkPropertiesContainer
     /** @var IKECryptoProfileStore */
     public $ikeCryptoProfileStore;
 
-    /** @var IPSecCryptoProfileStore */
+    /** @var IPsecCryptoProfileStore */
     public $ipsecCryptoProfileStore;
 
     /** @var DOMElement|null */
@@ -50,7 +50,7 @@ class NetworkPropertiesContainer
         $this->tmpInterfaceStore = new TmpInterfaceStore('TmpIfaces', $owner);
         $this->virtualRouterStore = new VirtualRouterStore('', $owner);
         $this->ikeCryptoProfileStore = new IKECryptoProfileStore('IkeCryptoProfiles', $owner);
-        $this->ipsecCryptoProfileStore = new IPSecCryptoProfileStore('IPSecCryptoProfiles', $owner);
+        $this->ipsecCryptoProfileStore = new IPsecCryptoProfileStore('IPSecCryptoProfiles', $owner);
         $this->ikeGatewayStore = new IKEGatewayStore('IkeGateways', $owner);
     }
 
