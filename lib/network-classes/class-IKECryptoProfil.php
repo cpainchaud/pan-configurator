@@ -32,9 +32,11 @@ class IKECryptoProfil
 
     public $type = 'notfound';
 
+    //TODO: 20180403 these three variables are multi member, extend to array
     public $hash = 'notfound';
     public $dhgroup = 'notfound';
     public $encryption = 'notfound';
+
     public $lifetime_seconds = '';
     public $lifetime_minutes = '';
     public $lifetime_hours = '';
