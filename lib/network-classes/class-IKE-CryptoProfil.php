@@ -18,9 +18,9 @@
 
 /**
  * Class IkeCryptoProfil
- * @property IkeCryptoProfileStore $owner
+ * @property IKECryptoProfileStore $owner
  */
-class IkeCryptoProfil
+class IKECryptoProfil
 {
     use InterfaceType;
     use XmlConvertible;
@@ -46,7 +46,7 @@ class IkeCryptoProfil
     /**
      * IkeCryptoProfile constructor.
      * @param string $name
-     * @param IkeCryptoProfileStore $owner
+     * @param IKECryptoProfileStore $owner
      */
     public function __construct($name, $owner)
     {

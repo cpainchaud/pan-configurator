@@ -21,9 +21,9 @@
  * @property $o IkeCryptoProfil[]
  * @property PANConf $owner
  */
-class IkeCryptoProfileStore extends ObjStore
+class IKECryptoProfileStore extends ObjStore
 {
-    public static $childn = 'IkeCryptoProfil';
+    public static $childn = 'IKECryptoProfil';
 
     protected $fastMemToIndex=null;
     protected $fastNameToIndex=null;
@@ -36,7 +36,7 @@ class IkeCryptoProfileStore extends ObjStore
     }
 
     /**
-     * @return IkeCryptoProfil[]
+     * @return IKECryptoProfil[]
      */
     public function ikeCryptoProfil()
     {
@@ -65,7 +65,7 @@ class IkeCryptoProfileStore extends ObjStore
     }
 
     /**
-     * @param IkeCryptoProfil $CryptoProfile
+     * @param IKECryptoProfil $CryptoProfile
      * @return bool
      */
     public function addProfil( $CryptoProfile )
