@@ -18,9 +18,9 @@
 
 /**
  * Class IPsecCryptoProfil
- * @property IPsecCryptoProfileStore $owner
+ * @property IPSecCryptoProfileStore $owner
  */
-class IPsecCryptoProfil
+class IPSecCryptoProfil
 {
     use InterfaceType;
     use XmlConvertible;
@@ -51,7 +51,7 @@ class IPsecCryptoProfil
     /**
      * IPsecCryptoProfile constructor.
      * @param string $name
-     * @param IPsecCryptoProfileStore $owner
+     * @param IPSecCryptoProfileStore $owner
      */
     public function __construct($name, $owner)
     {

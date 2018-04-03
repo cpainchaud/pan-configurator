@@ -21,9 +21,9 @@
  * @property $o IPsecCryptoProfil[]
  * @property PANConf $owner
  */
-class IPsecCryptoProfileStore extends ObjStore
+class IPSecCryptoProfileStore extends ObjStore
 {
-    public static $childn = 'IPsecCryptoProfil';
+    public static $childn = 'IPSecCryptoProfil';
 
     protected $fastMemToIndex=null;
     protected $fastNameToIndex=null;
@@ -36,7 +36,7 @@ class IPsecCryptoProfileStore extends ObjStore
     }
 
     /**
-     * @return IPsecCryptoProfil[]
+     * @return IPSecCryptoProfil[]
      */
     public function ipsecCryptoProfil()
     {
@@ -46,12 +46,12 @@ class IPsecCryptoProfileStore extends ObjStore
     /**
      * Creates a new IPsecCryptoProfil in this store. It will be placed at the end of the list.
      * @param string $name name of the new IPsecCryptoProfil
-     * @return IPsecCryptoProfil
+     * @return IPSecCryptoProfil
      */
     public function newIPsecCryptoProfil( $name )
     {
-        $CryptoProfile = new IPsecCryptoProfil( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IPsecCryptoProfil::$templatexml);
+        $CryptoProfile = new IPSecCryptoProfil( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IPSecCryptoProfil::$templatexml);
 
         $CryptoProfile->load_from_domxml($xmlElement);
 
