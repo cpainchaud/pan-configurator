@@ -17,10 +17,10 @@
 */
 
 /**
- * Class IPSecCryptoProfil
- * @property IPSecCryptoProfileStore $owner
+ * Class IPsecCryptoProfil
+ * @property IPsecCryptoProfileStore $owner
  */
-class IPSecCryptoProfil
+class IPsecCryptoProfil
 {
     use InterfaceType;
     use XmlConvertible;
@@ -49,9 +49,9 @@ class IPSecCryptoProfil
 
 
     /**
-     * IPSecCryptoProfile constructor.
+     * IPsecCryptoProfile constructor.
      * @param string $name
-     * @param IPSecCryptoProfileStore $owner
+     * @param IPsecCryptoProfileStore $owner
      */
     public function __construct($name, $owner)
     {
@@ -122,10 +122,85 @@ class IPSecCryptoProfil
         }
     }
 
+    /**
+     * return true if change was successful false if not (duplicate IPsecCryptoProfil name?)
+     * @return bool
+     * @param string $name new name for the IPsecCryptoProfil
+     */
+    public function setName($name)
+    {
+        if( $this->name == $name )
+            return true;
 
-    public function isIPSecCryptoProfilType()
+        /* TODO: 20180331 finalize needed
+        if( isset($this->owner) && $this->owner !== null )
+        {
+            if( $this->owner->isRuleNameAvailable($name) )
+            {
+                $oldname = $this->name;
+                $this->name = $name;
+                $this->owner->ruleWasRenamed($this,$oldname);
+            }
+            else
+                return false;
+        }
+*/
+        $this->name = $name;
+        $this->xmlroot->setAttribute('name', $name);
+
+        return true;
+    }
+
+    public function setIPsecDHgroup( $dggroup )
+    {
+        if( $this->$dggroup == $dggroup )
+            return true;
+
+        $this->gateway = $dggroup;
+
+        $tmp_ipsec_entry = DH::findFirstElementOrCreate('esp', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('dh-group', $tmp_ipsec_entry);
+        DH::setDomNodeText( $tmp_gateway, $dggroup);
+
+
+        return true;
+    }
+    /*
+        * * <dh-group>group2</dh-group>
+         * esp / ah
+         * <esp>
+              <authentication>
+                <member>sha256</member>
+              </authentication>
+         * sha-1
+
+         * <esp>
+      <authentication>
+        <member>sha256</member>
+      </authentication> 8
+        * <lifetime>
+          <hours>1</hours>
+        </lifetime>
+        * second 3600 / hour
+     */
+
+    public function isIPsecCryptoProfilType()
     {
         return true;
     }
 
+    static public $templatexml = '<entry name="**temporarynamechangeme**">
+<esp>
+  <authentication>
+    <member>sha256</member>
+  </authentication>
+  <encryption>
+    <member>aes-128-gcm</member>
+  </encryption>
+</esp>
+<lifetime>
+  <hours>1</hours>
+</lifetime>
+<dh-group>group2</dh-group>
+</entry>';
 }

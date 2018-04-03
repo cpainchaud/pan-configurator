@@ -25,6 +25,9 @@ class IkeCryptoProfileStore extends ObjStore
 {
     public static $childn = 'IkeCryptoProfil';
 
+    protected $fastMemToIndex=null;
+    protected $fastNameToIndex=null;
+
     public function __construct($name, $owner)
     {
         $this->name = $name;
@@ -35,54 +38,76 @@ class IkeCryptoProfileStore extends ObjStore
     /**
      * @return IkeCryptoProfil[]
      */
-    public function ikeCryptProfil()
+    public function ikeCryptoProfil()
     {
         return $this->o;
     }
 
 
     /**
-     * @param $name
-     * @param null $ref
-     * @param bool $nested
-     * @return null|IkeCryptoProfil
+     * Creates a new IKECryptoProfil in this store. It will be placed at the end of the list.
+     * @param string $name name of the new IKECryptoProfil
+     * @return IKECryptoProfil
      */
-    public function find($name, $ref=null, $nested = true)
+    public function newIKECryptoProfil( $name )
     {
-        $f = $this->findByName($name,$ref);
+        $CryptoProfile = new IKECryptoProfil( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IKECryptoProfil::$templatexml);
 
-        if( $f !== null )
-            return $f;
+        $CryptoProfile->load_from_domxml($xmlElement);
 
-        if( $nested && $this->parentCentralStore !== null )
-            return $this->parentCentralStore->find( $name, $ref, $nested);
+        $CryptoProfile->owner = null;
+        $CryptoProfile->setName($name);
 
-        return null;
+        $this->addProfil( $CryptoProfile );
+
+        return $CryptoProfile;
     }
 
-
     /**
-     * @param $name string
-     * @param $type string
-     * @param $value string
-     * @param string $description
-     * @return Address
-     * @throws Exception
+     * @param IkeCryptoProfil $CryptoProfile
+     * @return bool
      */
-    public function newIkeCryptoProfil($name , $type, $value, $description = '')
+    public function addProfil( $CryptoProfile )
     {
-        $found = $this->find($name,null, true);
-        if( $found !== null )
-            derr("cannot create Address named '".$name."' as this name is already in use");
+        if( !is_object($CryptoProfile) )
+            derr('this function only accepts IKEGateway class objects');
 
-        $newObject = new Address($name,$this, true);
-        $newObject->setType($type);
-        $newObject->setValue($value);
-        $newObject->setDescription($description);
+        if( $CryptoProfile->owner !== null )
+            derr('Trying to add a gateway that has a owner already !');
 
-        $this->add($newObject);
 
-        return $newObject;
+        $ser = spl_object_hash($CryptoProfile);
+
+        if (!isset($this->fastMemToIndex[$ser]))
+        {
+            $CryptoProfile->owner = $this;
+
+            if( $this->xmlroot === null )
+                $this->createXmlRoot();
+
+            $this->xmlroot->appendChild($CryptoProfile->xmlroot);
+
+            return true;
+        } else
+            derr('You cannot add a Gateway that is already here :)');
+
+        return false;
+    }
+
+    public function createXmlRoot()
+    {
+        if( $this->xmlroot === null )
+        {
+            //TODO: 20180331 why I need to create full path? why it is not set before???
+            $xml = DH::findFirstElementOrCreate('devices', $this->owner->xmlroot);
+            $xml = DH::findFirstElementOrCreate('entry', $xml);
+            $xml = DH::findFirstElementOrCreate('network', $xml);
+            $xml = DH::findFirstElementOrCreate('ike', $xml);
+            $xml = DH::findFirstElementOrCreate('crypto-profiles', $xml);
+
+            $this->xmlroot = DH::findFirstElementOrCreate('ike-crypto-profiles', $xml);
+        }
     }
 
 } 

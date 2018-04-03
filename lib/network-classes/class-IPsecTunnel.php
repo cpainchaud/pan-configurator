@@ -32,10 +32,27 @@ class IPsecTunnel
     /** @var null|string[]|DOMElement */
     public $proxyIdRoot = null;
 
+    /** @var null|string[]|DOMElement */
+    public $proxyIdRootv6 = null;
+
     public $type = 'notfound';
+
+    /** @var null|string[]|DOMElement */
+    public $gateway = 'notfound';
+
+    /** @var null|string[]|DOMElement */
+    public $protocol = 'notfound';
+    /** @var null|string[]|DOMElement */
+    public $protocol_local = 'notfound';
+    /** @var null|string[]|DOMElement */
+    public $protocol_remote = 'notfound';
 
     public $proxys = Array();
 
+    public $proposal = null;
+    public $interface = null;
+    public $localIP = null;
+    public $remoteIP = null;
 
     /**
      * IPsecTunnel constructor.
@@ -70,8 +87,18 @@ class IPsecTunnel
                 $this->typeRoot = $node;
                 //print "found type auto key\n";
 
+                // now extracts IPSEC tunnel name
+                $tmp_gateway = DH::findFirstElementOrCreate('ike-gateway', $node);
+                $tmp_gateway_entry = DH::findFirstElementOrCreate('entry', $tmp_gateway);
+                $this->gateway = DH::findAttribute('name', $tmp_gateway_entry);
+                if( $this->gateway === FALSE )
+                    derr("ike-gateway not found\n");
+
                 // now extracts ProxyID
                 $this->proxyIdRoot = DH::findFirstElementOrCreate('proxy-id', $node);
+
+                // now extracts ProxyID for IPv6
+                $this->proxyIdRootv6 = DH::findFirstElementOrCreate('proxy-id-v6', $node);
 
                 foreach( $this->proxyIdRoot->childNodes as $proxyNode )
                 {
@@ -92,7 +119,146 @@ class IPsecTunnel
                     else
                         $remote = '0.0.0.0/0';
 
-                    $record = Array('name' => $proxyName ,'local' => $local, 'remote' => $remote, 'xmlroot' => $proxyNode );
+
+                    $protocolNode = DH::findFirstElement('protocol', $proxyNode);
+                    $protocol_tcp = DH::findFirstElement('tcp', $protocolNode);
+                    $protocol_udp = DH::findFirstElement('udp', $protocolNode);
+                    $protocol_number = DH::findFirstElement('number', $protocolNode);
+                    $protocol_any = DH::findFirstElement('any', $protocolNode);
+
+
+                    if( $protocol_tcp !== FALSE )
+                    {
+                        $protocol = "tcp";
+                        $protocol_ports = $protocol_tcp;
+                    }
+                    elseif( $protocol_udp !== FALSE )
+                    {
+                        $protocol = "udp";
+                        $protocol_ports = $protocol_udp;
+                    }
+                    elseif( $protocol_number !== FALSE )
+                    {
+                        $protocol = "number";
+                        $protocol_ports = null;
+
+                        $localport = $protocol_number->nodeValue;
+                        $remoteport = $localport;
+
+                    }
+                    elseif( $protocol_any !== FALSE )
+                    {
+                        $protocol = "any";
+                        $protocol_ports = null;
+                        $localport = '';
+                        $remoteport = '';
+                    }
+
+                    if( $protocol_ports !== null )
+                    {
+                        $localport = DH::findFirstElement('local-port', $protocol_ports);
+                        if( $localport !== false )
+                            $localport = $localport->nodeValue;
+                        else
+                            $localport = '';
+
+                        $remoteport = DH::findFirstElement('remote-port', $protocol_ports);
+                        if( $remoteport !== false )
+                            $remoteport = $remoteport->nodeValue;
+                        else
+                            $remoteport = '';
+                    }
+
+
+                    $protocol_array = array();
+                    $protocol_array['type'] = $protocol;
+                    $protocol_array['localport'] = $localport;
+                    $protocol_array['remoteport'] = $remoteport;
+
+
+                    $record = Array('name' => $proxyName ,'local' => $local, 'remote' => $remote, 'xmlroot' => $proxyNode, 'protocol' => $protocol_array, 'type' => 'IPv4' );
+
+                    $this->proxys[] = &$record;
+                    unset($record);
+                }
+
+
+
+                foreach( $this->proxyIdRootv6->childNodes as $proxyNode )
+                {
+                    if( $proxyNode->nodeType != 1 )
+                        continue;
+
+                    $proxyName = DH::findAttribute('name', $proxyNode);
+
+                    $local = DH::findFirstElement('local', $proxyNode);
+                    if( $local !== false )
+                        $local = $local->nodeValue;
+                    else
+                        $local = '::';
+
+                    $remote = DH::findFirstElement('remote', $proxyNode);
+                    if( $remote !== false )
+                        $remote = $remote->nodeValue;
+                    else
+                        $remote = '::';
+
+                    $protocolNode = DH::findFirstElement('protocol', $proxyNode);
+                    $protocol_tcp = DH::findFirstElement('tcp', $protocolNode);
+                    $protocol_udp = DH::findFirstElement('udp', $protocolNode);
+                    $protocol_number = DH::findFirstElement('number', $protocolNode);
+                    $protocol_any = DH::findFirstElement('any', $protocolNode);
+
+
+                    if( $protocol_tcp !== FALSE )
+                    {
+                        $protocol = "tcp";
+                        $protocol_ports = $protocol_tcp;
+                    }
+                    elseif( $protocol_udp !== FALSE )
+                    {
+                        $protocol = "udp";
+                        $protocol_ports = $protocol_udp;
+                    }
+                    elseif( $protocol_number !== FALSE )
+                    {
+                        $protocol = "number";
+                        $protocol_ports = null;
+
+                        $localport = $protocol_number->nodeValue;
+                        $remoteport = $localport;
+
+                    }
+                    elseif( $protocol_any !== FALSE )
+                    {
+                        $protocol = "any";
+                        $protocol_ports = null;
+                        $localport = '';
+                        $remoteport = '';
+                    }
+
+                    if( $protocol_ports !== null )
+                    {
+                        $localport = DH::findFirstElement('local-port', $protocol_ports);
+                        if( $localport !== false )
+                            $localport = $localport->nodeValue;
+                        else
+                            $localport = '';
+
+                        $remoteport = DH::findFirstElement('remote-port', $protocol_ports);
+                        if( $remoteport !== false )
+                            $remoteport = $remoteport->nodeValue;
+                        else
+                            $remoteport = '';
+                    }
+
+                    $protocol_array = array();
+                    $protocol_array['type'] = $protocol;
+                    $protocol_array['localport'] = $localport;
+                    $protocol_array['remoteport'] = $remoteport;
+
+
+                    $record = Array('name' => $proxyName ,'local' => $local, 'remote' => $remote, 'xmlroot' => $proxyNode, 'protocol' => $protocol_array, 'type' => 'IPv6' );
 
                     $this->proxys[] = &$record;
                     unset($record);
@@ -108,7 +274,7 @@ class IPsecTunnel
      */
     public function proxyIdList()
     {
-        $this->proxys;
+        return $this->proxys;
     }
 
     /**
@@ -148,16 +314,22 @@ class IPsecTunnel
      */
     public function findAvailableProxyIdName($baseName)
     {
+        $tmp_proxy = $this->proxys;
         for($i=0; $i<10000; $i++)
         {
             $newName = $baseName.$i;
 
-            foreach($this->proxys as &$proxy )
+            if( count( $tmp_proxy ) == 0 )
+                return $newName;
+
+            foreach($tmp_proxy as $id => $proxy )
             {
                 if( $proxy['name'] == $newName )
+                {
+                    unset( $tmp_proxy[$id] );
                     break;
+                }
             }
-            return $newName;
         }
 
         derr("this should never happen");
@@ -190,7 +362,7 @@ class IPsecTunnel
      * @param null|string $name
      * @return bool
      */
-    public function addProxyId( $local, $remote, $name=null)
+    public function addProxyId( $local, $remote, $name=null )
     {
         if( $name === null )
             $name = $this->findAvailableProxyIdName('proxy-');
@@ -199,7 +371,6 @@ class IPsecTunnel
         {
             if( $proxy['local'] == $local && $proxy['remote'] == $remote )
                 return false;
-
         }
 
         $newRoot = DH::createElement($this->proxyIdRoot, 'entry');
@@ -208,6 +379,9 @@ class IPsecTunnel
         DH::createElement($newRoot, 'local', $local);
         DH::createElement($newRoot, 'remote', $remote);
 
+        $tmp_protocol = DH::createElement($newRoot, 'protocol');
+        DH::createElement($tmp_protocol, 'any');
+
         $newArray = Array('name' => $name, 'local' => $local, 'remote' => $remote, 'xmlroot' => $newRoot);
 
         $this->proxys[] = &$newArray;
@@ -215,6 +389,95 @@ class IPsecTunnel
         return true;
     }
 
+    /**
+     * return true if change was successful false if not (duplicate IPsectunnel name?)
+     * @return bool
+     * @param string $name new name for the IPsecTunnel
+     */
+    public function setName($name)
+    {
+        if( $this->name == $name )
+            return true;
+
+        /* TODO: 20180331 finalize needed
+        if( isset($this->owner) && $this->owner !== null )
+        {
+            if( $this->owner->isRuleNameAvailable($name) )
+            {
+                $oldname = $this->name;
+                $this->name = $name;
+                $this->owner->ruleWasRenamed($this,$oldname);
+            }
+            else
+                return false;
+        }
+*/
+        $this->name = $name;
+        $this->xmlroot->setAttribute('name', $name);
+
+        return true;
+    }
+
+    public function setIKEGateway( $gateway_name )
+    {
+        if( $this->gateway == $gateway_name )
+            return true;
+
+        $this->gateway = $gateway_name;
+
+        //TODO: object ike-gateway not found?
+        $tmp_ipsec_entry = DH::findFirstElementOrCreate('auto-key', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('ike-gateway', $tmp_ipsec_entry);
+        $tmp_gateway_entry = DH::findFirstElementOrCreate('entry', $tmp_gateway);
+        $tmp_gateway_entry->setAttribute('name', $gateway_name);
+
+        return true;
+    }
+
+    public function setProposal( $proposal )
+    {
+        if( $this->proposal == $proposal )
+            return true;
+
+        $this->proposal = $proposal;
+
+        $tmp_ipsec_entry = DH::findFirstElementOrCreate('auto-key', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('ipsec-crypto-profile', $tmp_ipsec_entry);
+        DH::setDomNodeText( $tmp_gateway, $proposal);
+
+        return true;
+    }
+
+    public function setInterface( $interface )
+    {
+        if( $this->interface == $interface )
+            return true;
+
+        $this->interface = $interface;
+
+        $tmp_ipsec_entry = DH::findFirstElementOrCreate('tunnel-interface', $this->xmlroot);
+        DH::setDomNodeText( $tmp_ipsec_entry, $interface);
+
+        return true;
+    }
+
+
     public function isIPsecTunnelType() { return true; }
+
+    static public $templatexml = '<entry name="**temporarynamechangeme**">
+              <auto-key>
+                <ike-gateway>
+                  <entry name="**temporaryIKEGateway**"/>
+                </ike-gateway>
+                <ipsec-crypto-profile>default</ipsec-crypto-profile>
+                <proxy-id></proxy-id>
+              </auto-key>
+              <tunnel-monitor>
+                <enable>no</enable>
+              </tunnel-monitor>
+              <tunnel-interface></tunnel-interface>
+              <anti-replay>yes</anti-replay>
+              <copy-tos>no</copy-tos>
+    </entry>';
 
 }

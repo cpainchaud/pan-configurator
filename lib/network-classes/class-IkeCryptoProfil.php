@@ -89,10 +89,54 @@ class IkeCryptoProfil
         }
     }
 
+    /**
+     * return true if change was successful false if not (duplicate IKECryptoProfil name?)
+     * @return bool
+     * @param string $name new name for the IKECryptoProfil
+     */
+    public function setName($name)
+    {
+        if( $this->name == $name )
+            return true;
+
+        /* TODO: 20180331 finalize needed
+        if( isset($this->owner) && $this->owner !== null )
+        {
+            if( $this->owner->isRuleNameAvailable($name) )
+            {
+                $oldname = $this->name;
+                $this->name = $name;
+                $this->owner->ruleWasRenamed($this,$oldname);
+            }
+            else
+                return false;
+        }
+*/
+        $this->name = $name;
+        $this->xmlroot->setAttribute('name', $name);
+
+        return true;
+    }
 
     public function isIkeCryptoProfilType()
     {
         return true;
     }
+
+    static public $templatexml = '<entry name="**temporarynamechangeme**">
+<hash>
+  <member>sha1</member>
+</hash>
+<dh-group>
+  <member>group2</member>
+</dh-group>
+<encryption>
+  <member>aes-192-cbc</member>
+</encryption>
+<lifetime>
+  <hours>8</hours>
+</lifetime>
+</entry>';
+
 
 }
