@@ -36,7 +36,9 @@ class IkeCryptoProfil
     public $dhgroup = 'notfound';
     public $encryption = 'notfound';
     public $lifetime_seconds = '';
+    public $lifetime_minutes = '';
     public $lifetime_hours = '';
+    public $lifetime_days = '';
 
     public $ikecryptoprofiles = Array();
 
@@ -80,15 +82,14 @@ class IkeCryptoProfil
 
             if( $node->nodeName == 'lifetime' )
             {
-                $this->lifetime_seconds = DH::findFirstElement('seconds', $node);
-                if( $this->lifetime_seconds == null )
-                {
-                    if( $this->lifetime_hours !== null )
-                        $this->lifetime_hours = DH::findFirstElement('hours', $node)->textContent;
-                }
-
-                else
+                if( DH::findFirstElement('seconds', $node) != null )
                     $this->lifetime_seconds = DH::findFirstElement('seconds', $node)->textContent;
+                elseif( DH::findFirstElement('minutes', $node) != null )
+                    $this->lifetime_minutes = DH::findFirstElement('minutes', $node)->textContent;
+                elseif( DH::findFirstElement('hours', $node) != null )
+                    $this->lifetime_hours = DH::findFirstElement('hours', $node)->textContent;
+                elseif( DH::findFirstElement('days', $node) != null )
+                    $this->lifetime_days = DH::findFirstElement('days', $node)->textContent;
             }
         }
     }
