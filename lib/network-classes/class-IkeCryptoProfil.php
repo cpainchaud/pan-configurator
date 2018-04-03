@@ -82,7 +82,11 @@ class IkeCryptoProfil
             {
                 $this->lifetime_seconds = DH::findFirstElement('seconds', $node);
                 if( $this->lifetime_seconds == null )
-                    $this->lifetime_hours = DH::findFirstElement('hours', $node)->textContent;
+                {
+                    if( $this->lifetime_hours !== null )
+                        $this->lifetime_hours = DH::findFirstElement('hours', $node)->textContent;
+                }
+
                 else
                     $this->lifetime_seconds = DH::findFirstElement('seconds', $node)->textContent;
             }
