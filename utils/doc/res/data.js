@@ -139,6 +139,22 @@ var data = {
                 ]
             },
             {
+                "name": "description-Prepend",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "text"
+                    },
+                    {
+                        "type": "bool",
+                        "default": "no",
+                        "name": "newline"
+                    }
+                ]
+            },
+            {
                 "name": "disabled-Set",
                 "help": null,
                 "args": [
@@ -164,6 +180,28 @@ var data = {
                 "name": "display",
                 "help": null,
                 "args": false
+            },
+            {
+                "name": "dsri-Set",
+                "help": null,
+                "args": [
+                    {
+                        "type": "bool",
+                        "default": "yes",
+                        "name": "trueOrFalse"
+                    }
+                ]
+            },
+            {
+                "name": "dsri-Set-FastAPI",
+                "help": null,
+                "args": [
+                    {
+                        "type": "bool",
+                        "default": "yes",
+                        "name": "trueOrFalse"
+                    }
+                ]
             },
             {
                 "name": "dst-Add",
@@ -503,12 +541,13 @@ var data = {
             },
             {
                 "name": "name-Rename",
-                "help": null,
+                "help": "",
                 "args": [
                     {
                         "type": "string",
                         "default": "*nodefault*",
-                        "name": "text"
+                        "help": "This string is used to compose a name. You can use the following aliases :\n  - $$current.name$$ : current name of the object\n  - $$sequential.number$$ : sequential number - starting with 1\n",
+                        "name": "stringFormula"
                     }
                 ]
             },
@@ -922,6 +961,17 @@ var data = {
             }
         ],
         "address": [
+            {
+                "name": "add-member",
+                "help": null,
+                "args": [
+                    {
+                        "type": "string",
+                        "default": "*nodefault*",
+                        "name": "addressobjectname"
+                    }
+                ]
+            },
             {
                 "name": "addObjectWhereUsed",
                 "help": null,
@@ -1661,6 +1711,36 @@ var data = {
                 "operators": [
                     {
                         "name": "has",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.full.or.partial",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "included-in.partial",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.full.or.partial",
+                        "help": null,
+                        "argument": "*required*"
+                    },
+                    {
+                        "name": "includes.partial",
                         "help": null,
                         "argument": "*required*"
                     }
