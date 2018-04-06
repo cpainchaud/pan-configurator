@@ -125,6 +125,82 @@ class IKECryptoProfil
         return true;
     }
 
+    /*
+     P1 proposal:
+Array
+(
+    [0] => preshare
+    [1] => group19
+    [2] => esp
+    [3] => aes256
+    [4] => sha2-256
+    [5] => second
+    [6] => 3600
+     */
+
+    public function setDHgroup($dhgroup )
+    {
+        if( $this->dhgroup == $dhgroup )
+            return true;
+
+        $this->dhgroup = $dhgroup;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('dh-group', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('member', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $dhgroup);
+
+        return true;
+    }
+
+    public function sethash($hash )
+    {
+        if( $this->hash == $hash )
+            return true;
+
+        $this->hash = $hash;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('hash', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('member', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $hash);
+
+        return true;
+    }
+
+    public function setencryption( $encryption )
+    {
+        if( $this->encryption == $encryption )
+            return true;
+
+        $this->encryption = $encryption;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('encryption', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('member', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $encryption);
+
+        return true;
+    }
+
+    public function setlifetime( $timertype, $time )
+    {
+        #if( $this->encryption == $encryption )
+            #return true;
+
+        if( $timertype == 'seconds' )
+            $this->lifetime_seconds = $time;
+        elseif( $timertype == 'minutes' )
+            $this->lifetime_minutes = $time;
+        elseif( $timertype == 'hours' )
+            $this->lifetime_hours = $time;
+        elseif( $timertype == 'days' )
+            $this->lifetime_days = $time;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('lifetime', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate($timertype, $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $time);
+
+        return true;
+    }
+
     public function isIkeCryptoProfilType()
     {
         return true;
@@ -132,16 +208,12 @@ class IKECryptoProfil
 
     static public $templatexml = '<entry name="**temporarynamechangeme**">
 <hash>
-  <member>sha1</member>
 </hash>
 <dh-group>
-  <member>group2</member>
 </dh-group>
 <encryption>
-  <member>aes-192-cbc</member>
 </encryption>
 <lifetime>
-  <hours>8</hours>
 </lifetime>
 </entry>';
 

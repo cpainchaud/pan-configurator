@@ -34,13 +34,23 @@ class IKEGateway
 
     public $preSharedKey = '';
 
-    public $natTraversel = '';
+    public $proposal = '';
+
+    public $version = '';
+
+    public $natTraversal = '';
     public $fragmentation = '';
 
     public $localAddress = false;
+    public $localInterface = false;
     public $peerAddress = false;
+
     public $localID = false;
     public $peerID = false;
+
+    public $localIDtype = false;
+    public $peerIDtype = false;
+
     public $disabled = false;
 
     /**
@@ -65,97 +75,84 @@ class IKEGateway
         if( $this->name === FALSE )
             derr("tunnel name not found\n");
 
-        /* EXAMPLE
-         <gateway>
-            <entry name="test_GW">
-         <authentication>
-                <pre-shared-key>
-                  <key>-AQ==qUqP5cyxm6YcTAhz05Hph5gvu9M=2Hdt3i//3KRNmATVQFFopQ==</key>
-                </pre-shared-key>
-              </authentication>
-
-         <protocol>
-                <ikev1>
-                  <dpd>
-                    <enable>yes</enable>
-                    //if enabled and interval / retry not availalbe value is 5
-                    <interval>10</interval>
-                    <retry>10</retry>
-                  </dpd>
-                //set to default is not availalbe
-                <ike-crypto-profile>Suite-B-GCM-128</ike-crypto-profile>
-                //set to auto if not available
-                  <exchange-mode>main</exchange-mode>
-                </ikev1>
-                <ikev2>
-                  <dpd>
-                    <enable>yes</enable>
-                    //only interval available
-                    <interval>10</interval>
-                  </dpd>
-                //set to default if not available
-                  <ike-crypto-profile>Suite-B-GCM-128</ike-crypto-profile>
-                  <require-cookie>yes</require-cookie>
-                </ikev2>
-                <version>ikev1</version>
-              </protocol>
-
-         <protocol-common>
-                <nat-traversal>
-                  <enable>no</enable>
-                </nat-traversal>
-                <fragmentation>
-                  <enable>no</enable>
-                </fragmentation>
-              </protocol-common>
-
-        <local-address>
-                <interface>ethernet1/1</interface>
-              </local-address>
-
-         <peer-address>
-                <ip>4.4.2.2</ip>
-              </peer-address>
-
-         <local-id>
-                <id>test.test.de</id>
-                <type>fqdn</type>
-              </local-id>
-         <peer-id>
-                <id>1.1.1.1</id>
-                <type>ipaddr</type>
-              </peer-id>
-
-         <disabled>yes</disabled>
-            </entry>
-          </gateway>
-         */
-
-        /*
         foreach( $xml->childNodes as $node )
         {
             if( $node->nodeType != 1 )
                 continue;
 
-            if( $node->nodeName == 'hash' )
-                $this->hash = DH::findFirstElementOrCreate('member', $node)->textContent;
-
-            if( $node->nodeName == 'dh-group' )
-                $this->dhgroup = DH::findFirstElementOrCreate('member', $node)->textContent;
-
-            if( $node->nodeName == 'encryption' )
-                $this->encryption = DH::findFirstElementOrCreate('member', $node)->textContent;
-
-            if( $node->nodeName == 'lifetime' )
+            if( $node->nodeName == 'authentication' )
             {
-                $this->lifetime_seconds = DH::findFirstElement('seconds', $node);
-                if( $this->lifetime_seconds == null )
-                    $this->lifetime_hours = DH::findFirstElement('hours', $node)->textContent;
-                else
-                    $this->lifetime_seconds = DH::findFirstElement('seconds', $node)->textContent;
+                $tmp_psk = DH::findFirstElement('pre-shared-key' , $node);
+                if( $tmp_psk != null )
+                    $this->preSharedKey = DH::findFirstElementOrCreate('key', $tmp_psk)->textContent;
             }
+
+            if( $node->nodeName == 'local-address' )
+            {
+                $this->localInterface = DH::findFirstElementOrCreate('interface', $node)->textContent;
+            }
+
+            if( $node->nodeName == 'peer-address' )
+            {
+                $this->peerAddress = DH::findFirstElementOrCreate('ip', $node)->textContent;
+            }
+
+
+            if( $node->nodeName == 'protocol' )
+            {
+                /* EXAMPLE
+                <ikev1>
+                    <dpd>
+                        <enable>yes</enable>
+                        <interval>10</interval>
+                        <retry>10</retry>
+                    </dpd>
+                    <exchange-mode>main</exchange-mode>
+                </ikev1>
+                <ikev2>
+                    <dpd>
+                        <enable>yes</enable>
+                        //only interval available
+                        <interval>10</interval>
+                    </dpd>
+                    <require-cookie>yes</require-cookie>
+                </ikev2>
+                */
+                $this->version = $this->proposal = DH::findFirstElementOrCreate('version', $node)->textContent;
+
+                $tmp_ikevX = $this->proposal = DH::findFirstElement($this->version, $node);
+                if( $tmp_ikevX != null )
+                    $this->proposal = DH::findFirstElementOrCreate('ike-crypto-profile', $tmp_ikevX)->textContent;
+
+            }
+
+            if( $node->nodeName == 'protocol-common' )
+            {
+                $tmp_natT = DH::findFirstElementOrCreate( 'nat-traversal', $node);
+                if( $tmp_natT != null )
+                    $this->natTraversal = DH::findFirstElementOrCreate('enable', $tmp_natT)->textContent;
+
+                $tmp_frag = DH::findFirstElementOrCreate( 'fragmentation', $node);
+                if( $tmp_frag != null )
+                    $this->fragmentation = DH::findFirstElementOrCreate('enable', $tmp_frag)->textContent;
+            }
+
+            if( $node->nodeName == 'local-id' )
+            {
+                $this->localID =  DH::findFirstElementOrCreate('id', $node)->textContent;
+                $this->localIDtype = DH::findFirstElementOrCreate('type', $node)->textContent;
+            }
+
+            if( $node->nodeName == 'peer-id' )
+            {
+                $this->peerID = DH::findFirstElementOrCreate('id', $node)->textContent;
+                $this->peerIDtype = DH::findFirstElementOrCreate('type', $node)->textContent;
+            }
+
+
+            if( $node->nodeName == 'disabled' )
+                $this->disabled = $node->textContent;
         }
-        */
     }
 
     /**
@@ -189,10 +186,74 @@ class IKEGateway
 
     }
 
+    public function setproposal( $proposal )
+    {
+        if( $this->proposal == $proposal )
+            return true;
+
+        $this->proposal = $proposal;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('protocol', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate( $this->version, $tmp_gateway);
+        $tmp_gateway = DH::findFirstElementOrCreate( 'ike-crypto-profile', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $proposal);
+
+        return true;
+    }
+    
+    public function setinterface( $interface )
+    {
+        if( $this->localInterface == $interface )
+            return true;
+
+        $this->localInterface = $interface;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('local-address', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('interface', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $interface);
+
+        return true;
+    }
+
+    public function setpeerAddress( $peeraddress )
+    {
+        if( $this->peerAddress == $peeraddress )
+            return true;
+
+        $this->peerAddress = $peeraddress;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('peer-address', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('ip', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $peeraddress);
+
+        return true;
+    }
+
+    public function setPreSharedKey( $presharedkey )
+    {
+        //TODO: check how cleartext presharedkey can be set
+        if( $this->preSharedKey == $presharedkey )
+            return true;
+
+        $this->preSharedKey = $presharedkey;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('authentication', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate( 'pre-shared-key', $tmp_gateway);
+        $tmp_gateway = DH::findFirstElementOrCreate( 'key', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $presharedkey);
+
+        return true;
+    }
+
+    //TODO: create set functions for:
+    //set nat-traversal
+    //set dpd
+
+
     public function isIKEGatewayType() { return true; }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**">
-    <authentication><pre-shared-key><key></key></pre-shared-key></authentication>
+    <authentication><pre-shared-key><key>DEMO</key></pre-shared-key></authentication>
     <protocol>
         <ikev1><dpd><enable>yes</enable><interval>5</interval><retry>5</retry></dpd><ike-crypto-profile>default</ike-crypto-profile><exchange-mode>auto</exchange-mode></ikev1>
         <ikev2><dpd><enable>yes</enable><interval>5</interval></dpd><ike-crypto-profile>default</ike-crypto-profile></ikev2>

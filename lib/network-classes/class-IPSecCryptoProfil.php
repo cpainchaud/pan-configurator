@@ -154,38 +154,69 @@ class IPSecCryptoProfil
         return true;
     }
 
-    public function setIPsecDHgroup( $dggroup )
+    public function setDHgroup( $dhgroup )
     {
-        if( $this->$dggroup == $dggroup )
+        if( $this->dhgroup == $dhgroup )
             return true;
 
-        $this->gateway = $dggroup;
+        $this->dhgroup = $dhgroup;
 
-        $tmp_ipsec_entry = DH::findFirstElementOrCreate('esp', $this->xmlroot);
-        $tmp_gateway = DH::findFirstElementOrCreate('dh-group', $tmp_ipsec_entry);
-        DH::setDomNodeText( $tmp_gateway, $dggroup);
-
+        $tmp_gateway = DH::findFirstElementOrCreate('dh-group', $this->xmlroot);
+        DH::setDomNodeText( $tmp_gateway, $dhgroup);
 
         return true;
     }
-    /*
-        * * <dh-group>group2</dh-group>
-         * esp / ah
-         * <esp>
-              <authentication>
-                <member>sha256</member>
-              </authentication>
-         * sha-1
 
-         * <esp>
-      <authentication>
-        <member>sha256</member>
-      </authentication> 8
-        * <lifetime>
-          <hours>1</hours>
-        </lifetime>
-        * second 3600 / hour
-     */
+    public function setauthentication($authentication, $ipsecProtocol )
+    {
+        if( $this->authentication == $authentication )
+            return true;
+
+        $this->authentication = $authentication;
+
+        $tmp_gateway = DH::findFirstElementOrCreate($ipsecProtocol, $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('authentication', $tmp_gateway);
+        $tmp_gateway = DH::findFirstElementOrCreate('member', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $authentication);
+
+        return true;
+    }
+
+    public function setencryption( $encryption )
+    {
+        if( $this->encryption == $encryption )
+            return true;
+
+        $this->encryption = $encryption;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('esp', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate('encryption', $tmp_gateway);
+        $tmp_gateway = DH::findFirstElementOrCreate('member', $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $encryption);
+
+        return true;
+    }
+
+    public function setlifetime( $timertype, $time )
+    {
+        #if( $this->encryption == $encryption )
+        #return true;
+
+        if( $timertype == 'seconds' )
+            $this->lifetime_seconds = $time;
+        elseif( $timertype == 'minutes' )
+            $this->lifetime_minutes = $time;
+        elseif( $timertype == 'hours' )
+            $this->lifetime_hours = $time;
+        elseif( $timertype == 'days' )
+            $this->lifetime_days = $time;
+
+        $tmp_gateway = DH::findFirstElementOrCreate('lifetime', $this->xmlroot);
+        $tmp_gateway = DH::findFirstElementOrCreate($timertype, $tmp_gateway);
+        DH::setDomNodeText( $tmp_gateway, $time);
+
+        return true;
+    }
 
     public function isIPsecCryptoProfilType()
     {
@@ -195,15 +226,12 @@ class IPSecCryptoProfil
     static public $templatexml = '<entry name="**temporarynamechangeme**">
 <esp>
   <authentication>
-    <member>sha256</member>
   </authentication>
   <encryption>
-    <member>aes-128-gcm</member>
   </encryption>
 </esp>
 <lifetime>
-  <hours>1</hours>
 </lifetime>
-<dh-group>group2</dh-group>
+<dh-group></dh-group>
 </entry>';
 }

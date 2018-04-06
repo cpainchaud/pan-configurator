@@ -425,7 +425,6 @@ class IPsecTunnel
 
         $this->gateway = $gateway_name;
 
-        //TODO: object ike-gateway not found?
         $tmp_ipsec_entry = DH::findFirstElementOrCreate('auto-key', $this->xmlroot);
         $tmp_gateway = DH::findFirstElementOrCreate('ike-gateway', $tmp_ipsec_entry);
         $tmp_gateway_entry = DH::findFirstElementOrCreate('entry', $tmp_gateway);
