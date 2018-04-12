@@ -6,12 +6,12 @@ CHANGELOG
 * class PanAPIConnector : added support for device uptime
 
 utils:
-rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool]
+rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
 rules-edit: action 'display' extend with DSRI information, if "Disable Server Response Inspection" is enabled for security rule
 rules-edit: action'nameRename' extend for additional variable usage like $$current.name$$ and $$sequential.number$$
 rules-edit: new action 'app-Fix-Dependencies' to display missing dependencies, with additional argument 'app-Fix-Dependencies:yes' all missing app-id dependencies are added
+rules-edit: new action 'securityProfile-remove-FastAPI'
 rules-edit: new filter (location is.parent.of [DeviceGroup])
-
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'
@@ -19,6 +19,7 @@ bugfix:
 - fix class App - calculateDependencies has missing app-id dependency calculation if explicit and implicit app-id are set
 - fix rules-edit filter (rule is.unused.fast) in a DeviceGroup hierarchy
 - fix class-AppStore - App details not imported if App has no ports
+- fix for all FastAPI actions directly running against a firewall
 
 
 

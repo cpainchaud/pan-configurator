@@ -287,7 +287,7 @@ class RuleCallContext extends CallContext
     }
 
 
-    public function generateRuleMergedApuChangeString($forSharedRules=false)
+    public function generateRuleMergedApiChangeString($forSharedRules=false)
     {
 
         if( !isset($this->mergeArray) )
@@ -352,7 +352,7 @@ class RuleCallContext extends CallContext
 
             return '<device-group>'.$strPointer.'</device-group>';
         }
-        else
+        elseif( !$forSharedRules )
         {
             if( count($mergeArray) < 1 )
                 return null;
@@ -360,7 +360,7 @@ class RuleCallContext extends CallContext
             $xml = '<vsys>';
             foreach($mergeArray as $subSystemName => &$types)
             {
-                $xml .= "<entry name=\"{$subSystemName}\"><rules>";
+                $xml .= "<entry name=\"{$subSystemName}\"><rulebase>";
 
                 foreach($types as $typeName => &$rules)
                 {
@@ -374,24 +374,25 @@ class RuleCallContext extends CallContext
                     $xml .= "</rules></{$typeName}>\n";
                 }
 
-                $xml .= "</rules></entry>";
+                $xml .= "</rulebase></entry>";
             }
             $xml .= '</vsys>';
 
             return $xml;
         }
+        return null;
     }
 
     public function doBundled_API_Call()
     {
-        $setString = $this->generateRuleMergedApuChangeString(true);
+        $setString = $this->generateRuleMergedApiChangeString(true);
         if( $setString !== null )
         {
             print $this->padding . ' - sending API call for SHARED... ';
             $this->connector->sendSetRequest('/config/shared', $setString);
             print "OK!\n";
         }
-        $setString = $this->generateRuleMergedApuChangeString(false);
+        $setString = $this->generateRuleMergedApiChangeString(false);
         if( $setString !== null )
         {
             print $this->padding . ' - sending API call for Device-Groups/VSYS... ';
