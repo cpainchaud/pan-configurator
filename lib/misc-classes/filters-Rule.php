@@ -2847,6 +2847,54 @@ RQuery::$defaultFilters['rule']['app']['operators']['characteristic.has'] = Arra
     )
 );
 
+RQuery::$defaultFilters['rule']['app']['operators']['has.missing.dependencies'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
+            return null;
+
+        $app_depends_on = array();
+        $app_array = array();
+        $missing_dependencies = false;
+        foreach($rule->apps->membersExpanded() as $app)
+        {
+            $app_array[ $app->name() ] = $app->name();
+            foreach( $app->calculateDependencies() as $dependency )
+            {
+                $app_depends_on[ $dependency->name() ] = $dependency->name();
+            }
+        }
+
+        $first = true;
+        foreach( $app_depends_on as $app => $dependencies )
+        {
+            if( !isset( $app_array[ $app ] ) )
+            {
+                if( $first )
+                {
+                    $first = false;
+                    print "   - app-id: ";
+                }
+                print $app.", ";
+                $missing_dependencies = true;
+            }
+        }
+
+        if( $missing_dependencies )
+        {
+            print " |  is missing in rule:\n";
+            return true;
+        }
+
+        return false;
+    },
+    'arg' => false
+);
 
 // </editor-fold>
 

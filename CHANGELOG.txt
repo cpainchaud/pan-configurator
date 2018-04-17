@@ -12,6 +12,7 @@ rules-edit: action'nameRename' extend for additional variable usage like $$curre
 rules-edit: new action 'app-Fix-Dependencies' to display missing dependencies, with additional argument 'app-Fix-Dependencies:yes' all missing app-id dependencies are added
 rules-edit: new action 'securityProfile-remove-FastAPI'
 rules-edit: new filter (location is.parent.of [DeviceGroup])
+rules-edit: new filter 'app has.missing.dependencies'
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'
