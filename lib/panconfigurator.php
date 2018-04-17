@@ -162,6 +162,10 @@ require_once $basedir . '/network-classes/class-IPSecCryptoProfileStore.php';
 require_once $basedir . '/network-classes/class-IPSecCryptoProfil.php';
 require_once $basedir.'/network-classes/class-IKEGatewayStore.php';
 require_once $basedir.'/network-classes/class-IKEGateway.php';
+require_once $basedir.'/network-classes/class-VlanIfStore.php';
+require_once $basedir.'/network-classes/class-VlanInterface.php';
+require_once $basedir.'/network-classes/class-TunnelIfStore.php';
+require_once $basedir.'/network-classes/class-TunnelInterface.php';
 
 require_once $basedir.'/rule-classes/class-RuleStore.php';
 require_once $basedir.'/rule-classes/class-Rule.php';

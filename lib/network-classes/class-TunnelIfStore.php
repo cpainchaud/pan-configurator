@@ -16,123 +16,95 @@
 */
 
 /**
- * Class EthernetIfStore
- * @property EthernetInterface[] $o
- */
-class EthernetIfStore extends ObjStore
+* @property $o TunnelInterface[]
+ * @property PANConf $owner
+*/
+class TunnelIfStore extends ObjStore
 {
-
-    /** @var PANConf */
-    public $owner;
+    public static $childn = 'TunnelInterface';
 
     protected $fastMemToIndex=null;
     protected $fastNameToIndex=null;
 
-    public static $childn = 'EthernetInterface';
-
     /**
-     * @param PANConf $owner
+     * @param $name string
+     * @param $owner PANConf
      */
-    function __construct($name, $owner)
+    public function __construct($name, $owner)
     {
-        $this->owner = $owner;
         $this->name = $name;
+        $this->owner = $owner;
         $this->classn = &self::$childn;
     }
 
-
-    function countSubInterfaces()
-    {
-        $count = 0;
-
-        foreach($this->o as $interface)
-        {
-            $count += $interface->countSubInterfaces();
-        }
-
-        return $count;
-    }
-
-
     /**
-     * @return EthernetInterface[]
+     * @return TunnelInterface[]
      */
-    function getInterfaces()
+    public function getInterfaces()
     {
         return $this->o;
     }
 
-    public function load_from_domxml(DOMElement $xml)
-    {
-        parent::load_from_domxml($xml);
-        foreach( $this->o as $o )
-        {
-            foreach( $o->subInterfaces() as $sub )
-            {
-                $this->add($sub);
-            }
-        }
-    }
-
+    
     /**
-     * Creates a new EthernetInterface in this store. It will be placed at the end of the list.
-     * @param string $name name of the new EthernetInterface
-     * @return EthernetInterface
+     * Creates a new TunnelInterface in this store. It will be placed at the end of the list.
+     * @param string $name name of the new TunnelInterface
+     * @return TunnelInterface
      */
-    public function newEthernetIf($name)
+    public function newTunnelIf($name)
     {
-        $ethernetIf = new EthernetInterface( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, EthernetInterface::$templatexml);
+        $tunnelIf = new TunnelInterface( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, TunnelInterface::$templatexml);
 
-        $ethernetIf->load_from_domxml($xmlElement);
+        $tunnelIf->load_from_domxml($xmlElement);
 
-        $ethernetIf->owner = null;
-        $ethernetIf->setName($name);
+        $tunnelIf->owner = null;
+        $tunnelIf->setName($name);
 
-        $this->addEthernetIf( $ethernetIf );
+        $this->addTunnelIf( $tunnelIf );
 
-        return $ethernetIf;
+        return $tunnelIf;
     }
 
 
     /**
-     * @param EthernetInterface $ethernetIf
+     * @param TunnelInterface $tunnelIf
      * @return bool
      */
-    public function addEthernetIf( $ethernetIf )
+    public function addTunnelIf( $tunnelIf )
     {
-        if( !is_object($ethernetIf) )
-            derr('this function only accepts EthernetInterface class objects');
+        if( !is_object($tunnelIf) )
+            derr('this function only accepts TunnelInterface class objects');
 
-        if( $ethernetIf->owner !== null )
-            derr('Trying to add a EthernetInterface that has a owner already !');
+        if( $tunnelIf->owner !== null )
+            derr('Trying to add a TunnelInterface that has a owner already !');
 
 
-        $ser = spl_object_hash($ethernetIf);
+        $ser = spl_object_hash($tunnelIf);
 
         if (!isset($this->fastMemToIndex[$ser]))
         {
-            $ethernetIf->owner = $this;
+            $tunnelIf->owner = $this;
 
             if( $this->xmlroot === null )
                 $this->createXmlRoot();
 
-            $this->xmlroot->appendChild($ethernetIf->xmlroot);
+            $this->xmlroot->appendChild($tunnelIf->xmlroot);
 
             return true;
         } else
-            derr('You cannot add a EthernetInterface that is already here :)');
+            derr('You cannot add a TunnelInterface that is already here :)');
 
         return false;
     }
 
     /**
-     * @param EthernetInterface $s
+     * @param TunnelInterface $s
      * @return bool
      */
-    public function API_addEthernetIf( $s )
+    public function API_addTunnelIf( $s )
     {
-        $ret = $this->addEthernetIf($s);
+        $ret = $this->addTunnelIf($s);
 
         if( $ret )
         {
@@ -154,7 +126,7 @@ class EthernetIfStore extends ObjStore
             $xml = DH::findFirstElementOrCreate('entry', $xml);
             $xml = DH::findFirstElementOrCreate('network', $xml);
             $xml = DH::findFirstElementOrCreate('interface', $xml);
-            $xml = DH::findFirstElementOrCreate('ethernet', $xml);
+            $xml = DH::findFirstElementOrCreate('tunnel', $xml);
 
             $this->xmlroot = DH::findFirstElementOrCreate('units', $xml);
         }
@@ -174,7 +146,7 @@ class EthernetIfStore extends ObjStore
         //TODO: intermediate solution
         $str = '/config/devices/entry/network/interface';
 
-        $str = $str.'/ethernet/units';
+        $str = $str.'/tunnel/units';
 
         return $str;
     }
@@ -195,9 +167,9 @@ class EthernetIfStore extends ObjStore
         return $str;
     }
 
-    public function &getEthernetIfStoreXPath()
+    public function &getTunnelIfStoreXPath()
     {
-        $path = $this->getBaseXPath().'/ethernet/units';
+        $path = $this->getBaseXPath().'/tunnel/units';
         return $path;
     }
 
@@ -220,7 +192,7 @@ class EthernetIfStore extends ObjStore
                 $xml = DH::findFirstElementOrCreate('entry', $xml);
                 $xml = DH::findFirstElementOrCreate('network', $xml);
                 $xml = DH::findFirstElementOrCreate('interface', $xml);
-                $xml = DH::findFirstElementOrCreate('ethernet', $xml);
+                $xml = DH::findFirstElementOrCreate('tunnel', $xml);
 
                 DH::findFirstElementOrCreate('units', $xml);
                 #DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
