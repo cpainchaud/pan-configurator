@@ -231,7 +231,6 @@ class IKEGateway
 
     public function setPreSharedKey( $presharedkey )
     {
-        //TODO: check how cleartext presharedkey can be set
         if( $this->preSharedKey == $presharedkey )
             return true;
 
@@ -245,6 +244,30 @@ class IKEGateway
         return true;
     }
 
+    /**
+     * @param $newType string
+     * @return bool true if successful
+     */
+    public function API_setPreSharedKey( $presharedkey )
+    {
+        if( !$this->setPreSharedKey( $presharedkey ) )
+            return false;
+
+        $c = findConnectorOrDie($this);
+
+        #$xpath = $this->getXPath();
+        $tmp_gateway = DH::findFirstElementOrCreate('authentication', $this->xmlroot);
+        $xpath = DH::findFirstElementOrCreate( 'pre-shared-key', $tmp_gateway);
+        $xpath = $xpath->getNodePath();
+
+        $element = "<key>".$presharedkey."</key>";
+
+        $c->sendSetRequest($xpath,  $element );
+
+        $this->setPreSharedKey( $presharedkey );
+
+        return true;
+    }
     //TODO: create set functions for:
     //set nat-traversal
     //set dpd
@@ -252,8 +275,9 @@ class IKEGateway
 
     public function isIKEGatewayType() { return true; }
 
+    //"-AQ==A4vEGnxsZCP7poqzjhJD4Gc+tbE=DS4xndFfZiigUHPCm4ASFQ==" => "DEMO"
     static public $templatexml = '<entry name="**temporarynamechangeme**">
-    <authentication><pre-shared-key><key>DEMO</key></pre-shared-key></authentication>
+    <authentication><pre-shared-key><key>-AQ==A4vEGnxsZCP7poqzjhJD4Gc+tbE=DS4xndFfZiigUHPCm4ASFQ==</key></pre-shared-key></authentication>
     <protocol>
         <ikev1><dpd><enable>yes</enable><interval>5</interval><retry>5</retry></dpd><ike-crypto-profile>default</ike-crypto-profile><exchange-mode>auto</exchange-mode></ikev1>
         <ikev2><dpd><enable>yes</enable><interval>5</interval></dpd><ike-crypto-profile>default</ike-crypto-profile></ikev2>

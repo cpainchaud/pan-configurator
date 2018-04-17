@@ -109,4 +109,13 @@ class IKEGatewayStore extends ObjStore
         }
     }
 
+    /**
+     * @param $IKEName string
+     * @return null|IKEGateway
+     */
+    public function findIKEGateway($IKEName)
+    {
+        return $this->findByName($IKEName);
+    }
+
 }
