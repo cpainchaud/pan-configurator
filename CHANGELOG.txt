@@ -21,6 +21,7 @@ bugfix:
 - fix rules-edit filter (rule is.unused.fast) in a DeviceGroup hierarchy
 - fix class-AppStore - App details not imported if App has no ports
 - fix for all FastAPI actions directly running against a firewall
+- fix for address-merger.php - allow ancestor merging with same name on upperlevel for FQDN address objects
 
 
 

@@ -409,7 +409,7 @@ foreach( $hashMap as $index => &$hash )
             $ancestor = $object->ancestor;
 
             /** @var Address $ancestor */
-            if( $upperLevelSearch && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()) )
+            if( $upperLevelSearch && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()||$ancestor->isType_FQDN()) )
             {
                 if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
                 {
@@ -443,7 +443,7 @@ foreach( $hashMap as $index => &$hash )
                     continue;
                 }
             }
-            echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
+            echo "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor\n";
             continue;
         }
 
