@@ -4,6 +4,7 @@ CHANGELOG
 * moved over to github project swaschkut/pan-configurator
 * new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
 * class PanAPIConnector : added support for device uptime
+* update predefined.xml to 8006-4648
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
