@@ -21,3 +21,5 @@ alias pa_userid-mgr='php -r "require_once '"'"'utils/userid-mgr.php'"'"';" $@'
 alias pa_key-manager='php -r "require_once '"'"'utils/key-manager.php'"'"';" $@'
 
 alias pa_ckp-exclude='php -r "require_once '"'"'utils/checkpoint-exclude.php'"'"';" $@'
+
+alias pa_download-predefined='php -r "require_once '"'"'utils/download_predefined.php'"'"';" $@'

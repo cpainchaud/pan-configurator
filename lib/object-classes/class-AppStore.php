@@ -25,6 +25,7 @@ class AppStore extends ObjStore
 	
 	public static $childn = 'App';
 
+	public $predefinedStore_appid_version = null;
 
     /** @var null|AppStore  */
     public static $predefinedStore = null;
@@ -919,6 +920,10 @@ class AppStore extends ObjStore
         $cursor = DH::findXPathSingleEntryOrDie('/predefined/application-container', $xmlDoc);
 
 		$this->loadcontainers_from_domxml( $cursor );
+
+
+        $appid_version = DH::findXPathSingleEntryOrDie('/predefined/application-version', $xmlDoc);
+        self::$predefinedStore->predefinedStore_appid_version = $appid_version->nodeValue;
 
 		// fixing someone mess ;)
 		$app = $this->findOrCreate('ftp');

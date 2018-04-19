@@ -14,6 +14,7 @@ rules-edit: new action 'app-Fix-Dependencies' to display missing dependencies, w
 rules-edit: new action 'securityProfile-remove-FastAPI'
 rules-edit: new filter (location is.parent.of [DeviceGroup])
 rules-edit: new filter 'app has.missing.dependencies'
+download-predefined: introduction of new util to download predefined.xml especially for APP-id datebase
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'
