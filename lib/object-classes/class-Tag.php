@@ -40,6 +40,7 @@ class Tag
     const color7 = 'purple';
     const color8 = 'gray';
     const color9 = 'light green';
+
     const color10 = 'cyan';
     const color11 = 'light gray';
     const color12 = 'blue gray';
@@ -48,6 +49,36 @@ class Tag
     const color15 = 'gold';
     const color16 = 'brown';
     const color17 = 'dark green';
+    //color18 not defined in PAN-OS
+    const color19 = 'Maroon';
+
+    const color20 = 'Red-Orange';
+    const color21 = 'Yellow-Orange';
+    const color22 = 'Forest Green';
+    const color23 = 'Turquoise Blue';
+    const color24 = 'Azure Blue';
+    const color25 = 'Cerulean Blue';
+    const color26 = 'Midnight Blue';
+    const color27 = 'Medium Blue';
+    const color28 = 'Cobalt Blue';
+    const color29 = 'Violet Blue';
+
+    const color30 = 'Blue Violet';
+    const color31 = 'Medium Violet';
+    const color32 = 'Medium Rose';
+    const color33 = 'Lavender';
+    const color34 = 'Orchid';
+    const color35 = 'Thistle';
+    const color36 = 'Peach';
+    const color37 = 'Salmon';
+    const color38 = 'Magenta';
+    const color39 = 'Red Violet';
+
+    const color40 = 'Mahogany';
+    const color41 = 'Burnt Sienna';
+    const color42 = 'Chestnut';
+//
+
     
     
 
@@ -62,6 +93,7 @@ class Tag
                                         self::color7 => 'color7',
                                         self::color8 => 'color8',
                                         self::color9 => 'color9',
+
                                         self::color10 => 'color10',
                                         self::color11 => 'color11',
                                         self::color12 => 'color12',
@@ -69,7 +101,35 @@ class Tag
                                         self::color14 => 'color14',
                                         self::color15 => 'color15',
                                         self::color16 => 'color16',
-                                        self::color17 => 'color17'
+                                        self::color17 => 'color17',
+                                        //color18 not defined in PAN-OS
+                                        self::color19 => 'color19',
+
+                                        self::color20 => 'color20',
+                                        self::color21 => 'color21',
+                                        self::color22 => 'color22',
+                                        self::color23 => 'color23',
+                                        self::color24 => 'color24',
+                                        self::color25 => 'color25',
+                                        self::color26 => 'color26',
+                                        self::color27 => 'color27',
+                                        self::color28 => 'color28',
+                                        self::color29 => 'color29',
+
+                                        self::color30 => 'color30',
+                                        self::color31 => 'color31',
+                                        self::color32 => 'color32',
+                                        self::color33 => 'color33',
+                                        self::color34 => 'color34',
+                                        self::color35 => 'color35',
+                                        self::color36 => 'color36',
+                                        self::color37 => 'color37',
+                                        self::color38 => 'color38',
+                                        self::color39 => 'color39',
+
+                                        self::color40 => 'color40',
+                                        self::color41 => 'color41',
+                                        self::color42 => 'color42'
                                     );
 
     /**

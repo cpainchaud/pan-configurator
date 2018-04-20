@@ -265,6 +265,11 @@ class IPsecTunnel
                 }
             }
 
+
+            if( $node->nodeName == 'tunnel-interface' )
+            {
+                $this->interface = $node->textContent;
+            }
         }
     }
 
