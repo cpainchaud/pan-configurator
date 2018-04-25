@@ -94,6 +94,9 @@ class IPsecTunnel
                 if( $this->gateway === FALSE )
                     derr("ike-gateway not found\n");
 
+                $tmp_proposal = DH::findFirstElementOrCreate('ipsec-crypto-profile', $node);
+                $this->proposal = $tmp_proposal->textContent;
+
                 // now extracts ProxyID
                 $this->proxyIdRoot = DH::findFirstElementOrCreate('proxy-id', $node);
 

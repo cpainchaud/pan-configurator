@@ -100,30 +100,16 @@ class IKEGateway
 
             if( $node->nodeName == 'protocol' )
             {
-                /* EXAMPLE
-                <ikev1>
-                    <dpd>
-                        <enable>yes</enable>
-                        <interval>10</interval>
-                        <retry>10</retry>
-                    </dpd>
-                    <exchange-mode>main</exchange-mode>
-                </ikev1>
-                <ikev2>
-                    <dpd>
-                        <enable>yes</enable>
-                        //only interval available
-                        <interval>10</interval>
-                    </dpd>
-                    <require-cookie>yes</require-cookie>
-                </ikev2>
-                */
-                $this->version = $this->proposal = DH::findFirstElementOrCreate('version', $node)->textContent;
+                $this->version =  DH::findFirstElementOrCreate('version', $node)->textContent;
+                if( $this->version == null )
+                    $this->version = "ikev1";
 
                 $tmp_ikevX = $this->proposal = DH::findFirstElement($this->version, $node);
                 if( $tmp_ikevX != null )
                     $this->proposal = DH::findFirstElementOrCreate('ike-crypto-profile', $tmp_ikevX)->textContent;
 
+                if( $this->proposal == null )
+                    $this->proposal = "default";
             }
 
             if( $node->nodeName == 'protocol-common' )

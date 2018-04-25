@@ -1,0 +1,1229 @@
+<?xml version="1.0"?>
+<config version="8.1.0" urldb="brightcloud">
+  <mgt-config>
+    <devices>
+      <entry name="000007777"/>
+      <entry name="007100000290"/>
+      <entry name="007200006721"/>
+    </devices>
+    <users>
+      <entry name="admin">
+        <phash>fnRL/G5lXVMug</phash>
+        <permissions>
+          <role-based>
+            <superuser>yes</superuser>
+          </role-based>
+        </permissions>
+      </entry>
+      <entry name="admin2">
+        <phash>$1$bgnqjgob$HmenJzuuUAYmETzsMcdfJ/</phash>
+        <permissions>
+          <role-based>
+            <superuser>yes</superuser>
+          </role-based>
+        </permissions>
+      </entry>
+    </users>
+    <access-domain/>
+  </mgt-config>
+  <shared>
+    <address>
+      <entry name="shared-host1">
+        <ip-netmask>1.2.2.3/32</ip-netmask>
+        <tag>
+          <member>grp.shared-group1</member>
+        </tag>
+      </entry>
+      <entry name="shared-host2">
+        <ip-netmask>14.5.6.7/32</ip-netmask>
+        <tag>
+          <member>grp.shared-group1</member>
+        </tag>
+      </entry>
+      <entry name="Datacenter Subnet">
+        <ip-netmask>10.0.0.0/16</ip-netmask>
+      </entry>
+      <entry name="new test 1">
+        <ip-netmask>1.1.1.1</ip-netmask>
+      </entry>
+      <entry name="new test 2">
+        <ip-netmask>1.1.1.1</ip-netmask>
+      </entry>
+      <entry name="another object">
+        <ip-netmask>1.1.1.1</ip-netmask>
+      </entry>
+    </address>
+    <address-group>
+      <entry name="shared-group1">
+        <static>
+          <member>shared-host1</member>
+          <member>shared-host2</member>
+          <member>test-group2</member>
+        </static>
+      </entry>
+      <entry name="test-dynamic">
+        <dynamic>
+          <filter>'grp.shared-group1'</filter>
+        </dynamic>
+      </entry>
+      <entry name="test-group2">
+        <static>
+          <member>shared-host2</member>
+        </static>
+      </entry>
+      <entry name="shrd-grp-dynamic">
+        <dynamic>
+          <filter>'test.tag'</filter>
+        </dynamic>
+      </entry>
+      <entry name="shrd-grp1-2obj-1ref">
+        <static>
+          <member>shared-host1</member>
+          <member>test-dynamic</member>
+        </static>
+      </entry>
+      <entry name="shrd-grp2-3obj-0ref">
+        <static>
+          <member>Datacenter Subnet</member>
+          <member>shared-group1</member>
+          <member>test-dynamic</member>
+        </static>
+      </entry>
+      <entry name="group-with-duplicate-child">
+        <static>
+          <member>new test 1</member>
+          <member>new test 2</member>
+        </static>
+      </entry>
+    </address-group>
+    <tag>
+      <entry name="grp.local-group1"/>
+      <entry name="grp.shared-group1"/>
+      <entry name="test.tag"/>
+    </tag>
+    <pre-rulebase>
+      <decryption>
+        <rules>
+          <entry name="shared pre decrypt 1">
+            <category>
+              <member>any</member>
+            </category>
+            <type>
+              <ssl-forward-proxy/>
+            </type>
+            <from>
+              <member>any</member>
+            </from>
+            <to>
+              <member>any</member>
+            </to>
+            <source>
+              <member>any</member>
+            </source>
+            <destination>
+              <member>any</member>
+            </destination>
+            <source-user>
+              <member>any</member>
+            </source-user>
+            <action>no-decrypt</action>
+          </entry>
+        </rules>
+      </decryption>
+      <security>
+        <rules>
+          <entry name="shared pre rule 1">
+            <from>
+              <member>any</member>
+            </from>
+            <to>
+              <member>any</member>
+            </to>
+            <source>
+              <member>any</member>
+            </source>
+            <destination>
+              <member>any</member>
+            </destination>
+            <source-user>
+              <member>any</member>
+            </source-user>
+            <category>
+              <member>any</member>
+            </category>
+            <application>
+              <member>any</member>
+            </application>
+            <service>
+              <member>application-default</member>
+            </service>
+            <hip-profiles>
+              <member>any</member>
+            </hip-profiles>
+            <action>allow</action>
+          </entry>
+          <entry name="shared-pre-rule2">
+            <from>
+              <member>any</member>
+            </from>
+            <to>
+              <member>any</member>
+            </to>
+            <source>
+              <member>any</member>
+            </source>
+            <destination>
+              <member>any</member>
+            </destination>
+            <source-user>
+              <member>any</member>
+            </source-user>
+            <category>
+              <member>any</member>
+            </category>
+            <application>
+              <member>ssl</member>
+            </application>
+            <service>
+              <member>application-default</member>
+            </service>
+            <hip-profiles>
+              <member>any</member>
+            </hip-profiles>
+            <action>allow</action>
+          </entry>
+        </rules>
+      </security>
+    </pre-rulebase>
+    <post-rulebase>
+      <security>
+        <rules>
+          <entry name="shared post rule 1">
+            <from>
+              <member>any</member>
+            </from>
+            <to>
+              <member>any</member>
+            </to>
+            <source>
+              <member>Datacenter Subnet</member>
+              <member>new test 2</member>
+            </source>
+            <destination>
+              <member>any</member>
+            </destination>
+            <source-user>
+              <member>any</member>
+            </source-user>
+            <category>
+              <member>any</member>
+            </category>
+            <application>
+              <member>any</member>
+            </application>
+            <service>
+              <member>application-default</member>
+            </service>
+            <hip-profiles>
+              <member>any</member>
+            </hip-profiles>
+            <action>allow</action>
+          </entry>
+        </rules>
+      </security>
+    </post-rulebase>
+    <profile-group>
+      <entry name="Shared Production Profile"/>
+    </profile-group>
+    <service>
+      <entry name="shrd-sv1">
+        <protocol>
+          <tcp>
+            <port>50</port>
+          </tcp>
+        </protocol>
+      </entry>
+      <entry name="shrd-sv5">
+        <protocol>
+          <tcp>
+            <port>9000</port>
+          </tcp>
+        </protocol>
+      </entry>
+      <entry name="svc-with-children">
+        <protocol>
+          <tcp>
+            <port>57</port>
+          </tcp>
+        </protocol>
+      </entry>
+    </service>
+    <content-preview>
+      <application/>
+      <application-type>
+        <category/>
+        <technology/>
+      </application-type>
+    </content-preview>
+  </shared>
+  <devices>
+    <entry name="localhost.localdomain">
+      <deviceconfig>
+        <system>
+          <ip-address>192.168.50.17</ip-address>
+          <netmask>255.255.255.0</netmask>
+          <update-server>updates.paloaltonetworks.com</update-server>
+          <update-schedule>
+            <threats>
+              <recurring>
+                <daily>
+                  <at>15:00</at>
+                  <action>download-and-install</action>
+                  <disable-new-content>no</disable-new-content>
+                </daily>
+              </recurring>
+            </threats>
+            <anti-virus>
+              <recurring>
+                <daily>
+                  <at>18:30</at>
+                  <action>download-and-install</action>
+                </daily>
+              </recurring>
+            </anti-virus>
+          </update-schedule>
+          <timezone>Europe/Paris</timezone>
+          <service>
+            <disable-telnet>yes</disable-telnet>
+            <disable-http>yes</disable-http>
+          </service>
+          <hostname>Panorama</hostname>
+          <default-gateway>192.168.50.2</default-gateway>
+          <dns-setting>
+            <servers>
+              <primary>8.8.8.8</primary>
+            </servers>
+          </dns-setting>
+          <ssl-tls-service-profile>webgui</ssl-tls-service-profile>
+          <ntp-servers>
+            <primary-ntp-server>
+              <ntp-server-address>1.pool.ntp.org</ntp-server-address>
+              <authentication-type>
+                <none/>
+              </authentication-type>
+            </primary-ntp-server>
+          </ntp-servers>
+          <server-verification>yes</server-verification>
+        </system>
+        <setting>
+          <management>
+            <share-unused-objects-with-devices>no</share-unused-objects-with-devices>
+          </management>
+        </setting>
+      </deviceconfig>
+      <device-group>
+        <entry name="Perimeter-FWs">
+          <devices/>
+          <address>
+            <entry name="local-host1">
+              <ip-netmask>4.23.42.5/32</ip-netmask>
+              <tag>
+                <member>test.tag</member>
+                <member>grp.local-group1</member>
+              </tag>
+            </entry>
+          </address>
+          <address-group>
+            <entry name="local-group1">
+              <static>
+                <member>local-host1</member>
+              </static>
+            </entry>
+          </address-group>
+          <tag>
+            <entry name="test.tag"/>
+          </tag>
+          <pre-rulebase>
+            <security>
+              <rules>
+                <entry name="perimeter - allow users outside">
+                  <from>
+                    <member>internal</member>
+                  </from>
+                  <to>
+                    <member>external</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>known-user</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>allow</action>
+                </entry>
+              </rules>
+            </security>
+            <decryption>
+              <rules>
+                <entry name="dv1-pre decrypt 1">
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <type>
+                    <ssl-forward-proxy/>
+                  </type>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <action>no-decrypt</action>
+                </entry>
+              </rules>
+            </decryption>
+          </pre-rulebase>
+          <post-rulebase>
+            <security>
+              <rules>
+                <entry name="no traffic out of dc">
+                  <from>
+                    <member>internal</member>
+                  </from>
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <source>
+                    <member>Datacenter Subnet</member>
+                  </source>
+                  <destination>
+                    <member>shrd-grp1-2obj-1ref</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>deny</action>
+                </entry>
+              </rules>
+            </security>
+          </post-rulebase>
+          <service>
+            <entry name="dg-svc2">
+              <protocol>
+                <tcp>
+                  <port>80</port>
+                </tcp>
+              </protocol>
+            </entry>
+            <entry name="dg-sv3">
+              <protocol>
+                <tcp>
+                  <port>90</port>
+                </tcp>
+              </protocol>
+            </entry>
+            <entry name="dg-sv4">
+              <protocol>
+                <tcp>
+                  <port>2000</port>
+                </tcp>
+              </protocol>
+            </entry>
+          </service>
+          <service-group>
+            <entry name="shrd-grp1-1obj-1ref">
+              <members>
+                <member>shrd-sv1</member>
+              </members>
+            </entry>
+          </service-group>
+        </entry>
+        <entry name="Datacenter-Firewalls">
+          <devices/>
+          <address>
+            <entry name="new test 1">
+              <ip-netmask>1.1.1.1</ip-netmask>
+            </entry>
+            <entry name="new test 2">
+              <ip-netmask>1.1.1.1</ip-netmask>
+            </entry>
+          </address>
+          <pre-rulebase>
+            <authentication>
+              <rules>
+                <entry name="DC Firewall level CP rules 1">
+                  <target>
+                    <negate>no</negate>
+                  </target>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <source>
+                    <member>new test 1</member>
+                  </source>
+                  <destination>
+                    <member>shared-host1</member>
+                  </destination>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <service>
+                    <member>service-http</member>
+                  </service>
+                  <negate-source>yes</negate-source>
+                  <source-user>
+                    <member>unknown</member>
+                  </source-user>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <authentication-enforcement>default-no-captive-portal</authentication-enforcement>
+                </entry>
+              </rules>
+            </authentication>
+          </pre-rulebase>
+          <address-group>
+            <entry name="local-group2">
+              <static>
+                <member>shared-host1</member>
+                <member>shared-host2</member>
+                <member>test-group2</member>
+              </static>
+            </entry>
+            <entry name="group-with-duplicate-child">
+              <static>
+                <member>new test 1</member>
+                <member>new test 2</member>
+              </static>
+            </entry>
+          </address-group>
+          <service>
+            <entry name="tcp-with-dup1">
+              <protocol>
+                <tcp>
+                  <port>90</port>
+                </tcp>
+              </protocol>
+            </entry>
+            <entry name="tcp-with-dup2">
+              <protocol>
+                <tcp>
+                  <port>90</port>
+                </tcp>
+              </protocol>
+            </entry>
+            <entry name="svc-with-children">
+              <protocol>
+                <tcp>
+                  <port>57</port>
+                </tcp>
+              </protocol>
+            </entry>
+          </service>
+        </entry>
+        <entry name="FR Datacenter">
+          <devices>
+            <entry name="000007777"/>
+          </devices>
+        </entry>
+        <entry name="DE-Berlin Office">
+          <devices/>
+          <address>
+            <entry name="local-host1">
+              <ip-netmask>5.6.7.4/32</ip-netmask>
+            </entry>
+          </address>
+          <pre-rulebase>
+            <security>
+              <rules>
+                <entry name="berlin-office  prerule  intra">
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>dg-sv3</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>deny</action>
+                  <rule-type>intrazone</rule-type>
+                </entry>
+                <entry name="berlin-office  prerule  intra-1">
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>dg-sv3</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>drop</action>
+                  <rule-type>universal</rule-type>
+                </entry>
+                <entry name="berlin-office  prerule  intra-2">
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>any</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>reset-both</action>
+                  <rule-type>interzone</rule-type>
+                </entry>
+              </rules>
+            </security>
+            <nat>
+              <rules>
+                <entry name="test">
+                  <source-translation>
+                    <static-ip>
+                      <translated-address>new test 2</translated-address>
+                    </static-ip>
+                  </source-translation>
+                  <target>
+                    <negate>no</negate>
+                  </target>
+                  <to>
+                    <member>external</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>shared-host1</member>
+                    <member>new test 2</member>
+                  </source>
+                  <destination>
+                    <member>new test 2</member>
+                  </destination>
+                  <destination-translation>
+                    <translated-address>new test 2</translated-address>
+                  </destination-translation>
+                  <service>dg-sv3</service>
+                </entry>
+                <entry name="test-1">
+                  <source-translation>
+                    <dynamic-ip>
+                      <translated-address>
+                        <member>new test 2</member>
+                      </translated-address>
+                    </dynamic-ip>
+                  </source-translation>
+                  <target>
+                    <negate>no</negate>
+                  </target>
+                  <to>
+                    <member>external</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>shared-host1</member>
+                    <member>new test 2</member>
+                  </source>
+                  <destination>
+                    <member>new test 2</member>
+                  </destination>
+                  <destination-translation>
+                    <translated-address>new test 2</translated-address>
+                  </destination-translation>
+                  <service>any</service>
+                </entry>
+                <entry name="test-1-1">
+                  <source-translation>
+                    <dynamic-ip-and-port>
+                      <translated-address>
+                        <member>new test 2</member>
+                      </translated-address>
+                    </dynamic-ip-and-port>
+                  </source-translation>
+                  <target>
+                    <negate>no</negate>
+                  </target>
+                  <to>
+                    <member>external</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>shared-host1</member>
+                    <member>new test 2</member>
+                  </source>
+                  <destination>
+                    <member>new test 2</member>
+                  </destination>
+                  <destination-translation>
+                    <translated-address>new test 2</translated-address>
+                  </destination-translation>
+                  <service>any</service>
+                </entry>
+                <entry name="test-1-1-1">
+                  <source-translation>
+                    <dynamic-ip-and-port>
+                      <translated-address>
+                        <member>new test 2</member>
+                      </translated-address>
+                    </dynamic-ip-and-port>
+                  </source-translation>
+                  <target>
+                    <negate>no</negate>
+                  </target>
+                  <to>
+                    <member>external</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>shared-host1</member>
+                    <member>new test 2</member>
+                  </source>
+                  <destination>
+                    <member>new test 2</member>
+                  </destination>
+                  <destination-translation>
+                    <translated-address>new test 2</translated-address>
+                  </destination-translation>
+                  <service>any</service>
+                </entry>
+              </rules>
+            </nat>
+          </pre-rulebase>
+        </entry>
+        <entry name="testDG">
+          <devices>
+            <entry name="007100000290"/>
+          </devices>
+          <pre-rulebase>
+            <security>
+              <rules>
+                <entry name="local dg">
+                  <target>
+                    <negate>no</negate>
+                  </target>
+                  <to>
+                    <member>any</member>
+                  </to>
+                  <from>
+                    <member>any</member>
+                  </from>
+                  <source>
+                    <member>any</member>
+                  </source>
+                  <destination>
+                    <member>any</member>
+                  </destination>
+                  <source-user>
+                    <member>any</member>
+                  </source-user>
+                  <category>
+                    <member>any</member>
+                  </category>
+                  <application>
+                    <member>any</member>
+                  </application>
+                  <service>
+                    <member>application-default</member>
+                  </service>
+                  <hip-profiles>
+                    <member>any</member>
+                  </hip-profiles>
+                  <action>allow</action>
+                </entry>
+              </rules>
+            </security>
+          </pre-rulebase>
+        </entry>
+      </device-group>
+      <template>
+        <entry name="Datacenter Master Template">
+          <settings>
+            <default-vsys>vsys1</default-vsys>
+          </settings>
+          <config>
+            <devices>
+              <entry name="localhost.localdomain">
+                <vsys>
+                  <entry name="vsys1">
+                    <ssl-tls-service-profile/>
+                    <zone>
+                      <entry name="WAN">
+                        <network>
+                          <layer3/>
+                        </network>
+                      </entry>
+                    </zone>
+                  </entry>
+                  <entry name="management"/>
+                </vsys>
+                <deviceconfig>
+                  <system>
+                    <dns-setting>
+                      <servers>
+                        <primary>8.8.8.8</primary>
+                      </servers>
+                    </dns-setting>
+                  </system>
+                </deviceconfig>
+              </entry>
+            </devices>
+          </config>
+        </entry>
+        <entry name="Internet Perimeter Master">
+          <settings>
+            <default-vsys>vsys1</default-vsys>
+          </settings>
+          <config>
+            <devices>
+              <entry name="localhost.localdomain">
+                <vsys>
+                  <entry name="vsys1">
+                    <zone>
+                      <entry name="Internet">
+                        <network>
+                          <layer3>
+                            <member>ethernet1/1</member>
+                          </layer3>
+                        </network>
+                      </entry>
+                      <entry name="LAN">
+                        <network>
+                          <layer3>
+                            <member>ethernet1/2</member>
+                          </layer3>
+                        </network>
+                      </entry>
+                    </zone>
+                    <import>
+                      <network>
+                        <interface>
+                          <member>ethernet1/1</member>
+                          <member>ethernet1/2</member>
+                        </interface>
+                      </network>
+                    </import>
+                  </entry>
+                </vsys>
+                <network>
+                  <interface>
+                    <ethernet>
+                      <entry name="ethernet1/1">
+                        <layer3>
+                          <ipv6>
+                            <neighbor-discovery>
+                              <router-advertisement>
+                                <enable>no</enable>
+                              </router-advertisement>
+                            </neighbor-discovery>
+                          </ipv6>
+                          <ndp-proxy>
+                            <enabled>no</enabled>
+                          </ndp-proxy>
+                          <lldp>
+                            <enable>no</enable>
+                          </lldp>
+                        </layer3>
+                        <comment>Internet</comment>
+                      </entry>
+                      <entry name="ethernet1/2">
+                        <comment>LAN</comment>
+                        <layer3>
+                          <ipv6>
+                            <neighbor-discovery>
+                              <router-advertisement>
+                                <enable>no</enable>
+                              </router-advertisement>
+                            </neighbor-discovery>
+                          </ipv6>
+                          <ndp-proxy>
+                            <enabled>no</enabled>
+                          </ndp-proxy>
+                          <lldp>
+                            <enable>no</enable>
+                          </lldp>
+                        </layer3>
+                      </entry>
+                    </ethernet>
+                  </interface>
+                  <virtual-router>
+                    <entry name="vr1">
+                      <ecmp>
+                        <algorithm>
+                          <ip-modulo/>
+                        </algorithm>
+                      </ecmp>
+                      <protocol>
+                        <bgp>
+                          <routing-options>
+                            <graceful-restart>
+                              <enable>yes</enable>
+                            </graceful-restart>
+                            <as-format>2-byte</as-format>
+                          </routing-options>
+                          <enable>no</enable>
+                        </bgp>
+                      </protocol>
+                      <interface>
+                        <member>ethernet1/1</member>
+                        <member>ethernet1/2</member>
+                      </interface>
+                    </entry>
+                  </virtual-router>
+                </network>
+              </entry>
+            </devices>
+          </config>
+        </entry>
+        <entry name="Paris Datacenter">
+          <settings>
+            <default-vsys>vsys1</default-vsys>
+          </settings>
+          <config>
+            <devices>
+              <entry name="localhost.localdomain">
+                <vsys>
+                  <entry name="vsys1"/>
+                </vsys>
+                <deviceconfig>
+                  <system>
+                    <dns-setting>
+                      <servers>
+                        <secondary>8.8.4.4</secondary>
+                      </servers>
+                    </dns-setting>
+                  </system>
+                </deviceconfig>
+              </entry>
+            </devices>
+          </config>
+        </entry>
+        <entry name="DE-Berling_Office">
+          <settings>
+            <default-vsys>vsys1</default-vsys>
+          </settings>
+          <config>
+            <devices>
+              <entry name="localhost.localdomain">
+                <vsys>
+                  <entry name="vsys1"/>
+                </vsys>
+              </entry>
+            </devices>
+          </config>
+        </entry>
+      </template>
+      <template-stack>
+        <entry name="Paris_Datacenter_Stack">
+          <templates>
+            <member>Datacenter Master Template</member>
+            <member>Paris Datacenter</member>
+          </templates>
+          <settings/>
+        </entry>
+        <entry name="DE_Berlin_Office_Stack">
+          <templates>
+            <member>DE-Berling_Office</member>
+            <member>Internet Perimeter Master</member>
+          </templates>
+          <settings/>
+        </entry>
+      </template-stack>
+    </entry>
+  </devices>
+  <readonly>
+    <max-internal-id>75</max-internal-id>
+    <devices>
+      <entry name="localhost.localdomain">
+        <device-group>
+          <entry name="Perimeter-FWs">
+            <id>11</id>
+            <address-group>
+              <entry name="local-group1">
+                <id>64</id>
+              </entry>
+            </address-group>
+          </entry>
+          <entry name="Datacenter-Firewalls">
+            <id>12</id>
+            <address-group>
+              <entry name="local-group2">
+                <id>65</id>
+              </entry>
+              <entry name="group-with-duplicate-child">
+                <id>66</id>
+              </entry>
+            </address-group>
+          </entry>
+          <entry name="FR Datacenter">
+            <parent-dg>Datacenter-Firewalls</parent-dg>
+            <id>13</id>
+          </entry>
+          <entry name="DE-Berlin Office">
+            <parent-dg>Perimeter-FWs</parent-dg>
+            <id>14</id>
+          </entry>
+          <entry name="testDG">
+            <id>56</id>
+          </entry>
+        </device-group>
+        <template>
+          <entry name="Datacenter Master Template">
+            <id>57</id>
+            <config>
+              <devices>
+                <entry name="localhost.localdomain">
+                  <vsys>
+                    <entry name="vsys1">
+                      <zone>
+                        <entry name="WAN">
+                          <id>61</id>
+                        </entry>
+                      </zone>
+                    </entry>
+                  </vsys>
+                </entry>
+              </devices>
+            </config>
+          </entry>
+          <entry name="Internet Perimeter Master">
+            <id>58</id>
+            <config>
+              <devices>
+                <entry name="localhost.localdomain">
+                  <vsys>
+                    <entry name="vsys1">
+                      <zone>
+                        <entry name="Internet">
+                          <id>62</id>
+                        </entry>
+                        <entry name="LAN">
+                          <id>63</id>
+                        </entry>
+                      </zone>
+                    </entry>
+                  </vsys>
+                </entry>
+              </devices>
+            </config>
+          </entry>
+          <entry name="Paris Datacenter">
+            <id>59</id>
+          </entry>
+          <entry name="DE-Berling_Office">
+            <id>60</id>
+          </entry>
+        </template>
+        <template-stack>
+          <entry name="Paris_Datacenter_Stack">
+            <id>67</id>
+          </entry>
+          <entry name="DE_Berlin_Office_Stack">
+            <id>68</id>
+          </entry>
+        </template-stack>
+      </entry>
+    </devices>
+    <shared>
+      <address-group>
+        <entry name="shared-group1">
+          <id>69</id>
+        </entry>
+        <entry name="test-dynamic">
+          <id>70</id>
+        </entry>
+        <entry name="test-group2">
+          <id>71</id>
+        </entry>
+        <entry name="shrd-grp-dynamic">
+          <id>72</id>
+        </entry>
+        <entry name="shrd-grp1-2obj-1ref">
+          <id>73</id>
+        </entry>
+        <entry name="shrd-grp2-3obj-0ref">
+          <id>74</id>
+        </entry>
+        <entry name="group-with-duplicate-child">
+          <id>75</id>
+        </entry>
+      </address-group>
+    </shared>
+  </readonly>
+  <panorama>
+    <certificate>
+      <entry name="newCA1">
+        <subject-hash>4c36a579</subject-hash>
+        <issuer-hash>4c36a579</issuer-hash>
+        <not-valid-before>Jan 19 21:14:39 2016 GMT</not-valid-before>
+        <issuer>/CN=newCA1</issuer>
+        <not-valid-after>Aug 19 21:14:39 2025 GMT</not-valid-after>
+        <common-name>newCA1</common-name>
+        <expiry-epoch>1755638079</expiry-epoch>
+        <ca>yes</ca>
+        <subject>/CN=newCA1</subject>
+        <public-key>-----BEGIN CERTIFICATE-----
+MIICwjCCAaqgAwIBAgIJANQ4xVwwkEA5MA0GCSqGSIb3DQEBCwUAMBExDzANBgNV
+BAMTBm5ld0NBMTAeFw0xNjAxMTkyMTE0MzlaFw0yNTA4MTkyMTE0MzlaMBExDzAN
+BgNVBAMTBm5ld0NBMTCCASIwDQYJKoZIhvcNAQEBBQADggEPADCCAQoCggEBALlq
+XZoZFiBkXkW9Yx4/4CKV4auCnsrqPndYgq0+XznfQylsjsePqQvcinhxU67jCTJt
+GE/iWwB3PI2J380790euZTs27POVgokMq/67QVOtmd75H80xz0o1gOCF4z12fKMY
+/10cR/6y9PuP+fjEjLB3guaILua0Gf3cnCHrargPhNZ3mYhcFtNRJJh76NZ+OpXO
+RFTTWbKF0NXuiBwNOgUgpaQb9/xBc33MfyMriD17qPP36e6B8fQ4wubRYFTpKb67
+KHN1CcJrIoSwEyAxltJmgxoin9OxI05QEVcHhHCU8K1pogQdX2j2R8KirVgG67IZ
+5mBZhTp6QACrOrMk8/0CAwEAAaMdMBswDAYDVR0TBAUwAwEB/zALBgNVHQ8EBAMC
+AgQwDQYJKoZIhvcNAQELBQADggEBAGVsy5J+yDSd+g2COBwx5fu/DzC+4v95A1v7
+1HJwn3NNQ5udv67nS/DUaKlmmTeraV8PjdYYE5aCknbo303wJ0Zw547nvkXBFbKA
+VxeQBfXq4YtjoiiI22xOrOjLvVOhWI7crEddWb9tYaMotWRSgpQLlicjLb/pLJ7C
+oD+z9sQIQtH1cd70Es+Onyo9mnaWqLnFeBDH4roLeR+Re1mf4I+bkI8iIXxsOksm
+uJ0EcAC7CDaHCe3480MdQgZ7CIrSDrkuthTtC4ZRyaNKHhsH67+oMM21oFXzHvJz
+FKZL5glfr01Msbwp8z+zwt6fwgFIY1JEtZJxhe/8DLujTiFrNd4=
+-----END CERTIFICATE-----
+</public-key>
+        <algorithm>RSA</algorithm>
+        <private-key>-AQ==AJHn/Q040bP0Mowwz7/TI6bsKvI=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</private-key>
+      </entry>
+      <entry name="webgui2">
+        <subject-hash>2e1fd71f</subject-hash>
+        <issuer-hash>4c36a579</issuer-hash>
+        <not-valid-before>Jan 19 21:14:57 2016 GMT</not-valid-before>
+        <issuer>/CN=newCA1</issuer>
+        <not-valid-after>Jan 18 21:14:57 2017 GMT</not-valid-after>
+        <common-name>webgui2</common-name>
+        <expiry-epoch>1484774097</expiry-epoch>
+        <ca>no</ca>
+        <subject>/CN=webgui2</subject>
+        <public-key>-----BEGIN CERTIFICATE-----
+MIIDCzCCAfOgAwIBAgIBAjANBgkqhkiG9w0BAQsFADARMQ8wDQYDVQQDEwZuZXdD
+QTEwHhcNMTYwMTE5MjExNDU3WhcNMTcwMTE4MjExNDU3WjASMRAwDgYDVQQDEwd3
+ZWJndWkyMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAxedVDwE+U9rF
+6vLMBvlxFSlwq3NqCGIcF7Hurgsr8FRHTh8CDgSNb6ulpeNaTM3AyjFObXiLgFhu
++fKoGisw90kevxjIwy/SCYv4ccHU+6xWTI6/fdZcpzHYMVrjUsa9tFqF93C2wGmM
+XKOu3w8uZfKSNCnm6LMjNVDmN33bav2a/7WhO8Y78AENfbaTjEmTBZFgudB38FYR
+PCpxApEwVrRHVBr67wIUPbzgZmf0iwB3meH6JkUIcSYVe/++/2pgXvyDN8CXa32V
+uORrnbEKegwspfCR8m731DwGbgCcd85opWMAnPzvYqQVxiaee+OENKBoernfMAei
+gapjatxGnwIDAQABo20wazAJBgNVHRMEAjAAMAsGA1UdDwQEAwIDuDAnBgNVHSUE
+IDAeBggrBgEFBQcDAQYIKwYBBQUHAwIGCCsGAQUFBwMFMAkGA1UdIwQCMAAwHQYD
+VR0OBBYEFDv5fgicxhTDXPBkXP7C8lkEjt/BMA0GCSqGSIb3DQEBCwUAA4IBAQCg
+/MUX/U4yJ7j4F6rQJd4TWDo3OBCzkXh+Yv3GFTwLPPHURm3P9G/J0YyW7IUI5cD0
+/v8vRooIBCuBiMOW1L30Adeg1E+71GKrI7K3q5QH/ToWrOAM4TEFqTBSCtbkVtTO
+uZHT+w8hKqWC0xPEwLDt0ucCwb3X4atiL6BK0cyplXtiqioVAJyEti6xgsHFi87i
+CZU6S7EMJlpnjl9ORX6H3qoNKqCbIHY6ApcmI6LHhBNpMX50qZfMvxMZl2TDxymj
+K4n7Pn+1W5QZWjIqPYyXhXBqaMT7fcBqNJ5VtQjtL22mF13FvzJy7Upt0jrLn8hP
+KBj/FOCwP/saUN+NTdij
+-----END CERTIFICATE-----
+</public-key>
+        <algorithm>RSA</algorithm>
+        <private-key>-AQ==It7UuQd4McUSWuRXIORxVPXlydc=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</private-key>
+      </entry>
+    </certificate>
+    <ssl-tls-service-profile>
+      <entry name="webgui">
+        <protocol-settings>
+          <min-version>tls1-0</min-version>
+          <max-version>max</max-version>
+        </protocol-settings>
+        <certificate>webgui2</certificate>
+      </entry>
+    </ssl-tls-service-profile>
+  </panorama>
+</config>
