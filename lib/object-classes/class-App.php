@@ -209,7 +209,6 @@ class App
 		if( !isset($this->implicitUse) )
 			return $plus;
 
-		//problems if implicit is available
 		foreach( $plus as $plusApp )
 		{
 			$found = false;

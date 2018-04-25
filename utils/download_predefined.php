@@ -223,13 +223,6 @@ if( $inputConnector !== null )
 
 
 
-
-$pan->load_from_domxml($xmlDoc1);
-
-
-
-
-
 // </editor-fold>
 
 ################
@@ -267,9 +260,6 @@ else
 
 ##########################################
 ##########################################
-
-//https://192.168.100.253/api/?type=config&action=get&xpath=%2Fconfig%2Fpredefined%2Fapplication
-
 
 $request = 'type=config&action=get&xpath=%2Fconfig%2Fpredefined';
 
@@ -321,7 +311,7 @@ $pan_c_appid = explode( "-", $panc_version );
 
 if( intval( $pan_c_appid[0] ) >  intval( $external_appid[0] ) )
 {
-    print "\n\n - pan-configurator has already newer APP-id version '".$panc_version."' installed\n";
+    print "\n\n - pan-configurator has already a newer APP-id version '".$panc_version."' installed. Device App-ID version: ".$exernal_version."\n";
 }
 elseif( intval( $pan_c_appid[0] ) ==  intval( $external_appid[0] ) )
 {
@@ -329,7 +319,7 @@ elseif( intval( $pan_c_appid[0] ) ==  intval( $external_appid[0] ) )
 }
 else
 {
-    print "\n\n - pan-c has old app-id version '".$panc_version."' available\n";
+    print "\n\n - pan-c has an old app-id version '".$panc_version."' available. Device App-ID version: ".$exernal_version."\n";
 
     $predefined_path = '/../lib/object-classes/predefined.xml';
 

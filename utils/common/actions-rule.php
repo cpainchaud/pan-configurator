@@ -1472,6 +1472,9 @@ RuleCallContext::$supportedActions[] = Array(
         if( $rule->apps->count() < 1 )
             return null;
 
+        if( !$rule->actionIsAllow() )
+            return null;
+
         $app_depends_on = array();
         $app_array = array();
         foreach($rule->apps->membersExpanded() as $app)
