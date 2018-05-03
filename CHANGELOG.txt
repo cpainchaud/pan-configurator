@@ -26,6 +26,7 @@ bugfix:
 - fix class-AppStore - App details not imported if App has no ports
 - fix for all FastAPI actions directly running against a firewall
 - fix for address-merger.php - allow ancestor merging with same name on upperlevel for FQDN address objects
+- fix address-edit actions=name-addprefix/name-addsuffix/name-removePrefix/name-removeSuffix
 
 
 

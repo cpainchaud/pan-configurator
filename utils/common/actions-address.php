@@ -937,6 +937,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $newName = $context->arguments['prefix'].$object->name();
         echo $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
@@ -964,6 +971,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $newName = $object->name().$context->arguments['suffix'];
         echo $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
@@ -991,6 +1005,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $prefix = $context->arguments['prefix'];
 
         if( strpos($object->name(), $prefix) !== 0 )
@@ -1028,6 +1049,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $suffix = $context->arguments['suffix'];
         $suffixStartIndex = strlen($object->name()) - strlen($suffix);
 
