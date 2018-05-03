@@ -151,6 +151,24 @@ class IKEGateway
         if( $this->name == $name )
             return true;
 
+        if( preg_match( '[^\d]', $name ) )
+        {
+            //NO digit allowed at the beginning of a name
+            derr( 'no digit allowed at the beginning of a IKE gateway name' );
+        }
+
+        if( preg_match( '/[^0-9a-zA-Z_\-]/' , $name ) )
+        {
+            //NO blank allowed in gateway name
+            //NO other characters are allowed as seen here
+            $name = preg_replace('/[^0-9a-zA-Z_\-]/',"", $name);
+            print " *** new gateway name: ".$name." \n";
+            #mwarning( 'Name will be replaced with: '.$name."\n" );
+        }
+
+
+
+
         /* TODO: 20180331 finalize needed
         if( isset($this->owner) && $this->owner !== null )
         {
@@ -262,8 +280,13 @@ class IKEGateway
     public function isIKEGatewayType() { return true; }
 
     //"-AQ==A4vEGnxsZCP7poqzjhJD4Gc+tbE=DS4xndFfZiigUHPCm4ASFQ==" => "DEMO"
+    //"-AQ==2WmDHripnP+MAuaB9DKJ5dPWlmQ=wgoOihqVrKK2NmxerTkFKg==" => 'temp'
     static public $templatexml = '<entry name="**temporarynamechangeme**">
-    <authentication><pre-shared-key><key>-AQ==A4vEGnxsZCP7poqzjhJD4Gc+tbE=DS4xndFfZiigUHPCm4ASFQ==</key></pre-shared-key></authentication>
+    <authentication>
+        <pre-shared-key>
+            <key>-AQ==A4vEGnxsZCP7poqzjhJD4Gc+tbE=DS4xndFfZiigUHPCm4ASFQ==</key>
+        </pre-shared-key>
+    </authentication>
     <protocol>
         <ikev1><dpd><enable>yes</enable><interval>5</interval><retry>5</retry></dpd><ike-crypto-profile>default</ike-crypto-profile><exchange-mode>auto</exchange-mode></ikev1>
         <ikev2><dpd><enable>yes</enable><interval>5</interval></dpd><ike-crypto-profile>default</ike-crypto-profile></ikev2>
@@ -272,8 +295,6 @@ class IKEGateway
     <protocol-common><nat-traversal><enable>no</enable></nat-traversal><fragmentation><enable>no</enable></fragmentation></protocol-common>
     <local-address><interface></interface></local-address>
     <peer-address><ip></ip></peer-address>
-    <local-id></local-id>
-    <peer-id></peer-id>
     <disabled>no</disabled>
 </entry>';
 

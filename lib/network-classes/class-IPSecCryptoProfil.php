@@ -36,7 +36,37 @@ class IPSecCryptoProfil
 
     //TODO: 20180403 these two variables are multi member, extend to array
     public $authentication = 'notfound';
+
+    const md5 = 'md5';
+    const sha1 = 'sha1';
+    const sha256 = 'sha256';
+    const sha384 = 'sha384';
+    const sha512 = 'sha512';
+
+    static public $authentications = Array(
+        self::md5 => 'md5',
+        self::sha1 => 'sha1',
+        self::sha256 => 'sha256',
+        self::sha384 => 'sha384',
+        self::sha512 => 'sha512'
+    );
+
+
     public $encryption = 'notfound';
+
+    const des = 'des';
+    const tripledes = '3des';
+    const aes128cbc = 'aes-128-cbc';
+    const aes192cbc = 'aes-192-cbc';
+    const aes256cbc = 'aes-256-cbc';
+
+    static public $encryptions = Array(
+        self::des => 'des',
+        self::tripledes => '3des',
+        self::aes128cbc => 'aes-128-cbc',
+        self::aes192cbc => 'aes-192-cbc',
+        self::aes256cbc => 'aes-256-cbc'
+    );
 
     public $dhgroup = 'notfound';
 
@@ -50,6 +80,23 @@ class IPSecCryptoProfil
     public $lifesize_gb = '';
     public $lifesize_tb = '';
 
+    const nopfs = 'no-pfs';
+    const group1 = 'group1';
+    const group2 = 'group2';
+    const group5 = 'group5';
+    const group14 = 'group14';
+    const group19 = 'group19';
+    const group20 = 'group20';
+
+    static public $dhgroups = Array(
+        self::nopfs => 'no-pfs',
+        self::group1 => 'group1',
+        self::group2 => 'group2',
+        self::group5 => 'group5',
+        self::group14 => 'group14',
+        self::group19 => 'group19',
+        self::group20 => 'group20'
+    );
 
     /**
      * IPsecCryptoProfile constructor.
@@ -135,6 +182,13 @@ class IPSecCryptoProfil
         if( $this->name == $name )
             return true;
 
+        if( preg_match( '/[^0-9a-zA-Z_\-\s]/' , $name ) )
+        {
+            $name = preg_replace('/[^0-9a-zA-Z_\-\s]/',"", $name);
+            print "new name: ".$name." \n";
+            #mwarning( 'Name will be replaced with: '.$name."\n" );
+        }
+
         /* TODO: 20180331 finalize needed
         if( isset($this->owner) && $this->owner !== null )
         {
@@ -156,6 +210,17 @@ class IPSecCryptoProfil
 
     public function setDHgroup( $dhgroup )
     {
+        if( !isset( self::$dhgroups[ $dhgroup ] ) )
+        {
+
+            $dhgroup = preg_replace('/\D/', '', $dhgroup);
+            if( strlen( $dhgroup) == 0 )
+                $dhgroup = "no-pfs";
+            else
+                $dhgroup = "group".$dhgroup;
+            print " *** new group name: ".$dhgroup."\n";
+        }
+
         if( $this->dhgroup == $dhgroup )
             return true;
 
@@ -172,6 +237,13 @@ class IPSecCryptoProfil
         if( $this->authentication == $authentication )
             return true;
 
+        if( !isset( self::$authentications[ $authentication ] ) )
+        {
+            $authentication = str_replace( "-", "", $authentication);
+            print " *** authentication: ".$authentication." wrong\n";
+            #mwarning( 'authentication wrong' );
+        }
+
         $this->authentication = $authentication;
 
         $tmp_gateway = DH::findFirstElementOrCreate($ipsecProtocol, $this->xmlroot);
@@ -186,6 +258,13 @@ class IPSecCryptoProfil
     {
         if( $this->encryption == $encryption )
             return true;
+
+        if( !isset( self::$encryptions[ $encryption ] ) )
+        {
+            $encryption = str_replace( "-", "", $encryption);
+            print " *** encryption: ".$encryption." wrong\n";
+            #mwarning( 'authentication wrong' );
+        }
 
         $this->encryption = $encryption;
 

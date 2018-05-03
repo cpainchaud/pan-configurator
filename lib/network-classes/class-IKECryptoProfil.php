@@ -45,6 +45,53 @@ class IKECryptoProfil
     public $ikecryptoprofiles = Array();
 
 
+
+    const group1 = 'group1';
+    const group2 = 'group2';
+    const group5 = 'group5';
+    const group14 = 'group14';
+    const group19 = 'group19';
+    const group20 = 'group20';
+
+    static public $dhgroups = Array(
+        self::group1 => 'group1',
+        self::group2 => 'group2',
+        self::group5 => 'group5',
+        self::group14 => 'group14',
+        self::group19 => 'group19',
+        self::group20 => 'group20'
+    );
+
+
+    const md5 = 'md5';
+    const sha1 = 'sha1';
+    const sha256 = 'sha256';
+    const sha384 = 'sha384';
+    const sha512 = 'sha512';
+
+    static public $hashs = Array(
+        self::md5 => 'md5',
+        self::sha1 => 'sha1',
+        self::sha256 => 'sha256',
+        self::sha384 => 'sha384',
+        self::sha512 => 'sha512'
+    );
+
+
+    const des = 'des';
+    const tripledes = '3des';
+    const aes128cbc = 'aes-128-cbc';
+    const aes192cbc = 'aes-192-cbc';
+    const aes256cbc = 'aes-256-cbc';
+
+    static public $encryptions = Array(
+        self::des => 'des',
+        self::tripledes => '3des',
+        self::aes128cbc => 'aes-128-cbc',
+        self::aes192cbc => 'aes-192-cbc',
+        self::aes256cbc => 'aes-256-cbc'
+    );
+
     /**
      * IkeCryptoProfile constructor.
      * @param string $name
@@ -106,6 +153,13 @@ class IKECryptoProfil
         if( $this->name == $name )
             return true;
 
+        if( preg_match( '/[^0-9a-zA-Z_\-\s]/' , $name ) )
+        {
+            $name = preg_replace('/[^0-9a-zA-Z_\-\s]/',"", $name);
+            print "new name: ".$name." \n";
+            #mwarning( 'Name will be replaced with: '.$name."\n" );
+        }
+
         /* TODO: 20180331 finalize needed
         if( isset($this->owner) && $this->owner !== null )
         {
@@ -125,23 +179,18 @@ class IKECryptoProfil
         return true;
     }
 
-    /*
-     P1 proposal:
-Array
-(
-    [0] => preshare
-    [1] => group19
-    [2] => esp
-    [3] => aes256
-    [4] => sha2-256
-    [5] => second
-    [6] => 3600
-     */
 
     public function setDHgroup($dhgroup )
     {
         if( $this->dhgroup == $dhgroup )
             return true;
+
+        if( !isset( self::$dhgroups[ $dhgroup ] ) )
+        {
+            $dhgroup = preg_replace('/\D/', '', $dhgroup);
+            $dhgroup = "group".$dhgroup;
+            print " *** new dhgroup name: ".$dhgroup."\n";
+        }
 
         $this->dhgroup = $dhgroup;
 
@@ -157,6 +206,13 @@ Array
         if( $this->hash == $hash )
             return true;
 
+        if( !isset( self::$hashs[ $hash ] ) )
+        {
+            $hash = str_replace( "-", "", $hash);
+            print " *** hash: ".$hash." wrong\n";
+            #mwarning( 'authentication wrong' );
+        }
+        
         $this->hash = $hash;
 
         $tmp_gateway = DH::findFirstElementOrCreate('hash', $this->xmlroot);
@@ -171,6 +227,13 @@ Array
         if( $this->encryption == $encryption )
             return true;
 
+        if( !isset( self::$encryptions[ $encryption ] ) )
+        {
+            $encryption = str_replace( "-", "", $encryption);
+            print " *** encryption: ".$encryption." wrong\n";
+            #mwarning( 'authentication wrong' );
+        }
+        
         $this->encryption = $encryption;
 
         $tmp_gateway = DH::findFirstElementOrCreate('encryption', $this->xmlroot);
@@ -184,6 +247,9 @@ Array
     {
         #if( $this->encryption == $encryption )
             #return true;
+
+        if( intval( $time ) > 65535 )
+            mwarning( 'time value of: '.$time." is greater then 65535\n" );
 
         if( $timertype == 'seconds' )
             $this->lifetime_seconds = $time;

@@ -407,6 +407,14 @@ class IPsecTunnel
         if( $this->name == $name )
             return true;
 
+        if( preg_match( '/[^0-9a-zA-Z_\-\s]/' , $name ) )
+        {
+            $name = preg_replace('/[^0-9a-zA-Z_\-\s]/',"", $name);
+            print " *** new name: ".$name." \n";
+            #mwarning( 'Name will be replaced with: '.$name."\n" );
+        }
+
+
         /* TODO: 20180331 finalize needed
         if( isset($this->owner) && $this->owner !== null )
         {
@@ -431,6 +439,13 @@ class IPsecTunnel
         if( $this->gateway == $gateway_name )
             return true;
 
+        if( preg_match( '/[^0-9a-zA-Z_\-\s]/' , $gateway_name ) )
+        {
+            $gateway_name = preg_replace('/[^0-9a-zA-Z_\-\s]/',"", $gateway_name);
+            print " *** new Gateway name: ".$gateway_name."\n";
+            #mwarning( 'Name will be replaced with: '.$gateway_name."\n" );
+        }
+
         $this->gateway = $gateway_name;
 
         $tmp_ipsec_entry = DH::findFirstElementOrCreate('auto-key', $this->xmlroot);
@@ -446,6 +461,13 @@ class IPsecTunnel
         if( $this->proposal == $proposal )
             return true;
 
+        if( preg_match( '/[^0-9a-zA-Z_\-\s]/' , $proposal ) )
+        {
+            $proposal = preg_replace('/[^0-9a-zA-Z_\-\s]/',"", $proposal);
+            print " *** new proposal name: ".$proposal."\n";
+            mwarning( 'Name will be replaced with: '.$proposal."\n" );
+        }
+        
         $this->proposal = $proposal;
 
         $tmp_ipsec_entry = DH::findFirstElementOrCreate('auto-key', $this->xmlroot);
