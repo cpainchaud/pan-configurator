@@ -5,6 +5,7 @@ CHANGELOG
 * new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
 * class PanAPIConnector : added support for device uptime
 * update predefined.xml to 8006-4648
+* update predefined.xml to 8013
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
@@ -15,6 +16,7 @@ rules-edit: new action 'securityProfile-remove-FastAPI'
 rules-edit: new filter (location is.parent.of [DeviceGroup])
 rules-edit: new filter 'app has.missing.dependencies'
 download-predefined: introduction of new util to download predefined.xml especially for APP-id datebase
+address-edit: new action split-large-address-group
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'
