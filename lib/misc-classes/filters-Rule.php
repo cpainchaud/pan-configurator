@@ -1429,6 +1429,30 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.value'] = Array(
     )
 );
 
+RQuery::$defaultFilters['rule']['service']['operators']['has.value.only'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $value = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        if( $rule->services->count() != 1 )
+            return false;
+
+        return $rule->services->hasValue( $value );
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 //                                              //
 //                SecurityProfile properties    //
 //                                              //
