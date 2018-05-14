@@ -225,18 +225,19 @@ class VirtualSystem
             // End of address extraction
 
             //
+            // Extract application filter
+            //
+            $tmp = DH::findFirstElementOrCreate('application-filter', $xml);
+            $this->appStore->load_application_filter_from_domxml($tmp);
+            // End of application filter groups extraction
+
+            //
             // Extract application groups
             //
             $tmp = DH::findFirstElementOrCreate('application-group', $xml);
             $this->appStore->load_application_group_from_domxml($tmp);
             // End of application groups groups extraction
 
-            //
-            // Extract application filter
-            //
-            $tmp = DH::findFirstElementOrCreate('application-filter', $xml);
-            $this->appStore->load_application_filter_from_domxml($tmp);
-            // End of application filter groups extraction
         }
 
         //
