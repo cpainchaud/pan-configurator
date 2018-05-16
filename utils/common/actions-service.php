@@ -308,6 +308,12 @@ ServiceCallContext::$supportedActions[] = Array(
     {
         $object = $context->object;
 
+        if( $object->isTmpSrv() )
+        {
+            print $context->padding."   * SKIPPED because this object is Tmp\n";
+            return;
+        }
+
         $localLocation = 'shared';
 
         if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isFirewall() )
@@ -400,12 +406,6 @@ ServiceCallContext::$supportedActions[] = Array(
         if( $conflictObject->isTmpSrv() && !$object->isTmpSrv() )
         {
             derr("unsupported situation with a temporary object");
-            return;
-        }
-
-        if( $object->isTmpSrv() )
-        {
-            print $context->padding."   * SKIPPED because this object is Tmp\n";
             return;
         }
 

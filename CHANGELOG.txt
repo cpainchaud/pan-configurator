@@ -29,6 +29,7 @@ bugfix:
 - fix for address-merger.php - allow ancestor merging with same name on upperlevel for FQDN address objects
 - fix address-edit actions=name-addprefix/name-addsuffix/name-removePrefix/name-removeSuffix
 - fix class App - import application-filter before application-group to avoid tmp application tagging
+- fix service-edit actions=move - problem with API mode for TMP objects
 
 
 
