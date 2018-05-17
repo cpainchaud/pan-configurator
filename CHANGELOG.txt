@@ -18,6 +18,7 @@ rules-edit: new filter 'app has.missing.dependencies'
 download-predefined: introduction of new util to download predefined.xml especially for APP-id datebase
 address-edit: new action split-large-address-group
 rules-edit: new 'filter=(service has.value.only [443])'
+address-merger: introduce argument debugapi and exportcsv | which print out per object value the objects replaced by the kept one
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'

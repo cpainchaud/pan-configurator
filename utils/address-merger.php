@@ -38,6 +38,8 @@ $supportedArguments[] = Array('niceName' => 'pickFilter', 'shortHelp' => 'specif
 $supportedArguments[] = Array('niceName' => 'excludeFilter', 'shortHelp' => 'specify a filter to exclude objects from merging process entirely', 'argDesc' => '(name regex /^g/)');
 $supportedArguments[] = Array('niceName' => 'allowMergingWithUpperLevel', 'shortHelp' => 'when this argument is specified, it instructs the script to also look for duplicates in upper level');
 $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message');
+$supportedArguments[] = Array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to print out the kept and removed objects per value');
+$supportedArguments[] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 
 $usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=inputfile.xml [out=outputfile.xml] location=shared ['pickFilter=(name regex /^H-/)']";
 
@@ -46,6 +48,8 @@ prepareSupportedArgumentsArray($supportedArguments);
 PH::processCliArgs();
 
 $nestedQueries = Array();
+$deletedObjects = Array();
+$debugAPI = false;
 
 // check that only supported arguments were provided
 foreach ( PH::$args as $index => &$arg )
@@ -88,6 +92,11 @@ if( isset(PH::$args['dupalgorithm']) )
 else
     $dupAlg = 'sameaddress';
 
+if( isset(PH::$args['debugapi'])  )
+{
+    $debugAPI = true;
+}
+
 //
 // What kind of config input do we have.
 //     File or API ?
@@ -116,6 +125,8 @@ if( $configInput['type'] == 'file' )
 }
 elseif ( $configInput['type'] == 'api'  )
 {
+    if($debugAPI)
+        $configInput['connector']->setShowApiCalls(true);
     $apiMode = true;
     echo " - Downloading config from API... ";
     $xmlDoc = $configInput['connector']->getCandidateConfig();
@@ -254,7 +265,7 @@ if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
         if( $object->isTmpAddr() )
             continue;
 
-        if( $excludeFilter !== null && $excludeFilter->matchSingleObject(Array('object' =>$object, 'nestedQueries'=>&$nestedQueries)) )
+        if( $excludeFilter !== null && $excludeFilter->matchSingleObject(Array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
             continue;
 
         $skipThisOne = FALSE;
@@ -287,7 +298,7 @@ if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
             $hashMap[$value][] = $object;
             if( $parentStore !== null )
             {
-                $findAncestor = $parentStore->find($object->name(), null, true);
+                $findAncestor = $parentStore->find($object->name(), null, TRUE);
                 if( $findAncestor !== null )
                     $object->ancestor = $findAncestor;
             }
@@ -349,6 +360,7 @@ foreach( $hashMap as $index => &$hash )
 {
     echo "\n";
     echo " - value '{$index}'\n";
+    $deletedObjects[$index]['removed'] = "";
 
     $pickedObject = null;
 
@@ -421,6 +433,11 @@ foreach( $hashMap as $index => &$hash )
                         }
 
                     echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
+                    $deletedObjects[$index]['kept'] = $pickedObject->name();
+                    if( $deletedObjects[$index]['removed'] == "")
+                        $deletedObjects[$index]['removed'] = $object->name();
+                    else
+                        $deletedObjects[$index]['removed'] .= "|".$object->name();
                     $object->replaceMeGlobally($ancestor);
                     if( $apiMode )
                         $object->owner->API_remove($object);
@@ -444,6 +461,12 @@ foreach( $hashMap as $index => &$hash )
                 }
             }
             echo "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor\n";
+            echo "         anchestor name: '{$ancestor->name()}' DG: ";
+            if( $ancestor->owner->owner->name() == "" )
+                print "'shared'";
+            else
+                print "'{$ancestor->owner->owner->name()}'";
+            print  "  value: '{$ancestor->value()}' ";
             continue;
         }
 
@@ -456,6 +479,11 @@ foreach( $hashMap as $index => &$hash )
             $object->__replaceWhereIamUsed($apiMode, $pickedObject, TRUE, 5);
 
             echo "    - deleting '{$object->_PANC_shortName()}'\n";
+            $deletedObjects[$index]['kept'] = $pickedObject->name();
+            if( $deletedObjects[$index]['removed'] == "")
+                $deletedObjects[$index]['removed'] = $object->name();
+            else
+                $deletedObjects[$index]['removed'] .= "|".$object->name();
             if( $apiMode )
             {
                 $object->owner->API_remove($object);
@@ -486,6 +514,16 @@ echo "\n\n";
 
 if( !$apiMode )
     $panc->save_to_file($outputfile);
+
+
+if( isset(PH::$args['exportcsv']) )
+{
+    foreach( $deletedObjects as $obj_index => $object_name )
+    {
+        print $obj_index.",".$object_name['kept'].",".$object_name['removed']."\n";
+    }
+}
+
 
 echo "\n************* END OF SCRIPT ".basename(__FILE__)." ************\n\n";
 
