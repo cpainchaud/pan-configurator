@@ -30,6 +30,7 @@ bugfix:
 - fix address-edit actions=name-addprefix/name-addsuffix/name-removePrefix/name-removeSuffix
 - fix class App - import application-filter before application-group to avoid tmp application tagging
 - fix service-edit actions=move - problem with API mode for TMP objects
+- fix class AddressRuleContainer - fix is related address-merger for snathost replacement
 
 
 
