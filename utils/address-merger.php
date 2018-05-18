@@ -419,6 +419,7 @@ foreach( $hashMap as $index => &$hash )
         if( isset($object->ancestor) )
         {
             $ancestor = $object->ancestor;
+            $ancestor_different_value = "";
 
             /** @var Address $ancestor */
             if( $upperLevelSearch && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()||$ancestor->isType_FQDN()) )
@@ -464,8 +465,12 @@ foreach( $hashMap as $index => &$hash )
 
                     continue;
                 }
+                else
+                    $ancestor_different_value = "with different value";
+
+
             }
-            echo "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor\n";
+            echo "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor ".$ancestor_different_value."\n";
 
             echo "         anchestor name: '{$ancestor->name()}' DG: ";
             if( $ancestor->owner->owner->name() == "" ) print "'shared'";
