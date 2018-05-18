@@ -446,6 +446,11 @@ foreach( $hashMap as $index => &$hash )
 
                     echo "OK!\n";
 
+                    echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                    if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                    else print "'{$ancestor->owner->owner->name()}'";
+                    print  "  value: '{$ancestor->value()}' \n";
+
                     if( $pickedObject === $object )
                         $pickedObject = $ancestor;
 
@@ -461,12 +466,12 @@ foreach( $hashMap as $index => &$hash )
                 }
             }
             echo "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor\n";
+
             echo "         anchestor name: '{$ancestor->name()}' DG: ";
-            if( $ancestor->owner->owner->name() == "" )
-                print "'shared'";
-            else
-                print "'{$ancestor->owner->owner->name()}'";
-            print  "  value: '{$ancestor->value()}' ";
+            if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+            else print "'{$ancestor->owner->owner->name()}'";
+            print  "  value: '{$ancestor->value()}' \n";
+
             continue;
         }
 

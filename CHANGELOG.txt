@@ -6,6 +6,7 @@ CHANGELOG
 * class PanAPIConnector : added support for device uptime
 * update predefined.xml to 8006-4648
 * update predefined.xml to 8013
+* update predefined.xml to 8020-4723
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
@@ -18,7 +19,7 @@ rules-edit: new filter 'app has.missing.dependencies'
 download-predefined: introduction of new util to download predefined.xml especially for APP-id datebase
 address-edit: new action split-large-address-group
 rules-edit: new 'filter=(service has.value.only [443])'
-address-merger: introduce argument debugapi and exportcsv | which print out per object value the objects replaced by the kept one
+address-merger: introduce argument debugapi and exportcsv | which print out per object value the objects replaced by the kept one | improve output for ancestor
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'
