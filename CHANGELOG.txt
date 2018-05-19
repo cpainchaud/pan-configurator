@@ -4,8 +4,6 @@ CHANGELOG
 * moved over to github project swaschkut/pan-configurator
 * new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
 * class PanAPIConnector : added support for device uptime
-* update predefined.xml to 8006-4648
-* update predefined.xml to 8013
 * update predefined.xml to 8020-4723
 
 utils:
