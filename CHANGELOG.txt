@@ -8,6 +8,7 @@ rules-edit: action 'display' extend with DSRI information, if "Disable Server Re
 rules-edit: action'nameRename' extend for additional variable usage like $$current.name$$ and $$sequential.number$$
 
 
+
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml
 * class ServiceStore: extend for API_newService()/newServiceGroup()/API_newServiceGroup()
