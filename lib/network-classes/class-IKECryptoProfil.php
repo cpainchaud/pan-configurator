@@ -18,9 +18,9 @@
 
 /**
  * Class IkeCryptoProfil
- * @property IKECryptoProfileStore $owner
+ * @property IkeCryptoProfileStore $owner
  */
-class IKECryptoProfil
+class IkeCryptoProfil
 {
     use InterfaceType;
     use XmlConvertible;
@@ -95,7 +95,7 @@ class IKECryptoProfil
     /**
      * IkeCryptoProfile constructor.
      * @param string $name
-     * @param IKECryptoProfileStore $owner
+     * @param IkeCryptoProfileStore $owner
      */
     public function __construct($name, $owner)
     {
@@ -144,9 +144,9 @@ class IKECryptoProfil
     }
 
     /**
-     * return true if change was successful false if not (duplicate IKECryptoProfil name?)
+     * return true if change was successful false if not (duplicate IkeCryptoProfil name?)
      * @return bool
-     * @param string $name new name for the IKECryptoProfil
+     * @param string $name new name for the IkeCryptoProfil
      */
     public function setName($name)
     {
