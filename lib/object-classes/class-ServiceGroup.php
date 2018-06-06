@@ -571,6 +571,9 @@ class ServiceGroup
 		{
 			if( $object->isGroup() )
 			{
+                if( $this->name() == $object->name() )
+                    derr( "please cleanup your configuration file, servicegroup with name: ".$this->name()." is added as subgroup!!!" );
+
 				$ret = array_merge( $ret, $object->expand() );
                 if( $keepGroupsInList )
                     $ret[] = $object;

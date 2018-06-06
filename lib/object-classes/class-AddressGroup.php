@@ -663,6 +663,9 @@ class AddressGroup
             $serial = spl_object_hash($object);
             if( $object->isGroup() )
             {
+                if( $this->name() == $object->name() )
+                    derr( "please cleanup your configuration file, addressgroup with name: ".$this->name()." is added as subgroup!!!" );
+
                 /** @var AddressGroup $object */
                 $tmpList = $object->expand();
                 $ret = array_merge( $ret, $tmpList);
