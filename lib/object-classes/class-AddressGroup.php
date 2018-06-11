@@ -664,7 +664,10 @@ class AddressGroup
             if( $object->isGroup() )
             {
                 if( $this->name() == $object->name() )
-                    derr( "please cleanup your configuration file, addressgroup with name: ".$this->name()." is added as subgroup!!!" );
+                {
+                    mwarning( "addressgroup with name: ".$this->name()." is added as subgroup to itself, you should review your XML config file" );
+                    continue;
+                }
 
                 /** @var AddressGroup $object */
                 $tmpList = $object->expand();

@@ -710,7 +710,7 @@ AddressCallContext::$supportedActions[] = Array(
 
 );
 
-//TODO: does not use the filtered objects 20180202
+
 AddressCallContext::$supportedActions[] = Array(
     'name' => 'replaceByMembersAndDelete',
     'MainFunction' => function ( AddressCallContext $context )

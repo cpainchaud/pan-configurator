@@ -32,7 +32,7 @@ bugfix:
 - fix service-edit actions=move - problem with API mode for TMP objects
 - fix class AddressRuleContainer - fix is related address-merger for snathost replacement
 - fix memory calculation for specific situations
-- fix memory issue if own addressgroup/servicegroup is added as a subgroup in an offline configuration file
+- fix memory issue if own addressgroup/servicegroup is added as a subgroup in an offline configuration file (move from error to warning)
 
 
 
