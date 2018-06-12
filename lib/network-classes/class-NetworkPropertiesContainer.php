@@ -26,7 +26,7 @@ class NetworkPropertiesContainer
     /** @var VirtualRouterStore */
     public $virtualRouterStore;
 
-    /** @var IKECryptoProfileStore */
+    /** @var Ike2CryptoProfileStore */
     public $ikeCryptoProfileStore;
 
     /** @var IPSecCryptoProfileStore */
@@ -49,7 +49,7 @@ class NetworkPropertiesContainer
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
         $this->tmpInterfaceStore = new TmpInterfaceStore('TmpIfaces', $owner);
         $this->virtualRouterStore = new VirtualRouterStore('', $owner);
-        $this->ikeCryptoProfileStore = new IKECryptoProfileStore('IkeCryptoProfiles', $owner);
+        $this->ikeCryptoProfileStore = new Ike2CryptoProfileStore('IkeCryptoProfiles', $owner);
         $this->ipsecCryptoProfileStore = new IPSecCryptoProfileStore('IPSecCryptoProfiles', $owner);
         $this->ikeGatewayStore = new IKEGatewayStore('IkeGateways', $owner);
         $this->vlanIfStore = new VlanIfStore('VlanIfaces', $owner);
