@@ -45,26 +45,6 @@ class IkeCryptoProfileStore extends ObjStore
 
 
     /**
-     * @param $name
-     * @param null $ref
-     * @param bool $nested
-     * @return null|IkeCryptoProfil
-     */
-    public function find($name, $ref=null, $nested = true)
-    {
-        $f = $this->findByName($name,$ref);
-
-        if( $f !== null )
-            return $f;
-
-        if( $nested && $this->parentCentralStore !== null )
-            return $this->parentCentralStore->find( $name, $ref, $nested);
-
-        return null;
-    }
-
-
-    /**
      * Creates a new IkeCryptoProfil in this store. It will be placed at the end of the list.
      * @param string $name name of the new IkeCryptoProfil
      * @return IkeCryptoProfil
@@ -83,6 +63,7 @@ class IkeCryptoProfileStore extends ObjStore
 
         return $CryptoProfile;
     }
+
 
     /**
      * @param IkeCryptoProfil $CryptoProfile
@@ -107,7 +88,6 @@ class IkeCryptoProfileStore extends ObjStore
                 $this->createXmlRoot();
 
             $this->xmlroot->appendChild($CryptoProfile->xmlroot);
-
             return true;
         } else
             derr('You cannot add a Gateway that is already here :)');

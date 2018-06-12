@@ -17,13 +17,13 @@
 */
 
 /**
- * Class IPsecCryptoProfilStore
- * @property $o IPsecCryptoProfil[]
+ * Class IKEGatewayStore
+ * @property $o IKEGateway[]
  * @property PANConf $owner
  */
-class IPSecCryptoProfileStore extends ObjStore
+class IKEGatewayStore extends ObjStore
 {
-    public static $childn = 'IPSecCryptoProfil';
+    public static $childn = 'IKEGateway';
 
     protected $fastMemToIndex=null;
     protected $fastNameToIndex=null;
@@ -36,56 +36,57 @@ class IPSecCryptoProfileStore extends ObjStore
     }
 
     /**
-     * @return IPSecCryptoProfil[]
+     * @return IKEGateway[]
      */
-    public function ipsecCryptoProfil()
+    public function gateways()
     {
         return $this->o;
     }
 
     /**
-     * Creates a new IPsecCryptoProfil in this store. It will be placed at the end of the list.
-     * @param string $name name of the new IPsecCryptoProfil
-     * @return IPSecCryptoProfil
+     * Creates a new IKEGateway in this store. It will be placed at the end of the list.
+     * @param string $name name of the new IKEGateway
+     * @return IKEGateway
      */
-    public function newIPsecCryptoProfil( $name )
+    public function newIKEGateway($name)
     {
-        $CryptoProfile = new IPSecCryptoProfil( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IPSecCryptoProfil::$templatexml);
+        $gateway = new IKEGateway( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IKEGateway::$templatexml);
 
-        $CryptoProfile->load_from_domxml($xmlElement);
+        $gateway->load_from_domxml($xmlElement);
 
-        $CryptoProfile->owner = null;
-        $CryptoProfile->setName($name);
+        $gateway->owner = null;
+        $gateway->setName($name);
 
-        $this->addProfil( $CryptoProfile );
+        $this->addGateway( $gateway );
 
-        return $CryptoProfile;
+        return $gateway;
     }
+
 
     /**
      * @param IKEGateway $gateway
      * @return bool
      */
-    public function addProfil( $CryptoProfile )
+    public function addGateway($gateway)
     {
-        if( !is_object($CryptoProfile) )
+        if( !is_object($gateway) )
             derr('this function only accepts IKEGateway class objects');
 
-        if( $CryptoProfile->owner !== null )
+        if( $gateway->owner !== null )
             derr('Trying to add a gateway that has a owner already !');
 
 
-        $ser = spl_object_hash($CryptoProfile);
+        $ser = spl_object_hash($gateway);
 
         if (!isset($this->fastMemToIndex[$ser]))
         {
-            $CryptoProfile->owner = $this;
+            $gateway->owner = $this;
 
             if( $this->xmlroot === null )
                 $this->createXmlRoot();
 
-            $this->xmlroot->appendChild($CryptoProfile->xmlroot);
+            $this->xmlroot->appendChild($gateway->xmlroot);
 
             return true;
         } else
@@ -103,9 +104,18 @@ class IPSecCryptoProfileStore extends ObjStore
             $xml = DH::findFirstElementOrCreate('entry', $xml);
             $xml = DH::findFirstElementOrCreate('network', $xml);
             $xml = DH::findFirstElementOrCreate('ike', $xml);
-            $xml = DH::findFirstElementOrCreate('crypto-profiles', $xml);
 
-            $this->xmlroot = DH::findFirstElementOrCreate('ipsec-crypto-profiles', $xml);
+            $this->xmlroot = DH::findFirstElementOrCreate('gateway', $xml);
         }
     }
-} 
+
+    /**
+     * @param $IKEName string
+     * @return null|IKEGateway
+     */
+    public function findIKEGateway($IKEName)
+    {
+        return $this->findByName($IKEName);
+    }
+
+}

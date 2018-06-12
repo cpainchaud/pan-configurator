@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class LoopbackInterface
+class VlanInterface
 {
     use InterfaceType;
     use XmlConvertible;
@@ -25,7 +25,7 @@ class LoopbackInterface
     protected $_ipv4Addresses = Array();
 
     /** @var string */
-    public $type = 'loopback';
+    public $type = 'vlan';
 
     function __construct($name, $owner)
     {
@@ -34,18 +34,36 @@ class LoopbackInterface
     }
 
 
-    public function isLoopbackType()
+    public function isVlanType()
     {
         return true;
     }
 
     public function load_from_domxml( DOMElement $xml )
     {
+        /*
+              <entry name="vlan.1">
+                <ipv6>
+                  <neighbor-discovery>
+                    <router-advertisement>
+                      <enable>no</enable>
+                    </router-advertisement>
+                  </neighbor-discovery>
+                </ipv6>
+                <ndp-proxy>
+                  <enabled>no</enabled>
+                </ndp-proxy>
+
+                <adjust-tcp-mss>
+                  <enable>no</enable>
+                </adjust-tcp-mss>
+              </entry>
+         */
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("loopback name name not found\n");
+            derr("vlan name name not found\n");
 
         $ipNode = DH::findFirstElement('ip', $xml);
         if( $ipNode !== false )
@@ -90,15 +108,24 @@ class LoopbackInterface
      */
     public function &getXPath()
     {
-        $str = $this->owner->getLoopbackIfStoreXPath()."/entry[@name='".$this->name."']";
+        $str = $this->owner->getVlanIfStoreXPath()."/entry[@name='".$this->name."']";
 
         return $str;
     }
 
     static public $templatexml = '<entry name="**temporarynamechangeme**">
+<ipv6>
+  <neighbor-discovery>
+    <router-advertisement>
+      <enable>no</enable>
+    </router-advertisement>
+  </neighbor-discovery>
+</ipv6>
+<ndp-proxy>
+  <enabled>no</enabled>
+</ndp-proxy>
 <adjust-tcp-mss>
   <enable>no</enable>
 </adjust-tcp-mss>
-<comment></comment>
 </entry>';
 }

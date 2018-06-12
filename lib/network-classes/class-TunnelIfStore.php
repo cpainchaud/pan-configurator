@@ -16,12 +16,12 @@
 */
 
 /**
-* @property $o LoopbackInterface[]
+* @property $o TunnelInterface[]
  * @property PANConf $owner
 */
-class LoopbackIfStore extends ObjStore
+class TunnelIfStore extends ObjStore
 {
-    public static $childn = 'LoopbackInterface';
+    public static $childn = 'TunnelInterface';
 
     protected $fastMemToIndex=null;
     protected $fastNameToIndex=null;
@@ -38,7 +38,7 @@ class LoopbackIfStore extends ObjStore
     }
 
     /**
-     * @return LoopbackInterface[]
+     * @return TunnelInterface[]
      */
     public function getInterfaces()
     {
@@ -47,64 +47,64 @@ class LoopbackIfStore extends ObjStore
 
     
     /**
-     * Creates a new LoopbackInterface in this store. It will be placed at the end of the list.
-     * @param string $name name of the new LoopbackInterface
-     * @return LoopbackInterface
+     * Creates a new TunnelInterface in this store. It will be placed at the end of the list.
+     * @param string $name name of the new TunnelInterface
+     * @return TunnelInterface
      */
-    public function newLoopbackIf($name)
+    public function newTunnelIf($name)
     {
-        $loopbackIf = new LoopbackInterface( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, LoopbackInterface::$templatexml);
+        $tunnelIf = new TunnelInterface( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, TunnelInterface::$templatexml);
 
-        $loopbackIf->load_from_domxml($xmlElement);
+        $tunnelIf->load_from_domxml($xmlElement);
 
-        $loopbackIf->owner = null;
-        $loopbackIf->setName($name);
+        $tunnelIf->owner = null;
+        $tunnelIf->setName($name);
 
-        $this->addLoopbackIf( $loopbackIf );
+        $this->addTunnelIf( $tunnelIf );
 
-        return $loopbackIf;
+        return $tunnelIf;
     }
 
 
     /**
-     * @param LoopbackInterface $loopbackIf
+     * @param TunnelInterface $tunnelIf
      * @return bool
      */
-    public function addLoopbackIf( $loopbackIf )
+    public function addTunnelIf( $tunnelIf )
     {
-        if( !is_object($loopbackIf) )
-            derr('this function only accepts LoopbackInterface class objects');
+        if( !is_object($tunnelIf) )
+            derr('this function only accepts TunnelInterface class objects');
 
-        if( $loopbackIf->owner !== null )
-            derr('Trying to add a LoopbackInterface that has a owner already !');
+        if( $tunnelIf->owner !== null )
+            derr('Trying to add a TunnelInterface that has a owner already !');
 
 
-        $ser = spl_object_hash($loopbackIf);
+        $ser = spl_object_hash($tunnelIf);
 
         if (!isset($this->fastMemToIndex[$ser]))
         {
-            $loopbackIf->owner = $this;
+            $tunnelIf->owner = $this;
 
             if( $this->xmlroot === null )
                 $this->createXmlRoot();
 
-            $this->xmlroot->appendChild($loopbackIf->xmlroot);
+            $this->xmlroot->appendChild($tunnelIf->xmlroot);
 
             return true;
         } else
-            derr('You cannot add a LoopbackInterface that is already here :)');
+            derr('You cannot add a TunnelInterface that is already here :)');
 
         return false;
     }
 
     /**
-     * @param LoopbackInterface $s
+     * @param TunnelInterface $s
      * @return bool
      */
-    public function API_addLoopbackIf( $s )
+    public function API_addTunnelIf( $s )
     {
-        $ret = $this->addLoopbackIf($s);
+        $ret = $this->addTunnelIf($s);
 
         if( $ret )
         {
@@ -126,7 +126,7 @@ class LoopbackIfStore extends ObjStore
             $xml = DH::findFirstElementOrCreate('entry', $xml);
             $xml = DH::findFirstElementOrCreate('network', $xml);
             $xml = DH::findFirstElementOrCreate('interface', $xml);
-            $xml = DH::findFirstElementOrCreate('loopback', $xml);
+            $xml = DH::findFirstElementOrCreate('tunnel', $xml);
 
             $this->xmlroot = DH::findFirstElementOrCreate('units', $xml);
         }
@@ -146,7 +146,7 @@ class LoopbackIfStore extends ObjStore
         //TODO: intermediate solution
         $str = '/config/devices/entry/network/interface';
 
-        $str = $str.'/loopback/units';
+        $str = $str.'/tunnel/units';
 
         return $str;
     }
@@ -167,9 +167,9 @@ class LoopbackIfStore extends ObjStore
         return $str;
     }
 
-    public function &getLoopbackIfStoreXPath()
+    public function &getTunnelIfStoreXPath()
     {
-        $path = $this->getBaseXPath().'/loopback/units';
+        $path = $this->getBaseXPath().'/tunnel/units';
         return $path;
     }
 
@@ -192,7 +192,7 @@ class LoopbackIfStore extends ObjStore
                 $xml = DH::findFirstElementOrCreate('entry', $xml);
                 $xml = DH::findFirstElementOrCreate('network', $xml);
                 $xml = DH::findFirstElementOrCreate('interface', $xml);
-                $xml = DH::findFirstElementOrCreate('loopback', $xml);
+                $xml = DH::findFirstElementOrCreate('tunnel', $xml);
 
                 DH::findFirstElementOrCreate('units', $xml);
                 #DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);

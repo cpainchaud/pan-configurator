@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class LoopbackInterface
+class TunnelInterface
 {
     use InterfaceType;
     use XmlConvertible;
@@ -25,7 +25,7 @@ class LoopbackInterface
     protected $_ipv4Addresses = Array();
 
     /** @var string */
-    public $type = 'loopback';
+    public $type = 'tunnel';
 
     function __construct($name, $owner)
     {
@@ -34,7 +34,7 @@ class LoopbackInterface
     }
 
 
-    public function isLoopbackType()
+    public function isTunnelType()
     {
         return true;
     }
@@ -45,7 +45,7 @@ class LoopbackInterface
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("loopback name name not found\n");
+            derr("tunnel name name not found\n");
 
         $ipNode = DH::findFirstElement('ip', $xml);
         if( $ipNode !== false )
@@ -58,8 +58,6 @@ class LoopbackInterface
                 $this->_ipv4Addresses[] = $l3ipNode->getAttribute('name');
             }
         }
-
-
     }
 
     public function getIPv4Addresses()
@@ -90,15 +88,10 @@ class LoopbackInterface
      */
     public function &getXPath()
     {
-        $str = $this->owner->getLoopbackIfStoreXPath()."/entry[@name='".$this->name."']";
+        $str = $this->owner->getTunnelIfStoreXPath()."/entry[@name='".$this->name."']";
 
         return $str;
     }
 
-    static public $templatexml = '<entry name="**temporarynamechangeme**">
-<adjust-tcp-mss>
-  <enable>no</enable>
-</adjust-tcp-mss>
-<comment></comment>
-</entry>';
+    static public $templatexml = '<entry name="**temporarynamechangeme**"><ip/></entry>';
 }

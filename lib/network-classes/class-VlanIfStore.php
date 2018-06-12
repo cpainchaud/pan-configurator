@@ -16,12 +16,12 @@
 */
 
 /**
-* @property $o LoopbackInterface[]
+* @property $o VlanInterface[]
  * @property PANConf $owner
 */
-class LoopbackIfStore extends ObjStore
+class VlanIfStore extends ObjStore
 {
-    public static $childn = 'LoopbackInterface';
+    public static $childn = 'VlanInterface';
 
     protected $fastMemToIndex=null;
     protected $fastNameToIndex=null;
@@ -38,7 +38,7 @@ class LoopbackIfStore extends ObjStore
     }
 
     /**
-     * @return LoopbackInterface[]
+     * @return VlanInterface[]
      */
     public function getInterfaces()
     {
@@ -47,64 +47,64 @@ class LoopbackIfStore extends ObjStore
 
     
     /**
-     * Creates a new LoopbackInterface in this store. It will be placed at the end of the list.
-     * @param string $name name of the new LoopbackInterface
-     * @return LoopbackInterface
+     * Creates a new VlanInterface in this store. It will be placed at the end of the list.
+     * @param string $name name of the new VlanInterface
+     * @return VlanInterface
      */
-    public function newLoopbackIf($name)
+    public function newVlanIf($name)
     {
-        $loopbackIf = new LoopbackInterface( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, LoopbackInterface::$templatexml);
+        $vlanIf = new VlanInterface( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, VlanInterface::$templatexml);
 
-        $loopbackIf->load_from_domxml($xmlElement);
+        $vlanIf->load_from_domxml($xmlElement);
 
-        $loopbackIf->owner = null;
-        $loopbackIf->setName($name);
+        $vlanIf->owner = null;
+        $vlanIf->setName($name);
 
-        $this->addLoopbackIf( $loopbackIf );
+        $this->addVlanIf( $vlanIf );
 
-        return $loopbackIf;
+        return $vlanIf;
     }
 
 
     /**
-     * @param LoopbackInterface $loopbackIf
+     * @param VlanInterface $vlanIf
      * @return bool
      */
-    public function addLoopbackIf( $loopbackIf )
+    public function addVlanIf( $vlanIf )
     {
-        if( !is_object($loopbackIf) )
-            derr('this function only accepts LoopbackInterface class objects');
+        if( !is_object($vlanIf) )
+            derr('this function only accepts VlanInterface class objects');
 
-        if( $loopbackIf->owner !== null )
-            derr('Trying to add a LoopbackInterface that has a owner already !');
+        if( $vlanIf->owner !== null )
+            derr('Trying to add a VlanInterface that has a owner already !');
 
 
-        $ser = spl_object_hash($loopbackIf);
+        $ser = spl_object_hash($vlanIf);
 
         if (!isset($this->fastMemToIndex[$ser]))
         {
-            $loopbackIf->owner = $this;
+            $vlanIf->owner = $this;
 
             if( $this->xmlroot === null )
                 $this->createXmlRoot();
 
-            $this->xmlroot->appendChild($loopbackIf->xmlroot);
+            $this->xmlroot->appendChild($vlanIf->xmlroot);
 
             return true;
         } else
-            derr('You cannot add a LoopbackInterface that is already here :)');
+            derr('You cannot add a VlanInterface that is already here :)');
 
         return false;
     }
 
     /**
-     * @param LoopbackInterface $s
+     * @param VlanInterface $s
      * @return bool
      */
-    public function API_addLoopbackIf( $s )
+    public function API_addVlanIf( $s )
     {
-        $ret = $this->addLoopbackIf($s);
+        $ret = $this->addVlanIf($s);
 
         if( $ret )
         {
@@ -126,7 +126,7 @@ class LoopbackIfStore extends ObjStore
             $xml = DH::findFirstElementOrCreate('entry', $xml);
             $xml = DH::findFirstElementOrCreate('network', $xml);
             $xml = DH::findFirstElementOrCreate('interface', $xml);
-            $xml = DH::findFirstElementOrCreate('loopback', $xml);
+            $xml = DH::findFirstElementOrCreate('vlan', $xml);
 
             $this->xmlroot = DH::findFirstElementOrCreate('units', $xml);
         }
@@ -146,7 +146,7 @@ class LoopbackIfStore extends ObjStore
         //TODO: intermediate solution
         $str = '/config/devices/entry/network/interface';
 
-        $str = $str.'/loopback/units';
+        $str = $str.'/vlan/units';
 
         return $str;
     }
@@ -167,9 +167,9 @@ class LoopbackIfStore extends ObjStore
         return $str;
     }
 
-    public function &getLoopbackIfStoreXPath()
+    public function &getVlanIfStoreXPath()
     {
-        $path = $this->getBaseXPath().'/loopback/units';
+        $path = $this->getBaseXPath().'/vlan/units';
         return $path;
     }
 
@@ -192,7 +192,7 @@ class LoopbackIfStore extends ObjStore
                 $xml = DH::findFirstElementOrCreate('entry', $xml);
                 $xml = DH::findFirstElementOrCreate('network', $xml);
                 $xml = DH::findFirstElementOrCreate('interface', $xml);
-                $xml = DH::findFirstElementOrCreate('loopback', $xml);
+                $xml = DH::findFirstElementOrCreate('vlan', $xml);
 
                 DH::findFirstElementOrCreate('units', $xml);
                 #DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
