@@ -21,9 +21,9 @@
  * @property $o IkeCryptoProfil[]
  * @property PANConf $owner
  */
-class Ike2CryptoProfileStore extends ObjStore
+class IkeCryptoProfileStore extends ObjStore
 {
-    public static $childn = 'Ike2CryptoProfil';
+    public static $childn = 'IkeCryptoProfil';
 
     protected $fastMemToIndex=null;
     protected $fastNameToIndex=null;
@@ -36,7 +36,7 @@ class Ike2CryptoProfileStore extends ObjStore
     }
 
     /**
-     * @return Ike2CryptoProfil[]
+     * @return IkeCryptoProfil[]
      */
     public function ikeCryptoProfil()
     {
@@ -47,12 +47,12 @@ class Ike2CryptoProfileStore extends ObjStore
     /**
      * Creates a new IkeCryptoProfil in this store. It will be placed at the end of the list.
      * @param string $name name of the new IkeCryptoProfil
-     * @return Ike2CryptoProfil
+     * @return IkeCryptoProfil
      */
     public function newIkeCryptoProfil( $name )
     {
-        $CryptoProfile = new Ike2CryptoProfil( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, Ike2CryptoProfil::$templatexml);
+        $CryptoProfile = new IkeCryptoProfil( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IkeCryptoProfil::$templatexml);
 
         $CryptoProfile->load_from_domxml($xmlElement);
 
@@ -65,7 +65,7 @@ class Ike2CryptoProfileStore extends ObjStore
     }
 
     /**
-     * @param Ike2CryptoProfil $CryptoProfile
+     * @param IkeCryptoProfil $CryptoProfile
      * @return bool
      */
     public function addProfil( $CryptoProfile )
