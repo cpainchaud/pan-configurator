@@ -64,25 +64,6 @@ class IkeCryptoProfileStore extends ObjStore
         return $CryptoProfile;
     }
 
-    /**
-     * Creates a new IkeCryptoProfil in this store. It will be placed at the end of the list.
-     * @param string $name name of the new IkeCryptoProfil
-     * @return IkeCryptoProfil
-     */
-    public function newIkeCryptoProfil( $name )
-    {
-        $CryptoProfile = new IkeCryptoProfil( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IkeCryptoProfil::$templatexml);
-
-        $CryptoProfile->load_from_domxml($xmlElement);
-
-        $CryptoProfile->owner = null;
-        $CryptoProfile->setName($name);
-
-        $this->addProfil( $CryptoProfile );
-
-        return $CryptoProfile;
-    }
 
     /**
      * @param IkeCryptoProfil $CryptoProfile
