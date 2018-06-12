@@ -1472,6 +1472,9 @@ RuleCallContext::$supportedActions[] = Array(
         if( $rule->apps->count() < 1 )
             return null;
 
+        if( !$rule->actionIsAllow() )
+            return null;
+
         $app_depends_on = array();
         $app_array = array();
         foreach($rule->apps->membersExpanded() as $app)
@@ -1941,6 +1944,32 @@ RuleCallContext::$supportedActions[] = Array(
     },
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'securityProfile-Remove-FastAPI',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->removeSecurityProfile() )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<profile-setting><profiles/></profile-setting>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Group-Set-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -2096,20 +2125,7 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
     {
-        $setString = $context->generateRuleMergedApuChangeString(true);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for SHARED... ';
-            $context->connector->sendSetRequest('/config/shared', $setString);
-            print "OK!\n";
-        }
-        $setString = $context->generateRuleMergedApuChangeString(false);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for Device-Groups... ';
-            $context->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
-            print "OK!\n";
-        }
+        $context->doBundled_API_Call();
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
@@ -2141,7 +2157,7 @@ RuleCallContext::$supportedActions[] = Array(
         else
             $rule->setDsri($context->arguments['trueOrFalse']);
     },
-    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'no'  ) )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'dsri-Set-FastAPI',
@@ -2166,22 +2182,9 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
     {
-        $setString = $context->generateRuleMergedApuChangeString(true);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for SHARED... ';
-            $context->connector->sendSetRequest('/config/shared', $setString);
-            print "OK!\n";
-        }
-        $setString = $context->generateRuleMergedApuChangeString(false);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for Device-Groups... ';
-            $context->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
-            print "OK!\n";
-        }
+        $context->doBundled_API_Call();
     },
-    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'no'  ) )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'biDirNat-Split',

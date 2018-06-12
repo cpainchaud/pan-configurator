@@ -165,16 +165,21 @@ class AddressRuleContainer extends ObjRuleContainer
 
     public function API_sync()
     {
+        $con = findConnectorOrDie($this);
+
         if( $this->name == 'snathosts' )
         {
-            $xpath = DH::elementToPanXPath($this->xmlroot);
+            $xpath = $this->owner->getXPath().'/source-translation';
+            $sourceNatRoot = DH::findFirstElementOrDie('source-translation', $this->owner->xmlroot);
+            $con->sendEditRequest($xpath, DH::dom_to_xml($sourceNatRoot, -1, false) );
         }
         else
         {
             $xpath = &$this->getXPath();
+            $con->sendEditRequest($xpath, $this->getXmlText_inline());
         }
-        $con = findConnectorOrDie($this);
-        $con->sendEditRequest($xpath, $this->getXmlText_inline());
+
+
     }
 
     public function setAny()

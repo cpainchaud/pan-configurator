@@ -571,6 +571,13 @@ class ServiceGroup
 		{
 			if( $object->isGroup() )
 			{
+                if( $this->name() == $object->name() )
+                {
+                    mwarning( "servicegroup with name: ".$this->name()." is added as subgroup to itself, you should review your XML config file" );
+                    continue;
+                }
+
+
 				$ret = array_merge( $ret, $object->expand() );
                 if( $keepGroupsInList )
                     $ret[] = $object;

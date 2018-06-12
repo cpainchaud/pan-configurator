@@ -391,6 +391,11 @@ if( $dupAlg == 'sameports' )
 
                         echo "OK!\n";
 
+                        echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                        if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                        else print "'{$ancestor->owner->owner->name()}'";
+                        print  "  value: '{$ancestor->value()}' \n";
+
                         if( $pickedObject === $object )
                             $pickedObject = $ancestor;
 
@@ -399,6 +404,12 @@ if( $dupAlg == 'sameports' )
                     }
                 }
                 echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
+
+                echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                else print "'{$ancestor->owner->owner->name()}'";
+                print  "  value: '{$ancestor->value()}' \n";
+
                 continue;
             }
 
@@ -469,6 +480,12 @@ elseif( $dupAlg == 'whereused' )
                 $ancestor = $object->ancestor;
                 /** @var Service $ancestor */
                 echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
+
+                echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                else print "'{$ancestor->owner->owner->name()}'";
+                print  "  value: '{$ancestor->value()}' \n";
+
                 continue;
             }
 

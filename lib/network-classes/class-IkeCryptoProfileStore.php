@@ -65,6 +65,26 @@ class IkeCryptoProfileStore extends ObjStore
     }
 
     /**
+     * Creates a new IkeCryptoProfil in this store. It will be placed at the end of the list.
+     * @param string $name name of the new IkeCryptoProfil
+     * @return IkeCryptoProfil
+     */
+    public function newIkeCryptoProfil( $name )
+    {
+        $CryptoProfile = new IkeCryptoProfil( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IkeCryptoProfil::$templatexml);
+
+        $CryptoProfile->load_from_domxml($xmlElement);
+
+        $CryptoProfile->owner = null;
+        $CryptoProfile->setName($name);
+
+        $this->addProfil( $CryptoProfile );
+
+        return $CryptoProfile;
+    }
+
+    /**
      * @param IkeCryptoProfil $CryptoProfile
      * @return bool
      */
@@ -87,7 +107,6 @@ class IkeCryptoProfileStore extends ObjStore
                 $this->createXmlRoot();
 
             $this->xmlroot->appendChild($CryptoProfile->xmlroot);
-
             return true;
         } else
             derr('You cannot add a Gateway that is already here :)');
@@ -110,4 +129,4 @@ class IkeCryptoProfileStore extends ObjStore
         }
     }
 
-} 
+}

@@ -710,7 +710,7 @@ AddressCallContext::$supportedActions[] = Array(
 
 );
 
-//TODO: does not use the filtered objects 20180202
+
 AddressCallContext::$supportedActions[] = Array(
     'name' => 'replaceByMembersAndDelete',
     'MainFunction' => function ( AddressCallContext $context )
@@ -937,6 +937,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $newName = $context->arguments['prefix'].$object->name();
         echo $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
@@ -964,6 +971,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $newName = $object->name().$context->arguments['suffix'];
         echo $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
@@ -991,6 +1005,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $prefix = $context->arguments['prefix'];
 
         if( strpos($object->name(), $prefix) !== 0 )
@@ -1028,6 +1049,13 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $suffix = $context->arguments['suffix'];
         $suffixStartIndex = strlen($object->name()) - strlen($suffix);
 
@@ -1392,4 +1420,93 @@ AddressCallContext::$supportedActions[] = Array(
     'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ))
 );
 
+//starting with 7.0 PAN-OS support max. 2500 members per group, former 500
+AddressCallContext::$supportedActions[] = Array(
+    'name' => 'split-large-address-groups',
+    'MainFunction' => function(AddressCallContext $context)
+    {
+        $largeGroupsCount = $context->arguments['largeGroupsCount'];
+        $splitCount = $largeGroupsCount - 1;
+
+        $group = $context->object;
+
+
+        if( $group->isGroup() )
+        {
+            $membersCount = $group->count();
+
+            // if this group has more members than $largeGroupsCount then we must split it
+            if( $membersCount > $largeGroupsCount )
+            {
+                print "     AddressGroup named '" . $group->name() . "' with $membersCount members \n";
+
+                // get member list in $members
+                $members = $group->members();
+
+                $i = 0;
+
+                if( isset($newGroup) ) unset($newGroup);
+
+                // loop move every member to a new subgroup
+                foreach( $members as $member )
+                {
+                    // Condition to detect if previous sub-group is full
+                    // so we have to create a new one
+                    if( $i % $splitCount == 0 )
+                    {
+                        if( isset($newGroup) )
+                        { // now we can rewrite XML
+                            $newGroup->rewriteXML();
+                        }
+
+                        // create a new sub-group with name 'original--1'
+                        if( $context->isAPI )
+                            $newGroup = $group->owner->API_newAddressGroup($group->name() . '--' . ($i / $splitCount));
+                        else
+                            $newGroup = $group->owner->newAddressGroup($group->name() . '--' . ($i / $splitCount));
+                        print "      New AddressGroup object created with name: " . $newGroup->name() . "\n";
+
+                        // add this new sub-group to the original one. Don't rewrite XML for performance reasons.
+                        if( $context->isAPI )
+                            $group->API_addMember($newGroup, FALSE);
+                        else
+                            $group->addMember($newGroup, FALSE);
+                    }
+
+                    // remove current group member from old group, don't rewrite XML yet for performance savings
+                    if( $context->isAPI )
+                        $group->API_removeMember($member, FALSE);
+                    else
+                        $group->removeMember($member, FALSE);
+
+                    // we add current group member to new subgroup
+                    if( $context->isAPI )
+                        $newGroup->API_addMember($member, FALSE);
+                    else
+                        $newGroup->addMember($member, FALSE);
+
+                    $i++;
+                }
+                if( isset($newGroup) )
+                { // now we can rewrite XML
+                    $newGroup->rewriteXML();
+                }
+
+                // Now we can rewrite XML
+                $group->rewriteXML();
+
+                print "     AddressGroup count after split: " . $group->count() . " \n";
+
+                print "\n";
+            }
+            else
+                print "     * SKIP: ADDRESS GROUP members count is smaller as largeGroupsCount argument is set: ". $largeGroupsCount ." \n";
+        }
+        else
+            print "     * SKIP: address object is not a ADDRESS GROUP. \n";
+
+    },
+    'args' => Array( 'largeGroupsCount' => Array( 'type' => 'string', 'default' => '2490' )
+    )
+);
 
