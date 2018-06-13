@@ -1129,6 +1129,21 @@ AddressCallContext::$supportedActions[] = Array(
         {
             echo $context->padding."   * SKIPPED : moving from SHARED to sub-level is not yet supported\n";
             return;
+
+            /*
+            $location1 = PH::findLocationObjectOrDie($object);
+            $locations = $location1->childDeviceGroups(true);
+            print_r($locations);
+
+            foreach( $object->getReferences() as $ref )
+            {
+                if( PH::getLocationString($ref) == "shared" )
+                {
+                    echo $context->padding."   * SKIPPED : moving from SHARED to sub-level is NOT possible because of references\n";
+                    return;
+                }
+            }
+            */
         }
 
         if( $localLocation != 'shared' && $targetLocation != 'shared' )
@@ -1175,7 +1190,7 @@ AddressCallContext::$supportedActions[] = Array(
 
         if( $context->arguments['mode'] == 'skipifconflict' )
         {
-            echo $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to to resolve this conflict\n";
+            echo $context->padding."   * SKIPPED : there is an object with same name. Choose another mode to resolve this conflict\n";
             return;
         }
 

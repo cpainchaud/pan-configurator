@@ -394,7 +394,7 @@ if( $dupAlg == 'sameports' )
                         echo "         anchestor name: '{$ancestor->name()}' DG: ";
                         if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                         else print "'{$ancestor->owner->owner->name()}'";
-                        print  "  value: '{$ancestor->value()}' \n";
+                        print  "  value: '{$ancestor->getDestPort()}' \n";
 
                         if( $pickedObject === $object )
                             $pickedObject = $ancestor;
@@ -408,7 +408,7 @@ if( $dupAlg == 'sameports' )
                 echo "         anchestor name: '{$ancestor->name()}' DG: ";
                 if( $ancestor->owner->owner->name() == "" ) print "'shared'";
                 else print "'{$ancestor->owner->owner->name()}'";
-                print  "  value: '{$ancestor->value()}' \n";
+                print  "  value: '{$ancestor->getDestPort()}' \n";
 
                 continue;
             }
