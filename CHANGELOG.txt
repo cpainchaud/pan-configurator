@@ -34,6 +34,7 @@ bugfix:
 - fix memory calculation for specific situations
 - fix memory issue if own addressgroup/servicegroup is added as a subgroup in an offline configuration file (move from error to warning)
 - fix problems with mergen of branches
+- fix address-edit filter=(object overrides.upper.level)
 
 
 

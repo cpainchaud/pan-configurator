@@ -137,7 +137,7 @@ RQuery::$defaultFilters['address']['object']['operators']['overrides.upper.level
             $store = $store->parentCentralStore;
             $find = $store->find($context->object->name());
 
-            return $find === null;
+            return $find !== null;
         }
         else
             return false;
