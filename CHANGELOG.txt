@@ -40,7 +40,7 @@ bugfix:
 - fix problems with mergen of branches
 - fix address-edit filter=(object overrides.upper.level)
 - fix service-merger replace value() with getDestPort()
-
+- fix service-merger help description
 
 
 1.5.13
