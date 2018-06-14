@@ -504,4 +504,59 @@ RQuery::$defaultFilters['service']['value']['operators']['string.eq'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['service']['object']['operators']['overrides.upper.level'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $location = PH::findLocationObjectOrDie($context->object);
+        if( $location->isFirewall() || $location->isPanorama() || $location->isVirtualSystem() )
+            return false;
+
+        $store = $context->object->owner;
+
+        if( isset($store->parentCentralStore) && $store->parentCentralStore !== null )
+        {
+            $store = $store->parentCentralStore;
+            $find = $store->find($context->object->name());
+
+            return $find !== null;
+        }
+        else
+            return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['object']['operators']['overriden.at.lower.level'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+
+        $location = PH::findLocationObjectOrDie($object);
+        if( $location->isFirewall() || $location->isVirtualSystem() )
+            return false;
+
+        if( $location->isPanorama() )
+            $locations = $location->deviceGroups;
+        else
+        {
+            $locations = $location->childDeviceGroups(true);
+        }
+
+        foreach( $locations as $deviceGroup )
+        {
+            if( $deviceGroup->serviceStore->find($object->name(), null, false) !== null )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>
