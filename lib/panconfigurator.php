@@ -109,6 +109,7 @@ require_once $basedir.'/misc-classes/class-PanAPIConnector.php';
 
 require_once $basedir.'/helper-classes/class-IP4Map.php';
 require_once $basedir.'/helper-classes/class-ServiceDstPortMapping.php';
+require_once $basedir.'/helper-classes/class-ServiceSrcPortMapping.php';
 require_once $basedir.'/helper-classes/class-cidr.php';
 
 require_once $basedir.'/container-classes/class-ObjRuleContainer.php';

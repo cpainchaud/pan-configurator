@@ -352,6 +352,22 @@ class Service
         return ServiceDstPortMapping::mappingFromText($this->_dport, $tcp);
     }
 
+    /**
+     * @return ServiceSrcPortMapping
+     * @throws Exception
+     */
+    public function srcPortMapping()
+    {
+        if( $this->isTmpSrv() )
+            return new ServiceSrcPortMapping();
+
+        if( $this->_protocol == 'tcp' )
+            $tcp = true;
+        else
+            $tcp = false;
+
+        return ServiceSrcPortMapping::mappingFromText($this->_sport, $tcp);
+    }
 
 	public function API_delete()
 	{

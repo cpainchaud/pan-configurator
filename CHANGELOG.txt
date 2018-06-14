@@ -5,6 +5,7 @@ CHANGELOG
 * new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
 * class PanAPIConnector : added support for device uptime
 * update predefined.xml to 8020-4723
+* new class ServiceSrcPortMapping
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
@@ -18,6 +19,7 @@ download-predefined: introduction of new util to download predefined.xml especia
 address-edit: new action split-large-address-group
 rules-edit: new 'filter=(service has.value.only [443])'
 address-merger: introduce argument debugapi and exportcsv | which print out per object value the objects replaced by the kept one | improve output for ancestor
+service-merger: introduce new dupalgorithm sameDstSrcport
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'
