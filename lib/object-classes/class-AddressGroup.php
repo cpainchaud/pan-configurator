@@ -885,6 +885,31 @@ class AddressGroup
 
         return $result;
     }
+
+    public function hasGroupinGroup()
+    {
+        $is_group = false;
+        foreach( $this->members() as $member )
+        {
+            if( $member->isGroup() )
+                $is_group = true;
+        }
+
+        return $is_group;
+    }
+
+    public function getGroupNamerecursive( $group_name_array )
+    {
+        foreach( $this->members() as $member )
+        {
+            if( $member->isGroup() )
+            {
+                $group_name_array[] = $member->name();
+                $group_name_array = $member->getGroupNamerecursive( $group_name_array );
+            }
+        }
+        return $group_name_array;
+    }
 	
 
 	static protected $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
