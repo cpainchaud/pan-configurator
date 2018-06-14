@@ -483,4 +483,25 @@ RQuery::$defaultFilters['service']['reftype']['operators']['is'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['service']['value']['operators']['string.eq'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isGroup() )
+            return null;
+
+        if( $object->isService() )
+        {
+            if( $object->getDestPort() == $context->value )
+                return true;
+        }
+        return false;
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 80)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>

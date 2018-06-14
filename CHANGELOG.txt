@@ -20,6 +20,7 @@ address-edit: new action split-large-address-group
 rules-edit: new 'filter=(service has.value.only [443])'
 address-merger: introduce argument debugapi and exportcsv | which print out per object value the objects replaced by the kept one | improve output for ancestor
 service-merger: introduce new dupalgorithm sameDstSrcport
+service-edit: new filter (value string.eq [DstPort])
 
 bugfix:
 - fixed rule 'filter=(rule has.destination.nat)'
