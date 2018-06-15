@@ -391,7 +391,7 @@ ServiceCallContext::$supportedActions[] = Array(
             return;
         }
 
-        print $context->padding."   - there is a conflict with an object of same name and type ";
+        print $context->padding."   - there is a conflict with an object of same name and type. Please use service-merger.php script with argument 'allowmergingwithupperlevel'";
         if( $conflictObject->isGroup() )
             print "Group\n";
         else

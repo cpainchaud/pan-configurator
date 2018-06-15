@@ -1194,7 +1194,7 @@ AddressCallContext::$supportedActions[] = Array(
             return;
         }
 
-        echo $context->padding."   - there is a conflict with an object of same name and type ";
+        echo $context->padding."   - there is a conflict with an object of same name and type. Please use address-merger.php script with argument 'allowmergingwithupperlevel'";
         if( $conflictObject->isGroup() )
             echo "Group\n";
         else
