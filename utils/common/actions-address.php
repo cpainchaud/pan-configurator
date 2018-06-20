@@ -295,7 +295,9 @@ AddressCallContext::$supportedActions[] = Array(
     'MainFunction' => function ( AddressCallContext $context )
     {
         $object = $context->object;
+        $objectlocation = $object->getLocationString();
         $addressGroupName = $context->arguments['addressgroupname'];
+        $deviceGroupName = $context->arguments['devicegroupname'];
 
         if( $object->name() == $addressGroupName)
         {
@@ -303,7 +305,15 @@ AddressCallContext::$supportedActions[] = Array(
             return;
         }
 
-        $addressGroupToAdd = $object->owner->find( $addressGroupName );
+        if( $deviceGroupName == '*nodefault*' || $objectlocation == $deviceGroupName )
+            $addressGroupToAdd = $object->owner->find( $addressGroupName );
+        else
+        {
+            $deviceGroupToAdd = $object->owner->owner->findDeviceGroup( $deviceGroupName );
+            $addressGroupToAdd = $deviceGroupToAdd->addressStore->find( $addressGroupName );
+        }
+
+
         if( $addressGroupToAdd === null )
         {
             echo $context->padding . "     *  SKIPPED because address group name: " . $addressGroupName . " not found\n";
@@ -325,7 +335,8 @@ AddressCallContext::$supportedActions[] = Array(
 
     },
     'args' => Array(
-        'addressgroupname' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+        'addressgroupname' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
+        'devicegroupname' => Array( 'type' => 'string', 'default' => '*nodefault*' )
     )
 );
 
