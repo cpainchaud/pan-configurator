@@ -291,6 +291,45 @@ AddressCallContext::$supportedActions[] = Array(
 );
 
 AddressCallContext::$supportedActions[] = Array(
+    'name' => 'AddToGroup',
+    'MainFunction' => function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+        $addressGroupName = $context->arguments['addressgroupname'];
+
+        if( $object->name() == $addressGroupName)
+        {
+            echo $context->padding."     *  SKIPPED because address group can not added to itself\n";
+            return;
+        }
+
+        $addressGroupToAdd = $object->owner->find( $addressGroupName );
+        if( $addressGroupToAdd === null )
+        {
+            echo $context->padding . "     *  SKIPPED because address group name: " . $addressGroupName . " not found\n";
+            return;
+        }
+
+        if( $addressGroupToAdd->has( $object ) )
+        {
+            echo $context->padding."     *  SKIPPED because address object is already a member of this address group\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $addressGroupToAdd->API_addMember( $object );
+        else
+            $addressGroupToAdd->addMember( $object );
+
+        return;
+
+    },
+    'args' => Array(
+        'addressgroupname' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+    )
+);
+
+AddressCallContext::$supportedActions[] = Array(
     'name' => 'replaceWithObject',
     'MainFunction' => function ( AddressCallContext $context )
     {
