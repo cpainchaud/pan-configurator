@@ -171,6 +171,42 @@ RQuery::$defaultFilters['rule']['snathost']['operators']['has'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->owner->owner->addressStore->find('!value!');"
 
 );
+RQuery::$defaultFilters['rule']['snathost']['operators']['has.from.query'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $object = $context->object;
+
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        if (!$object->isNatRule()) return false;
+
+        if( $object->snathosts->count() == 0 )
+            return false;
+
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
+            derr("cannot find nested query called '{$context->value}'");
+
+        $errorMessage = '';
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('address');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
+
+        foreach( $context->object->snathosts->all() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$context->nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['rule']['dnathost']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value) {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */

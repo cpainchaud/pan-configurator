@@ -20,6 +20,7 @@ download-predefined: introduction of new util to download predefined.xml especia
 address-edit: new action split-large-address-group
 address-edit: new action AddToGroup
 rules-edit: new 'filter=(service has.value.only [443])'
+rules-edit: new 'filter=(snathost has.from.query subquery1)' 'subquery1=([all filters possible from address-edit])'
 address-merger: introduce argument debugapi and exportcsv | which print out per object value the objects replaced by the kept one | improve output for ancestor
 service-merger: introduce new dupalgorithm sameDstSrcport
 service-edit: new filter (value string.eq [DstPort])

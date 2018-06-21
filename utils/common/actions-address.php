@@ -296,6 +296,7 @@ AddressCallContext::$supportedActions[] = Array(
     {
         $object = $context->object;
         $objectlocation = $object->getLocationString();
+
         $addressGroupName = $context->arguments['addressgroupname'];
         $deviceGroupName = $context->arguments['devicegroupname'];
 
@@ -309,6 +310,7 @@ AddressCallContext::$supportedActions[] = Array(
             $addressGroupToAdd = $object->owner->find( $addressGroupName );
         else
         {
+            //Todo: fix needed if location is child of $devicegroupname
             $deviceGroupToAdd = $object->owner->owner->findDeviceGroup( $deviceGroupName );
             $addressGroupToAdd = $deviceGroupToAdd->addressStore->find( $addressGroupName );
         }
