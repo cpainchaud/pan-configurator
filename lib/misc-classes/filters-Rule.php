@@ -209,7 +209,7 @@ RQuery::$defaultFilters['rule']['snathost']['operators']['has.from.query'] = Arr
     'help' => 'example: \'filter=(snathost has.from.query subquery1)\' \'subquery1=(netmask < 32)\'',
 );
 RQuery::$defaultFilters['rule']['snathost.count']['operators']['>,<,=,!'] = Array(
-    'eval' => "\$object->snathosts->count() !operator! !value!",
+    'eval' => "\$object->isNatRule() && \$object->snathosts->count() !operator! !value!",
     'arg' => true,
     'ci' => Array(
         'fString' => '(%PROP% 1)',
