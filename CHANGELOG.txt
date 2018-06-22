@@ -47,6 +47,7 @@ bugfix:
 - fix service-merger help description
 - fix address-edit actions=AddToGroup where shared objects need to be added to childDG | new argument devicegroupname if location=any
 - fix rule-edit 'filter='(snathost.count >,<,=,!)' if not NATRule
+- fix class-AddressGroup - if group isDynamic
 
 
 1.5.13

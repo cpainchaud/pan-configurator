@@ -136,7 +136,7 @@ class AddressGroup
                         mwarning('unsupported AddressGroup type: ', $xml);
                 }
                 else
-                    $this->isDynamic;
+                    $this->isDynamic = true;
 			}
 			else
 			{
