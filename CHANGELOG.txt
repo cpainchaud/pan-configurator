@@ -48,7 +48,7 @@ bugfix:
 - fix address-edit actions=AddToGroup where shared objects need to be added to childDG | new argument devicegroupname if location=any
 - fix rule-edit 'filter='(snathost.count >,<,=,!)' if not NATRule
 - fix class-AddressGroup - if group isDynamic
-
+- fix address-edit actions=AddToGroup | improve action to work against all parent/childDG and also shared/vsys level on Firewall
 
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml

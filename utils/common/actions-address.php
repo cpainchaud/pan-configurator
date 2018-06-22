@@ -310,15 +310,40 @@ AddressCallContext::$supportedActions[] = Array(
             $addressGroupToAdd = $object->owner->find( $addressGroupName );
         else
         {
-            //Todo: fix needed if location is child of $devicegroupname
-            $deviceGroupToAdd = $object->owner->owner->findDeviceGroup( $deviceGroupName );
+            if( get_class( $object->owner->owner ) == "DeviceGroup" )
+            {
+                if( isset( $object->owner->owner->childDeviceGroups(true)[ $objectlocation ] ) )
+                {
+                    echo $context->padding . "     *  SKIPPED because address object is configured in Child DeviceGroup\n";
+                    return;
+                }
+                if( !isset( $object->owner->owner->parentDeviceGroups()[ $deviceGroupName ] ) )
+                {
+                    echo $context->padding . "     *  SKIPPED because address object is configured at another child DeviceGroup at same level\n";
+                    return;
+                }
+
+                $deviceGroupToAdd = $object->owner->owner->childDeviceGroups(true)[ $deviceGroupName ];
+            }
+            elseif( get_class( $object->owner->owner ) == "PanoramaConf" )
+                $deviceGroupToAdd = $object->owner->owner->findDeviceGroup( $deviceGroupName );
+            elseif( get_class( $object->owner->owner ) == "PANConf" )
+                $deviceGroupToAdd = $object->owner->owner->findVirtualSystem( $deviceGroupName );
+            else
+                derr( "action is not defined yet for class: ".get_class( $object->owner->owner ) );
+
             $addressGroupToAdd = $deviceGroupToAdd->addressStore->find( $addressGroupName );
         }
-
 
         if( $addressGroupToAdd === null )
         {
             echo $context->padding . "     *  SKIPPED because address group name: " . $addressGroupName . " not found\n";
+            return;
+        }
+
+        if( $addressGroupToAdd->isDynamic() )
+        {
+            echo $context->padding . "     *  SKIPPED because address group name: " . $addressGroupName . " is not static.\n";
             return;
         }
 
@@ -338,7 +363,12 @@ AddressCallContext::$supportedActions[] = Array(
     },
     'args' => Array(
         'addressgroupname' => Array( 'type' => 'string', 'default' => '*nodefault*' ),
-        'devicegroupname' => Array( 'type' => 'string', 'default' => '*nodefault*' )
+        'devicegroupname' => Array(
+            'type' => 'string',
+            'default' => '*nodefault*',
+            'help' =>
+                "please define a DeviceGroup name for Panorama config or vsys name for Firewall config.\n"
+        )
     )
 );
 
