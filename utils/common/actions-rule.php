@@ -2239,11 +2239,18 @@ RuleCallContext::$supportedActions[] = Array(
         $rule = $context->object;
 
         $newName = $context->rawArguments['text'].$rule->name();
-
+        
         if( strlen($newName) > 31 )
         {
-            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
-            return;
+            if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
+            {
+                //do nothing
+            }
+            else
+            {
+                print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+                return;
+            }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
@@ -2261,7 +2268,23 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setName($newName);
         }
     },
-    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
+        {
+            print PH::boldText( "Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n".
+                "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n".
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.\n" );
+        }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+        'accept63characters' => Array(
+        'type' => 'bool',
+        'default' => 'false',
+        'help' =>
+            "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+        )
+    )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-Append',
@@ -2270,11 +2293,18 @@ RuleCallContext::$supportedActions[] = Array(
         $rule = $context->object;
 
         $newName = $rule->name().$context->rawArguments['text'];
-
+        
         if( strlen($newName) > 31 )
         {
-            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
-            return;
+            if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
+            {
+                //do nothing
+            }
+            else
+            {
+                print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+                return;
+            }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
@@ -2292,7 +2322,23 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setName($newName);
         }
     },
-    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
+        {
+            print PH::boldText( "\nPanorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n".
+                "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n".
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.\n" );
+        }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+        'accept63characters' => Array(
+            'type' => 'bool',
+            'default' => 'false',
+            'help' =>
+                "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+        )
+    )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-removePrefix',
@@ -2381,11 +2427,18 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( strpos($newName, '$$current.name$$') !== FALSE )
             $newName = str_replace('$$current.name$$', $rule->name(), $newName);
-
+        
         if( strlen($newName) > 31 )
         {
-            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
-            return;
+            if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
+            {
+                //do nothing
+            }
+            else
+            {
+                print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+                return;
+            }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
@@ -2405,6 +2458,15 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setName($newName);
         }
     },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
+        {
+            print PH::boldText( "Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n".
+                "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n".
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.\n" );
+        }
+    },
 
     'args' => Array( 'stringFormula' => Array(
     'type' => 'string',
@@ -2413,7 +2475,13 @@ RuleCallContext::$supportedActions[] = Array(
         "This string is used to compose a name. You can use the following aliases :\n".
         "  - \$\$current.name\$\$ : current name of the object\n".
         "  - \$\$sequential.number\$\$ : sequential number - starting with 1\n"
-       )
+       ),
+    'accept63characters' => Array(
+        'type' => 'bool',
+        'default' => 'false',
+        'help' =>
+            "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+    )
 ),
     'help' => ''
 );
