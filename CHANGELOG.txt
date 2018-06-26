@@ -50,6 +50,7 @@ bugfix:
 - fix rule-edit 'filter='(snathost.count >,<,=,!)' if not NATRule
 - fix class-AddressGroup - if group isDynamic
 - fix address-edit actions=AddToGroup | improve action to work against all parent/childDG and also shared/vsys level on Firewall
+- fix rule-edit 'filter=(members.count < ) - if dynamicAddressGroup | related to last fix of class-AddressGroup if group isDynamic
 
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml

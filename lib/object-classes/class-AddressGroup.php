@@ -510,7 +510,7 @@ class AddressGroup
 	public function count()
 	{
 		if( $this->isDynamic )
-			derr('unsupported with Dynamic Address Groups');
+			mwarning('unsupported with Dynamic Address Groups');
 		return count($this->members);
 	}
 
