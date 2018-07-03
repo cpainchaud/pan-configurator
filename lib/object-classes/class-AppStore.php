@@ -470,7 +470,7 @@ class AppStore extends ObjStore
 		}
 	}
 
-    public function load_application_group_from_domxml($xmlDom )
+    public function load_application_group_from_domxml( $xmlDom )
     {
         foreach( $xmlDom->childNodes as $appx )
         {
@@ -484,7 +484,8 @@ class AppStore extends ObjStore
             $app->type = 'application-group';
             $this->add($app);
 
-            $app->subapps = Array();
+
+            $app->groupapps = Array();
 
             $cursor = DH::findFirstElement('members', $appx );
             if( $cursor === FALSE )
@@ -495,8 +496,15 @@ class AppStore extends ObjStore
                 if( $function->nodeType != XML_ELEMENT_NODE )
                     continue;
 
-                $subapp = $this->findOrCreate($function->textContent);
-                $app->subapps[] = $subapp;
+                $groupapp = $this->find($function->textContent);
+
+                if( $groupapp !== null )
+                    $app->groupapps[] = $groupapp;
+                else
+                {
+                    $groupapp = $this->findOrCreate($function->textContent);
+                    $app->groupapps[] = $groupapp;
+                }
             }
         }
     }
