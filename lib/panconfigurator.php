@@ -24,6 +24,21 @@ ini_set("memory_limit","14512M");
 error_reporting(E_ALL);
 gc_enable();
 
+// For Web apps, STDIN/ERR are not prepopulated
+if (!defined('STDIN'))
+{
+    define('STDIN', fopen('php://stdin', 'r'));
+}
+if (!defined('STDOUT'))
+{
+    define('STDOUT', fopen('php://stdout', 'w'));
+}
+if (!defined('STDERR'))
+{
+    define('STDERR', fopen('php://stderr', 'w'));
+}
+
+
 date_default_timezone_set('UTC');
 
 if (!extension_loaded('curl')) {
