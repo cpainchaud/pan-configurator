@@ -1,7 +1,6 @@
 CHANGELOG
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
-* moved over to github project swaschkut/pan-configurator
 * new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
 * class PanAPIConnector : added support for device uptime
 * update predefined.xml to 8020-4723
