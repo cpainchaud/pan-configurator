@@ -53,6 +53,7 @@ bugfix:
 - fix rule-edit 'filter=(members.count < ) - if dynamicAddressGroup | related to last fix of class-AddressGroup if group isDynamic
 - fix class App-stroe - Application-group members are imported now
 
+
 1.5.13
 * class ServiceGroup: extend __construct with $fromTemplateXml
 * class ServiceStore: extend for API_newService()/newServiceGroup()/API_newServiceGroup()
