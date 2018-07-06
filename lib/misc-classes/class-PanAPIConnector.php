@@ -71,6 +71,8 @@ class PanAPIConnector
     public $info_hostname = null;
     /** @var null|string $info_mgmtip product mgmt interface IP. ie: "192.168.0.1" */
     public $info_mgmtip = null;
+    /** @var null|string $info_uptime device uptime. ie: "57 days, 16:02:48" */
+    public $info_uptime = null;
     /** @var string $info_model can be unknown|m100|m500|pa200|pa500|pa2020|PA2050|PA3020|PA3050|PA3060|PA4020|PA4060|PA..... */
     public $info_model = 'unknown';
     /** @var string $info_vmlicense can be unknown|VM-100|VM-200|VM-300|VM-1000 */
@@ -100,6 +102,8 @@ class PanAPIConnector
             $this->info_multiVSYS = null;
             $this->info_serial = null;
             $this->info_hostname = null;
+            $this->info_uptime = null;
+            $this->info_model = null;
             $this->info_vmlicense = null;
             $this->info_vmuuid = null;
             $this->info_vmcpuid = null;
@@ -141,8 +145,13 @@ class PanAPIConnector
 
         $mgmtip = DH::findFirstElement('ip-address', $res);
         if( $mgmtip === FALSE )
-            derr("cannot find <serial>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+            derr("cannot find <ip-address>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
         $this->info_mgmtip = $mgmtip->textContent;
+
+        $uptime = DH::findFirstElement('uptime', $res);
+        if( $uptime === FALSE )
+            derr("cannot find <uptime>:\n" . DH::dom_to_xml($orig, 0, TRUE, 4));
+        $this->info_uptime = $uptime->textContent;
 
         $model = DH::findFirstElement('model', $res);
         if( $model === FALSE )

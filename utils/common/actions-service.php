@@ -308,6 +308,12 @@ ServiceCallContext::$supportedActions[] = Array(
     {
         $object = $context->object;
 
+        if( $object->isTmpSrv() )
+        {
+            print $context->padding."   * SKIPPED because this object is Tmp\n";
+            return;
+        }
+
         $localLocation = 'shared';
 
         if( ! $object->owner->owner->isPanorama() && !$object->owner->owner->isFirewall() )
@@ -385,7 +391,7 @@ ServiceCallContext::$supportedActions[] = Array(
             return;
         }
 
-        print $context->padding."   - there is a conflict with an object of same name and type ";
+        print $context->padding."   - there is a conflict with an object of same name and type. Please use service-merger.php script with argument 'allowmergingwithupperlevel'";
         if( $conflictObject->isGroup() )
             print "Group\n";
         else
@@ -400,12 +406,6 @@ ServiceCallContext::$supportedActions[] = Array(
         if( $conflictObject->isTmpSrv() && !$object->isTmpSrv() )
         {
             derr("unsupported situation with a temporary object");
-            return;
-        }
-
-        if( $object->isTmpSrv() )
-        {
-            print $context->padding."   * SKIPPED because this object is Tmp\n";
             return;
         }
 

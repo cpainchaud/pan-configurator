@@ -136,7 +136,7 @@ class AddressGroup
                         mwarning('unsupported AddressGroup type: ', $xml);
                 }
                 else
-                    $this->isDynamic;
+                    $this->isDynamic = true;
 			}
 			else
 			{
@@ -510,7 +510,7 @@ class AddressGroup
 	public function count()
 	{
 		if( $this->isDynamic )
-			derr('unsupported with Dynamic Address Groups');
+			mwarning('unsupported with Dynamic Address Groups');
 		return count($this->members);
 	}
 
@@ -663,6 +663,12 @@ class AddressGroup
             $serial = spl_object_hash($object);
             if( $object->isGroup() )
             {
+                if( $this->name() == $object->name() )
+                {
+                    mwarning( "addressgroup with name: ".$this->name()." is added as subgroup to itself, you should review your XML config file" );
+                    continue;
+                }
+
                 /** @var AddressGroup $object */
                 $tmpList = $object->expand();
                 $ret = array_merge( $ret, $tmpList);
@@ -878,6 +884,31 @@ class AddressGroup
         $result['ip4'] = $mapObject;
 
         return $result;
+    }
+
+    public function hasGroupinGroup()
+    {
+        $is_group = false;
+        foreach( $this->members() as $member )
+        {
+            if( $member->isGroup() )
+                $is_group = true;
+        }
+
+        return $is_group;
+    }
+
+    public function getGroupNamerecursive( $group_name_array )
+    {
+        foreach( $this->members() as $member )
+        {
+            if( $member->isGroup() )
+            {
+                $group_name_array[] = $member->name();
+                $group_name_array = $member->getGroupNamerecursive( $group_name_array );
+            }
+        }
+        return $group_name_array;
     }
 	
 

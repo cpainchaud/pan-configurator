@@ -171,6 +171,51 @@ RQuery::$defaultFilters['rule']['snathost']['operators']['has'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->owner->owner->addressStore->find('!value!');"
 
 );
+RQuery::$defaultFilters['rule']['snathost']['operators']['has.from.query'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $object = $context->object;
+
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        if (!$object->isNatRule()) return false;
+
+        if( $object->snathosts->count() == 0 )
+            return false;
+
+        if( $context->value === null || !isset($context->nestedQueries[$context->value]) )
+            derr("cannot find nested query called '{$context->value}'");
+
+        $errorMessage = '';
+
+        if( !isset($context->cachedSubRQuery) )
+        {
+            $rQuery = new RQuery('address');
+            if( $rQuery->parseFromString($context->nestedQueries[$context->value], $errorMessage) === false )
+                derr('nested query execution error : '.$errorMessage);
+            $context->cachedSubRQuery = $rQuery;
+        }
+        else
+            $rQuery = $context->cachedSubRQuery;
+
+        foreach( $context->object->snathosts->all() as $member )
+        {
+            if( $rQuery->matchSingleObject(Array('object' => $member, 'nestedQueries' => &$context->nestedQueries)) )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'help' => 'example: \'filter=(snathost has.from.query subquery1)\' \'subquery1=(netmask < 32)\'',
+);
+RQuery::$defaultFilters['rule']['snathost.count']['operators']['>,<,=,!'] = Array(
+    'eval' => "\$object->isNatRule() && \$object->snathosts->count() !operator! !value!",
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 1)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['dnathost']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value) {
         /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
@@ -1429,6 +1474,30 @@ RQuery::$defaultFilters['rule']['service']['operators']['has.value'] = Array(
     )
 );
 
+RQuery::$defaultFilters['rule']['service']['operators']['has.value.only'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $value = $context->value;
+        $rule = $context->object;
+
+        if( $rule->isNatRule() )
+        {
+            mwarning( "this filter does not yet support NAT Rules" );
+            return false;
+        }
+
+        if( $rule->services->count() != 1 )
+            return false;
+
+        return $rule->services->hasValue( $value );
+    },
+    'arg' => true,
+    'ci' => Array(
+        'fString' => '(%PROP% 443)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+
 //                                              //
 //                SecurityProfile properties    //
 //                                              //
@@ -2055,9 +2124,9 @@ RQuery::$defaultFilters['rule']['rule']['operators']['has.destination.nat'] = Ar
             return false;
 
         if( $context->object->destinationNatIsEnabled() )
-            return false;
+            return true;
 
-        return true;
+        return false;
     },
     'arg' => false,
     'ci' => Array(
@@ -2216,6 +2285,57 @@ RQuery::$defaultFilters['rule']['location']['operators']['is.child.of'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['rule']['location']['operators']['is.parent.of'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule_location = $context->object->getLocationString();
+
+        $sub = $context->object->owner;
+        while( get_class($sub ) == "RuleStore" || get_class($sub ) == "DeviceGroup" || get_class($sub) == "VirtualSystem" )
+            $sub = $sub->owner;
+
+        if( get_class($sub) == "PANConf")
+            derr( "filter location is.parent.of is not working against a firewall configuration" );
+
+        if( strtolower($context->value) == 'shared' )
+            return true;
+
+        $DG = $sub->findDeviceGroup( $context->value );
+        if( $DG == null )
+        {
+            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
+            print " - shared\n";
+            foreach( $sub->getDeviceGroups() as $sub1 )
+            {
+                print " - ".$sub1->name()."\n";
+            }
+            print "\n\n";
+            exit(1);
+        }
+
+        $parentDeviceGroups = $DG->parentDeviceGroups(  );
+
+        if( strtolower($context->value) == strtolower($rule_location) )
+            return true;
+
+        if( $rule_location == 'shared' )
+            return true;
+
+        foreach( $parentDeviceGroups as $childDeviceGroup )
+        {
+            if( $childDeviceGroup->name() == $rule_location )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is parent the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  Datacenter-Firewalls)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
@@ -2248,6 +2368,7 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
 
             if( $sub->isVirtualSystem() )
             {
+                print "Firewall: ".$connector->info_hostname." (serial: '".$connector->info_serial."') was rebooted '".$connector->info_uptime."' ago.\n";
                 $apiResult = $connector->sendCmdRequest($apiCmd);
 
                 $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
@@ -2259,13 +2380,26 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
             }
             else
             {
-                $devices = $sub->getDevicesInGroup();
+                $devices = $sub->getDevicesInGroup( true );
+
+                $connectedDevices = $connector->panorama_getConnectedFirewallsSerials();
+                foreach( $devices as $id => $device )
+                {
+                    if( !isset( $connectedDevices[ $device['serial'] ] ) )
+                    {
+                        unset( $devices[$id] );
+                        print "\n  - firewall device with serial: ".$device['serial']." is not connected.\n";
+                    }
+                }
+
                 $firstLoop = true;
 
                 foreach($devices as $device)
                 {
                     $newConnector = new PanAPIConnector($connector->apihost, $connector->apikey, 'panos-via-panorama', $device['serial']);
                     $newConnector->setShowApiCalls($connector->showApiCalls);
+                    $newConnector->refreshSystemInfos();
+                    print "Firewall: ".$newConnector->info_hostname." (serial: '".$newConnector->info_serial."') was rebooted '".$newConnector->info_uptime."' ago.\n";
                     $tmpCache = Array();
 
                     foreach($device['vsyslist'] as $vsys)
@@ -2780,6 +2914,55 @@ RQuery::$defaultFilters['rule']['app']['operators']['characteristic.has'] = Arra
         'fString' => '(%PROP% evasive) ',
         'input' => 'input/panorama-8.0.xml'
     )
+);
+
+RQuery::$defaultFilters['rule']['app']['operators']['has.missing.dependencies'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
+            return null;
+
+        $app_depends_on = array();
+        $app_array = array();
+        $missing_dependencies = false;
+        foreach($rule->apps->membersExpanded() as $app)
+        {
+            $app_array[ $app->name() ] = $app->name();
+            foreach( $app->calculateDependencies() as $dependency )
+            {
+                $app_depends_on[ $dependency->name() ] = $dependency->name();
+            }
+        }
+
+        $first = true;
+        foreach( $app_depends_on as $app => $dependencies )
+        {
+            if( !isset( $app_array[ $app ] ) )
+            {
+                if( $first )
+                {
+                    $first = false;
+                    print "   - app-id: ";
+                }
+                print $app.", ";
+                $missing_dependencies = true;
+            }
+        }
+
+        if( $missing_dependencies )
+        {
+            print " |  is missing in rule:\n";
+            return true;
+        }
+
+        return false;
+    },
+    'arg' => false
 );
 
 // </editor-fold>

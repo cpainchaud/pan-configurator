@@ -1460,7 +1460,52 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'args' => Array( 'appName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
 );
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'app-Fix-Dependencies',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
 
+        if( !$rule->isSecurityRule() )
+            return null;
+
+        if( $rule->apps->count() < 1 )
+            return null;
+
+        if( !$rule->actionIsAllow() )
+            return null;
+
+        $app_depends_on = array();
+        $app_array = array();
+        foreach($rule->apps->membersExpanded() as $app)
+        {
+            $app_array[ $app->name() ] = $app->name();
+            foreach( $app->calculateDependencies() as $dependency )
+            {
+                $app_depends_on[ $dependency->name() ] = $dependency->name();
+            }
+        }
+
+        foreach( $app_depends_on as $app => $dependencies )
+        {
+            if( !isset( $app_array[ $app ] ) )
+            {
+                $add_app = $rule->owner->owner->appStore->find( $app );
+                if( $context->arguments['fix'] )
+                {
+                    if( $context->isAPI )
+                        $rule->apps->API_addApp( $add_app );
+                    else
+                        $rule->apps->addApp( $add_app );
+                }
+
+                print "        - app-id: ".$app." is missing in rule\n";
+            }
+        }
+    },
+    'args' => Array(  'fix' => Array( 'type' => 'bool', 'default' => 'no'  ), )
+
+);
 
 //                                                 //
 //               Target based Actions                 //
@@ -1899,6 +1944,32 @@ RuleCallContext::$supportedActions[] = Array(
     },
 );
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'securityProfile-Remove-FastAPI',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->removeSecurityProfile() )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<profile-setting><profiles/></profile-setting>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
+);
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'securityProfile-Group-Set-FastAPI',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -2054,20 +2125,7 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
     {
-        $setString = $context->generateRuleMergedApuChangeString(true);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for SHARED... ';
-            $context->connector->sendSetRequest('/config/shared', $setString);
-            print "OK!\n";
-        }
-        $setString = $context->generateRuleMergedApuChangeString(false);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for Device-Groups... ';
-            $context->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
-            print "OK!\n";
-        }
+        $context->doBundled_API_Call();
     },
     'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
 );
@@ -2099,7 +2157,7 @@ RuleCallContext::$supportedActions[] = Array(
         else
             $rule->setDsri($context->arguments['trueOrFalse']);
     },
-    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'no'  ) )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'dsri-Set-FastAPI',
@@ -2124,22 +2182,9 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'GlobalFinishFunction' => function(RuleCallContext $context)
     {
-        $setString = $context->generateRuleMergedApuChangeString(true);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for SHARED... ';
-            $context->connector->sendSetRequest('/config/shared', $setString);
-            print "OK!\n";
-        }
-        $setString = $context->generateRuleMergedApuChangeString(false);
-        if( $setString !== null )
-        {
-            print $context->padding . ' - sending API call for Device-Groups... ';
-            $context->connector->sendSetRequest("/config/devices/entry[@name='localhost.localdomain']", $setString);
-            print "OK!\n";
-        }
+        $context->doBundled_API_Call();
     },
-    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'yes'  ) )
+    'args' => Array(    'trueOrFalse' => Array( 'type' => 'bool', 'default' => 'no'  ) )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'biDirNat-Split',
@@ -2194,11 +2239,18 @@ RuleCallContext::$supportedActions[] = Array(
         $rule = $context->object;
 
         $newName = $context->rawArguments['text'].$rule->name();
-
+        
         if( strlen($newName) > 31 )
         {
-            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
-            return;
+            if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
+            {
+                //do nothing
+            }
+            else
+            {
+                print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+                return;
+            }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
@@ -2216,7 +2268,23 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setName($newName);
         }
     },
-    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
+        {
+            print PH::boldText( "Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n".
+                "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n".
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.\n" );
+        }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+        'accept63characters' => Array(
+        'type' => 'bool',
+        'default' => 'false',
+        'help' =>
+            "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+        )
+    )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-Append',
@@ -2225,11 +2293,18 @@ RuleCallContext::$supportedActions[] = Array(
         $rule = $context->object;
 
         $newName = $rule->name().$context->rawArguments['text'];
-
+        
         if( strlen($newName) > 31 )
         {
-            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
-            return;
+            if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
+            {
+                //do nothing
+            }
+            else
+            {
+                print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+                return;
+            }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
@@ -2247,7 +2322,23 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setName($newName);
         }
     },
-    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ), )
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
+        {
+            print PH::boldText( "\nPanorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n".
+                "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n".
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.\n" );
+        }
+    },
+    'args' => Array(  'text' => Array( 'type' => 'string', 'default' => '*nodefault*'  ),
+        'accept63characters' => Array(
+            'type' => 'bool',
+            'default' => 'false',
+            'help' =>
+                "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+        )
+    )
 );
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'name-removePrefix',
@@ -2336,11 +2427,18 @@ RuleCallContext::$supportedActions[] = Array(
 
         if( strpos($newName, '$$current.name$$') !== FALSE )
             $newName = str_replace('$$current.name$$', $rule->name(), $newName);
-
+        
         if( strlen($newName) > 31 )
         {
-            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
-            return;
+            if( $context->object->owner->owner->version > 80 && strlen($newName) <= 63 && $context->arguments['accept63characters'] )
+            {
+                //do nothing
+            }
+            else
+            {
+                print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+                return;
+            }
         }
 
         if( !$rule->owner->isRuleNameAvailable($newName) )
@@ -2360,6 +2458,15 @@ RuleCallContext::$supportedActions[] = Array(
             $rule->setName($newName);
         }
     },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        if( $context->object->owner->owner->version > 80 && !$context->object->owner->owner->isFirewall() && $context->arguments['accept63characters'] )
+        {
+            print PH::boldText( "Panorama PAN-OS version 8.1 allow rule name >31 and <63 characters.\n".
+                "Please be aware that there is no validation available if DeviceGroup is connected to a firewall running PAN-OS <8.1.\n".
+                "If DG connected Firewall is PAN-OS version <8.1, Panorama push to device will fail with an error message.\n" );
+        }
+    },
 
     'args' => Array( 'stringFormula' => Array(
     'type' => 'string',
@@ -2368,7 +2475,13 @@ RuleCallContext::$supportedActions[] = Array(
         "This string is used to compose a name. You can use the following aliases :\n".
         "  - \$\$current.name\$\$ : current name of the object\n".
         "  - \$\$sequential.number\$\$ : sequential number - starting with 1\n"
-       )
+       ),
+    'accept63characters' => Array(
+        'type' => 'bool',
+        'default' => 'false',
+        'help' =>
+            "This bool is used to allow longer rule name for PAN-OS starting with version 8.1."
+    )
 ),
     'help' => ''
 );

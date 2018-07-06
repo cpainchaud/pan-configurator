@@ -254,4 +254,50 @@ class EthernetInterface
 
     function isEthernetType() { return true; }
 
+    /**
+     * return true if change was successful false if not (duplicate rulename?)
+     * @return bool
+     * @param string $name new name for the rule
+     */
+    public function setName($name)
+    {
+        if( $this->name == $name )
+            return true;
+
+        $this->name = $name;
+
+        $this->xmlroot->setAttribute('name', $name);
+
+        return true;
+
+    }
+
+    /**
+     * @return string
+     */
+    public function &getXPath()
+    {
+        $str = $this->owner->getEthernetIfStoreXPath()."/entry[@name='".$this->name."']";
+
+        return $str;
+    }
+
+    static public $templatexml = '<entry name="**temporarynamechangeme**">
+  <layer3>
+    <ipv6>
+      <neighbor-discovery>
+        <router-advertisement>
+          <enable>no</enable>
+        </router-advertisement>
+      </neighbor-discovery>
+    </ipv6>
+    <ndp-proxy>
+      <enabled>no</enabled>
+    </ndp-proxy>
+    <lldp>
+      <enable>no</enable>
+    </lldp>
+    <ip></ip>
+  </layer3>
+</entry>';
 }

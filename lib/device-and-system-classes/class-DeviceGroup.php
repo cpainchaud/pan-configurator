@@ -213,18 +213,19 @@ class DeviceGroup
         // End of application extraction
 
         //
+        // Extract application filter
+        //
+        $tmp = DH::findFirstElementOrCreate('application-filter', $xml);
+        $this->appStore->load_application_filter_from_domxml($tmp);
+        // End of application filter groups extraction
+
+        //
         // Extract application groups
         //
         $tmp = DH::findFirstElementOrCreate('application-group', $xml);
         $this->appStore->load_application_group_from_domxml($tmp);
         // End of application groups extraction
 
-        //
-        // Extract application filter
-        //
-        $tmp = DH::findFirstElementOrCreate('application-filter', $xml);
-        $this->appStore->load_application_filter_from_domxml($tmp);
-        // End of application filter groups extraction
 
         //
         // Extracting policies
@@ -571,6 +572,29 @@ class DeviceGroup
         }
 
         return $this->_childDeviceGroups;
+    }
+
+    /**
+     * @return DeviceGroup[]
+     */
+    public function parentDeviceGroups()
+    {
+        if( $this->name() == 'shared' )
+        {
+            $dgs[$this->name()] = $this;
+            return $dgs;
+        }
+
+        $dg_tmp = $this;
+        $dgs = Array();
+
+        while( $dg_tmp !== null )
+        {
+            $dgs[$dg_tmp->name()] = $dg_tmp;
+            $dg_tmp = $dg_tmp->parentDeviceGroup;
+        }
+
+        return $dgs;
     }
 
 }

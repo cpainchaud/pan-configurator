@@ -99,4 +99,25 @@ class InterfaceContainer extends ObjRuleContainer
         return true;
     }
 
+
+    /**
+     * @param EthernetInterface|AggregateEthernetInterface|LoopbackInterface|IPsecTunnel $if
+     * @return bool
+     */
+    public function API_addInterface($if)
+    {
+        //TODO: check how to implement
+        if( $this->addInterface( $if ) )
+        {
+            $con = findConnectorOrDie($this);
+
+            $xpath = $this->owner->getXPath().'/import/network/interface';
+            $importRoot = DH::findFirstElementOrDie('import', $this->owner->xmlroot);
+            $networkRoot = DH::findFirstElementOrDie('network', $importRoot);
+            $importIfRoot = DH::findFirstElementOrDie('interface', $networkRoot);
+            $con->sendEditRequest($xpath, DH::dom_to_xml($importIfRoot, -1, false) );
+        }
+
+        return true;
+    }
 }

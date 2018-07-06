@@ -29,6 +29,7 @@ $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify 
 $supportedArguments[] = Array(    'niceName' => 'DupAlgorithm',
                                                 'shortHelp' => "Specifies how to detect duplicates:\n".
                                                     "  - SamePorts: objects with same ports will be replaced by the one picked (default)\n".
+                                                    "  - SameDstSrcPorts: objects with same Dst and Src ports will be replaced by the one picked\n".
                                                     "  - WhereUsed: objects used exactly in the same location will be merged into 1 single object and all ports covered by these objects will be aggregated\n",
                                                 'argDesc'=> 'SamePorts|WhereUsed');
 $supportedArguments[] = Array('niceName' => 'mergeCountLimit', 'shortHelp' => 'stop operations after X objects have been merged', 'argDesc'=> '100');
@@ -81,7 +82,7 @@ else
 if( isset(PH::$args['dupalgorithm']) )
 {
     $dupAlg = strtolower(PH::$args['dupalgorithm']);
-    if( $dupAlg != 'sameports' && $dupAlg != 'whereused')
+    if( $dupAlg != 'sameports' && $dupAlg != 'whereused' && $dupAlg != 'samedstsrcports')
         display_error_usage_exit('unsupported value for dupAlgorithm: '.PH::$args['dupalgorithm']);
 }
 else
@@ -239,7 +240,7 @@ else
 
 $hashMap = Array();
 $upperHashMap = Array();
-if( $dupAlg == 'sameports' )
+if( $dupAlg == 'sameports' || $dupAlg == 'samedstsrcports' )
     foreach( $objectsToSearchThrough as $object )
     {
         if( !$object->isService() )
@@ -315,7 +316,7 @@ echo " - found ".count($hashMap)." duplicates values totalling {$countConcernedO
 echo "\n\nNow going after each duplicates for a replacement\n";
 
 $countRemoved = 0;
-if( $dupAlg == 'sameports' )
+if( $dupAlg == 'sameports' || $dupAlg == 'samedstsrcports' )
     foreach( $hashMap as $index => &$hash )
     {
         echo "\n";
@@ -382,6 +383,12 @@ if( $dupAlg == 'sameports' )
                 {
                     if( $object->dstPortMapping()->equals($ancestor->dstPortMapping()) )
                     {
+                        if( !$object->srcPortMapping()->equals($ancestor->srcPortMapping()) && $dupAlg == 'samedstsrcports' )
+                        {
+                            echo "    - object '{$object->name()}' cannot be merged because of different SRC port information";
+                            echo "  value: ".$object->srcPortMapping()->mappingToText()." | ".$ancestor->srcPortMapping()->mappingToText()."\n";
+                            continue;
+                        }
                         echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
                         $object->replaceMeGlobally($ancestor);
                         if( $apiMode )
@@ -391,6 +398,11 @@ if( $dupAlg == 'sameports' )
 
                         echo "OK!\n";
 
+                        echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                        if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                        else print "'{$ancestor->owner->owner->name()}'";
+                        print  "  value: '{$ancestor->getDestPort()}' \n";
+
                         if( $pickedObject === $object )
                             $pickedObject = $ancestor;
 
@@ -399,6 +411,12 @@ if( $dupAlg == 'sameports' )
                     }
                 }
                 echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
+
+                echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                else print "'{$ancestor->owner->owner->name()}'";
+                print  "  value: '{$ancestor->getDestPort()}' \n";
+
                 continue;
             }
 
@@ -469,6 +487,12 @@ elseif( $dupAlg == 'whereused' )
                 $ancestor = $object->ancestor;
                 /** @var Service $ancestor */
                 echo "    - object '{$object->name()}' cannot be merged because it has an ancestor\n";
+
+                echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                else print "'{$ancestor->owner->owner->name()}'";
+                print  "  value: '{$ancestor->value()}' \n";
+
                 continue;
             }
 

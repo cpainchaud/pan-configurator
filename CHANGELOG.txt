@@ -1,12 +1,56 @@
 CHANGELOG
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
+* new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
+* class PanAPIConnector : added support for device uptime
+* update predefined.xml to 8020-4723
+* new class ServiceSrcPortMapping
+* class-AddressGroup - implement method hasGroupinGroup and getGroupNamerecursive
 
 utils:
-rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool]
+rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
 rules-edit: action 'display' extend with DSRI information, if "Disable Server Response Inspection" is enabled for security rule
 rules-edit: action'nameRename' extend for additional variable usage like $$current.name$$ and $$sequential.number$$
+rules-edit: new action 'app-Fix-Dependencies' to display missing dependencies, with additional argument 'app-Fix-Dependencies:yes' all missing app-id dependencies are added
+rules-edit: new action 'securityProfile-remove-FastAPI'
+rules-edit: new filter (location is.parent.of [DeviceGroup])
+rules-edit: new filter 'app has.missing.dependencies'
+download-predefined: introduction of new util to download predefined.xml especially for APP-id datebase
+address-edit: new action split-large-address-group
+address-edit: new action AddToGroup
+rules-edit: new 'filter=(service has.value.only [443])'
+rules-edit: new 'filter=(snathost has.from.query subquery1)' 'subquery1=([all filters possible from address-edit])'
+rules-edit: new 'filter=(snathost.count - >,<,=,!)'
+rules-edit: extend actions=name-Prepend/name-Append/name-Rename with argument accept63characters as bool
+address-merger: introduce argument debugapi and exportcsv | which print out per object value the objects replaced by the kept one | improve output for ancestor
+service-merger: introduce new dupalgorithm sameDstSrcport
+service-edit: new filter (value string.eq [DstPort])
+service-edit: new filter (overrides.upper.level/overriden.at.lower.level)
 
+bugfix:
+- fixed rule 'filter=(rule has.destination.nat)'
+- fix rule-merger - wrong calculation usage for method 5,6,8
+- fix class App - calculateDependencies has missing app-id dependency calculation if explicit and implicit app-id are set
+- fix rules-edit filter (rule is.unused.fast) in a DeviceGroup hierarchy
+- fix class-AppStore - App details not imported if App has no ports
+- fix for all FastAPI actions directly running against a firewall
+- fix for address-merger.php - allow ancestor merging with same name on upperlevel for FQDN address objects
+- fix address-edit actions=name-addprefix/name-addsuffix/name-removePrefix/name-removeSuffix
+- fix class App - import application-filter before application-group to avoid tmp application tagging
+- fix service-edit actions=move - problem with API mode for TMP objects
+- fix class AddressRuleContainer - fix is related address-merger for snathost replacement
+- fix memory calculation for specific situations
+- fix memory issue if own addressgroup/servicegroup is added as a subgroup in an offline configuration file (move from error to warning)
+- fix problems with mergen of branches
+- fix address-edit filter=(object overrides.upper.level)
+- fix service-merger replace value() with getDestPort()
+- fix service-merger help description
+- fix address-edit actions=AddToGroup where shared objects need to be added to childDG | new argument devicegroupname if location=any
+- fix rule-edit 'filter='(snathost.count >,<,=,!)' if not NATRule
+- fix class-AddressGroup - if group isDynamic
+- fix address-edit actions=AddToGroup | improve action to work against all parent/childDG and also shared/vsys level on Firewall
+- fix rule-edit 'filter=(members.count < ) - if dynamicAddressGroup | related to last fix of class-AddressGroup if group isDynamic
+- fix class App-stroe - Application-group members are imported now
 
 
 1.5.13

@@ -11,7 +11,7 @@
 require_once("../lib/panconfigurator.php");
 
 
-$origfile = "sample-configs/pan-example1.xml";
+$origfile = "sample-configs/panos-example-2.xml";
 $output = "output.xml";
 
 

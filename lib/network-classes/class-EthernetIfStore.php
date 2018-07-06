@@ -25,6 +25,8 @@ class EthernetIfStore extends ObjStore
     /** @var PANConf */
     public $owner;
 
+    protected $fastMemToIndex=null;
+    protected $fastNameToIndex=null;
 
     public static $childn = 'EthernetInterface';
 
@@ -72,5 +74,165 @@ class EthernetIfStore extends ObjStore
         }
     }
 
+    /**
+     * Creates a new EthernetInterface in this store. It will be placed at the end of the list.
+     * @param string $name name of the new EthernetInterface
+     * @return EthernetInterface
+     */
+    public function newEthernetIf($name)
+    {
+        $ethernetIf = new EthernetInterface( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, EthernetInterface::$templatexml);
 
+        $ethernetIf->load_from_domxml($xmlElement);
+
+        $ethernetIf->owner = null;
+        $ethernetIf->setName($name);
+
+        $this->addEthernetIf( $ethernetIf );
+
+        return $ethernetIf;
+    }
+
+
+    /**
+     * @param EthernetInterface $ethernetIf
+     * @return bool
+     */
+    public function addEthernetIf( $ethernetIf )
+    {
+        if( !is_object($ethernetIf) )
+            derr('this function only accepts EthernetInterface class objects');
+
+        if( $ethernetIf->owner !== null )
+            derr('Trying to add a EthernetInterface that has a owner already !');
+
+
+        $ser = spl_object_hash($ethernetIf);
+
+        if (!isset($this->fastMemToIndex[$ser]))
+        {
+            $ethernetIf->owner = $this;
+
+            if( $this->xmlroot === null )
+                $this->createXmlRoot();
+
+            $this->xmlroot->appendChild($ethernetIf->xmlroot);
+
+            return true;
+        } else
+            derr('You cannot add a EthernetInterface that is already here :)');
+
+        return false;
+    }
+
+    /**
+     * @param EthernetInterface $s
+     * @return bool
+     */
+    public function API_addEthernetIf( $s )
+    {
+        $ret = $this->addEthernetIf($s);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+            $xpath = $s->getXPath();
+            #print 'XPATH: '.$xpath->textContent."\n";
+            $con->sendSetRequest($xpath, DH::domlist_to_xml($s->xmlroot->childNodes, -1, false) );
+        }
+
+        return $ret;
+    }
+
+    public function createXmlRoot()
+    {
+        if( $this->xmlroot === null )
+        {
+            //TODO: 20180331 why I need to create full path? why it is not set before???
+            $xml = DH::findFirstElementOrCreate('devices', $this->owner->xmlroot);
+            $xml = DH::findFirstElementOrCreate('entry', $xml);
+            $xml = DH::findFirstElementOrCreate('network', $xml);
+            $xml = DH::findFirstElementOrCreate('interface', $xml);
+            $xml = DH::findFirstElementOrCreate('ethernet', $xml);
+
+            $this->xmlroot = DH::findFirstElementOrCreate('units', $xml);
+        }
+    }
+
+    public function &getXPath()
+    {
+        $str = '';
+
+        if( $this->owner->isDeviceGroup() || $this->owner->isVirtualSystem() )
+            $str = $this->owner->getXPath();
+        elseif( $this->owner->isPanorama() || $this->owner->isFirewall() )
+            $str = '/config/shared';
+        else
+            derr('unsupported');
+
+        //TODO: intermediate solution
+        $str = '/config/devices/entry/network/interface';
+
+        $str = $str.'/ethernet/units';
+
+        return $str;
+    }
+
+
+    private function &getBaseXPath()
+    {
+        if ($this->owner->isPanorama() ||  $this->owner->isFirewall() )
+        {
+            $str = "/config/shared";
+        }
+        else
+            $str = $this->owner->getXPath();
+
+        //TODO: intermediate solution
+        $str = '/config/devices/entry/network/interface';
+
+        return $str;
+    }
+
+    public function &getEthernetIfStoreXPath()
+    {
+        $path = $this->getBaseXPath().'/ethernet/units';
+        return $path;
+    }
+
+    public function rewriteXML()
+    {
+        if( count($this->o) > 0 )
+        {
+            if( $this->xmlroot === null )
+                return;
+
+            $this->xmlroot->parentNode->removeChild($this->xmlroot);
+            $this->xmlroot = null;
+        }
+
+        if( $this->xmlroot === null )
+        {
+            if( count($this->o) > 0 )
+            {
+                $xml = DH::findFirstElementOrCreate('devices', $this->owner->xmlroot);
+                $xml = DH::findFirstElementOrCreate('entry', $xml);
+                $xml = DH::findFirstElementOrCreate('network', $xml);
+                $xml = DH::findFirstElementOrCreate('interface', $xml);
+                $xml = DH::findFirstElementOrCreate('ethernet', $xml);
+
+                DH::findFirstElementOrCreate('units', $xml);
+                #DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);
+            }
+
+        }
+
+        DH::clearDomNodeChilds($this->xmlroot);
+        foreach( $this->o as $o)
+        {
+            if( !$o->isTmp() )
+                $this->xmlroot->appendChild($o->xmlroot);
+        }
+    }
 }
