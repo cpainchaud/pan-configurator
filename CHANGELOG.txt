@@ -6,6 +6,7 @@ CHANGELOG
 * update predefined.xml to 8020-4723
 * new class ServiceSrcPortMapping
 * class-AddressGroup - implement method hasGroupinGroup and getGroupNamerecursive
+* class-IPsecTunnel - extend with more validation and warnings
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
