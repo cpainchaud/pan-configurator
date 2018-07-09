@@ -539,8 +539,24 @@ class NatRule extends Rule
 		$this->dnatports = null;
 
 		$this->dnatroot->parentNode->removeChild($this->dnatroot);
-		
+
+		return true;
 	}
+
+    public function API_setNoDNAT( )
+    {
+        $ret = $this->setNoDNAT();
+        if( $ret )
+        {
+            $connector = findConnectorOrDie($this);
+            $xpath = $this->getXPath().'/destination-translation';
+
+            $connector->sendDeleteRequest($xpath);
+
+        }
+
+        return $ret;
+    }
 
     /**
      * @param Address|AddressGroup $host
@@ -619,8 +635,23 @@ class NatRule extends Rule
 		$this->snattype = 'none';
 		$this->snathosts->setAny();
 		$this->rewriteSNAT_XML();
-		
+
+		return true;
 	}
+
+    public function API_setNoSNAT()
+    {
+        $ret = $this->setNoSNAT();
+        if( $ret )
+        {
+            $connector = findConnectorOrDie($this);
+            $xpath = $this->getXPath().'/source-translation';
+
+            $connector->sendDeleteRequest($xpath);
+        }
+
+        return $ret;
+    }
 
     public function setDestinationInterface($newDestinationInterface)
     {

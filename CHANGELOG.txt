@@ -7,6 +7,7 @@ CHANGELOG
 * new class ServiceSrcPortMapping
 * class-AddressGroup - implement method hasGroupinGroup and getGroupNamerecursive
 * class-IPsecTunnel - extend with more validation and warnings
+* class-NatRule.php - introduce method API_setNoSNAT / API_setNoDNAT
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
