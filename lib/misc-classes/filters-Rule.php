@@ -1976,6 +1976,15 @@ RQuery::$defaultFilters['rule']['action']['operators']['is.allow'] = Array(
     },
     'arg' => false
 );
+RQuery::$defaultFilters['rule']['action']['operators']['is.drop'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        if( !$context->object->isSecurityRule() )
+            return false;
+        return $context->object->actionIsDrop();
+    },
+    'arg' => false
+);
 RQuery::$defaultFilters['rule']['log']['operators']['at.start'] = Array(
     'Function' => function(RuleRQueryContext $context )
     {
