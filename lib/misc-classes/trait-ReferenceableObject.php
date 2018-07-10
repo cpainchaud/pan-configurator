@@ -293,6 +293,7 @@ trait ReferencableObject
         $type_array['decryptionrule'] = false;
         $type_array['appoverriderule'] = false;
         $type_array['captiveportalrule'] = false;
+        $type_array['authenticationrule'] = false;
         $type_array['pbfrule'] = false;
         $type_array['qosrule'] = false;
         $type_array['dosrule'] = false;

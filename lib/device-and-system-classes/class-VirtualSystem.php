@@ -60,7 +60,7 @@ class VirtualSystem
     public $appOverrideRules;
 
     /** @var RuleStore */
-    public $captivePortalRules;
+    public $authenticationRules;
 
     /** @var RuleStore */
     public $pbfRules;
@@ -121,6 +121,9 @@ class VirtualSystem
 
         $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule');
         $this->captivePortalRules->name = 'CaptivePortal';
+
+        $this->authenticationRules = new RuleStore($this, 'AuthenticationRule');
+        $this->authenticationRules->name = 'Authentication';
 
         $this->pbfRules = new RuleStore($this, 'PbfRule');
         $this->pbfRules->name = 'PBF';

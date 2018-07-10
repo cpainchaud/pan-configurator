@@ -459,7 +459,7 @@ else
 //
 // Determine rule types
 //
-$supportedRuleTypes = Array('all', 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'pbf', 'qos', 'dos');
+$supportedRuleTypes = Array('all', 'any', 'security', 'nat', 'decryption', 'appoverride', 'captiveportal', 'authentication', 'pbf', 'qos', 'dos');
 if( !isset(PH::$args['ruletype'])  )
 {
     print " - No 'ruleType' specified, using 'security' by default\n";
@@ -624,6 +624,10 @@ foreach( $rulesLocation as $location )
                     {
                         $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->resultingRuleSet());
                     }
+                    if( array_search('any', $ruleTypes) !== false || array_search('authentication', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->authenticationRules, 'rules' => $sub->authenticationRules->resultingRuleSet());
+                    }
                     if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
                     {
                         $rulesToProcess[] = Array('store' => $sub->dosRules, 'rules' => $sub->dosRules->resultingRuleSet());
@@ -662,6 +666,10 @@ foreach( $rulesLocation as $location )
                     if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
                     {
                         $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->rules());
+                    }
+                    if( array_search('any', $ruleTypes) !== false || array_search('authentication', $ruleTypes) !== false )
+                    {
+                        $rulesToProcess[] = Array('store' => $sub->authenticationRules, 'rules' => $sub->authenticationRules->rules());
                     }
                     if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
                     {
@@ -704,6 +712,10 @@ foreach( $rulesLocation as $location )
             {
                 $rulesToProcess[] = Array('store' => $pan->captivePortalRules, 'rules' => $pan->captivePortalRules->rules());
             }
+            if( array_search('any', $ruleTypes) !== false || array_search('authentication', $ruleTypes) !== false )
+            {
+                $rulesToProcess[] = Array('store' => $pan->authenticationRules, 'rules' => $pan->authenticationRules->rules());
+            }
             if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
             {
                 $rulesToProcess[] = Array('store' => $pan->dosRules, 'rules' => $pan->dosRules->rules());
@@ -742,6 +754,10 @@ foreach( $rulesLocation as $location )
                 if( array_search('any', $ruleTypes) !== false || array_search('captiveportal', $ruleTypes) !== false )
                 {
                     $rulesToProcess[] = Array('store' => $sub->captivePortalRules, 'rules' => $sub->captivePortalRules->rules());
+                }
+                if( array_search('any', $ruleTypes) !== false || array_search('authentication', $ruleTypes) !== false )
+                {
+                    $rulesToProcess[] = Array('store' => $sub->authenticationRules, 'rules' => $sub->authenticationRules->rules());
                 }
                 if( array_search('any', $ruleTypes) !== false || array_search('dos', $ruleTypes) !== false )
                 {

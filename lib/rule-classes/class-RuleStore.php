@@ -66,6 +66,7 @@ class RuleStore
         'DecryptionRule' => Array( 'name' => 'Decryption', 'varName' => 'decryptionRules', 'xpathRoot' => 'decryption' ),
         'AppOverrideRule' => Array( 'name' => 'AppOverride', 'varName' => 'appOverrideRules', 'xpathRoot' => 'application-override' ),
         'CaptivePortalRule' => Array( 'name' => 'CaptivePortal', 'varName' => 'captivePortalRules', 'xpathRoot' => 'captive-portal' ),
+        'AuthenticationRule' => Array( 'name' => 'Authentication', 'varName' => 'authenticationRules', 'xpathRoot' => 'authentication' ),
         'PbfRule' => Array( 'name' => 'Pbf', 'varName' => 'pbfRules', 'xpathRoot' => 'pbf' ),
         'QoSRule' => Array( 'name' => 'QoS', 'varName' => 'qosRules', 'xpathRoot' => 'qos' ),
         'DoSRule' => Array( 'name' => 'DoS', 'varName' => 'dosRules', 'xpathRoot' => 'dos' )
