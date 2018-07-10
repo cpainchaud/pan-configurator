@@ -132,7 +132,7 @@ class IPsecTunnel
                     }
                     else
                     {
-                        mwarning( "your PAN-OS proxy-id config must be fixed", $node );
+                        derr( "xml element <protocol> was not found", $proxyNode );
                         $protocol_tcp = false;
                         $protocol_udp = false;
                         $protocol_number = false;
@@ -227,7 +227,7 @@ class IPsecTunnel
                     }
                     else
                     {
-                        mwarning( "your PAN-OS proxy-id config must be fixed", $node );
+                        derr( "xml element <protocol> was not found", $proxyNode );
                         $protocol_tcp = false;
                         $protocol_udp = false;
                         $protocol_number = false;
