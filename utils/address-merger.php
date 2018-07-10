@@ -277,6 +277,7 @@ if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
             {
                 if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
                 {
+                    print "\n- object '".$object->name()."'' skipped because of same object name available at lower level\n";
                     $skipThisOne = TRUE;
                     break;
                 }
