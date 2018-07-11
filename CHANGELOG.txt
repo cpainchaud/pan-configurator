@@ -8,6 +8,7 @@ CHANGELOG
 * class-AddressGroup - implement method hasGroupinGroup and getGroupNamerecursive
 * class-IPsecTunnel - extend with more validation and warnings
 * class-NatRule.php - introduce method API_setNoSNAT / API_setNoDNAT
+* new class AuthenticationRule : bring in PAN-OS 8.0 change from CaptivePortalRule to AuthenticationRule
 
 utils:
 rules-edit: new action dsri-set:[bool], dsri-Set-FastAPI:[bool] => default value is false
@@ -20,6 +21,7 @@ rules-edit: new filter 'app has.missing.dependencies'
 download-predefined: introduction of new util to download predefined.xml especially for APP-id datebase
 address-edit: new action split-large-address-group
 address-edit: new action AddToGroup
+address-edit: new action decommission
 rules-edit: new 'filter=(service has.value.only [443])'
 rules-edit: new 'filter=(snathost has.from.query subquery1)' 'subquery1=([all filters possible from address-edit])'
 rules-edit: new 'filter=(snathost.count - >,<,=,!)'
@@ -54,6 +56,7 @@ bugfix:
 - fix rule-edit 'filter=(members.count < ) - if dynamicAddressGroup | related to last fix of class-AddressGroup if group isDynamic
 - fix class App-stroe - Application-group members are imported now
 - fix class-PanAPIConnector.php - introcude M-200 and M-600 devices
+- fix trait-AddressCommon.php method __removeWhereIamUsed - for address-edit actions=decommission
 
 
 1.5.13
