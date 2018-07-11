@@ -16,7 +16,7 @@
 */
 
 
-class AuthenticationRule extends Rule
+class AuthenticationRule extends RuleWithUserID
 {
     use NegatableRule;
 
@@ -128,6 +128,7 @@ class AuthenticationRule extends Rule
         }
         // End of <rule-type>
 
+        $this->userID_loadUsersFromXml();
     }
 
     public function action()
@@ -175,6 +176,13 @@ class AuthenticationRule extends Rule
         print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
         print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
         print $padding."  Service:  ".$this->services->toString_inline()."\n";
+        if( !$this->userID_IsCustom() )
+            print $padding."  User: *".$this->userID_type()."*\n";
+        else
+        {
+            $users = $this->userID_getUsers();
+            print $padding . " User:  " . PH::list_to_string($users) . "\n";
+        }
         print $padding."  Action: {$this->action()}\n";
         print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
 

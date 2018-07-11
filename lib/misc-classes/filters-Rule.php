@@ -2538,6 +2538,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.any'] = Array(
             return false;
         if( $rule->isNatRule() )
             return false;
+        if( $rule->isAppOverrideRule() )
+            return false;
 
         return $rule->userID_IsAny();
     },
@@ -2554,6 +2556,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.known'] = Array(
         if( $rule->isDecryptionRule() )
             return false;
         if( $rule->isNatRule() )
+            return false;
+        if( $rule->isAppOverrideRule() )
             return false;
 
         return $rule->userID_IsKnown();
@@ -2572,6 +2576,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.unknown'] = Array(
             return false;
         if( $rule->isNatRule() )
             return false;
+        if( $rule->isAppOverrideRule() )
+            return false;
 
         return $rule->userID_IsUnknown();
     },
@@ -2588,6 +2594,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.prelogon'] = Array(
         if( $rule->isDecryptionRule() )
             return false;
         if( $rule->isNatRule() )
+            return false;
+        if( $rule->isAppOverrideRule() )
             return false;
 
         return $rule->userID_IsPreLogon();
@@ -2606,6 +2614,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['has'] = Array(
         if( $rule->isDecryptionRule() )
             return false;
         if( $rule->isNatRule() )
+            return false;
+        if( $rule->isAppOverrideRule() )
             return false;
 
         $users = $rule->userID_getUsers();
@@ -2630,6 +2640,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = Array(
         if( $rule->isDecryptionRule() )
             return false;
         if( $rule->isNatRule() )
+            return false;
+        if( $rule->isAppOverrideRule() )
             return false;
 
         $users = $rule->userID_getUsers();
