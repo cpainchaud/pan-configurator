@@ -277,6 +277,7 @@ if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
             {
                 if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
                 {
+                    print "\n- object '".$object->name()."'' skipped because of same object name available at lower level\n";
                     $skipThisOne = TRUE;
                     break;
                 }
@@ -421,8 +422,14 @@ foreach( $hashMap as $index => &$hash )
             $ancestor = $object->ancestor;
             $ancestor_different_value = "";
 
+            if( !$ancestor->isAddress() )
+            {
+                echo "    - SKIP: object name '{$object->name()}' as one ancestor is of type addressgroup\n";
+                continue;
+            }
+
             /** @var Address $ancestor */
-            if( $upperLevelSearch && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()||$ancestor->isType_FQDN()) )
+            if( $upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()||$ancestor->isType_FQDN()) )
             {
                 if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
                 {
