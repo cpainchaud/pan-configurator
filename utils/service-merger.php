@@ -405,8 +405,15 @@ if( $dupAlg == 'sameports' || $dupAlg == 'samedstsrcports' )
             if( isset($object->ancestor) )
             {
                 $ancestor = $object->ancestor;
+
+                if( !$ancestor->isService() )
+                {
+                    echo "    - SKIP: object name '{$object->name()}' as one ancestor is of type servicegroup\n";
+                    continue;
+                }
+
                 /** @var Service $ancestor */
-                if( $upperLevelSearch && !$ancestor->isTmpSrv() && !$ancestor->isGroup() )
+                if( $upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpSrv()  )
                 {
                     if( $object->dstPortMapping()->equals($ancestor->dstPortMapping()) )
                     {

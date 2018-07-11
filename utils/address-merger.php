@@ -422,8 +422,14 @@ foreach( $hashMap as $index => &$hash )
             $ancestor = $object->ancestor;
             $ancestor_different_value = "";
 
+            if( !$ancestor->isAddress() )
+            {
+                echo "    - SKIP: object name '{$object->name()}' as one ancestor is of type addressgroup\n";
+                continue;
+            }
+
             /** @var Address $ancestor */
-            if( $upperLevelSearch && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()||$ancestor->isType_FQDN()) )
+            if( $upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()||$ancestor->isType_FQDN()) )
             {
                 if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
                 {
