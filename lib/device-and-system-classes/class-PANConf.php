@@ -400,6 +400,7 @@ class PANConf
 		$numDecryptRules = 0;
         $numAppOverrideRules = 0;
         $numCaptivePortalRules = 0;
+        $numAuthenticationRules = 0;
         $numDosRules = 0;
 
 
@@ -431,6 +432,7 @@ class PANConf
 			$numDecryptRules += $vsys->decryptionRules->count();
             $numAppOverrideRules += $vsys->appOverrideRules->count();
             $numCaptivePortalRules += $vsys->captivePortalRules->count();
+            $numAuthenticationRules += $vsys->authenticationRules->count();
             $numDosRules += $vsys->dosRules->count();
 
 			$gnservices += $vsys->serviceStore->countServices();
@@ -464,6 +466,8 @@ class PANConf
         print "- ".$numAppOverrideRules." AppOverride Rules\n";
 
         print "- ".$numCaptivePortalRules." CaptivePortal Rules\n";
+
+        print "- ".$numAuthenticationRules." Authentication Rules\n";
 
         print "- ".$numDosRules." Dos Rules\n";
 

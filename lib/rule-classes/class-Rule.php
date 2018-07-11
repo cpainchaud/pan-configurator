@@ -688,6 +688,11 @@ class Rule
         return false;
     }
 
+    public function isAuthenticationRule()
+    {
+        return false;
+    }
+
     public function isPbfRule()
     {
         return false;

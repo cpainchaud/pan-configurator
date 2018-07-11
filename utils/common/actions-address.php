@@ -55,6 +55,95 @@ AddressCallContext::$supportedActions[] = Array(
 );
 
 AddressCallContext::$supportedActions[] = Array(
+    'name' => 'decommission',
+    'GlobalInitFunction' => function(AddressCallContext $context)
+    {
+        $context->objecttodelete = Array();
+    },
+    'MainFunction' => function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $context->arguments['file'] !== "false" )
+        {
+            if( !isset($context->cachedList) )
+            {
+                $text = file_get_contents( $context->arguments['file'] );
+
+                if( $text === false )
+                    derr("cannot open file '{$context->arguments['file']}");
+
+                $lines = explode("\n", $text);
+                foreach( $lines as  $line)
+                {
+                    $line = trim($line);
+                    if(strlen($line) == 0)
+                        continue;
+                    $list[$line] = true;
+                }
+
+                $context->cachedList = &$list;
+            }
+            else
+                $list = &$context->cachedList;
+        }
+        else
+            $list[] = $object->name();
+
+        foreach( $list as $key => $item )
+        {
+            if( $object->name() == $key )
+            {
+                if( $object->countReferences() != 0 )
+                {
+                    print "delete all references: \n";
+                    print $object->display_references();
+
+                    if( $context->isAPI )
+                        $object->API_removeWhereIamUsed( true );
+                    else
+                        $object->removeWhereIamUsed( true );
+                }
+                $context->objecttodelete[] = $object;
+            }
+        }
+    },
+    'GlobalFinishFunction' => function(AddressCallContext $context)
+    {
+        print "\n\n".PH::boldText( "DELETE ADDRESS OBJECTS:" )."\n";
+        foreach( $context->objecttodelete as $object )
+        {
+            //error handling enabled because of address object reference settings in :
+            //- interfaces: ethernet/vlan/loopback/tunnel
+            //- IKE gateway
+            // is not implemented yet
+            PH::enableExceptionSupport();
+            try
+            {
+
+                if( $context->isAPI )
+                    $object->owner->API_remove($object);
+                else
+                    $object->owner->remove($object);
+                print "finally delete address object: " .$object->name()."\n";
+
+            } catch(Exception $e)
+            {
+                PH::disableExceptionSupport();
+                print "\n\n " . PH::boldText("  ***** an error occured : ") . $e->getMessage() . "\n\n";
+
+                print PH::boldText( "address object: ". $object->name() . " can not be removed. Check error message above.\n");
+
+                return;
+            }
+        }
+    },
+    'args' => Array(
+        'file' => Array( 'type' => 'string', 'default' => 'false' ),
+    ),
+);
+
+AddressCallContext::$supportedActions[] = Array(
     'name' => 'replace-IP-by-MT-like-Object',
     'MainFunction' => function ( AddressCallContext $context )
     {

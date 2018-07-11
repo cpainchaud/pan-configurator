@@ -9,7 +9,7 @@
 RQuery::$defaultFilters['rule']['from']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if( $object->isPbfRule() && !$object->isZoneBased() )
             return $object->from->hasInterface($value) === true;
 
@@ -27,7 +27,7 @@ RQuery::$defaultFilters['rule']['from']['operators']['has'] = Array(
 RQuery::$defaultFilters['rule']['from']['operators']['has.only'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if( $object->isPbfRule() && !$object->isZoneBased() )
             return $object->from->hasInterface($value) === true && $object->from->count() == 1;
         if( $object->isDoSRule() && !$object->isZoneBasedFrom() )
@@ -42,7 +42,7 @@ RQuery::$defaultFilters['rule']['from']['operators']['has.only'] = Array(
 RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if( $object->isPbfRule() )
             return false;
 
@@ -54,7 +54,7 @@ RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
     'arg' => true,
     'argObjectFinder' => function($object, $argument)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if( $object->isPbfRule() )
             return false;
 
@@ -65,7 +65,7 @@ RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
 RQuery::$defaultFilters['rule']['to']['operators']['has.only'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if( $object->isPbfRule() )
             return false;
 
@@ -162,7 +162,7 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
 RQuery::$defaultFilters['rule']['snathost']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if (!$object->isNatRule()) return false;
 
         return $object->snathosts->has($value) === true;
@@ -176,7 +176,7 @@ RQuery::$defaultFilters['rule']['snathost']['operators']['has.from.query'] = Arr
     {
         $object = $context->object;
 
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if (!$object->isNatRule()) return false;
 
         if( $object->snathosts->count() == 0 )
@@ -218,7 +218,7 @@ RQuery::$defaultFilters['rule']['snathost.count']['operators']['>,<,=,!'] = Arra
 );
 RQuery::$defaultFilters['rule']['dnathost']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value) {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if (!$object->isNatRule()) return false;
         if ($object->dnathost === null) return false;
 
@@ -451,7 +451,7 @@ RQuery::$commonFilters['src-dst']['xxx-is.partially.or.fully.included.in.list'] 
 RQuery::$defaultFilters['rule']['src']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         return $object->source->has($value) === true;
     },
     'arg' => true,
@@ -461,7 +461,7 @@ RQuery::$defaultFilters['rule']['src']['operators']['has'] = Array(
 RQuery::$defaultFilters['rule']['src']['operators']['has.only'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         return $object->source->count() == 1 && $object->source->has($value) === true;
     },
     'arg' => true,
@@ -470,7 +470,7 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.only'] = Array(
 RQuery::$defaultFilters['rule']['src']['operators']['has.recursive'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         return $object->source->hasObjectRecursive($value, false) === true;
     },
     'arg' => true,
@@ -496,7 +496,7 @@ RQuery::$defaultFilters['rule']['src']['operators']['has.recursive.regex'] = Arr
 RQuery::$defaultFilters['rule']['dst']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule  $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule  $object */
         return $object->destination->has($value) === true;
     },
     'arg' => true,
@@ -506,7 +506,7 @@ RQuery::$defaultFilters['rule']['dst']['operators']['has'] = Array(
 RQuery::$defaultFilters['rule']['dst']['operators']['has.only'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         return $object->destination->count() == 1 && $object->destination->has($value) === true;
     },
     'arg' => true,
@@ -970,7 +970,7 @@ RQuery::$defaultFilters['rule']['dst']['operators']['is.partially.included.in.li
 RQuery::$defaultFilters['rule']['tag']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         return $object->tags->hasTag($value) === true;
     },
     'arg' => true,
@@ -1041,7 +1041,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['is.any'] = Array(
 RQuery::$defaultFilters['rule']['app']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         return $object->apps->hasApp($value) === true;
     },
     'arg' => true,
@@ -1064,7 +1064,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial'] 
     'Function' => function(RuleRQueryContext $context )
     {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
             return false;
 
         /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
@@ -1081,7 +1081,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['includes.full.or.partial.no
     'Function' => function(RuleRQueryContext $context )
     {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
             return false;
 
         return $rule->apps->includesApp($context->value, false) === true;
@@ -1096,7 +1096,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial
     'Function' => function(RuleRQueryContext $context )
     {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
             return false;
 
         /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
@@ -1113,7 +1113,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['included-in.full.or.partial
     'Function' => function(RuleRQueryContext $context )
     {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
             return false;
 
         return $rule->apps->includedInApp($context->value, false) === true;
@@ -1128,7 +1128,7 @@ RQuery::$defaultFilters['rule']['app']['operators']['custom.has.signature'] = Ar
     'Function' => function(RuleRQueryContext $context )
     {
         $rule = $context->object;
-        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isDoSRule() )
+        if( $rule->isNatRule() || $rule->isDecryptionRule() || $rule->isCaptivePortalRule() || $rule->isAuthenticationRule() || $rule->isDoSRule() )
             return false;
 
         /** @var Rule|SecurityRule|AppOverrideRule|PbfRule|QoSRule $object */
@@ -1173,7 +1173,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['is.application-default'
 RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         return $object->services->has($value) === true;
     },
     'arg' => true,
@@ -1182,7 +1182,7 @@ RQuery::$defaultFilters['rule']['service']['operators']['has'] = Array(
 RQuery::$defaultFilters['rule']['service']['operators']['has.only'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
-        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|PbfRule|QoSRule|DoSRule $object */
+        /** @var Rule|SecurityRule|NatRule|DecryptionRule|AppOverrideRule|CaptivePortalRule|AuthenticationRule|PbfRule|QoSRule|DoSRule $object */
         if( $object->isNatRule() )
         {
             if( $object->service === null )
@@ -2547,6 +2547,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.any'] = Array(
             return false;
         if( $rule->isNatRule() )
             return false;
+        if( $rule->isAppOverrideRule() )
+            return false;
 
         return $rule->userID_IsAny();
     },
@@ -2563,6 +2565,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.known'] = Array(
         if( $rule->isDecryptionRule() )
             return false;
         if( $rule->isNatRule() )
+            return false;
+        if( $rule->isAppOverrideRule() )
             return false;
 
         return $rule->userID_IsKnown();
@@ -2581,6 +2585,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.unknown'] = Array(
             return false;
         if( $rule->isNatRule() )
             return false;
+        if( $rule->isAppOverrideRule() )
+            return false;
 
         return $rule->userID_IsUnknown();
     },
@@ -2597,6 +2603,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['is.prelogon'] = Array(
         if( $rule->isDecryptionRule() )
             return false;
         if( $rule->isNatRule() )
+            return false;
+        if( $rule->isAppOverrideRule() )
             return false;
 
         return $rule->userID_IsPreLogon();
@@ -2615,6 +2623,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['has'] = Array(
         if( $rule->isDecryptionRule() )
             return false;
         if( $rule->isNatRule() )
+            return false;
+        if( $rule->isAppOverrideRule() )
             return false;
 
         $users = $rule->userID_getUsers();
@@ -2639,6 +2649,8 @@ RQuery::$defaultFilters['rule']['user']['operators']['has.regex'] = Array(
         if( $rule->isDecryptionRule() )
             return false;
         if( $rule->isNatRule() )
+            return false;
+        if( $rule->isAppOverrideRule() )
             return false;
 
         $users = $rule->userID_getUsers();

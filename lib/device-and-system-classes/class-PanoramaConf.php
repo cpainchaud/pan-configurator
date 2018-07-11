@@ -77,6 +77,9 @@ class PanoramaConf
     public $captivePortalRules;
 
     /** @var RuleStore */
+    public $authenticationRules;
+
+    /** @var RuleStore */
     public $pbfRules;
 
     /** @var RuleStore */
@@ -141,6 +144,7 @@ class PanoramaConf
 		$this->decryptionRules = new RuleStore($this, 'DecryptionRule', true);
         $this->appOverrideRules = new RuleStore($this, 'AppOverrideRule', true);
         $this->captivePortalRules = new RuleStore($this, 'CaptivePortalRule', true);
+        $this->authenticationRules = new RuleStore($this, 'AuthenticationRule', true);
         $this->pbfRules = new RuleStore($this, 'PbfRule', true);
         $this->qosRules = new RuleStore($this, 'QoSRule', true);
         $this->dosRules = new RuleStore($this, 'DoSRule', true);
@@ -418,6 +422,30 @@ class PanoramaConf
         }
         $this->captivePortalRules->load_from_domxml($tmp, $tmpPost);
 
+
+        if( $prerulebase === false )
+            $tmp = null;
+        else
+        {
+            $tmp = DH::findFirstElement('authentication', $prerulebase);
+            if( $tmp !== false )
+                $tmp = DH::findFirstElement('rules', $tmp);
+
+            if( $tmp === false )
+                $tmp = null;
+        }
+        if( $postrulebase === false )
+            $tmpPost = null;
+        else
+        {
+            $tmpPost = DH::findFirstElement('authentication-portal', $postrulebase);
+            if( $tmpPost !== false )
+                $tmpPost = DH::findFirstElement('rules', $tmpPost);
+
+            if( $tmpPost === false )
+                $tmpPost = null;
+        }
+        $this->authenticationRules->load_from_domxml($tmp, $tmpPost);
 
 
         if( $prerulebase === false )
@@ -731,6 +759,7 @@ class PanoramaConf
         $gpreDecryptRules = $this->decryptionRules->countPreRules();
         $gpreAppOverrideRules = $this->appOverrideRules->countPreRules();
         $gpreCPRules = $this->captivePortalRules->countPreRules();
+        $gpreAuthRules = $this->authenticationRules->countPreRules();
         $gprePbfRules = $this->pbfRules->countPreRules();
         $gpreQoSRules = $this->qosRules->countPreRules();
         $gpreDoSRules = $this->dosRules->countPreRules();
@@ -740,6 +769,7 @@ class PanoramaConf
         $gpostDecryptRules = $this->decryptionRules->countPostRules();
         $gpostAppOverrideRules = $this->appOverrideRules->countPostRules();
         $gpostCPRules = $this->captivePortalRules->countPostRules();
+        $gpostAuthRules = $this->authenticationRules->countPostRules();
         $gpostPbfRules = $this->pbfRules->countPostRules();
         $gpostQoSRules = $this->qosRules->countPostRules();
         $gpostDoSRules = $this->dosRules->countPostRules();
@@ -766,6 +796,7 @@ class PanoramaConf
             $gpreDecryptRules += $cur->decryptionRules->countPreRules();
             $gpreAppOverrideRules += $cur->appOverrideRules->countPreRules();
             $gpreCPRules += $cur->captivePortalRules->countPreRules();
+            $gpreAuthRules += $cur->authenticationRules->countPreRules();
             $gprePbfRules += $cur->pbfRules->countPreRules();
             $gpreQoSRules += $cur->qosRules->countPreRules();
             $gpreDoSRules += $cur->dosRules->countPreRules();
@@ -775,6 +806,7 @@ class PanoramaConf
             $gpostDecryptRules += $cur->decryptionRules->countPostRules();
             $gpostAppOverrideRules += $cur->appOverrideRules->countPostRules();
             $gpostCPRules += $cur->captivePortalRules->countPostRules();
+            $gpostAuthRules += $cur->authenticationRules->countPostRules();
             $gpostPbfRules += $cur->pbfRules->countPostRules();
             $gpostQoSRules += $cur->qosRules->countPostRules();
             $gpostDoSRules += $cur->dosRules->countPostRules();
@@ -816,6 +848,9 @@ class PanoramaConf
 
         print "- ".$this->captivePortalRules->countPreRules()." (".$gpreCPRules.") pre-CaptivePortal Rules\n";
         print "- ".$this->captivePortalRules->countPostRules()." (".$gpostCPRules.") post-CaptivePortal Rules\n";
+
+        print "- ".$this->authenticationRules->countPreRules()." (".$gpreAuthRules.") pre-Authentication Rules\n";
+        print "- ".$this->authenticationRules->countPostRules()." (".$gpostAuthRules.") post-Authentication Rules\n";
 
         print "- ".$this->dosRules->countPreRules()." (".$gpreDoSRules.") pre-DoS Rules\n";
         print "- ".$this->dosRules->countPostRules()." (".$gpostDoSRules.") post-DoS Rules\n";

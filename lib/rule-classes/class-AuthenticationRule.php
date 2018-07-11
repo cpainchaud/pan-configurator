@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (c) 2014-2017 Christophe Painchaud <shellescape _AT_ gmail.com>
  *
@@ -16,9 +15,27 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class DecryptionRule extends RuleWithUserID
+
+class AuthenticationRule extends RuleWithUserID
 {
     use NegatableRule;
+
+    static public $templatexml = '<entry name="**temporarynamechangeme**"><from><member>any</member></from><to><member>any</member></to>
+<source><member>any</member></source><destination><member>any</member></destination><service><member>any</member></service></entry></entry>';
+    static protected $templatexmlroot = null;
+
+    const ActionNoCaptivePortal     = 0;
+    const ActionWebForm             = 1;
+    const ActionBrowserChallenge    = 2;
+
+    static private $RuleActions = Array(
+        self::ActionNoCaptivePortal => 'default-no-captive-portal',
+        self::ActionWebForm => 'default-web-form',
+        self::ActionBrowserChallenge => 'default-browser-challenge'
+
+    );
+
+    protected $action = self::ActionNoCaptivePortal;
 
     /**
      * @param RuleStore $owner
@@ -57,8 +74,8 @@ class DecryptionRule extends RuleWithUserID
             $xmlElement = DH::importXmlStringOrDie($owner->xmlroot->ownerDocument, self::$templatexml);
             $this->load_from_domxml($xmlElement);
         }
-
     }
+
 
     public function load_from_domxml($xml)
     {
@@ -70,29 +87,76 @@ class DecryptionRule extends RuleWithUserID
 
         $this->load_common_from_domxml();
 
-        $this->load_from();
-        $this->load_to();
+
         $this->load_source();
         $this->load_destination();
+        $this->load_from();
+        $this->load_to();
 
-        $this->userID_loadUsersFromXml();
-        $this->_readNegationFromXml();
 
         //										//
         // Begin <service> extraction			//
         //										//
-        if( $this->owner->owner->version >= 61 )
-        {
-            $tmp = DH::findFirstElementOrCreate('service', $xml);
-            $this->services->load_from_domxml($tmp);
-        }
+        $tmp = DH::findFirstElementOrCreate('service', $xml);
+        $this->services->load_from_domxml($tmp);
         // end of <service> zone extraction
 
+        $this->_readNegationFromXml();
+
+        //
+        // Begin <action> extraction
+        //
+        $tmp = DH::findFirstElement('authentication-enforcement', $xml);
+        if( $tmp !== false )
+        {
+            /*
+            $actionFound = array_search($tmp->textContent, self::$RuleActions);
+            if( $actionFound === false )
+            {
+                mwarning("unsupported action '{$tmp->textContent}' found, allow assumed" , $tmp);
+            }
+            else
+            {
+                $this->action = $actionFound;
+            }
+            */
+            $this->action = $tmp->textContent;
+        }
+        else
+        {
+            mwarning("'<action> not found, assuming 'no-captive-portal'" ,$xml);
+        }
+        // End of <rule-type>
+
+        $this->userID_loadUsersFromXml();
     }
 
-    public function display($padding = 0)
+    public function action()
     {
-        $padding = str_pad('', $padding);
+        #return self::$RuleActions[$this->action];
+        return $this->action;
+    }
+
+    public function actionIsNoCP()
+    {
+        return $this->action == self::ActionNoCaptivePortal;
+    }
+
+    public function actionIsNoWebForm()
+    {
+        return $this->action == self::ActionWebForm;
+    }
+
+    public function actionIsBrowserChallenge()
+    {
+        return $this->action == self::ActionBrowserChallenge;
+    }
+
+
+    public function display( $padding = 0)
+    {
+        if( !is_string($padding) )
+            $padding = str_pad('', $padding);
 
         $dis = '';
         if( $this->disabled )
@@ -106,6 +170,7 @@ class DecryptionRule extends RuleWithUserID
         if( $this->destinationIsNegated() )
             $destinationNegated = '*negated*';
 
+
         print $padding."*Rule named '{$this->name}' $dis\n";
         print $padding."  From: " .$this->from->toString_inline()."  |  To:  ".$this->to->toString_inline()."\n";
         print $padding."  Source: $sourceNegated ".$this->source->toString_inline()."\n";
@@ -118,13 +183,12 @@ class DecryptionRule extends RuleWithUserID
             $users = $this->userID_getUsers();
             print $padding . " User:  " . PH::list_to_string($users) . "\n";
         }
-        print $padding."  Tags:  ".$this->tags->toString_inline()."\n";
-
-        if( $this->_targets !== null )
-            print $padding."  Targets:  ".$this->targets_toString()."\n";
+        print $padding."  Action: {$this->action()}\n";
+        print $padding."    Tags:  ".$this->tags->toString_inline()."\n";
 
         if( strlen($this->_description) > 0 )
             print $padding."  Desc:  ".$this->_description."\n";
+
         print "\n";
     }
 
@@ -135,31 +199,30 @@ class DecryptionRule extends RuleWithUserID
         $this->source->__destruct();
         $this->destination->__destruct();
         $this->tags->__destruct();
-        $this->services->__destruct();
+
 
         $this->from = null;
         $this->to = null;
         $this->source = null;
         $this->destination = null;
         $this->tags = null;
-        $this->services = null;
 
         $this->owner = null;
     }
 
-    public function isDecryptionRule()
+    public function isAuthenticationRule()
     {
         return true;
     }
 
-    public function storeVariableName()
-    {
-        return "decryptionRules";
-    }
-
     public function ruleNature()
     {
-        return 'decryption';
+        return 'authentication';
     }
 
-} 
+    public function storeVariableName()
+    {
+        return "AuthenticationRules";
+    }
+
+}
