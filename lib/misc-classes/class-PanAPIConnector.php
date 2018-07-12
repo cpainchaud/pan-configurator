@@ -178,7 +178,7 @@ class PanAPIConnector
             $this->info_vmcpuid = $vmcpuid->nodeValue;
         }
 
-        if( $model == 'panorama' || $model == 'm-100' || $model == 'm-500' )
+        if( $model == 'panorama' || $model == 'm-100' || $model == 'm-500' || $model == 'm-200' || $model == 'm-600' )
         {
             $this->info_deviceType = 'panorama';
         }

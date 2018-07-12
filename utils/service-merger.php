@@ -194,6 +194,14 @@ else
 
 }
 
+if( $panc->isPanorama() )
+{
+    if( $location == 'shared' )
+        $childDeviceGroups = $panc->deviceGroups;
+    else
+        $childDeviceGroups = $findLocation->childDeviceGroups(true);
+}
+
 $pickFilter = null;
 if( isset(PH::$args['pickfilter']) )
 {
@@ -250,6 +258,25 @@ if( $dupAlg == 'sameports' || $dupAlg == 'samedstsrcports' )
 
         if( $excludeFilter !== null && $excludeFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
             continue;
+
+
+        $skipThisOne = FALSE;
+
+        // Object with descendants in lower device groups should be excluded
+        if( $panc->isPanorama() && $object->owner === $store )
+        {
+            foreach( $childDeviceGroups as $dg )
+            {
+                if( $dg->serviceStore->find($object->name(), null, FALSE) !== null )
+                {
+                    print "\n- object '".$object->name()."' skipped because of same object name available at lower level\n";
+                    $skipThisOne = TRUE;
+                    break;
+                }
+            }
+            if( $skipThisOne )
+                continue;
+        }
 
         $value = $object->dstPortMapping()->mappingToText();
 
@@ -378,8 +405,15 @@ if( $dupAlg == 'sameports' || $dupAlg == 'samedstsrcports' )
             if( isset($object->ancestor) )
             {
                 $ancestor = $object->ancestor;
+
+                if( !$ancestor->isService() )
+                {
+                    echo "    - SKIP: object name '{$object->name()}' as one ancestor is of type servicegroup\n";
+                    continue;
+                }
+
                 /** @var Service $ancestor */
-                if( $upperLevelSearch && !$ancestor->isTmpSrv() && !$ancestor->isGroup() )
+                if( $upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpSrv()  )
                 {
                     if( $object->dstPortMapping()->equals($ancestor->dstPortMapping()) )
                     {

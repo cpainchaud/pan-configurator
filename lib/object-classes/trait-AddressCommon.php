@@ -194,6 +194,8 @@ trait AddressCommon
      */
     private function __removeWhereIamUsed($apiMode, $displayOutput = false, $outputPadding = '', $actionIfLastInRule = 'delete' )
     {
+        //Todo: address objects used at interfaces do not have a reference set
+
         /** @var Address|AddressGroup $this */
 
         if( !is_string($outputPadding) )
@@ -215,6 +217,22 @@ trait AddressCommon
                     $ref->API_removeMember($this);
                 else
                     $ref->removeMember($this);
+
+                if( count($ref->members() ) == 0 )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last addressgroup member so deleting {$ref->_PANC_shortName()}\n";
+                    if($apiMode)
+                        $ref->API_removeWhereIamUsed( true );
+                    else
+                        $ref->removeWhereIamUsed( true );
+
+                    if($apiMode)
+                        $ref->API_delete();
+                    else
+                        $ref->owner->remove($ref);
+                }
+
             }
             elseif( $refClass == 'AddressRuleContainer' )
             {
@@ -222,20 +240,64 @@ trait AddressCommon
                 if( $ref->count() <= 1 && $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
-                        print $outputPadding."- last member so deleting {$ref->_PANC_shortName()}\n";
-                    if( $apiMode)
-                        $ref->owner->owner->API_remove($ref->owner, true);
+                        print $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}\n";
+
+                    //if rule already deleted based no need to do it again
+                    if( $ref->name() == "snathosts" )
+                        $is_object = is_object($ref->owner->owner);
                     else
-                        $ref->owner->owner->remove($ref->owner, true);
+                        $is_object = is_object($ref->owner);
+
+                    if( $is_object )
+                    {
+                        if( $apiMode )
+                            $ref->owner->owner->API_remove($ref->owner, TRUE);
+                        else
+                            $ref->owner->owner->remove($ref->owner, TRUE);
+                    }
+                    else
+                        print "reference already deleted\n";
                 }
                 elseif( $ref->count() <= 1 && $actionIfLastInRule == 'setany' )
                 {
                     if( $displayOutput )
                         print $outputPadding."- last member so setting ANY {$ref->_PANC_shortName()}\n";
-                    if( $apiMode )
-                        $ref->API_setAny();
+
+                    if( $ref->name() !== "snathosts" )
+                    {
+                        if( $ref->name() == "source" )
+                        {
+                            if( $displayOutput )
+                                print $outputPadding."  - set source to ANY\n";
+                            if( $apiMode )
+                                $ref->owner->source->API_setAny();
+                            else
+                                $ref->owner->source->setAny();
+                        }
+                        if( $ref->name() == "destination" )
+                        {
+                            if( $displayOutput )
+                                print $outputPadding."  - set destination to ANY\n";
+                            if( $apiMode )
+                                $ref->owner->destination->API_setAny();
+                            else
+                                $ref->owner->destination->setAny();
+                        }
+                    }
                     else
-                        $ref->setAny();
+                    {
+                        if( !$ref->owner->sourceNatTypeIs_None()  )
+                        {
+                            if( $displayOutput )
+                                print $outputPadding."  - setNoSNAT\n";
+                            if( $apiMode )
+                                $ref->owner->API_setNoSNAT();
+                            else
+                                $ref->owner->setNoSNAT();
+                        }
+                    }
+
+
                 }
                 elseif( $ref->count() <= 1 && $actionIfLastInRule == 'disable' )
                 {
@@ -262,20 +324,41 @@ trait AddressCommon
                 if( $actionIfLastInRule == 'delete' )
                 {
                     if( $displayOutput )
-                        print $outputPadding."- last member so deleting {$ref->_PANC_shortName()}\n";
-                    if( $apiMode)
-                        $ref->owner->API_remove($ref, true);
-                    else
-                        $ref->owner->remove($ref, true);
+                        print $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}\n";
+
+                    //if rule already deleted based no need to do it again
+                    if( is_object($ref->owner) )
+                    {
+                        if( $apiMode )
+                            $ref->owner->API_remove($ref, TRUE);
+                        else
+                            $ref->owner->remove($ref, TRUE);
+                    }
                 }
                 elseif( $actionIfLastInRule == 'setany' )
                 {
                     if( $displayOutput )
                         print $outputPadding."- last member so setting ANY {$ref->_PANC_shortName()}\n";
-                    if( $apiMode )
-                        $ref->API_setService(null);
-                    else
-                        $ref->setService(null);
+
+                    if( !$ref->sourceNatTypeIs_None()  )
+                    {
+                        if( $displayOutput )
+                            print $outputPadding."  - setNoSNAT\n";
+                        if( $apiMode )
+                            $ref->API_setNoSNAT();
+                        else
+                            $ref->setNoSNAT();
+                    }
+
+                    if( $ref->destinationNatIsEnabled()  )
+                    {
+                        if( $displayOutput )
+                            print $outputPadding."  - setNoDNAT\n";
+                        if( $apiMode )
+                            $ref->API_setNoDNAT();
+                        else
+                            $ref->setNoDNAT();
+                    }
                 }
                 elseif( $actionIfLastInRule == 'disable' )
                 {

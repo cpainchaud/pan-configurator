@@ -149,6 +149,23 @@ class PbfRule extends RuleWithUserID
         print "\n";
     }
 
+    public function cleanForDestruction()
+    {
+        $this->from->__destruct();
+        $this->source->__destruct();
+        $this->destination->__destruct();
+        $this->tags->__destruct();
+        $this->services->__destruct();
+
+        $this->from = null;
+        $this->source = null;
+        $this->destination = null;
+        $this->tags = null;
+        $this->services = null;
+
+        $this->owner = null;
+    }
+
     public function ruleNature()
     {
         return 'pbf';

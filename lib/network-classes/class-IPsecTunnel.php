@@ -122,12 +122,23 @@ class IPsecTunnel
                     else
                         $remote = '0.0.0.0/0';
 
-
                     $protocolNode = DH::findFirstElement('protocol', $proxyNode);
-                    $protocol_tcp = DH::findFirstElement('tcp', $protocolNode);
-                    $protocol_udp = DH::findFirstElement('udp', $protocolNode);
-                    $protocol_number = DH::findFirstElement('number', $protocolNode);
-                    $protocol_any = DH::findFirstElement('any', $protocolNode);
+                    if( $protocolNode )
+                    {
+                        $protocol_tcp = DH::findFirstElement('tcp', $protocolNode);
+                        $protocol_udp = DH::findFirstElement('udp', $protocolNode);
+                        $protocol_number = DH::findFirstElement('number', $protocolNode);
+                        $protocol_any = DH::findFirstElement('any', $protocolNode);
+                    }
+                    else
+                    {
+                        derr( "xml element <protocol> was not found", $proxyNode );
+                        $protocol_tcp = false;
+                        $protocol_udp = false;
+                        $protocol_number = false;
+                        $protocol_any = false;
+                    }
+
 
 
                     if( $protocol_tcp !== FALSE )
@@ -207,10 +218,21 @@ class IPsecTunnel
                         $remote = '::';
 
                     $protocolNode = DH::findFirstElement('protocol', $proxyNode);
-                    $protocol_tcp = DH::findFirstElement('tcp', $protocolNode);
-                    $protocol_udp = DH::findFirstElement('udp', $protocolNode);
-                    $protocol_number = DH::findFirstElement('number', $protocolNode);
-                    $protocol_any = DH::findFirstElement('any', $protocolNode);
+                    if( $protocolNode )
+                    {
+                        $protocol_tcp = DH::findFirstElement('tcp', $protocolNode);
+                        $protocol_udp = DH::findFirstElement('udp', $protocolNode);
+                        $protocol_number = DH::findFirstElement('number', $protocolNode);
+                        $protocol_any = DH::findFirstElement('any', $protocolNode);
+                    }
+                    else
+                    {
+                        derr( "xml element <protocol> was not found", $proxyNode );
+                        $protocol_tcp = false;
+                        $protocol_udp = false;
+                        $protocol_number = false;
+                        $protocol_any = false;
+                    }
 
 
                     if( $protocol_tcp !== FALSE )
