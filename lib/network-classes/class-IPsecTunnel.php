@@ -132,11 +132,11 @@ class IPsecTunnel
                     }
                     else
                     {
-                        derr( "xml element <protocol> was not found", $proxyNode );
+                        $protocolNode = DH::findFirstElementOrCreate('protocol', $proxyNode);
+                        $protocol_any = DH::findFirstElementOrCreate('any', $protocolNode);
                         $protocol_tcp = false;
                         $protocol_udp = false;
                         $protocol_number = false;
-                        $protocol_any = false;
                     }
 
 
@@ -227,11 +227,11 @@ class IPsecTunnel
                     }
                     else
                     {
-                        derr( "xml element <protocol> was not found", $proxyNode );
+                        $protocolNode = DH::findFirstElementOrCreate('protocol', $proxyNode);
+                        $protocol_any = DH::findFirstElementOrCreate('any', $protocolNode);
                         $protocol_tcp = false;
                         $protocol_udp = false;
                         $protocol_number = false;
-                        $protocol_any = false;
                     }
 
 

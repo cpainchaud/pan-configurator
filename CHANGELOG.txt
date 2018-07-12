@@ -7,7 +7,7 @@ CHANGELOG
 utils:
 
 bugfix:
-
+- fix class-IpsecTunnel | related to proxy-id if <protocol> is not available
 
 
 1.5.14 (20180227)
