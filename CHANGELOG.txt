@@ -30,7 +30,7 @@ rules-edit: new action 'securityProfile-remove-FastAPI'
 rules-edit: new filter (location is.parent.of [DeviceGroup])
 rules-edit: new filter 'app has.missing.dependencies'
 rules-edit: new filter 'action is.drop'
-download-predefined: introduction of new util to download predefined.xml especially for APP-id datebase
+download-predefined: introduction of new util to download predefined.xml especially for APP-id database
 address-edit: new action split-large-address-group
 address-edit: new action AddToGroup
 address-edit: new action decommission
@@ -71,8 +71,6 @@ bugfix:
 - fix address-/ service-merger where same object name in address and addressgroup cause an error
 - fix trait-AddressCommon.php method __removeWhereIamUsed - for address-edit actions=decommission
 - fix class-Rule / class-AuthenticationRule - filter-rule | missing stuff for new class-Authentication
-
-
 
 
 1.5.13
