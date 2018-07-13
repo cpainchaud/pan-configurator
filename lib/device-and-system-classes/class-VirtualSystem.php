@@ -60,6 +60,9 @@ class VirtualSystem
     public $appOverrideRules;
 
     /** @var RuleStore */
+    public $captivePortalRules;
+
+    /** @var RuleStore */
     public $authenticationRules;
 
     /** @var RuleStore */
