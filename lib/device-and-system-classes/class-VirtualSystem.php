@@ -244,6 +244,34 @@ class VirtualSystem
         }
 
         //
+        // add reference to address object, if interface IP-address is using this object
+        //
+        foreach( $this->importedInterfaces->interfaces() as $interface )
+        {
+            if( $interface->isEthernetType() && $interface->type() == "layer3" )
+                $interfaces = $interface->getLayer3IPv4Addresses();
+            elseif( $interface->isVlanType() || $interface->isLoopbackType() || $interface->isTunnelType() )
+                $interfaces = $interface->getIPv4Addresses();
+            else
+                $interfaces = array();
+
+
+            foreach( $interfaces as $layer3IPv4Address )
+            {
+                if( strpos($layer3IPv4Address, "/") === FALSE )
+                {
+                    $object = $this->addressStore->find($layer3IPv4Address);
+                    if( is_object($object) )
+                        $object->addReference($interface);
+                    else
+                        mwarning("interface configured objectname: " . $layer3IPv4Address . " not found.\n", $interface);
+                }
+            }
+        }
+        //Todo: addressobject reference missing for: IKE gateway / GP Portal / GP Gateway (where GP is not implemented at all)
+
+
+        //
         // Extract Zone objects
         //
         $tmp = DH::findFirstElementOrCreate('zone', $xml);
