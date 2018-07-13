@@ -337,6 +337,8 @@ trait InterfaceType
     public function isAggregateType()  { return false; }
     public function isTmpType()  { return false; }
     public function isLoopbackType()  { return false; }
+    public function isTunnelType()  { return false; }
+    public function isVlanType()  { return false; }
 
     public $importedByVSYS = null;
 }

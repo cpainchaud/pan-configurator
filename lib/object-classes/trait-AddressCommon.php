@@ -374,6 +374,10 @@ trait AddressCommon
                     derr('unsupported');
                 }
             }
+            elseif( $refClass == "EthernetInterface" || $refClass == "VlanInterface" || $refClass == "LoopbackInterface" || $refClass == "TunnelInterface" )
+            {
+                mwarning("unsupported class '{$refClass}'");
+            }
             else
                 derr("unsupported class '{$refClass}'");
         }

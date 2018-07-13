@@ -19,7 +19,7 @@
 /**
  * Class InterfaceContainer
  * @property VirtualSystem|Zone|VirtualRouter|PbfRule|DosRule $owner
- * @property EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|IPsecTunnel[] $o
+ * @property EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|TunnelInterface[],IPsecTunnel[] $o
  */
 class InterfaceContainer extends ObjRuleContainer
 {
@@ -56,7 +56,7 @@ class InterfaceContainer extends ObjRuleContainer
     }
 
     /**
-     * @return EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|IPsecTunnel[]
+     * @return EthernetInterface[]|AggregateEthernetInterface[]|LoopbackInterface[]|TunnelInterface[]|IPsecTunnel[]
      */
     public function interfaces()
     {
