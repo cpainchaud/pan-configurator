@@ -141,6 +141,7 @@ class VirtualRouter
                     unset($record);
                 }
             }
+            //Todo: extend this to $if->isVlanType() / $if->isTunnelType()
             elseif( $if->isLoopbackType() )
             {
                 $findZone = $contextVSYS->zoneStore->findZoneMatchingInterfaceName($if->name());
@@ -151,6 +152,12 @@ class VirtualRouter
 
                 foreach( $ipAddresses as $interfaceIP )
                 {
+                    if( strpos( $interfaceIP, "/" ) === false )
+                    {
+                        $object = $contextVSYS->addressStore->find( $interfaceIP );
+                        $interfaceIP = $object->value();
+                    }
+
                     $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);
                     $record = Array('network' => $interfaceIP, 'start' => $ipv4Mapping['start'], 'end' => $ipv4Mapping['end'], 'zone' => $findZone->name(), 'origin' => 'connected', 'priority' => 1);
                     $ipv4sort[$record['end'] - $record['start']][$record['start']][] = &$record;

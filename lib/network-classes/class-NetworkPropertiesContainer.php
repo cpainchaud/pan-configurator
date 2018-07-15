@@ -54,6 +54,7 @@ class NetworkPropertiesContainer
         $this->ikeGatewayStore = new IKEGatewayStore('IkeGateways', $owner);
         $this->vlanIfStore = new VlanIfStore('VlanIfaces', $owner);
         $this->tunnelIfStore = new TunnelIfStore('TunnelIfaces', $owner);
+        $this->virtualWireStore = new VirtualWireStore('', $owner);
     }
 
     function load_from_domxml(DOMElement $xml)
@@ -132,6 +133,9 @@ class NetworkPropertiesContainer
 
         $tmp = DH::findFirstElementOrCreate('virtual-router', $this->xmlroot);
         $this->virtualRouterStore->load_from_domxml($tmp);
+
+        $tmp = DH::findFirstElementOrCreate('virtual-wire', $this->xmlroot);
+        $this->virtualWireStore->load_from_domxml($tmp);
     }
 
     /**

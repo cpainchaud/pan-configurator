@@ -138,6 +138,7 @@ require_once $basedir.'/device-and-system-classes/class-PANConf.php';
 require_once $basedir.'/device-and-system-classes/class-PanoramaConf.php';
 require_once $basedir.'/device-and-system-classes/class-DeviceGroup.php';
 require_once $basedir.'/device-and-system-classes/class-Template.php';
+require_once $basedir.'/device-and-system-classes/class-TemplateStack.php';
 require_once $basedir.'/device-and-system-classes/class-ManagedDevice.php';
 
 require_once $basedir.'/network-classes/class-Zone.php';
@@ -167,6 +168,8 @@ require_once $basedir.'/network-classes/class-VlanIfStore.php';
 require_once $basedir.'/network-classes/class-VlanInterface.php';
 require_once $basedir.'/network-classes/class-TunnelIfStore.php';
 require_once $basedir.'/network-classes/class-TunnelInterface.php';
+require_once $basedir.'/network-classes/class-VirtualWire.php';
+require_once $basedir.'/network-classes/class-VirtualWireStore.php';
 
 require_once $basedir.'/rule-classes/class-RuleStore.php';
 require_once $basedir.'/rule-classes/class-Rule.php';

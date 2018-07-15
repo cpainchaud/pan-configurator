@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (c) 2014-2017 Christophe Painchaud <shellescape _AT_ gmail.com>
  *
@@ -15,48 +16,41 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class Template
+/**
+ * Class VirtualWireStore
+ * @property $o VirutalWire[]
+ */
+class VirtualWireStore extends ObjStore
 {
-    use ReferencableObject;
-    use PathableName;
-    use PanSubHelperTrait;
 
-    /** @var PanoramaConf */
+    /** @var null|PANConf */
     public $owner;
 
-    /** @var  PANConf */
-    public $deviceConfiguration;
+    public static $childn = 'VirtualWire';
 
-    /**
-     * Template constructor.
-     * @param string $name
-     * @param PanoramaConf $owner
-     */
     public function __construct($name, $owner)
     {
         $this->name = $name;
         $this->owner = $owner;
-        $this->deviceConfiguration = new PANConf(null, null, $this);
+        $this->classn = &self::$childn;
     }
 
-    public function load_from_domxml(DOMElement $xml)
+    /**
+     * @return VirtualWire[]
+     */
+    public function virtualWires()
     {
-        $this->xmlroot = $xml;
-
-        $this->name = DH::findAttribute('name', $xml);
-        if( $this->name === FALSE )
-            derr("template name not found\n", $xml);
-
-        $tmp = DH::findFirstElementOrDie('config', $xml);
-
-        $this->deviceConfiguration->load_from_domxml($tmp);
-
+        return $this->o;
     }
 
-    public function isTemplate()
+    /**
+     * @param $vwName string
+     * @return null|VirtualWire
+     */
+    public function findVirtualWire( $vwName )
     {
-        return true;
+        return $this->findByName( $vwName );
     }
+
 
 }
-

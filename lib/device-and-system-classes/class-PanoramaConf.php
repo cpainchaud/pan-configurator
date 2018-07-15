@@ -47,8 +47,13 @@ class PanoramaConf
 	public $localhostlocaldomain;
 
     /** @var string[]|DomNode */
-	public $devicegrouproot;
+	public $templateroot;
 
+    /** @var string[]|DomNode */
+    public $templatestackroot;
+
+    /** @var string[]|DomNode */
+    public $devicegrouproot;
 
     public $version = null;
 
@@ -60,6 +65,9 @@ class PanoramaConf
 
     /** @var Template[]  */
     public $templates = Array();
+
+    /** @var TemplateStack[]  */
+    public $templatestacks = Array();
 
     /** @var RuleStore */
 	public $securityRules;
@@ -223,6 +231,7 @@ class PanoramaConf
 
 		$this->devicegrouproot = DH::findFirstElementOrCreate('device-group', $this->localhostroot);
         $this->templateroot = DH::findFirstElementOrCreate('template', $this->localhostroot);
+        $this->templatestackroot = DH::findFirstElementOrCreate('template-stack', $this->localhostroot);
 
         //
         // Extract Tag objects
@@ -515,6 +524,21 @@ class PanoramaConf
         // end of Templates
         //
 
+        //
+        // loading templatestacks
+        //
+        foreach ($this->templatestackroot->childNodes as $node)
+        {
+            if ($node->nodeType != XML_ELEMENT_NODE) continue;
+
+            $ldv = new TemplateStack('*tmp*', $this);
+            $ldv->load_from_domxml($node);
+            $this->templatestacks[] = $ldv;
+            //print "TemplateStack '{$ldv->name()}' found\n";
+        }
+        //
+        // end of Templates
+        //
 
         //
 		// loading Device Groups now
