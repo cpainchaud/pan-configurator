@@ -15,7 +15,7 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class Template
+class TemplateStack
 {
     use ReferencableObject;
     use PathableName;
@@ -24,8 +24,8 @@ class Template
     /** @var PanoramaConf */
     public $owner;
 
-    /** @var  PANConf */
-    public $deviceConfiguration;
+    /** @var  array */
+    public $templates = array();
 
     /**
      * Template constructor.
@@ -45,15 +45,29 @@ class Template
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("template name not found\n", $xml);
+            derr("templatestack name not found\n", $xml);
 
-        $tmp = DH::findFirstElementOrDie('config', $xml);
+        #print "template-stack: ".$this->name."\n";
+        $tmp = DH::findFirstElement('templates', $xml);
 
-        $this->deviceConfiguration->load_from_domxml($tmp);
+        if( $tmp !== FALSE )
+        {
+            foreach( $tmp->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE ) continue;
+
+                $ldv = $node->textContent;
+                $this->templates[] = $ldv;
+                //print "Template '{$ldv}' found\n";
+            }
+            #print_r( $this->templates );
+        }
+
+
 
     }
 
-    public function isTemplate()
+    public function isTemplateStack()
     {
         return true;
     }

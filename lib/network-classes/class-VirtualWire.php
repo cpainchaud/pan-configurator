@@ -15,48 +15,59 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 */
 
-class Template
+class VirtualWire
 {
-    use ReferencableObject;
+    use XmlConvertible;
     use PathableName;
-    use PanSubHelperTrait;
+    use ReferencableObject;
 
-    /** @var PanoramaConf */
+    /** @var VirtualWireStore */
     public $owner;
 
-    /** @var  PANConf */
-    public $deviceConfiguration;
+    /** @var InterfaceContainer */
+    public $attachedInterface1;
 
+    /** @var InterfaceContainer */
+    public $attachedInterface2;
     /**
-     * Template constructor.
-     * @param string $name
-     * @param PanoramaConf $owner
+     * @param $name string
+     * @param $owner VirtualWireStore
      */
     public function __construct($name, $owner)
     {
-        $this->name = $name;
         $this->owner = $owner;
-        $this->deviceConfiguration = new PANConf(null, null, $this);
+        $this->name = $name;
     }
 
-    public function load_from_domxml(DOMElement $xml)
+    /**
+     * @param DOMElement $xml
+     */
+    public function load_from_domxml( $xml )
     {
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("template name not found\n", $xml);
+            derr("virtual-wire name not found\n");
 
-        $tmp = DH::findFirstElementOrDie('config', $xml);
-
-        $this->deviceConfiguration->load_from_domxml($tmp);
-
+        $this->attachedInterface1 = DH::findFirstElementOrCreate('interface1', $xml)->textContent;
+        $this->attachedInterface2 = DH::findFirstElementOrCreate('interface2', $xml)->textContent;
     }
 
-    public function isTemplate()
+
+    /**
+     * @return VirtualSystem[]
+     */
+    public function &findConcernedVsys()
     {
-        return true;
+        $vsysList = Array();
+        foreach($this->attachedInterfaces->interfaces() as $if )
+        {
+            $vsys = $this->owner->owner->network->findVsysInterfaceOwner($if->name());
+            if( $vsys !== null )
+                $vsysList[$vsys->name()] = $vsys;
+        }
+
+        return $vsysList;
     }
-
 }
-
