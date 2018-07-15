@@ -3,6 +3,8 @@ CHANGELOG
 1.5.15 (20180611)
 * introduce release 1.5.15
 * update predefined.xml to 8041-4843
+* introduce class-VirtualWire
+* introduce class-TemplateStack
 
 utils:
 
