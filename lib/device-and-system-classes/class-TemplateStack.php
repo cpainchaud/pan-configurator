@@ -47,20 +47,23 @@ class TemplateStack
         if( $this->name === FALSE )
             derr("templatestack name not found\n", $xml);
 
-        $tmp = DH::findFirstElementOrDie('templates', $xml);
+        #print "template-stack: ".$this->name."\n";
+        $tmp = DH::findFirstElement('templates', $xml);
 
-
-        foreach ($tmp->childNodes as $node)
+        if( $tmp !== FALSE )
         {
-            if ($node->nodeType != XML_ELEMENT_NODE) continue;
+            foreach( $tmp->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE ) continue;
 
-            $ldv = $node->textContent;
-            $this->templates[] = $ldv;
-            //print "Template '{$ldv}' found\n";
+                $ldv = $node->textContent;
+                $this->templates[] = $ldv;
+                //print "Template '{$ldv}' found\n";
+            }
+            #print_r( $this->templates );
         }
 
-        #print "template-stack: ".$this->name."\n";
-        #print_r( $this->templates );
+
 
     }
 
