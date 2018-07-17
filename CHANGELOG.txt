@@ -7,6 +7,8 @@ CHANGELOG
 * introduce class-TemplateStack
 
 utils:
+address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
+
 
 bugfix:
 - fix class-IpsecTunnel | related to proxy-id if <protocol> is not available

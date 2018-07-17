@@ -24,7 +24,7 @@ require_once(dirname(__FILE__).'/common/misc.php');
 
 
 $supportedArguments = Array();
-$supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'input file ie: in=config.xml', 'argDesc' => '[filename]');
+$supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
 $supportedArguments[] = Array('niceName' => 'out', 'shortHelp' => 'output file to save config after changes. Only required when input is a file. ie: out=save-config.xml', 'argDesc' => '[filename]');
 $supportedArguments[] = Array('niceName' => 'Location', 'shortHelp' => 'specify if you want to limit your query to a VSYS/DG. By default location=shared for Panorama, =vsys1 for PANOS', 'argDesc' => 'vsys1|shared|dg1');
 $supportedArguments[] = Array(    'niceName' => 'DupAlgorithm',
@@ -41,7 +41,8 @@ $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message
 $supportedArguments[] = Array('niceName' => 'exportCSV', 'shortHelp' => 'when this argument is specified, it instructs the script to print out the kept and removed objects per value');
 $supportedArguments[] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 
-$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=inputfile.xml [out=outputfile.xml] location=shared ['pickFilter=(name regex /^H-/)']";
+$usageMsg = PH::boldText('USAGE: ')."php ".basename(__FILE__)." in=inputfile.xml [out=outputfile.xml] location=shared ['pickFilter=(name regex /^H-/)']\n".
+                        "       php ".basename(__FILE__)." in=api://192.169.50.10 location=shared ['pickFilter=(name regex /^H-/)']";
 
 prepareSupportedArgumentsArray($supportedArguments);
 

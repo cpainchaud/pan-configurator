@@ -259,6 +259,7 @@ class VirtualRouter
                 }
                 if( $findZone === null )
                 {
+                    //Todo: check for some template config this is triggered
                     mwarning("route {$route->name()}/{$route->destination()} ignored because no matching interface was found for nexthop={$nexthopIP}");
                     continue;
                 }

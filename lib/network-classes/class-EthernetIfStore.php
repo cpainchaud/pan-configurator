@@ -197,7 +197,9 @@ class EthernetIfStore extends ObjStore
 
     public function &getEthernetIfStoreXPath()
     {
-        $path = $this->getBaseXPath().'/ethernet/units';
+        //Todo: bug available, units only for subinterface
+        //$path = $this->getBaseXPath().'/ethernet/units';
+        $path = $this->getBaseXPath().'/ethernet';
         return $path;
     }
 
