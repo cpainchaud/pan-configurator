@@ -5,6 +5,7 @@ CHANGELOG
 * update predefined.xml to 8041-4843
 * introduce class-VirtualWire
 * introduce class-TemplateStack
+* update predefined.xml to 8043-4857
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
