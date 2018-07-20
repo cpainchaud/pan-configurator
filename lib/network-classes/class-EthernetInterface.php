@@ -435,7 +435,6 @@ class EthernetInterface
                 $xpath .= '/layer3/ip';
 
             $con->sendDeleteRequest( $xpath."/entry[@name='{$ip}']" );
-            //entry[@name='ethernet1/2.10']
         }
 
         return $ret;

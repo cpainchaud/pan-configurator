@@ -16,10 +16,10 @@
 */
 
 /**
- * Class EthernetIfStore
- * @property EthernetInterface[] $o
+ * Class AggregateEthernetIfStore
+ * @property AggregateEthernetInterface[] $o
  */
-class AggregateEthernetIfStore extends EthernetInterface
+class AggregateEthernetIfStore extends EthernetIfStore
 {
     public static $childn = 'AggregateEthernetInterface';
 

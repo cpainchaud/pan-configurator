@@ -53,6 +53,13 @@ class Template
 
     }
 
+    public function &getXPath()
+    {
+        $str = "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='".$this->name."']";
+
+        return $str;
+    }
+
     public function isTemplate()
     {
         return true;
