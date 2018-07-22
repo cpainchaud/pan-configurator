@@ -133,7 +133,6 @@ class EthernetInterface
                     $newInterface->type = &$this->type;
                     $newInterface->load_sub_from_domxml($unitsNode);
                     $this->subInterfaces[] = $newInterface;
-
                 }
             }
         }
@@ -169,19 +168,16 @@ class EthernetInterface
 
         if( $this->type == 'layer3' )
         {
-            if( $this->type == 'layer3' )
+            $this->l3ipv4Addresses = Array();
+            $ipNode = DH::findFirstElement('ip', $xml);
+            if( $ipNode !== false )
             {
-                $this->l3ipv4Addresses = Array();
-                $ipNode = DH::findFirstElement('ip', $xml);
-                if( $ipNode !== false )
+                foreach( $ipNode->childNodes as $l3ipNode )
                 {
-                    foreach( $ipNode->childNodes as $l3ipNode )
-                    {
-                        if( $l3ipNode->nodeType != XML_ELEMENT_NODE )
-                            continue;
+                    if( $l3ipNode->nodeType != XML_ELEMENT_NODE )
+                        continue;
 
-                        $this->l3ipv4Addresses[] = $l3ipNode->getAttribute('name');
-                    }
+                    $this->l3ipv4Addresses[] = $l3ipNode->getAttribute('name');
                 }
             }
         }
@@ -252,6 +248,8 @@ class EthernetInterface
     }
 
     function isEthernetType() { return true; }
+    function isAggregateTypeType() { return false; }
+    function isVirtualWireType() { return false; }
 
     /**
      * return true if change was successful false if not (duplicate rulename?)
@@ -440,6 +438,19 @@ class EthernetInterface
         return $ret;
     }
 
+    //Todo: (20180722)
+    //- create Subinterface
+    //- subinterface add Vlan Tag
+
+    //---(also needed for vlan / loopback / tunnel interface)
+    //- add Virtual Router
+    //- add Security Zone
+    //- add Comment (low prio)
+    //- add Management Profile (low prio)
+
+
+
+
     /**
      * @return string
      */
@@ -468,4 +479,25 @@ class EthernetInterface
     <ip></ip>
   </layer3>
 </entry>';
+
+    static public $templatexmll2 = '<entry name="**temporarynamechangeme**">
+    <layer2>
+        <lldp>
+        <enable>no</enable>
+        </lldp>
+    </layer2>
+</entry>';
+
+    static public $templatexmlvw = '<entry name="**temporarynamechangeme**">
+<virtual-wire>
+<lldp>
+  <enable>no</enable>
+</lldp>
+</virtual-wire>
+</entry>';
+
+    static public $templatexmlae = '<entry name="**temporarynamechangeme**">
+<aggregate-group/>
+</entry>';
+
 }

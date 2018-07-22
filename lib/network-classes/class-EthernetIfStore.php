@@ -79,10 +79,23 @@ class EthernetIfStore extends ObjStore
      * @param string $name name of the new EthernetInterface
      * @return EthernetInterface
      */
-    public function newEthernetIf($name)
+    public function newEthernetIf($name, $ethtype = 'layer3')
     {
+        if( array_search($ethtype, EthernetInterface::$supportedTypes) === false )
+            derr( "ethernet interface of type: ".$ethtype." not supported.\n" );
+
         $ethernetIf = new EthernetInterface( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, EthernetInterface::$templatexml);
+        if( $ethtype == "layer3" )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, EthernetInterface::$templatexml);
+        elseif( $ethtype == "layer2" )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, EthernetInterface::$templatexmll2);
+        elseif( $ethtype == "aggregate-group" )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, EthernetInterface::$templatexmlae);
+        elseif( $ethtype == "virtual-wire" )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, EthernetInterface::$templatexmlvw);
+        else
+            derr( "ethernet interface of type: ".$ethtype." not yet supported.\n" );
+        //todo: add ethernet type 'tap', 'ha', 'log-card', 'decrypt-mirror'
 
         $ethernetIf->load_from_domxml($xmlElement);
 
@@ -94,6 +107,22 @@ class EthernetIfStore extends ObjStore
         return $ethernetIf;
     }
 
+
+    /**
+     * Creates a new EthernetInterface in this store. It will be placed at the end of the list.
+     * @param string $name name of the new EthernetInterface
+     * @return EthernetInterface
+     */
+    public function API_newEthernetIf($name , $ethtype = 'layer3')
+    {
+        $newif = $this->newEthernetIf($name, $ethtype);
+
+        $con = findConnectorOrDie($this);
+        $xpath = $newif->getXPath();
+        $con->sendSetRequest($xpath, $newif, true );
+
+        return $newif;
+    }
 
     /**
      * @param EthernetInterface $ethernetIf
@@ -113,6 +142,9 @@ class EthernetIfStore extends ObjStore
         if (!isset($this->fastMemToIndex[$ser]))
         {
             $ethernetIf->owner = $this;
+
+            $this->fastMemToIndex[$ser] = $ethernetIf;
+            $this->fastNameToIndex[$ethernetIf->name()] = $ethernetIf;
 
             if( $this->xmlroot === null )
                 $this->createXmlRoot();
@@ -182,14 +214,16 @@ class EthernetIfStore extends ObjStore
 
     private function &getBaseXPath()
     {
-        $str = "";
 
+        $str = "";
+/*
         if( $this->owner->owner->isTemplate() )
             $str .= $this->owner->owner->getXPath();
         elseif( $this->owner->isPanorama() || $this->owner->isFirewall() )
             $str = '/config/shared';
         else
             derr('unsupported');
+*/
 
         //TODO: intermediate solution
         $str .= '/config/devices/entry/network/interface';

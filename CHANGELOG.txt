@@ -6,6 +6,9 @@ CHANGELOG
 * introduce class-VirtualWire
 * introduce class-TemplateStack
 * update predefined.xml to 8043-4857
+* class-EthernetInterface/-EthernetIfStore - extend with new Interface types
+* class-VirtualWire/-VirtualWireStore - extend with new methodes - setName/setInterface - newVirtualWire / addVirtualWire
+
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
