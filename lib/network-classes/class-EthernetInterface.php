@@ -132,7 +132,6 @@ class EthernetInterface
                     $newInterface->parentInterface = $this;
                     $newInterface->type = &$this->type;
                     $newInterface->load_sub_from_domxml($unitsNode);
-
                     $this->subInterfaces[] = $newInterface;
 
                 }
@@ -270,6 +269,175 @@ class EthernetInterface
 
         return true;
 
+    }
+
+    /**
+     * return true if change was successful false if not (duplicate ipaddress?)
+     * @return bool
+     * @param string $ip
+     */
+    public function addIPv4Address($ip)
+    {
+        if( $this->type != 'layer3' )
+            derr('cannot be requested from a non Layer3 Interface');
+
+        if( strpos($ip, "/") === FALSE )
+        {
+            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
+            $object = $tmp_vsys->addressStore->find($ip);
+
+            if( is_object($object) )
+                $object->addReference($this);
+            else
+                derr("objectname: " . $ip . " not found. Can not be added to interface.\n", $this);
+        }
+
+        foreach( $this->getLayer3IPv4Addresses() as $IPv4Address )
+        {
+            if( $IPv4Address == $ip )
+                return true;
+        }
+
+        $this->l3ipv4Addresses[] = $ip;
+
+        if( $this->isSubInterface() )
+            $tmp_xmlroot = $this->parentInterface->xmlroot;
+        else
+            $tmp_xmlroot = $this->xmlroot;
+
+        $layer3Node = DH::findFirstElementOrCreate('layer3', $tmp_xmlroot);
+
+        if( $this->isSubInterface() )
+        {
+            $tmp_units = DH::findFirstElementOrCreate('units', $layer3Node);
+            $tmp_entry = DH::findFirstElementByNameAttrOrDie( 'entry', $this->name() , $tmp_units );
+            $ipNode = DH::findFirstElementOrCreate('ip', $tmp_entry);
+        }
+        else
+            $ipNode = DH::findFirstElementOrCreate('ip', $layer3Node);
+
+
+        $tmp_ipaddress = DH::createElement($ipNode, 'entry', "" );
+        $tmp_ipaddress->setAttribute( 'name', $ip );
+
+        $ipNode->appendChild( $tmp_ipaddress );
+
+        return true;
+    }
+
+    /**
+     * Add a ip to this interface, it must be passed as an object or string
+     * @param Address $ip Object to be added, or String
+     * @return bool
+     */
+    public function API_addIPv4Address($ip)
+    {
+        $ret = $this->addIPv4Address($ip);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            if( $this->isSubInterface() )
+            {
+                $xpath = $this->parentInterface->getXPath();
+                $xpath .= "/layer3/units/entry[@name='".$this->name."']/ip";
+            }
+            else
+                $xpath .= '/layer3/ip';
+
+            $con->sendSetRequest($xpath, "<entry name='{$ip}'/>");
+        }
+
+        return $ret;
+    }
+
+    /**
+     * return true if change was successful false if not (duplicate ipaddress?)
+     * @return bool
+     * @param string $ip
+     */
+    public function removeIPv4Address($ip)
+    {
+        if( $this->type != 'layer3' )
+            derr('cannot be requested from a non Layer3 Interface');
+
+        $tmp_IPv4 = array();
+        foreach( $this->getLayer3IPv4Addresses() as $key => $IPv4Address )
+        {
+            $tmp_IPv4[ $IPv4Address ] = $IPv4Address;
+            if( $IPv4Address == $ip )
+                unset( $this->l3ipv4Addresses[$key] );
+        }
+
+
+        if( !array_key_exists ( $ip , $tmp_IPv4 ) )
+        {
+            print "\n ** skipped ** IP Address: ".$ip." is not set on interface: ".$this->name()."\n";
+            return false;
+        }
+
+        if( strpos($ip, "/") === FALSE )
+        {
+            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
+            $object = $tmp_vsys->addressStore->find($ip);
+
+            if( is_object($object) )
+                $object->removeReference($this);
+            else
+                mwarning("objectname: " . $ip . " not found. Can not be removed from interface.\n", $this);
+        }
+
+        if( $this->isSubInterface() )
+            $tmp_xmlroot = $this->parentInterface->xmlroot;
+        else
+            $tmp_xmlroot = $this->xmlroot;
+
+        $layer3Node = DH::findFirstElementOrCreate('layer3', $tmp_xmlroot);
+
+        if( $this->isSubInterface() )
+        {
+            $tmp_units = DH::findFirstElementOrCreate('units', $layer3Node);
+            $tmp_entry = DH::findFirstElementByNameAttrOrDie( 'entry', $this->name() , $tmp_units );
+            $ipNode = DH::findFirstElementOrCreate('ip', $tmp_entry);
+        }
+        else
+            $ipNode = DH::findFirstElementOrCreate('ip', $layer3Node);
+
+
+        $tmp_ipaddress = DH::findFirstElementByNameAttrOrDie( 'entry', $ip , $ipNode );
+        $ipNode->removeChild( $tmp_ipaddress);
+
+        return true;
+    }
+
+    /**
+     * remove a ip address to this interface, it must be passed as an object or string
+     * @param Address $ip Object to be added, or String
+     * @return bool
+     */
+    public function API_removeIPv4Address($ip)
+    {
+        $ret = $this->removeIPv4Address($ip);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            if( $this->isSubInterface() )
+            {
+                $xpath = $this->parentInterface->getXPath();
+                $xpath .= "/layer3/units/entry[@name='".$this->name."']/ip";
+            }
+            else
+                $xpath .= '/layer3/ip';
+
+            $con->sendDeleteRequest( $xpath."/entry[@name='{$ip}']" );
+        }
+
+        return $ret;
     }
 
     /**

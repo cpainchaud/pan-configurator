@@ -54,6 +54,7 @@ class NetworkPropertiesContainer
         $this->ikeGatewayStore = new IKEGatewayStore('IkeGateways', $owner);
         $this->vlanIfStore = new VlanIfStore('VlanIfaces', $owner);
         $this->tunnelIfStore = new TunnelIfStore('TunnelIfaces', $owner);
+        $this->virtualWireStore = new VirtualWireStore('', $owner);
     }
 
     function load_from_domxml(DOMElement $xml)
@@ -132,6 +133,9 @@ class NetworkPropertiesContainer
 
         $tmp = DH::findFirstElementOrCreate('virtual-router', $this->xmlroot);
         $this->virtualRouterStore->load_from_domxml($tmp);
+
+        $tmp = DH::findFirstElementOrCreate('virtual-wire', $this->xmlroot);
+        $this->virtualWireStore->load_from_domxml($tmp);
     }
 
     /**
@@ -337,6 +341,144 @@ trait InterfaceType
     public function isAggregateType()  { return false; }
     public function isTmpType()  { return false; }
     public function isLoopbackType()  { return false; }
+    public function isTunnelType()  { return false; }
+    public function isVlanType()  { return false; }
 
     public $importedByVSYS = null;
+
+
+
+    /**
+     * return true if change was successful false if not (duplicate ipaddress?)
+     * @return bool
+     * @param string $ip
+     */
+    public function addIPv4Address($ip)
+    {
+        foreach( $this->getIPv4Addresses() as $IPv4Address )
+        {
+            if( $IPv4Address == $ip )
+                return true;
+        }
+
+        if( strpos($ip, "/") === FALSE )
+        {
+            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
+
+            if( is_object( $tmp_vsys) )
+                $object = $tmp_vsys->addressStore->find($ip);
+            else
+                return false;
+
+            if( is_object($object) )
+                $object->addReference($this);
+            else
+                derr("objectname: " . $ip . " not found. Can not be added to interface.\n", $this);
+        }
+
+
+
+        $this->_ipv4Addresses[] = $ip;
+
+        $tmp_xmlroot = $this->xmlroot;
+
+        $ipNode = DH::findFirstElementOrCreate('ip', $tmp_xmlroot);
+
+        $tmp_ipaddress = DH::createElement($ipNode, 'entry', "" );
+        $tmp_ipaddress->setAttribute( 'name', $ip );
+
+        $ipNode->appendChild( $tmp_ipaddress );
+
+        return true;
+    }
+
+    /**
+     * Add a ip to this interface, it must be passed as an object or string
+     * @param Address $ip Object to be added, or String
+     * @return bool
+     */
+    public function API_addIPv4Address($ip)
+    {
+        $ret = $this->addIPv4Address($ip);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            $xpath .= '/ip';
+
+            $con->sendSetRequest($xpath, "<entry name='{$ip}'/>");
+        }
+
+        return $ret;
+    }
+
+    /**
+     * return true if change was successful false if not (duplicate ipaddress?)
+     * @return bool
+     * @param string $ip
+     */
+    public function removeIPv4Address($ip)
+    {
+        $tmp_IPv4 = array();
+        foreach( $this->getIPv4Addresses() as $key => $IPv4Address )
+        {
+            $tmp_IPv4[ $IPv4Address ] = $IPv4Address;
+            if( $IPv4Address == $ip )
+                unset( $this->_ipv4Addresses[$key] );
+        }
+
+        if( !array_key_exists ( $ip , $tmp_IPv4 ) )
+        {
+            print "\n ** skipped ** IP Address: ".$ip." is not set on interface: ".$this->name()."\n";
+            return false;
+        }
+
+        if( strpos($ip, "/") === FALSE )
+        {
+            $tmp_vsys = $this->owner->owner->network->findVsysInterfaceOwner($this->name());
+
+            if( is_object( $tmp_vsys) )
+                $object = $tmp_vsys->addressStore->find($ip);
+            else
+                return false;
+
+            if( is_object($object) )
+                $object->removeReference($this);
+            else
+                mwarning("objectname: " . $ip . " not found. Can not be removed from interface.\n", $this);
+        }
+
+        $tmp_xmlroot = $this->xmlroot;
+
+        $ipNode = DH::findFirstElementOrCreate('ip', $tmp_xmlroot);
+
+        $tmp_ipaddress = DH::findFirstElementByNameAttrOrDie( 'entry', $ip , $ipNode );
+        $ipNode->removeChild( $tmp_ipaddress);
+
+        return true;
+    }
+
+    /**
+     * remove a ip address to this interface, it must be passed as an object or string
+     * @param Address $ip Object to be added, or String
+     * @return bool
+     */
+    public function API_removeIPv4Address($ip)
+    {
+        $ret = $this->removeIPv4Address($ip);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            $xpath .= '/ip';
+
+            $con->sendDeleteRequest( $xpath."/entry[@name='{$ip}']" );
+        }
+
+        return $ret;
+    }
 }

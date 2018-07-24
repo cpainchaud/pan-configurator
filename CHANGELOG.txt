@@ -3,11 +3,18 @@ CHANGELOG
 1.5.15 (20180611)
 * introduce release 1.5.15
 * update predefined.xml to 8041-4843
+* introduce class-VirtualWire
+* introduce class-TemplateStack
+* update predefined.xml to 8043-4857
 
 utils:
+address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
+
 
 bugfix:
 - fix class-IpsecTunnel | related to proxy-id if <protocol> is not available
+- fix class-EthernetInterfaceStore | xpath fix
+- fix class-VirtualSystem | no warning if IPv4 address without netmask is used as interface IP
 
 
 1.5.14 (20180227)

@@ -182,22 +182,26 @@ class EthernetIfStore extends ObjStore
 
     private function &getBaseXPath()
     {
-        if ($this->owner->isPanorama() ||  $this->owner->isFirewall() )
-        {
-            $str = "/config/shared";
-        }
+        $str = "";
+
+        if( $this->owner->owner->isTemplate() )
+            $str .= $this->owner->owner->getXPath();
+        elseif( $this->owner->isPanorama() || $this->owner->isFirewall() )
+            $str = '/config/shared';
         else
-            $str = $this->owner->getXPath();
+            derr('unsupported');
 
         //TODO: intermediate solution
-        $str = '/config/devices/entry/network/interface';
+        $str .= '/config/devices/entry/network/interface';
 
         return $str;
     }
 
     public function &getEthernetIfStoreXPath()
     {
-        $path = $this->getBaseXPath().'/ethernet/units';
+        //Todo: bug available, units only for subinterface
+        //$path = $this->getBaseXPath().'/ethernet/units';
+        $path = $this->getBaseXPath().'/ethernet';
         return $path;
     }
 

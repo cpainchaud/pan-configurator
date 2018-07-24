@@ -45,12 +45,19 @@ class Template
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("zone name not found\n", $xml);
+            derr("template name not found\n", $xml);
 
         $tmp = DH::findFirstElementOrDie('config', $xml);
 
         $this->deviceConfiguration->load_from_domxml($tmp);
 
+    }
+
+    public function &getXPath()
+    {
+        $str = "/config/devices/entry[@name='localhost.localdomain']/template/entry[@name='".$this->name."']";
+
+        return $str;
     }
 
     public function isTemplate()

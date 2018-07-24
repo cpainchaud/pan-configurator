@@ -374,6 +374,46 @@ trait AddressCommon
                     derr('unsupported');
                 }
             }
+            elseif( $refClass == "EthernetInterface" || $refClass == "VlanInterface" || $refClass == "LoopbackInterface" || $refClass == "TunnelInterface" )
+            {
+                if( $actionIfLastInRule == 'delete' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding . "- last member so deleting {$ref->_PANC_shortName()}\n";
+
+                    //Todo: delete interface? check needed
+                    if( $apiMode )
+                        $ref->API_removeIPv4address($this->name());
+                    else
+                        $ref->removeIPv4Address($this->name());
+                }
+                elseif( $actionIfLastInRule == 'setany' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so setting ANY {$ref->_PANC_shortName()}\n";
+
+                    //Todo:
+                    if( $apiMode )
+                        $ref->API_removeIPv4address($this->name());
+                    else
+                        $ref->removeIPv4Address($this->name());
+                }
+                elseif( $actionIfLastInRule == 'disable' )
+                {
+                    if( $displayOutput )
+                        print $outputPadding."- last member so disabling rule {$ref->_PANC_shortName()}\n";
+
+                    //Todo: anything else, how to disable?
+                    if( $apiMode )
+                        $ref->API_removeIPv4address($this->name());
+                    else
+                        $ref->removeIPv4Address($this->name());
+                }
+                else
+                {
+                    derr('unsupported');
+                }
+            }
             else
                 derr("unsupported class '{$refClass}'");
         }
