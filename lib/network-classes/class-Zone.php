@@ -40,12 +40,18 @@ class Zone
     const TypeLayer3 = 1;
     const TypeExternal = 2;
     const TypeVirtualWire = 3;
+    const TypeTap = 4;
+    const TypeLayer2 = 5;
+    const TypeTunnel = 6;
 
     static private $ZoneTypes = Array(
         self::TypeTmp => 'tmp',
         self::TypeLayer3 => 'layer3',
         self::TypeExternal => 'external',
         self::TypeVirtualWire => 'virtual-wire',
+        self::TypeVirtualWire => 'tap',
+        self::TypeVirtualWire => 'layer2',
+        self::TypeVirtualWire => 'tunnel',
          );
 
 
@@ -165,20 +171,37 @@ class Zone
             }
             elseif( $node->tagName == 'tap' )
             {
-
+                $this->_type = $node->tagName;
+                //print "node->tagName ".$node->tagName." found\n";
             }
+            elseif( $node->tagName == 'tunnel' )
+            {
+                $this->_type = $node->tagName;
+                //print "node->tagName ".$node->tagName." found\n";
+            }
+            elseif( $node->tagName == 'layer2' )
+            {
+                $this->_type = $node->tagName;
+                //print "node->tagName ".$node->tagName." found\n";
+            }
+
+
+
             elseif( $node->tagName == 'zone-protection-profile' )
             {
-
+                //print "node->tagName ".$node->tagName." found\n";
             }
             elseif( $node->tagName == 'log-setting' )
             {
-
+                //print "node->tagName ".$node->tagName." found\n";
             }
-            /*
+            elseif( $node->tagName == 'enable-packet-buffer-protection' )
+            {
+                //print "node->tagName ".$node->tagName." found\n";
+            }
             else
                 mwarning( "zone type: ".$node->tagName." is not yet supported." );
-            */
+
         }
     }
 
