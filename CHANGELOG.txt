@@ -12,6 +12,7 @@ CHANGELOG
 * class-VirtualWire/VirtualWireStore - extend validation
 * class-InterfaceContainer - extend validation for addInterface - improve API_addInterface
 * class-EthernetInterface/EthernetIfStore - extend with ae information - extend validation
+* class-Zone - reduce warning if not yet supported in pan-c framework
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address

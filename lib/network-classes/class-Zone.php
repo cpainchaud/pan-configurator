@@ -163,8 +163,22 @@ class Zone
 
                 $this->attachedInterfaces->load_from_domxml($node);
             }
+            elseif( $node->tagName == 'tap' )
+            {
+
+            }
+            elseif( $node->tagName == 'zone-protection-profile' )
+            {
+
+            }
+            elseif( $node->tagName == 'log-setting' )
+            {
+
+            }
+            /*
             else
                 mwarning( "zone type: ".$node->tagName." is not yet supported." );
+            */
         }
     }
 
