@@ -89,6 +89,13 @@ class InterfaceContainer extends ObjRuleContainer
      */
     public function addInterface($if)
     {
+        if( $if->type() == 'aggregate-group' )
+        {
+            mwarning( "Interface of type: aggregate-group can not be added to a vsys.\n" );
+            return false;
+        }
+
+
         if( $this->has($if) )
             return false;
 
@@ -106,7 +113,6 @@ class InterfaceContainer extends ObjRuleContainer
      */
     public function API_addInterface($if)
     {
-        //TODO: check how to implement
         if( $this->addInterface( $if ) )
         {
             $con = findConnectorOrDie($this);
@@ -115,7 +121,8 @@ class InterfaceContainer extends ObjRuleContainer
             $importRoot = DH::findFirstElementOrDie('import', $this->owner->xmlroot);
             $networkRoot = DH::findFirstElementOrDie('network', $importRoot);
             $importIfRoot = DH::findFirstElementOrDie('interface', $networkRoot);
-            $con->sendEditRequest($xpath, DH::dom_to_xml($importIfRoot, -1, false) );
+
+            $con->sendSetRequest($xpath, "<member>{$if->name()}</member>");
         }
 
         return true;

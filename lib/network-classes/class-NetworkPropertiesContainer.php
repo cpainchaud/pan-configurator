@@ -44,7 +44,7 @@ class NetworkPropertiesContainer
     {
         $this->owner = $owner;
         $this->ethernetIfStore = new EthernetIfStore('EthernetIfaces', $owner);
-        $this->aggregateEthernetIfStore = new EthernetIfStore('AggregateEthernetIfaces', $owner);
+        $this->aggregateEthernetIfStore = new AggregateEthernetIfStore('AggregateEthernetIfaces', $owner);
         $this->loopbackIfStore = new LoopbackIfStore('LoopbackIfaces', $owner);
         $this->ipsecTunnelStore = new IPsecTunnelStore('IPsecTunnels', $owner);
         $this->tmpInterfaceStore = new TmpInterfaceStore('TmpIfaces', $owner);

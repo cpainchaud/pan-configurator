@@ -6,6 +6,12 @@ CHANGELOG
 * introduce class-VirtualWire
 * introduce class-TemplateStack
 * update predefined.xml to 8043-4857
+* class-EthernetInterface/-EthernetIfStore - extend with new Interface types
+* class-VirtualWire/-VirtualWireStore - extend with new methodes - setName/setInterface - newVirtualWire / addVirtualWire
+* class-Zone/ZoneStore - extend with virtual-wire
+* class-VirtualWire/VirtualWireStore - extend validation
+* class-InterfaceContainer - extend validation for addInterface - improve API_addInterface
+* class-EthernetInterface/EthernetIfStore - extend with ae information - extend validation
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
@@ -14,6 +20,7 @@ address-edit: improvement for actions=decommisssion - extend interface (ethernet
 bugfix:
 - fix class-IpsecTunnel | related to proxy-id if <protocol> is not available
 - fix class-EthernetInterfaceStore | xpath fix
+- fix implementation of class-AggregateEthernetInterface
 - fix class-VirtualSystem | no warning if IPv4 address without netmask is used as interface IP
 
 

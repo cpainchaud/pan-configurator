@@ -218,11 +218,17 @@ class ZoneStore extends ObjStore
 
     public function newZone($name , $type)
     {
+        foreach( $this->zones() as $zone)
+        {
+            if( $zone->name() == $name )
+                derr( "Zone: ".$name." already available\n" );
+        }
+
         $found = $this->find($name,null);
         if( $found !== null )
             derr("cannot create Zone named '".$name."' as this name is already in use ");
 
-        $ns = new Zone($name,$this, true);
+        $ns = new Zone($name,$this, true, $type);
 
         $this->addZone($ns);
 

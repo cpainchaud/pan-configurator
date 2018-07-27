@@ -50,8 +50,13 @@ class VirtualWire
         if( $this->name === FALSE )
             derr("virtual-wire name not found\n");
 
-        $this->attachedInterface1 = DH::findFirstElementOrCreate('interface1', $xml)->textContent;
-        $this->attachedInterface2 = DH::findFirstElementOrCreate('interface2', $xml)->textContent;
+        $tmp_int1 = DH::findFirstElement('interface1', $xml);
+        $tmp_int2 = DH::findFirstElement('interface2', $xml);
+
+        if( is_object($tmp_int1)  )
+            $this->attachedInterface1 = $tmp_int1->textContent;
+        if( is_object($tmp_int2)  )
+            $this->attachedInterface2 = $tmp_int2->textContent;
     }
 
 
@@ -70,4 +75,89 @@ class VirtualWire
 
         return $vsysList;
     }
+
+    /**
+     * return true if change was successful false if not
+     * @return bool
+     * @param string $name new name for the VirtualWire
+     */
+    public function setName($name)
+    {
+        if( $this->name == $name )
+            return true;
+
+        $this->name = $name;
+
+        $this->xmlroot->setAttribute('name', $name);
+
+        return true;
+    }
+
+    /**
+    /**
+     * return true if change was successful false if not
+     * @return bool
+     * @param string $int_num name for the VirtualWire interface
+     * @param ethernetInterface $if interface for the VirtualWire interface
+     */
+    public function setInterface( $int_num, $if )
+    {
+        if( !is_object($if) )
+            derr( "Interface can not be added to VirtualWire: ".$this->name()." - ".$int_num." | is not an object." );
+
+        if( $this->attachedInterface1 == $if->name() || $this->attachedInterface2 == $if->name() )
+            return true;
+
+        $tmp_xmlroot = $this->xmlroot;
+
+        if( $int_num == "interface1" )
+        {
+            $this->attachedInterface1 = $if->name();
+            $tmp_int = DH::findFirstElementOrCreate('interface1', $tmp_xmlroot);
+        }
+        elseif( $int_num == "interface2" )
+        {
+            $this->attachedInterface2 = $if->name();
+            $tmp_int = DH::findFirstElementOrCreate('interface2', $tmp_xmlroot);
+        }
+        else
+            return false;
+
+        DH::setDomNodeText($tmp_int, $if->name());
+
+        return true;
+    }
+
+    /**
+     * Add a ip to this interface, it must be passed as an object or string
+     * @param Address $ip Object to be added, or String
+     * @return bool
+     */
+    public function API_setInterface($int_num, $if)
+    {
+        $ret = $this->setInterface($int_num, $if);
+
+        if( $ret )
+        {
+            $con = findConnector($this);
+            $xpath = $this->getXPath();
+
+            $con->sendSetRequest($xpath, "<".$int_num.">{$if->name()}</".$int_num.">");
+        }
+
+        return $ret;
+    }
+
+    /**
+     * @return string
+     */
+    public function &getXPath()
+    {
+        $str = $this->owner->getEthernetIfStoreXPath()."/entry[@name='".$this->name."']";
+
+        return $str;
+    }
+
+    static public $templatexml = '<entry name="**temporarynamechangeme**"></entry>';
+
 }
