@@ -9,6 +9,8 @@ CHANGELOG
 * class-EthernetInterface/-EthernetIfStore - extend with new Interface types
 * class-VirtualWire/-VirtualWireStore - extend with new methodes - setName/setInterface - newVirtualWire / addVirtualWire
 * class-Zone/ZoneStore - extend with virtual-wire
+* class-VirtualWire/VirtualWireStore - extend validation
+
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address

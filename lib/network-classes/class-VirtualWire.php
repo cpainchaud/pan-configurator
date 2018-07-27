@@ -102,6 +102,9 @@ class VirtualWire
      */
     public function setInterface( $int_num, $if )
     {
+        if( !is_object($if) )
+            derr( "Interface can not be added to VirtualWire: ".$this->name()." - ".$int_num." | is not an object." );
+
         if( $this->attachedInterface1 == $if->name() || $this->attachedInterface2 == $if->name() )
             return true;
 

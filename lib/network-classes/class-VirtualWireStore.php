@@ -63,6 +63,12 @@ class VirtualWireStore extends ObjStore
      */
     public function newVirtualWire($name)
     {
+        foreach( $this->virtualWires() as $vw)
+        {
+            if( $vw->name() == $name )
+                derr( "VirtualWire: ".$name." already available\n" );
+        }
+
         $virtualWire = new VirtualWire( $name, $this);
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, VirtualWire::$templatexml);
 
