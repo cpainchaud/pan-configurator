@@ -21,6 +21,7 @@ bugfix:
 - fix class-IpsecTunnel | related to proxy-id if <protocol> is not available
 - fix class-EthernetInterfaceStore | xpath fix
 - fix implementation of class-AggregateEthernetInterface
+- fix class-VirtualSystem | no warning if IPv4 address without netmask is used as interface IP
 
 
 1.5.14 (20180227)

@@ -261,7 +261,7 @@ class VirtualSystem
 
             foreach( $interfaces as $layer3IPv4Address )
             {
-                if( strpos($layer3IPv4Address, "/") === FALSE )
+                if( substr_count( $layer3IPv4Address, '.' ) != 3 )
                 {
                     $object = $this->addressStore->find($layer3IPv4Address);
                     if( is_object($object) )
