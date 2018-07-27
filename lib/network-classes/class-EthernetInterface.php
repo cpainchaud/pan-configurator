@@ -47,6 +47,9 @@ class EthernetInterface
     /** @var int */
     protected $tag;
 
+    /** @var int */
+    protected $ae = null;
+
     protected $l3ipv4Addresses;
 
     static public $supportedTypes = Array( 'layer3', 'layer2', 'virtual-wire', 'tap', 'ha', 'aggregate-group', 'log-card', 'decrypt-mirror', 'empty' );
@@ -69,6 +72,7 @@ class EthernetInterface
         $this->xmlroot = $xml;
 
         $this->name = DH::findAttribute('name', $xml);
+        //print "Int name found: {$this->name}\n";
         if( $this->name === FALSE )
             derr("address name not found\n");
 
@@ -113,6 +117,13 @@ class EthernetInterface
             }
         }
 
+        if( $this->type == 'aggregate-group' )
+        {
+            $this->ae = $this->typeRoot->textContent;
+            //print "AE: ".$this->ae."\n";
+        }
+
+
         // looking for sub interfaces and stuff like that   :)
         foreach( $this->typeRoot->childNodes as $node )
         {
@@ -145,6 +156,7 @@ class EthernetInterface
     {
         $this->xmlroot = $xml;
         $this->name = DH::findAttribute('name', $xml);
+        //print "subInt name found: {$this->name}\n";
         if( $this->name === FALSE )
             derr("address name not found\n");
 
@@ -163,6 +175,10 @@ class EthernetInterface
             elseif( $nodeName == 'tag' )
             {
                 $this->tag = $node->textContent;
+            }
+            elseif( $nodeName == 'aggregate-group' )
+            {
+                $this->ae = $node->textContent;
             }
         }
 
@@ -210,6 +226,14 @@ class EthernetInterface
     /**
      * @return int
      */
+    public function ae()
+    {
+        return $this->ae;
+    }
+
+    /**
+     * @return int
+     */
     public function subIfNumber()
     {
         if( !$this->isSubInterface )
@@ -249,7 +273,6 @@ class EthernetInterface
 
     function isEthernetType() { return true; }
     function isAggregateTypeType() { return false; }
-    function isVirtualWireType() { return false; }
 
     /**
      * return true if change was successful false if not (duplicate rulename?)
@@ -267,6 +290,48 @@ class EthernetInterface
 
         return true;
 
+    }
+
+    /**
+     * return true if change was successful false if not (duplicate rulename?)
+     * @return bool
+     * @param string $name new name for the rule
+     */
+    public function setTag($tag)
+    {
+        if( $this->type != 'layer3' && $this->type != 'layer2' && $this->type != 'virtual-wire')
+            derr('cannot be requested from a '.$this->type().' Interface');
+
+        if( $this->tag == $tag )
+            return true;
+
+        $this->tag = $tag;
+
+        $tagNode = DH::findFirstElement( 'tag', $this->xmlroot);
+        DH::setDomNodeText( $tagNode, $tag);
+
+        return true;
+    }
+
+    /**
+     * return true if change was successful false if not (duplicate rulename?)
+     * @return bool
+     * @param string $name new name for the rule
+     */
+    public function setAE($ae)
+    {
+        if( $this->type != 'aggregate-group')
+            derr('cannot be requested from a '.$this->type().' Interface');
+
+        if( $this->ae == $ae )
+            return true;
+
+        $this->ae = $ae;
+
+        $aeNode = DH::findFirstElement( 'aggregate-group', $this->xmlroot);
+        DH::setDomNodeText( $aeNode, $ae);
+
+        return true;
     }
 
     /**
@@ -438,13 +503,73 @@ class EthernetInterface
         return $ret;
     }
 
-    //Todo: (20180722)
-    //- create Subinterface
-    //- subinterface add Vlan Tag
+    /**
+     * return true if change was successful false if not (duplicate ipaddress?)
+     * @return EthernetInterface
+     * @param string $ip
+     */
+    public function addSubInterface( $tag )
+    {
+        if( $this->type != 'layer3' && $this->type != 'layer2' && $this->type != 'virtual-wire')
+            derr('cannot be requested from a '.$this->type().' Interface');
 
+
+        $tmp_xmlroot = $this->xmlroot;
+        $typeNode = DH::findFirstElement( $this->type, $tmp_xmlroot);
+        $unit = DH::findFirstElementOrCreate( 'units', $typeNode);
+
+
+        if( $this->type == 'layer3' )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->owner->xmlroot->ownerDocument, EthernetInterface::$templatexmlsubl3);
+        else
+            $xmlElement = DH::importXmlStringOrDie($this->owner->owner->xmlroot->ownerDocument, EthernetInterface::$templatexmlsub);
+
+        $newInterface = new EthernetInterface('tmp', $this->owner );
+        $newInterface->isSubInterface = true;
+        $newInterface->parentInterface = $this;
+        $newInterface->type = &$this->type;
+        $newInterface->load_sub_from_domxml($xmlElement);
+        $this->subInterfaces[] = $newInterface;
+
+
+        $newInterface->setName( $this->name.".".$tag );
+        $newInterface->setTag( $tag );
+
+        $unit->appendChild( $xmlElement );
+
+        return $newInterface;
+    }
+
+
+    /**
+     * Add a ip to this interface, it must be passed as an object or string
+     * @param Address $ip Object to be added, or String
+     * @return EthernetInterface
+     */
+    public function API_addSubInterface($tag)
+    {
+        $ret = $this->addSubInterface($tag);
+
+        if( is_object( $ret ) )
+        {
+            $con = findConnector($this);
+
+            $xpath = $this->getXPath();
+            $xpath .= "/".$this->type()."/units";
+
+            $con->sendSetRequest($xpath, "<entry name='{$this->name}.{$tag}'><tag>{$tag}</tag></entry>");
+        }
+
+        return $ret;
+    }
+
+
+
+    //Todo: (20180722)
     //---(also needed for vlan / loopback / tunnel interface)
     //- add Virtual Router
     //- add Security Zone
+    //- add Virtual System
     //- add Comment (low prio)
     //- add Management Profile (low prio)
 
@@ -497,7 +622,30 @@ class EthernetInterface
 </entry>';
 
     static public $templatexmlae = '<entry name="**temporarynamechangeme**">
-<aggregate-group/>
+<aggregate-group>ae1</aggregate-group>
+</entry>';
+
+
+    static public $templatexmlsubl3 = '<entry name="**temporarynamechangeme**">
+    <ipv6>
+      <neighbor-discovery>
+        <router-advertisement>
+          <enable>no</enable>
+        </router-advertisement>
+      </neighbor-discovery>
+    </ipv6>
+    <ndp-proxy>
+      <enabled>no</enabled>
+    </ndp-proxy>
+    <adjust-tcp-mss>
+      <enable>no</enable>
+    </adjust-tcp-mss>
+    <tag></tag>
+    <ip></ip>
+</entry>';
+
+    static public $templatexmlsub = '<entry name="**temporarynamechangeme**">
+    <tag></tag>
 </entry>';
 
 }

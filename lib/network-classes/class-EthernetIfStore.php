@@ -79,10 +79,16 @@ class EthernetIfStore extends ObjStore
      * @param string $name name of the new EthernetInterface
      * @return EthernetInterface
      */
-    public function newEthernetIf($name, $ethtype = 'layer3')
+    public function newEthernetIf($name, $ethtype = 'layer3', $ae = null)
     {
         if( array_search($ethtype, EthernetInterface::$supportedTypes) === false )
             derr( "ethernet interface of type: ".$ethtype." not supported.\n" );
+
+        foreach( $this->getInterfaces() as $interface)
+        {
+            if( $interface->name() == $name )
+                derr( "Interface: ".$name." already available\n" );
+        }
 
         $ethernetIf = new EthernetInterface( $name, $this);
         if( $ethtype == "layer3" )
@@ -102,6 +108,9 @@ class EthernetIfStore extends ObjStore
         $ethernetIf->owner = null;
         $ethernetIf->setName($name);
 
+        if( $ae !== null)
+            $ethernetIf->setAE($ae);
+
         $this->addEthernetIf( $ethernetIf );
 
         return $ethernetIf;
@@ -113,9 +122,9 @@ class EthernetIfStore extends ObjStore
      * @param string $name name of the new EthernetInterface
      * @return EthernetInterface
      */
-    public function API_newEthernetIf($name , $ethtype = 'layer3')
+    public function API_newEthernetIf($name , $ethtype = 'layer3', $ae = null)
     {
-        $newif = $this->newEthernetIf($name, $ethtype);
+        $newif = $this->newEthernetIf($name, $ethtype, $ae);
 
         $con = findConnectorOrDie($this);
         $xpath = $newif->getXPath();
@@ -194,25 +203,18 @@ class EthernetIfStore extends ObjStore
 
     public function &getXPath()
     {
-        $str = '';
+        $str = $this->getBaseXPath();
 
-        if( $this->owner->isDeviceGroup() || $this->owner->isVirtualSystem() )
-            $str = $this->owner->getXPath();
-        elseif( $this->owner->isPanorama() || $this->owner->isFirewall() )
-            $str = '/config/shared';
-        else
-            derr('unsupported');
-
-        //TODO: intermediate solution
-        $str = '/config/devices/entry/network/interface';
-
-        $str = $str.'/ethernet/units';
+        if( get_class($this) == "EthernetIfStore" )
+            $str = $str.'/ethernet/units';
+        elseif( get_class($this) == "AggregateEthernetIfStore" )
+            $str = $str.'/aggregate-ethernet/units';
 
         return $str;
     }
 
 
-    private function &getBaseXPath()
+    public function &getBaseXPath()
     {
 
         $str = "";
@@ -233,9 +235,11 @@ class EthernetIfStore extends ObjStore
 
     public function &getEthernetIfStoreXPath()
     {
-        //Todo: bug available, units only for subinterface
-        //$path = $this->getBaseXPath().'/ethernet/units';
-        $path = $this->getBaseXPath().'/ethernet';
+        if( get_class($this) == "EthernetIfStore" )
+            $path = $this->getBaseXPath().'/ethernet';
+        elseif( get_class($this) == "AggregateEthernetIfStore" )
+            $path = $this->getBaseXPath().'/aggregate-ethernet';
+
         return $path;
     }
 
@@ -258,7 +262,11 @@ class EthernetIfStore extends ObjStore
                 $xml = DH::findFirstElementOrCreate('entry', $xml);
                 $xml = DH::findFirstElementOrCreate('network', $xml);
                 $xml = DH::findFirstElementOrCreate('interface', $xml);
-                $xml = DH::findFirstElementOrCreate('ethernet', $xml);
+
+                if( get_class($this) == "EthernetIfStore" )
+                    $xml = DH::findFirstElementOrCreate('ethernet', $xml);
+                elseif( get_class($this) == "AggregateEthernetIfStore" )
+                    $xml = DH::findFirstElementOrCreate('aggregate-ethernet', $xml);
 
                 DH::findFirstElementOrCreate('units', $xml);
                 #DH::findFirstElementOrCreate('tag', $this->owner->xmlroot);

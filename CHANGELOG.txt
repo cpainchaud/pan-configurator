@@ -11,6 +11,7 @@ CHANGELOG
 * class-Zone/ZoneStore - extend with virtual-wire
 * class-VirtualWire/VirtualWireStore - extend validation
 * class-InterfaceContainer - extend validation for addInterface - improve API_addInterface
+* class-EthernetInterface/EthernetIfStore - extend with ae information - extend validation
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
