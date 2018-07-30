@@ -24,6 +24,7 @@ bugfix:
 - fix class-EthernetInterfaceStore | xpath fix
 - fix implementation of class-AggregateEthernetInterface
 - fix class-VirtualSystem | no warning if IPv4 address without netmask is used as interface IP
+- fix class-QosRule - fix access type related to app 'filter=(app is.any)'
 
 
 1.5.14 (20180227)
