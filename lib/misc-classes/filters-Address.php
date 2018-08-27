@@ -727,6 +727,38 @@ RQuery::$defaultFilters['address']['value']['operators']['ip4.includes-full-or-p
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['value']['operators']['string.regex'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+        $regex = $context->value;
+
+        if( $object->isTmpAddr() || $object->isGroup() || $object->isType_FQDN() )
+        {
+            return null;
+        }
+
+        if( $object->isType_ipNetmask() || $object->isType_ipRange() )
+        {
+            if(  $object->isType_ipRange())
+            {
+                $addr_value = $object->value();
+            }
+            else
+                $addr_value = $object->getNetworkValue();
+
+            $matching = preg_match($context->value, $addr_value);
+            if( $matching === FALSE )
+                derr("regular expression error on '{$context->value}'");
+            if( $matching === 1 )
+                return true;
+
+        }
+
+        return false;
+    },
+    'arg' => true
+);
 RQuery::$defaultFilters['address']['description']['operators']['regex'] = Array(
     'Function' => function(AddressRQueryContext $context )
     {

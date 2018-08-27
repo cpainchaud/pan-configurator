@@ -17,6 +17,7 @@ CHANGELOG
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
+address-edit: new filter '(value string.regex /[SEARCH-STRING]/)'
 upload-config: extend in=api://[MGTM-IP]/panorama-pushed-config to download panorama pushed config
 
 
