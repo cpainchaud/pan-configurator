@@ -177,7 +177,8 @@ function diffNodes(DOMElement $template, DOMElement $candidate, $padding)
                     print $padding."* ".DH::elementToPanXPath($candidate)."\n";
                 }
                 else
-                    print $padding."* ".DH::elementToPanXPath($templateNode)." (defined in template but missing in Firewall config)\n";}
+                    print $padding."* ".DH::elementToPanXPath($templateNode)." (defined in template but missing in Firewall config)\n";
+            }
             else
                 diffNodes($templateNode, $candidateNode, $padding);
         }

@@ -20,6 +20,13 @@ address-edit: improvement for actions=decommisssion - extend interface (ethernet
 address-edit: new filter '(value string.regex /[SEARCH-STRING]/)'
 upload-config: extend in=api://[MGTM-IP]/panorama-pushed-config to download panorama pushed config
 
+utils(under development):
+ike: new script to show all IKE/IPsec profile and config settings
+interface: new script to show interface settings
+routing: new script to show route settings
+vsys: new script to show all vsys
+vwire: new script to show vwire settings
+zone: new script to show zone settings
 
 bugfix:
 - fix class-IpsecTunnel | related to proxy-id if <protocol> is not available

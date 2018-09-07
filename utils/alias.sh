@@ -23,3 +23,17 @@ alias pa_key-manager='php -r "require_once '"'"'utils/key-manager.php'"'"';" $@'
 alias pa_ckp-exclude='php -r "require_once '"'"'utils/checkpoint-exclude.php'"'"';" $@'
 
 alias pa_download-predefined='php -r "require_once '"'"'utils/download_predefined.php'"'"';" $@'
+
+
+
+
+
+
+alias pa_interface='php -r "require_once '"'"'utils/develop/interface.php'"'"';" $@'
+alias pa_routing='php -r "require_once '"'"'utils/develop/routing.php'"'"';" $@'
+alias pa_zone='php -r "require_once '"'"'utils/develop/zone.php'"'"';" $@'
+alias pa_vsys='php -r "require_once '"'"'utils/develop/vsys.php'"'"';" $@'
+alias pa_vwire='php -r "require_once '"'"'utils/develop/vwire.php'"'"';" $@'
+
+
+alias pa_ike='php -r "require_once '"'"'utils/develop/ike.php'"'"';" $@'
