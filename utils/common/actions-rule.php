@@ -3169,6 +3169,30 @@ RuleCallContext::$supportedActions[] = Array(
         ),
     'help' => "This action will take a Security rule and clone it as an App-Override rule. By default all services specified in the rule will also be in the AppOverride rule."
 );
+
+//                                                   //
+//                User Based Actions     //
+//                                                   //
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-Set',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setUser($context->arguments['userName']);
+        else
+            $rule->setUser($context->arguments['userName']);
+    },
+    'args' => Array( 'userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+
 // </editor-fold>
 /************************************ */
 

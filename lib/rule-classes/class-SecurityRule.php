@@ -42,6 +42,9 @@ class SecurityRule extends RuleWithUserID
 	protected $secprofgroup = null;
 	protected $secprofProfiles = Array();
 
+    public $hipprofroot = null;
+    protected $hipprofProfiles = null;
+
     /** @var AppRuleContainer */
     public $apps;
 
@@ -209,6 +212,17 @@ class SecurityRule extends RuleWithUserID
 		else
             $this->extract_security_profile_from_domxml();
 		// End of <profile-setting>
+
+
+        //
+        // Begin <hip-profiles> extraction
+        //
+        $this->hipprofroot = DH::findFirstElement('hip-profiles', $xml);
+        if( $this->hipprofroot === false )
+            $this->hipprofroot = null;
+        else
+            $this->extract_hip_profile_from_domxml();
+        // End of <hip-profiles>
 
         $this->_readNegationFromXml();
 
@@ -604,6 +618,44 @@ class SecurityRule extends RuleWithUserID
 
 	}
 
+    /**
+     *
+     * @ignore
+     */
+    protected function extract_hip_profile_from_domxml()
+    {
+
+        if( $this->hipprofroot === null || $this->secprofroot === false )
+        {
+            $this->hipprofroot = null;
+            return;
+        }
+
+        $xml = $this->hipprofroot;
+
+        #print "\nNow trying to extract associated hip profile associated to '".$this->name."'\n";
+
+
+        foreach( $xml->childNodes as $prof )
+        {
+            if( $prof->nodeType != XML_ELEMENT_NODE ) continue;
+
+            $this->hipprofProfiles[$prof->nodeName] = $prof->textContent;
+            #print PH::boldText("name: |".$prof->nodeName."| - |".$prof->textContent."|\n" );
+        }
+    }
+
+    public function hipProfileIsBlank()
+    {
+        if( $this->hipprofroot == null )
+            return true;
+
+        if( $this->hipprofProfiles !== null )
+            return false;
+
+        return true;
+
+    }
 
     public function urlCategories()
     {
@@ -880,11 +932,19 @@ class SecurityRule extends RuleWithUserID
 		print $padding."  Destination: $destinationNegated ".$this->destination->toString_inline()."\n";
 		print $padding."  Service:  ".$this->services->toString_inline()."    Apps:  ".$this->apps->toString_inline()."\n";
         if( !$this->userID_IsCustom() )
-            print $padding."  User: *".$this->userID_type()."*\n";
+            print $padding."  User: *".$this->userID_type()."*";
         else
         {
             $users = $this->userID_getUsers();
-            print $padding . "  User:  " . PH::list_to_string($users) . "\n";
+            print $padding . "  User:  " . PH::list_to_string($users) . "";
+        }
+        if( !$this->hipProfileIsBlank() )
+        {
+            print $padding . "  HIP:   " . PH::list_to_string( $this->hipprofProfiles ) . "\n";
+        }
+        else
+        {
+            print "\n";
         }
 		print $padding."  Tags:  ".$this->tags->toString_inline()."\n";
 
