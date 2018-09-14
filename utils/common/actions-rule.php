@@ -1827,6 +1827,36 @@ RuleCallContext::$supportedActions[] = Array(
 );
 
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'logSetting-set-FastAPI',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->setLogSetting($context->arguments['profName']) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<log-setting>'.$context->arguments['profName'].'</log-setting>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
+    'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+    'help' => "Sets log setting/forwarding profile of a Security rule to the value specified."
+);
+
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logSetting-disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1846,7 +1876,6 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'help' => "Remove log setting/forwarding profile of a Security rule if any."
 );
-
 
 
 //                                                   //
