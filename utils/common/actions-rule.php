@@ -3222,6 +3222,30 @@ RuleCallContext::$supportedActions[] = Array(
     'args' => Array( 'userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
 );
 
+
+//                                                   //
+//                User Based Actions     //
+//                                                   //
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'hip-Set',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setHipProfil($context->arguments['HipProfile']);
+        else
+            $rule->setHipProfile($context->arguments['HipProfile']);
+    },
+    'args' => Array( 'HipProfile' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+
 // </editor-fold>
 /************************************ */
 
