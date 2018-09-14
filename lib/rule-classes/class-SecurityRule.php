@@ -1496,6 +1496,48 @@ class SecurityRule extends RuleWithUserID
         return $ret;
     }
 
+    public function rewriteHipProfXML()
+    {
+
+        if( $this->hipprofroot !== null )
+            DH::clearDomNodeChilds($this->hipprofroot);
+
+        if( $this->hipprofroot === null || $this->hipprofroot === false )
+            $this->hipprofroot = DH::createElement( $this->xmlroot, 'hip-profiles');
+        else
+            $this->xmlroot->appendChild($this->hipprofroot);
+
+
+        $tmp = $this->hipprofroot->ownerDocument->createElement('member');
+        $tmp = $this->hipprofroot->appendChild( $tmp );
+        $tmp->appendChild( $this->hipprofroot->ownerDocument->createTextNode($this->hipprofProfiles) );
+    }
+    
+    public function setHipProfile($hipProfile )
+    {
+        //TODO : implement better 'change' detection to remove this return true
+        $this->hipprofProfiles = $hipProfile;
+
+        $this->rewriteHipProfXML();
+
+        return true;
+    }
+
+    public function API_setHipProfil($hipProfile )
+    {
+        $ret = $this->setHipProfile($hipProfile);
+
+        if( $ret )
+        {
+            $xpath = $this->getXPath() . '/hip-profiles';
+            $con = findConnectorOrDie($this);
+
+            $con->sendEditRequest($xpath, '<hip-profiles><member>' . $hipProfile . '</member></hip-profiles>');
+        }
+
+        return $ret;
+    }
+
     static public $templatexml = '<entry name="**temporarynamechangeme**"><option><disable-server-response-inspection>no</disable-server-response-inspection></option><from><member>any</member></from><to><member>any</member></to>
 <source><member>any</member></source><destination><member>any</member></destination><source-user><member>any</member></source-user><category><member>any</member></category><application><member>any</member></application><service><member>any</member>
 </service><hip-profiles><member>any</member></hip-profiles><action>allow</action><log-start>no</log-start><log-end>yes</log-end><negate-source>no</negate-source><negate-destination>no</negate-destination><tag/><description/><disabled>no</disabled></entry>';
