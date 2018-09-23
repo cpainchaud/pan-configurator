@@ -37,6 +37,7 @@ bugfix:
 - fix implementation of class-AggregateEthernetInterface
 - fix class-VirtualSystem | no warning if IPv4 address without netmask is used as interface IP
 - fix class-QosRule - fix access type related to app 'filter=(app is.any)'
+- fix error output for XMLline - correct lineNo if lineNo > 65535
 
 
 1.5.14 (20180227)

@@ -174,7 +174,7 @@ if( $configInput['status'] == 'fail' )
 if( $configInput['type'] == 'file' )
 {
     print "{$configInput['filename']} ... ";
-    $doc->Load($configInput['filename']);
+    $doc->Load($configInput['filename'], XML_PARSE_BIG_LINES);
 }
 elseif ( $configInput['type'] == 'api'  )
 {

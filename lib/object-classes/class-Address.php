@@ -63,7 +63,7 @@ class Address
         if( $fromXmlTemplate )
         {
 			$doc = new DOMDocument();
-			$doc->loadXML(self::$templatexml);
+			$doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
 
 			$node = DH::findFirstElementOrDie('entry', $doc);
 
@@ -122,7 +122,7 @@ class Address
 		if( !$typeFound )
         {
             if( !PH::$ignoreInvalidAddressObjects )
-                derr('Object type not found or not supported for address object ' . $this->name . '. Please check your configuration file and fix it or invoke ith argument "shadow-ignoreInvalidAddressObjects"', $xml);
+                derr('Object type not found or not supported for address object ' . $this->name . '. Please check your configuration file and fix it or invoke with argument "shadow-ignoreInvalidAddressObjects"', $xml);
 
             mwarning('Object type not found or not supported for address object ' . $this->name . ' but you manually did bypass this error', $xml);
             return false;

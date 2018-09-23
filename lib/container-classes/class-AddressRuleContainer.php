@@ -185,6 +185,7 @@ class AddressRuleContainer extends ObjRuleContainer
     public function setAny()
     {
         $this->removeAll();
+        //Todo: add <member>any</member>
 
         $this->rewriteXML();
     }

@@ -919,7 +919,7 @@ class AppStore extends ObjStore
 		}
 
         $xmlDoc = new DOMDocument();
-        $xmlDoc->load($filename);
+        $xmlDoc->load($filename, XML_PARSE_BIG_LINES);
 
         $cursor = DH::findXPathSingleEntryOrDie('/predefined/application', $xmlDoc);
 

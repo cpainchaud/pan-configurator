@@ -39,6 +39,12 @@ if (!defined('STDERR'))
 }
 
 
+if (!defined('XML_PARSE_BIG_LINES'))
+{
+    define('XML_PARSE_BIG_LINES', 4194304);
+}
+
+
 date_default_timezone_set('UTC');
 
 if (!extension_loaded('curl')) {

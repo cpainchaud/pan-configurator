@@ -79,11 +79,11 @@ class Zone
             $doc = new DOMDocument();
 
             if( $type == "virtual-wire" )
-                $doc->loadXML(self::$templatexmlvw);
+                $doc->loadXML(self::$templatexmlvw, XML_PARSE_BIG_LINES);
             elseif( $type == "layer2" )
-                $doc->loadXML(self::$templatexmll2);
+                $doc->loadXML(self::$templatexmll2, XML_PARSE_BIG_LINES);
             else
-                $doc->loadXML(self::$templatexml);
+                $doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
 
             $node = DH::findFirstElementOrDie('entry',$doc);
 

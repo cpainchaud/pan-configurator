@@ -120,7 +120,7 @@ class PANConf
 	{
 		$xmlDoc = new DOMDocument();
 
-		if ($xmlDoc->loadXML($xml, LIBXML_PARSEHUGE) !== TRUE)
+        if ($xmlDoc->loadXML($xml, XML_PARSE_BIG_LINES) !== TRUE)
 			derr('Invalid XML file found');
 
 		$this->load_from_domxml($xmlDoc);

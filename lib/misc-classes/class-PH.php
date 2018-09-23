@@ -513,7 +513,7 @@ class PH
 
         $doc = new DOMDocument();
 
-        if( $doc->load($filename) !== TRUE )
+        if( $doc->load($filename, XML_PARSE_BIG_LINES) !== TRUE )
             derr('Invalid XML file found');
 
         $xpathResults = DH::findXPath('/config/panorama', $doc);

@@ -917,7 +917,7 @@ class PanAPIConnector
             derr("HTTP API returned (code : {$curlHttpStatusCode}); " . $httpReplyContent);
 
         $xmlDoc = new DOMDocument();
-        if( !$xmlDoc->loadXML($httpReplyContent, LIBXML_PARSEHUGE|4194304) )
+        if( !$xmlDoc->loadXML($httpReplyContent, XML_PARSE_BIG_LINES) )
             derr('Invalid xml input :' . $httpReplyContent);
 
         $firstElement = DH::firstChildElement($xmlDoc);
@@ -1175,7 +1175,8 @@ class PanAPIConnector
     public function getCandidateConfigAlt()
     {
         $doc = new DOMDocument();
-        $doc->loadXML($this->sendExportRequest('configuration'), LIBXML_PARSEHUGE|4194304);
+        $doc->loadXML($this->sendExportRequest('configuration'), XML_PARSE_BIG_LINES);
+
         return $doc;
     }
 

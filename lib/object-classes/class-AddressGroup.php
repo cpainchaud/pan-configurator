@@ -53,9 +53,9 @@ class AddressGroup
 		{
 			$doc = new DOMDocument();
 			if( $this->owner->owner->version < 60 )
-				$doc->loadXML(self::$templatexml);
+				$doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
 			else
-				$doc->loadXML(self::$templatexml_v6);
+				$doc->loadXML(self::$templatexml_v6, XML_PARSE_BIG_LINES);
 
 			$node = DH::findFirstElement('entry',$doc);
 

@@ -169,7 +169,7 @@ class PanoramaConf
 	{
 		$this->xmldoc = new DOMDocument();
 
-		if( $this->xmldoc->loadXML($xml) !== TRUE )
+		if( $this->xmldoc->loadXML($xml, XML_PARSE_BIG_LINES) !== TRUE )
 			derr('Invalid XML file found');
 
 		$this->load_from_domxml($this->xmldoc);

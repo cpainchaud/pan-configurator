@@ -91,7 +91,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                         if( !file_exists($filename) )
                             derr("cannot read firewall configuration file '{$filename}''");
                         $doc = new DOMDocument();
-                        if( ! $doc->load($filename) )
+                        if( ! $doc->load($filename, XML_PARSE_BIG_LINES) )
                             derr("invalive xml file".libxml_get_last_error()->message);
                         unset($filename);
                     }
@@ -3224,7 +3224,7 @@ RuleCallContext::$supportedActions[] = Array(
 
 
 //                                                   //
-//                User Based Actions     //
+//                HIP Based Actions     //
 //                                                   //
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'hip-Set',

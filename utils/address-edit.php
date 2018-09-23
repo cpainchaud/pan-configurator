@@ -325,7 +325,7 @@ if( $configInput['type'] == 'file' )
         derr("file '{$configInput['filename']}' not found");
 
     $xmlDoc = new DOMDocument();
-    if( ! $xmlDoc->load($configInput['filename']) )
+    if( ! $xmlDoc->load($configInput['filename'], XML_PARSE_BIG_LINES) )
         derr("error while reading xml config file");
 
 }
@@ -472,7 +472,7 @@ if( $objectsFilter !== null )
 echo " - Loading configuration through PAN-Configurator library... ";
 $loadStartMem = memory_get_usage(true);
 $loadStartTime = microtime(true);
-$pan->load_from_domxml($xmlDoc);
+$pan->load_from_domxml($xmlDoc, XML_PARSE_BIG_LINES);
 $loadEndTime = microtime(true);
 $loadEndMem = memory_get_usage(true);
 $loadElapsedTime = number_format( ($loadEndTime - $loadStartTime), 2, '.', '');
