@@ -278,7 +278,8 @@ if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
             {
                 if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
                 {
-                    print "\n- object '".$object->name()."'' skipped because of same object name available at lower level\n";
+                    $tmp_obj = $dg->addressStore->find($object->name(), null, FALSE);
+                    print "\n- object '".$object->name()."' [value '{$object->value()}'] skipped because of same object name [with value '{$tmp_obj->value()}'] available at lower level DG: ".$dg->name()."\n";
                     $skipThisOne = TRUE;
                     break;
                 }
@@ -437,7 +438,7 @@ foreach( $hashMap as $index => &$hash )
                     if( $dupAlg == 'identical' )
                         if( $pickedObject->name() != $ancestor->name() )
                         {
-                            echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL to object name from upperlevel '{$pickedObject->name()}'\n";
+                            echo "    - SKIP: object name '{$object->name()}' [with value '{$object->value()}'] is not IDENTICAL to object name from upperlevel '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] \n";
                             continue;
                         }
 

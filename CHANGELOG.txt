@@ -22,6 +22,7 @@ upload-config: extend in=api://[MGTM-IP]/panorama-pushed-config to download pano
 rule-edit: introduce hip-profile for actions=display
 rule-edit: new actions=hip-set:[HIP-Profile]
 rule-edit: new action "logsetting-set-FastAPI:[LOGFORWARD]"
+address-merger: extend skipped object output with DG information
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings
