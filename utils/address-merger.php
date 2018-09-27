@@ -22,6 +22,13 @@ set_include_path( dirname(__FILE__).'/../'. PATH_SEPARATOR . get_include_path() 
 require_once("lib/panconfigurator.php");
 require_once(dirname(__FILE__).'/common/misc.php');
 
+//Todo: 20180927
+//location=any
+//if NOT allowmergingwithupperlevel - start script
+//if allowmergingwithupperlevel ->
+//- build DG hierarchy array
+//- start from youngest child up to parent and merge with shared
+
 
 $supportedArguments = Array();
 $supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'input file or api. ie: in=config.xml  or in=api://192.168.1.1 or in=api://0018CAEC3@panorama.company.com', 'argDesc' => '[filename]|[api://IP]|[api://serial@IP]');
@@ -363,7 +370,9 @@ foreach( $hashMap as $index => &$hash )
 {
     echo "\n";
     echo " - value '{$index}'\n";
+    $deletedObjects[$index]['kept'] = "";
     $deletedObjects[$index]['removed'] = "";
+
 
     $pickedObject = null;
 
@@ -486,6 +495,9 @@ foreach( $hashMap as $index => &$hash )
             else print "'{$ancestor->owner->owner->name()}'";
             print  "  value: '{$ancestor->value()}' \n";
 
+            #unset($deletedObjects[$index]);
+            $deletedObjects[$index]['removed'] .= "|->ERROR anchestor: '".$object->name()."' can not be merged";
+
             continue;
         }
 
@@ -539,6 +551,8 @@ if( isset(PH::$args['exportcsv']) )
 {
     foreach( $deletedObjects as $obj_index => $object_name )
     {
+        if( !isset( $object_name['kept'] ) )
+            print_r($object_name);
         print $obj_index.",".$object_name['kept'].",".$object_name['removed']."\n";
     }
 }
