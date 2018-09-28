@@ -496,7 +496,7 @@ foreach( $hashMap as $index => &$hash )
             print  "  value: '{$ancestor->value()}' \n";
 
             #unset($deletedObjects[$index]);
-            $deletedObjects[$index]['removed'] .= "|->ERROR anchestor: '".$object->name()."' can not be merged";
+            $deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '".$object->name()."' cannot be merged";
 
             continue;
         }
