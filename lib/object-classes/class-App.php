@@ -28,6 +28,12 @@ class App
 	public $tcp = null;
 	public $udp = null;
 	public $icmp = null;
+    public $icmp6 = null;
+
+    public $tcp_secure = null;
+    public $udp_secure = null;
+    public $icmp_secure = null;
+    public $icmp6_secure = null;
 
 	public $icmpsub = null;
     public $icmp6sub = null;
