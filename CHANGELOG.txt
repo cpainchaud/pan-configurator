@@ -14,6 +14,7 @@ CHANGELOG
 * class-EthernetInterface/EthernetIfStore - extend with ae information - extend validation
 * class-Zone - reduce warning if not yet supported in pan-c framework
 * class-Zone - extend with type: tap, layer2, tunnel
+* update predefined.xml to 8070-5032
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
