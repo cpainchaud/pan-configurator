@@ -40,12 +40,16 @@ class Address
 	const TypeIpRange = 2;
 	const TypeFQDN = 3;
 	const TypeDynamic = 4;
+	const TypeIpWildcard = 5;
+
 
 	static private $AddressTypes = Array(self::TypeTmp => 'tmp',
 										self::TypeIpNetmask => 'ip-netmask',
 										self::TypeIpRange => 'ip-range',
 										self::TypeFQDN => 'fqdn',
-										self::TypeDynamic => 'dynamic'  );
+										self::TypeDynamic => 'dynamic',
+                                        self::TypeIpWildcard =>  'ip-wildcard'
+                                    );
 
 	protected $type = self::TypeTmp;
 
@@ -89,9 +93,8 @@ class Address
 	*/
 	public function load_from_domxml(DOMElement $xml)
 	{
-		
 		$this->xmlroot = $xml;
-		
+
 		$this->name = DH::findAttribute('name', $xml);
 		if( $this->name === FALSE )
 			derr("address name not found\n");
@@ -354,6 +357,11 @@ class Address
     public function isType_TMP()
     {
         return $this->type == self::TypeTmp;
+    }
+
+    public function isType_ipWildcard()
+    {
+        return $this->type == self::TypeIpWildcard;
     }
 
     /**
