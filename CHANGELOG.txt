@@ -44,6 +44,7 @@ bugfix:
 - fix error output for XMLline - correct lineNo if lineNo > 65535
 
 
+
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
 * new class IkeCryptoProfile; IkeCryptoProfileStore; IPSecCryptoProfil; IPSecCryptoProfilStore
