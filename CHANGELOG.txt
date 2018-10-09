@@ -17,6 +17,7 @@ CHANGELOG
 * update predefined.xml to 8070-5032
 * class-Address - introduce address object of type ip-wildcard
 * class-AppStore/App - introduce App secure ports
+* class-IKEGateway - extend to cover IKEv2
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address

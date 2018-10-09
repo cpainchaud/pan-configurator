@@ -298,4 +298,21 @@ class IKEGateway
     <disabled>no</disabled>
 </entry>';
 
+    static public $templatexml_ikev2 = '<entry name="**temporarynamechangeme**">
+    <authentication>
+        <pre-shared-key>
+            <key>-AQ==A4vEGnxsZCP7poqzjhJD4Gc+tbE=DS4xndFfZiigUHPCm4ASFQ==</key>
+        </pre-shared-key>
+    </authentication>
+    <protocol>
+        <ikev1><dpd><enable>yes</enable><interval>5</interval><retry>5</retry></dpd><ike-crypto-profile>default</ike-crypto-profile><exchange-mode>auto</exchange-mode></ikev1>
+        <ikev2><dpd><enable>yes</enable><interval>5</interval></dpd><ike-crypto-profile>default</ike-crypto-profile></ikev2>
+        <version>ikev2</version>
+      </protocol>
+    <protocol-common><nat-traversal><enable>no</enable></nat-traversal><fragmentation><enable>no</enable></fragmentation></protocol-common>
+    <local-address><interface></interface></local-address>
+    <peer-address><ip></ip></peer-address>
+    <disabled>no</disabled>
+</entry>';
+
 }

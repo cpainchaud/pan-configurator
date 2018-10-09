@@ -512,6 +512,10 @@ class IPsecTunnel
         return true;
     }
 
+    public function getInterface(  )
+    {
+        return $this->interface;
+    }
 
     public function isIPsecTunnelType() { return true; }
 

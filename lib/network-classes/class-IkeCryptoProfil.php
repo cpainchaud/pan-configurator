@@ -156,7 +156,7 @@ class IkeCryptoProfil
         if( preg_match( '/[^0-9a-zA-Z_\-\s]/' , $name ) )
         {
             $name = preg_replace('/[^0-9a-zA-Z_\-\s]/',"", $name);
-            print "new name: ".$name." \n";
+            #print "new name: ".$name." \n";
             #mwarning( 'Name will be replaced with: '.$name."\n" );
         }
 
@@ -189,7 +189,7 @@ class IkeCryptoProfil
         {
             $dhgroup = preg_replace('/\D/', '', $dhgroup);
             $dhgroup = "group".$dhgroup;
-            print " *** new dhgroup name: ".$dhgroup."\n";
+            #print " *** new dhgroup name: ".$dhgroup."\n";
         }
 
         $this->dhgroup = $dhgroup;
