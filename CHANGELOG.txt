@@ -42,6 +42,7 @@ bugfix:
 - fix class-VirtualSystem | no warning if IPv4 address without netmask is used as interface IP
 - fix class-QosRule - fix access type related to app 'filter=(app is.any)'
 - fix error output for XMLline - correct lineNo if lineNo > 65535
+- fix class-authenticationRule |  fix for FW config - typos related to XML xpath finding
 
 
 

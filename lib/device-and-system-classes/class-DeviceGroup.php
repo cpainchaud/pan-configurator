@@ -383,7 +383,7 @@ class DeviceGroup
             $tmpPost = null;
         else
         {
-            $tmpPost = DH::findFirstElement('authenticaiton', $postrulebase);
+            $tmpPost = DH::findFirstElement('authentication', $postrulebase);
             if( $tmpPost !== false )
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 

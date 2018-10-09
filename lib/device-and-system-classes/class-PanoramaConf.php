@@ -447,7 +447,7 @@ class PanoramaConf
             $tmpPost = null;
         else
         {
-            $tmpPost = DH::findFirstElement('authentication-portal', $postrulebase);
+            $tmpPost = DH::findFirstElement('authentication', $postrulebase);
             if( $tmpPost !== false )
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 

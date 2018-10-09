@@ -1165,6 +1165,27 @@ class RuleStore
         return $rule;
     }
 
+    /**
+     * Creates a new AuthenticationRule in this store. It will be placed at the end of the list.
+     * @param string $name name of the new Rule
+     * @param bool $inPost  create it in post or pre (if applicable)
+     * @return AuthenticationRule
+     */
+    public function newAuthenticationRule($name, $inPost = false)
+    {
+        $rule = new AuthenticationRule($this);
+
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, AuthenticationRule::$templatexml);
+        $rule->load_from_domxml($xmlElement);
+
+        $rule->owner = null;
+        $rule->setName($name);
+
+        $this->addRule($rule, $inPost);
+
+        return $rule;
+    }
+
 	/**
 	 * Creates a new NatRule in this store. It will be placed at the end of the list.
 	 * @param String $name name of the new Rule

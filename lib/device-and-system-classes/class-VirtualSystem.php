@@ -344,6 +344,17 @@ class VirtualSystem
             }
 
             //
+            // Authenticaiton Rules extraction
+            //
+            $tmproot = DH::findFirstElement('authentication', $this->rulebaseroot);
+            if( $tmproot !== false )
+            {
+                $tmprulesroot = DH::findFirstElement('rules', $tmproot);
+                if( $tmprulesroot !== false )
+                    $this->authenticationRules->load_from_domxml($tmprulesroot);
+            }
+
+            //
             // PBF Rules extraction
             //
             $tmproot = DH::findFirstElement('pbf', $this->rulebaseroot);
@@ -396,6 +407,7 @@ class VirtualSystem
         print "- ".$this->decryptionRules->count()." decryption rules\n";
         print "- ".$this->appOverrideRules->count()." app-override rules\n";
         print "- ".$this->captivePortalRules->count()." capt-portal rules\n";
+        print "- ".$this->authenticationRules->count()." authentication rules\n";
         print "- ".$this->dosRules->count()." dos rules\n";
         print "- {$this->addressStore->count()}/{$this->addressStore->countAddresses()}/{$this->addressStore->countAddressGroups()}/{$this->addressStore->countTmpAddresses()}/{$this->addressStore->countUnused()} total/address/group/tmp/unused objects\n";
         print "- {$this->serviceStore->count()}/{$this->serviceStore->countServices()}/{$this->serviceStore->countServiceGroups()}/{$this->serviceStore->countTmpServices()}/{$this->serviceStore->countUnused()} total/service/group/tmp/unused objects\n";
