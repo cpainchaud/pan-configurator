@@ -91,6 +91,8 @@ class IKEGatewayStore extends ObjStore
 
             $this->xmlroot->appendChild($gateway->xmlroot);
 
+            $ret = $this->add($gateway);
+
             return true;
         } else
             derr('You cannot add a Gateway that is already here :)');

@@ -73,7 +73,9 @@ class IKEGateway
 
         $this->name = DH::findAttribute('name', $xml);
         if( $this->name === FALSE )
-            derr("tunnel name not found\n");
+            derr("IKE gateway name not found\n");
+
+        #print "imported gateway with name: ". $this->name."\n";
 
         foreach( $xml->childNodes as $node )
         {
@@ -162,7 +164,7 @@ class IKEGateway
             //NO blank allowed in gateway name
             //NO other characters are allowed as seen here
             $name = preg_replace('/[^0-9a-zA-Z_\-]/',"", $name);
-            print " *** new gateway name: ".$name." \n";
+            #print " *** new gateway name: ".$name." \n";
             #mwarning( 'Name will be replaced with: '.$name."\n" );
         }
 

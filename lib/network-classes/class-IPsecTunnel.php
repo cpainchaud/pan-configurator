@@ -412,9 +412,17 @@ class IPsecTunnel
         $tmp_protocol = DH::createElement($newRoot, 'protocol');
         DH::createElement($tmp_protocol, 'any');
 
-        $newArray = Array('name' => $name, 'local' => $local, 'remote' => $remote, 'xmlroot' => $newRoot);
+        $protocol_array = array();
+        $protocol_array['type'] = $tmp_protocol->firstChild->nodeName;
+        $protocol_array['localport'] = '';
+        $protocol_array['remoteport'] = '';
 
-        $this->proxys[] = &$newArray;
+
+        $record = Array('name' => $name ,'local' => $local, 'remote' => $remote, 'xmlroot' => $newRoot, 'protocol' => $protocol_array, 'type' => 'IPv4' );
+
+        $this->proxys[] = &$record;
+        unset($record);
+
 
         return true;
     }

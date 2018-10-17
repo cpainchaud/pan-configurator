@@ -44,6 +44,7 @@ bugfix:
 - fix class-QosRule - fix access type related to app 'filter=(app is.any)'
 - fix error output for XMLline - correct lineNo if lineNo > 65535
 - fix class-authenticationRule |  fix for FW config - typos related to XML xpath finding
+- fix class-IkeCryptoProfileStore | -IKEGateway | -IKEGatewayStore | -IPsecCryptoProfileStore | -IPsecTunnel | -IPsecTunnelStore || improve data handling during script execution
 
 
 

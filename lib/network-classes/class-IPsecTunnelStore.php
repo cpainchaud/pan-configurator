@@ -23,7 +23,12 @@
  */
 class IPsecTunnelStore extends ObjStore
 {
+    protected $_tunnels = Array();
+
     public static $childn = 'IPsecTunnel';
+
+    protected $fastMemToIndex=null;
+    protected $fastNameToIndex=null;
 
     public function __construct($name, $owner)
     {
@@ -39,6 +44,7 @@ class IPsecTunnelStore extends ObjStore
     {
         return $this->o;
     }
+
 
     /**
      * @return IPsecTunnel[]
@@ -59,6 +65,8 @@ class IPsecTunnelStore extends ObjStore
         $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IPsecTunnel::$templatexml);
 
         $tunnel->load_from_domxml($xmlElement);
+
+        $this->_tunnels[] = $tunnel;
 
         $tunnel->owner = null;
         $tunnel->setName($name);
@@ -88,10 +96,17 @@ class IPsecTunnelStore extends ObjStore
         {
             $tunnel->owner = $this;
 
+            $this->_tunnels[] = $tunnel;
+            $index = lastIndex($this->_tunnels);
+            $this->fastMemToIndex[$ser] = $index;
+            $this->fastNameToIndex[$tunnel->name()] = $index;
+
             if( $this->xmlroot === null )
                 $this->createXmlRoot();
 
             $this->xmlroot->appendChild($tunnel->xmlroot);
+
+            $ret = $this->add($tunnel);
 
             return true;
         } else
@@ -112,6 +127,15 @@ class IPsecTunnelStore extends ObjStore
 
             $this->xmlroot = DH::findFirstElementOrCreate('ipsec', $xml);
         }
+    }
+
+    /**
+     * @param $IPSecTunnelName string
+     * @return null|IPsecTunnel
+     */
+    public function findIpsecTunnel($IPSecTunnelName)
+    {
+        return $this->findByName($IPSecTunnelName);
     }
 
 } 
