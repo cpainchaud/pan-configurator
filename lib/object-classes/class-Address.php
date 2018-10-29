@@ -251,7 +251,25 @@ class Address
 
         return true;
 	}
-	
+
+    /**
+     * @param string $newValue
+     * @return bool
+     */
+    public function API_editValue($newValue)
+    {
+        if( !$this->setValue($newValue) )
+            return false;
+
+        $c = findConnectorOrDie($this);
+        $xpath = $this->getXPath();
+
+        $c->sendEditRequest($xpath,  DH::dom_to_xml($this->xmlroot,-1,false) );
+
+        $this->setValue($newValue);
+
+        return true;
+    }
 	
 	
 	public function rewriteXML()

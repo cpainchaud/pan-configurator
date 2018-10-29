@@ -1606,6 +1606,47 @@ AddressCallContext::$supportedActions[] = Array(
     'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ))
 );
 
+AddressCallContext::$supportedActions[] = Array(
+    'name' => 'value-host-object-add-netmask-m32',
+    'MainFunction' =>  function(AddressCallContext $context)
+    {
+        $address = $context->object;
+
+        if( $address->isGroup() )
+        {
+            echo $context->padding." *** SKIPPED : object is of type GROUP\n";
+            return;
+        }
+
+        if( !$address->isType_ipNetmask()  )
+        {
+            echo $context->padding." *** SKIPPED : object is not IP netmask\n";
+            return;
+        }
+
+        $value = $address->value();
+
+        if( strpos( $value, "/" ) !== false )
+        {
+            echo $context->padding." *** SKIPPED : object: ".$address->name()." with value: ".$value." is not a host object.\n";
+            return;
+        }
+
+
+        //
+        $new_value = $value."/32";
+
+        echo $context->padding." - new value will be: '".$new_value."'\n";
+
+        if( $context->isAPI )
+            $address->API_editValue( $new_value);
+        else
+            $address->setValue( $new_value);
+
+        echo "OK";
+    }
+);
+
 //starting with 7.0 PAN-OS support max. 2500 members per group, former 500
 AddressCallContext::$supportedActions[] = Array(
     'name' => 'split-large-address-groups',
