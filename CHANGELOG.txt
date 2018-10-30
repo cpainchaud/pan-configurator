@@ -18,6 +18,7 @@ CHANGELOG
 * class-Address - introduce address object of type ip-wildcard
 * class-AppStore/App - introduce App secure ports
 * class-IKEGateway - extend to cover IKEv2
+* class-PANAPIConnector - introduce hidden arguments: shadow-displaycurlrequest | shadow-hiddenapikey (new with PAN-OS 9.0 - send API key via Header)
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address

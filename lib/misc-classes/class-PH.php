@@ -37,6 +37,11 @@ class PH
     /** @var bool set to true if you want to ignore invalid address objects but print a warning instead */
     public static $ignoreInvalidAddressObjects = false;
 
+    /** @var bool set to true if you want to send API key via HEADER - possible starting with PAN-OS 9.0 */
+    public static $sendAPIkeyviaHeader = false;
+
+    public static $displayCurlRequest = false;
+
     public static $basedir;
 
     private static $library_version_major = 1;
@@ -552,6 +557,20 @@ foreach( $argv as $argIndex => $arg )
     elseif( $arg == 'shadow-ignoreinvalidaddressobjects' )
     {
         PH::$ignoreInvalidAddressObjects = true;
+        unset($argv[$argIndex]);
+        $argc--;
+        continue;
+    }
+    elseif( $arg == 'shadow-hiddenapikey' )
+    {
+        PH::$sendAPIkeyviaHeader = true;
+        unset($argv[$argIndex]);
+        $argc--;
+        continue;
+    }
+    elseif( $arg == 'shadow-displaycurlrequest' )
+    {
+        PH::$displayCurlRequest = true;
         unset($argv[$argIndex]);
         $argc--;
         continue;

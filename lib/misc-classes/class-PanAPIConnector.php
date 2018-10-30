@@ -839,7 +839,18 @@ class PanAPIConnector
             else
                 $finalUrl = 'https://' . $host . '/api/';
             if( !$sendThroughPost )
-                $finalUrl .= '?key=' . urlencode($this->apikey);
+            {
+                if( !PH::$sendAPIkeyviaHeader )
+                    $finalUrl .= '?key=' . urlencode($this->apikey);
+                else
+                {
+                    //Todo: possible improvements for API security with PAN-OS 9.0 [20181030]
+                    $finalUrl .= '?';
+                    curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, Array('X-PAN-KEY: '. $this->apikey));
+                }
+
+            }
+
         }
 
         if( !$sendThroughPost )
@@ -868,7 +879,14 @@ class PanAPIConnector
             {
                 $parameters['target'] = $this->serial;
             }
-            $parameters['key'] = $this->apikey;
+            if( !PH::$sendAPIkeyviaHeader )
+                $parameters['key'] = $this->apikey;
+            else
+            {
+                //Todo: possible improvements for API security with PAN-OS 9.0 [20181030]
+                curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, Array('X-PAN-KEY: '. $this->apikey));
+            }
+
             $properParams = http_build_query($parameters);
             curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $properParams);
         }
@@ -892,6 +910,13 @@ class PanAPIConnector
         //$this->showApiCalls = true;
         if( $this->showApiCalls )
         {
+            if( PH::$displayCurlRequest )
+            {
+                curl_setopt($this->_curl_handle, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($this->_curl_handle, CURLOPT_VERBOSE, true);
+            }
+
+
             if( $sendThroughPost )
             {
                 $paramURl = '?';
