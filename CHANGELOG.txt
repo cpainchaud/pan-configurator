@@ -29,6 +29,7 @@ rule-edit: new actions=hip-set:[HIP-Profile]
 rule-edit: new action "logsetting-set-FastAPI:[LOGFORWARD]"
 address-merger: extend skipped object output with DG information
 address-edit: new actions=value-host-object-add-netmask-m32
+userid-mgr: fix help / missing variable set
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings

@@ -7,6 +7,8 @@ set_include_path( dirname(__FILE__).'/../'. PATH_SEPARATOR . get_include_path() 
 require_once("lib/panconfigurator.php");
 require_once(dirname(__FILE__).'/common/misc.php');
 
+$debugAPI = false;
+
 $supportedArguments = Array();
 $supportedArguments[] = Array('niceName' => 'Action', 'shortHelp' => 'type of action you want to perform against API', 'argDesc' => 'register|unregister|fakeregister');
 $supportedArguments[] = Array('niceName' => 'in', 'shortHelp' => 'the target PANOS device ie: in=api://1.2.3.4', 'argDesc' => 'api://[hostname or IP]');
@@ -17,7 +19,7 @@ $supportedArguments[] = Array('niceName' => 'help', 'shortHelp' => 'this message
 $supportedArguments[] = Array('niceName' => 'DebugAPI', 'shortHelp' => 'prints API calls when they happen');
 
 $usageMsg = PH::boldText('USAGE EXAMPLES: ')."\n - php ".basename(__FILE__)." in=api://1.2.3.4 action=register location=vsys1 records=10.0.0.1,domain\\user2/10.2.3.4,domain\\user3"
-                                            ."\n - php ".basename(__FILE__)." in=api://1.2.3.4 action=register location=vsys1 recordsFile=users.txt";
+                                            ."\n - php ".basename(__FILE__)." in=api://1.2.3.4 action=register location=vsys1 recordFile=users.txt";
 
 prepareSupportedArgumentsArray($supportedArguments);
 
