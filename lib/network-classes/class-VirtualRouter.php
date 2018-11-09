@@ -155,7 +155,8 @@ class VirtualRouter
                     if( strpos( $interfaceIP, "/" ) === false )
                     {
                         $object = $contextVSYS->addressStore->find( $interfaceIP );
-                        $interfaceIP = $object->value();
+                        if( $object != null )
+                            $interfaceIP = $object->value();
                     }
 
                     $ipv4Mapping = cidr::stringToStartEnd($interfaceIP);

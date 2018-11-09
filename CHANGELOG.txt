@@ -48,7 +48,7 @@ bugfix:
 - fix error output for XMLline - correct lineNo if lineNo > 65535
 - fix class-authenticationRule |  fix for FW config - typos related to XML xpath finding
 - fix class-IkeCryptoProfileStore | -IKEGateway | -IKEGatewayStore | -IPsecCryptoProfileStore | -IPsecTunnel | -IPsecTunnelStore || improve data handling during script execution
-
+- fix class-VirtualRouter | fix if object not found for getting the interface IP
 
 
 1.5.14 (20180227)
