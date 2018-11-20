@@ -251,7 +251,7 @@ else
 ##########################################
 ##########################################
 $zone_array = array();
-
+$interface_wo_vsys = array();
 
 $pan->load_from_domxml($xmlDoc1);
 
