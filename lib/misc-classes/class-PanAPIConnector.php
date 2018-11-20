@@ -777,6 +777,65 @@ class PanAPIConnector
         return $ip_array;
     }
 
+    public function dynamicAddressGroup_get( $vsys = 'vsys1')
+    {
+        $cmd = "<show><object><dynamic-address-group><all></all></dynamic-address-group></object></show>";
+
+        $params = Array();
+        $params['type'] = 'op';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
+
+        $r = $this->sendRequest($params, TRUE);
+
+        $configRoot = DH::findFirstElement('result', $r);
+        if( $configRoot === FALSE )
+            derr("<result> was not found", $r);
+
+        $configRoot = DH::findFirstElement('dyn-addr-grp', $configRoot);
+        if( $configRoot === FALSE )
+            derr("<dyn-addr-grp> was not found", $configRoot);
+
+        $ip_array = array();
+        foreach( $configRoot->childNodes as $node )
+        {
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            if( $node->nodeType == XML_TEXT_NODE && empty( trim($node->nodeValue) ) )
+                continue;
+
+            /** @var DOMElement $node */
+            foreach( $node->childNodes as $element )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                if( $element->nodeName == 'vsys' )
+                    $tmp_vsys = $element->nodeValue;
+                elseif( $element->nodeName == 'group-name' )
+                    $tmp_group_name = $element->nodeValue;
+                elseif( $element->nodeName == 'filter' )
+                    $filter = $element->nodeValue;
+                elseif( $element->nodeName == 'member-list' )
+                {
+                    foreach( $element->childNodes as $member )
+                    {
+                        $ip_array[$tmp_group_name]['name'] = $tmp_group_name;
+                        if( $member->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $tmp_ip = $member->getAttribute('name');
+                        $type = $member->getAttribute('type');
+
+                        $ip_array[$tmp_group_name][$tmp_ip] = $filter;
+                    }
+                }
+            }
+        }
+        return $ip_array;
+    }
+
     private function _createOrRenewCurl()
     {
         if( (PHP_MAJOR_VERSION <= 5 && PHP_MINOR_VERSION < 5) || $this->_curl_handle === null || $this->_curl_count > 100 )
