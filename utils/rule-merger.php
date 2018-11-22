@@ -495,36 +495,44 @@ function mergeRules( $rule, $ruleToMerge, $method )
     if( $method == 1)
     {
         $rule->services->merge($ruleToMerge->services);
+        $rule->tags->merge($ruleToMerge->tags);
     }
     elseif( $method == 2)
     {
         $rule->apps->merge($ruleToMerge->apps);
+        $rule->tags->merge($ruleToMerge->tags);
     }
     elseif( $method == 3)
     {
         $rule->destination->merge($ruleToMerge->destination);
+        $rule->tags->merge($ruleToMerge->tags);
     }
     elseif( $method == 4)
     {
         $rule->source->merge($ruleToMerge->source);
+        $rule->tags->merge($ruleToMerge->tags);
     }
     elseif( $method == 5)
     {
         $rule->to->merge($ruleToMerge->to);
+        $rule->tags->merge($ruleToMerge->tags);
     }
     elseif( $method == 6)
     {
         $rule->from->merge($ruleToMerge->from);
+        $rule->tags->merge($ruleToMerge->tags);
     }
     elseif( $method == 7)
     {
         $rule->from->merge($ruleToMerge->from);
         $rule->source->merge($ruleToMerge->source);
+        $rule->tags->merge($ruleToMerge->tags);
     }
     elseif( $method == 8)
     {
         $rule->to->merge($ruleToMerge->to);
         $rule->destination->merge($ruleToMerge->destination);
+        $rule->tags->merge($ruleToMerge->tags);
     }
     elseif( $method == 9)
     {
