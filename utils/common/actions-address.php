@@ -1588,7 +1588,12 @@ AddressCallContext::$supportedActions[] = Array(
             $textToAppend = " ";
         $textToAppend .= $context->rawArguments['text'];
 
-        if( strlen($description) + strlen($textToAppend) > 253 )
+        if( $context->object->owner->owner->version < 71 )
+            $max_length = 253;
+        else
+            $max_length = 1020;
+
+        if( strlen($description) + strlen($textToAppend) > $max_length )
         {
             echo $context->padding." *** SKIPPED : resulting description is too long\n";
             return;

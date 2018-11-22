@@ -88,6 +88,39 @@ trait ObjectWithDescription
         return $ret;
     }
 
+    public function description_merge( Rule $other )
+    {
+        $description = $this->description();
+        $other_description = $other->description();
+
+        $new_description = $description;
+
+        //Todo: validation needed
+        //1) to long
+        //2) take half max of first and half max of second
+
+        $description_len = strlen($description);
+        $other_description_len = strlen($other_description);
+
+        if( $this->owner->owner->version < 71 )
+            $max_length = 253;
+        else
+            $max_length = 1020;
+
+        if( $description_len + $other_description_len > $max_length )
+        {
+            if( $description_len > $max_length/2 && $other_description_len > $max_length/2  )
+            {
+                $new_description = substr( $description, 0, $max_length/2-1) ."|". substr($other_description, 0, $max_length/2-1);
+            }
+            else
+                $new_description = substr( $description."|".$other_description, 0, $max_length );
+        }
+        else
+            $new_description =  $description ."|". $other_description ;
+
+        $this->setDescription( $new_description );
+    }
 
     protected function _load_description_from_domxml()
     {

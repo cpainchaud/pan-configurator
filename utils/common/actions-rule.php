@@ -2042,7 +2042,12 @@ RuleCallContext::$supportedActions[] = Array(
             $textToAppend = "\n";
         $textToAppend .= $context->rawArguments['text'];
 
-        if( strlen($description) + strlen($textToAppend) > 253 )
+        if( $context->object->owner->owner->version < 71 )
+            $max_length = 253;
+        else
+            $max_length = 1020;
+
+        if( strlen($description) + strlen($textToAppend) > $max_length )
         {
             echo $context->padding." - SKIPPED : resulting description is too long\n";
             return;
@@ -2072,7 +2077,12 @@ RuleCallContext::$supportedActions[] = Array(
         if( $context->arguments['newline'] == 'yes' )
             $textToPrepend .= "\n";
 
-        if( strlen($description) + strlen($textToPrepend) > 253 )
+        if( $context->object->owner->owner->version < 71 )
+            $max_length = 253;
+        else
+            $max_length = 1020;
+
+        if( strlen($description) + strlen($textToPrepend) > $max_length )
         {
             echo $context->padding." - SKIPPED : resulting description is too long\n";
             return;
