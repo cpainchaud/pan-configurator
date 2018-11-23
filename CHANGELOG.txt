@@ -33,6 +33,7 @@ userid-mgr: fix help / missing variable set
 register-ip-mgr: introduce new util
 rule-merger: merge for all methods the available tags
 rule-merger: merge for all methods the available description
+pan-diff: introduce new util to easily compare two pan-os xml config file
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings
