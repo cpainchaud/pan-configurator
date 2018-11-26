@@ -267,7 +267,11 @@ class VirtualSystem
                     if( is_object($object) )
                         $object->addReference($interface);
                     else
-                        mwarning("interface configured objectname: " . $layer3IPv4Address . " not found.\n", $interface);
+                    {
+                        //Todo: fix needed too many warnings - if address object is coming from other address store
+                        #mwarning("interface configured objectname: " . $layer3IPv4Address . " not found.\n", $interface);
+                    }
+
                 }
             }
         }
