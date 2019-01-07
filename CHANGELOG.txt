@@ -36,6 +36,7 @@ rule-merger: merge for all methods the available tags
 rule-merger: merge for all methods the available description
 pan-diff: introduce new util to easily compare two pan-os xml config file
 panos-xml-issue-detector: introduce new util to fine e.g. duplicate member in address-/service-group
+address-merger: extend location=any - especially for Panorama DG to merge all DG objects with one single script run - also possible with argument allowmergingwithupperlevel
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings

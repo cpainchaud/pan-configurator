@@ -196,28 +196,68 @@ if( !$apiMode )
 }
 
 
-if( $location == 'shared' )
+$location_array = array();
+if( $location == 'any' || $location == 'all' )
 {
-    $store = $panc->addressStore;
-    $parentStore = null;
+    //Todo: what about all vsys??????
+    $alldevicegroup = $panc->deviceGroups;
+
+    foreach( $alldevicegroup as $key => $tmp_location )
+    {
+        $location = $tmp_location->name();
+        $findLocation = $panc->findSubSystemByName($location);
+        if( $findLocation === null )
+            derr("cannot find DeviceGroup/VSYS named '{$location}', check case or syntax");
+
+        $store = $findLocation->addressStore;
+        $parentStore = $findLocation->owner->addressStore;
+
+        $location_array[$key]['findLocation'] = $findLocation;
+        $location_array[$key]['store'] = $store;
+        $location_array[$key]['parentStore'] = $parentStore;
+        if( $panc->isPanorama() )
+        {
+            $childDeviceGroups = $findLocation->childDeviceGroups(true);
+            $location_array[$key]['childDeviceGroups'] = $childDeviceGroups;
+        }
+    }
+
 }
 else
 {
-    $findLocation = $panc->findSubSystemByName($location);
-    if( $findLocation === null )
-        derr("cannot find DeviceGroup/VSYS named '{$location}', check case or syntax");
-
-    $store = $findLocation->addressStore;
-    $parentStore = $findLocation->owner->addressStore;
-}
-
-if( $panc->isPanorama() )
-{
     if( $location == 'shared' )
-        $childDeviceGroups = $panc->deviceGroups;
+    {
+        $store = $panc->addressStore;
+        $parentStore = null;
+        $location_array[0]['findLocation'] = $location;
+        $location_array[0]['store'] = $store;
+        $location_array[0]['parentStore'] = $parentStore;
+    }
     else
-        $childDeviceGroups = $findLocation->childDeviceGroups(true);
+    {
+        $findLocation = $panc->findSubSystemByName($location);
+        if( $findLocation === null )
+            derr("cannot find DeviceGroup/VSYS named '{$location}', check case or syntax");
+
+        $store = $findLocation->addressStore;
+        $parentStore = $findLocation->owner->addressStore;
+
+        $location_array[0]['findLocation'] = $findLocation;
+        $location_array[0]['store'] = $store;
+        $location_array[0]['parentStore'] = $parentStore;
+    }
+
+    if( $panc->isPanorama() )
+    {
+        if( $location == 'shared' )
+            $childDeviceGroups = $panc->deviceGroups;
+        else
+            $childDeviceGroups = $findLocation->childDeviceGroups(true);
+        $location_array[0]['childDeviceGroups'] = $childDeviceGroups;
+    }
 }
+
+
 
 $pickFilter = null;
 if( isset(PH::$args['pickfilter']) )
@@ -247,299 +287,310 @@ $upperLevelSearch = false;
 if( isset(PH::$args['allowmergingwithupperlevel']) )
     $upperLevelSearch = true;
 
-echo " - upper level search status : ".boolYesNo($upperLevelSearch)."\n";
-echo " - location '{$location}' found\n";
-echo " - found {$store->countAddresses()} address Objects\n";
-echo " - DupAlgorithm selected: {$dupAlg}\n";
-echo " - computing address values database ... ";
-sleep(1);
+
+
+foreach( $location_array as $tmp_location )
+{
+    $store = $tmp_location['store'];
+    $findLocation = $tmp_location['findLocation'];
+    $parentStore = $tmp_location['parentStore'];
+    $childDeviceGroups = $tmp_location['childDeviceGroups'];
+
+    echo " - upper level search status : " . boolYesNo($upperLevelSearch) . "\n";
+    echo " - location '{$findLocation->name()}' found\n";
+    echo " - found {$store->countAddresses()} address Objects\n";
+    echo " - DupAlgorithm selected: {$dupAlg}\n";
+    echo " - computing address values database ... ";
+    sleep(1);
 
 //
 // Building a hash table of all address objects with same value
 //
-if( $upperLevelSearch)
-    $objectsToSearchThrough = $store->nestedPointOfView();
-else
-    $objectsToSearchThrough = $store->addressObjects();
+    if( $upperLevelSearch )
+        $objectsToSearchThrough = $store->nestedPointOfView();
+    else
+        $objectsToSearchThrough = $store->addressObjects();
 
-$hashMap = Array();
-$upperHashMap = Array();
-if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
-{
-    foreach( $objectsToSearchThrough as $object )
+    $hashMap = Array();
+    $upperHashMap = Array();
+    if( $dupAlg == 'sameaddress' || $dupAlg == 'identical' )
     {
-        if( !$object->isAddress() )
-            continue;
-        if( $object->isTmpAddr() )
-            continue;
-
-        if( $excludeFilter !== null && $excludeFilter->matchSingleObject(Array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
-            continue;
-
-        $skipThisOne = FALSE;
-
-        // Object with descendants in lower device groups should be excluded
-        if( $panc->isPanorama() && $object->owner === $store )
+        foreach( $objectsToSearchThrough as $object )
         {
-            foreach( $childDeviceGroups as $dg )
+            if( !$object->isAddress() )
+                continue;
+            if( $object->isTmpAddr() )
+                continue;
+
+            if( $excludeFilter !== null && $excludeFilter->matchSingleObject(Array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                continue;
+
+            $skipThisOne = FALSE;
+
+            // Object with descendants in lower device groups should be excluded
+            if( $panc->isPanorama() && $object->owner === $store )
             {
-                if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
+                foreach( $childDeviceGroups as $dg )
                 {
-                    $tmp_obj = $dg->addressStore->find($object->name(), null, FALSE);
-                    print "\n- object '".$object->name()."' [value '{$object->value()}'] skipped because of same object name [with value '{$tmp_obj->value()}'] available at lower level DG: ".$dg->name()."\n";
-                    $skipThisOne = TRUE;
-                    break;
+                    if( $dg->addressStore->find($object->name(), null, FALSE) !== null )
+                    {
+                        $tmp_obj = $dg->addressStore->find($object->name(), null, FALSE);
+                        print "\n- object '" . $object->name() . "' [value '{$object->value()}'] skipped because of same object name [with value '{$tmp_obj->value()}'] available at lower level DG: " . $dg->name() . "\n";
+                        $skipThisOne = TRUE;
+                        break;
+                    }
+                }
+                if( $skipThisOne )
+                    continue;
+            }
+
+            $value = $object->value();
+
+            // if object is /32, let's remove it to match equivalent non /32 syntax
+            if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
+                $value = substr($value, 0, strlen($value) - 3);
+
+            $value = $object->type() . '-' . $value;
+
+            if( $object->owner === $store )
+            {
+                $hashMap[$value][] = $object;
+                if( $parentStore !== null )
+                {
+                    $findAncestor = $parentStore->find($object->name(), null, TRUE);
+                    if( $findAncestor !== null )
+                        $object->ancestor = $findAncestor;
                 }
             }
-            if( $skipThisOne )
+            else
+                $upperHashMap[$value][] = $object;
+        }
+    }
+    elseif( $dupAlg == 'whereused' )
+        foreach( $objectsToSearchThrough as $object )
+        {
+            if( !$object->isAddress() )
                 continue;
-        }
+            if( $object->isTmpAddr() )
+                continue;
 
-        $value = $object->value();
+            if( $object->countReferences() == 0 )
+                continue;
 
-        // if object is /32, let's remove it to match equivalent non /32 syntax
-        if( $object->isType_ipNetmask() && strpos($object->value(), '/32') !== FALSE )
-            $value = substr($value, 0, strlen($value) - 3);
+            if( $excludeFilter !== null && $excludeFilter->matchSingleObject(Array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                continue;
 
-        $value = $object->type() . '-' . $value;
-
-        if( $object->owner === $store )
-        {
-            $hashMap[$value][] = $object;
-            if( $parentStore !== null )
+            $value = $object->getRefHashComp() . $object->getNetworkValue();
+            if( $object->owner === $store )
             {
-                $findAncestor = $parentStore->find($object->name(), null, TRUE);
-                if( $findAncestor !== null )
-                    $object->ancestor = $findAncestor;
+                $hashMap[$value][] = $object;
+                if( $parentStore !== null )
+                {
+                    $findAncestor = $parentStore->find($object->name(), null, TRUE);
+                    if( $findAncestor !== null )
+                        $object->ancestor = $findAncestor;
+                }
             }
+            else
+                $upperHashMap[$value][] = $object;
         }
-        else
-            $upperHashMap[$value][] = $object;
-    }
-}
-elseif( $dupAlg == 'whereused' )
-    foreach( $objectsToSearchThrough as $object )
-    {
-        if( !$object->isAddress() )
-            continue;
-        if( $object->isTmpAddr() )
-            continue;
-
-        if( $object->countReferences() == 0 )
-            continue;
-
-        if( $excludeFilter !== null && $excludeFilter->matchSingleObject(Array('object' =>$object, 'nestedQueries'=>&$nestedQueries)) )
-            continue;
-
-        $value = $object->getRefHashComp().$object->getNetworkValue();
-        if( $object->owner === $store )
-        {
-            $hashMap[$value][] = $object;
-            if( $parentStore !== null )
-            {
-                $findAncestor = $parentStore->find($object->name(), null, true);
-                if( $findAncestor !== null )
-                    $object->ancestor = $findAncestor;
-            }
-        }
-        else
-            $upperHashMap[$value][] = $object;
-    }
-else derr("unsupported use case");
+    else derr("unsupported use case");
 
 //
 // Hashes with single entries have no duplicate, let's remove them
 //
-$countConcernedObjects = 0;
-foreach( $hashMap as $index => &$hash )
-{
-    if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
-        unset($hashMap[$index]);
-    else
-        $countConcernedObjects += count($hash);
-}
-unset($hash);
-echo "OK!\n";
-
-echo " - found ".count($hashMap)." duplicates values totalling {$countConcernedObjects} address objects which are duplicate\n";
-
-echo "\n\nNow going after each duplicates for a replacement\n";
-
-$countRemoved = 0;
-foreach( $hashMap as $index => &$hash )
-{
-    echo "\n";
-    echo " - value '{$index}'\n";
-    $deletedObjects[$index]['kept'] = "";
-    $deletedObjects[$index]['removed'] = "";
-
-
-    $pickedObject = null;
-
-    if( $pickFilter !== null )
+    $countConcernedObjects = 0;
+    foreach( $hashMap as $index => &$hash )
     {
-        if( isset($upperHashMap[$index]) )
+        if( count($hash) == 1 && !isset($upperHashMap[$index]) && !isset(reset($hash)->ancestor) )
+            unset($hashMap[$index]);
+        else
+            $countConcernedObjects += count($hash);
+    }
+    unset($hash);
+    echo "OK!\n";
+
+    echo " - found " . count($hashMap) . " duplicates values totalling {$countConcernedObjects} address objects which are duplicate\n";
+
+    echo "\n\nNow going after each duplicates for a replacement\n";
+
+    $countRemoved = 0;
+    foreach( $hashMap as $index => &$hash )
+    {
+        echo "\n";
+        echo " - value '{$index}'\n";
+        $deletedObjects[$index]['kept'] = "";
+        $deletedObjects[$index]['removed'] = "";
+
+
+        $pickedObject = null;
+
+        if( $pickFilter !== null )
         {
-            foreach( $upperHashMap[$index] as $object )
+            if( isset($upperHashMap[$index]) )
             {
-                if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
+                foreach( $upperHashMap[$index] as $object )
                 {
-                    $pickedObject = $object;
-                    break;
+                    if( $pickFilter->matchSingleObject(Array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                    {
+                        $pickedObject = $object;
+                        break;
+                    }
                 }
+                if( $pickedObject === null )
+                    $pickedObject = reset($upperHashMap[$index]);
+
+                echo "   * using object from upper level : '{$pickedObject->name()}'\n";
             }
-            if( $pickedObject === null )
+            else
+            {
+                foreach( $hash as $object )
+                {
+                    if( $pickFilter->matchSingleObject(Array('object' => $object, 'nestedQueries' => &$nestedQueries)) )
+                    {
+                        $pickedObject = $object;
+                        break;
+                    }
+                }
+                if( $pickedObject === null )
+                    $pickedObject = reset($hash);
+
+                echo "   * keeping object '{$pickedObject->name()}'\n";
+            }
+        }
+        else
+        {
+            if( isset($upperHashMap[$index]) )
+            {
                 $pickedObject = reset($upperHashMap[$index]);
-
-            echo "   * using object from upper level : '{$pickedObject->name()}'\n";
-        }
-        else
-        {
-            foreach( $hash as $object )
-            {
-                if( $pickFilter->matchSingleObject( Array('object' =>$object, 'nestedQueries'=>&$nestedQueries) ) )
-                {
-                    $pickedObject = $object;
-                    break;
-                }
+                echo "   * using object from upper level : '{$pickedObject->name()}'\n";
             }
-            if( $pickedObject === null )
-                $pickedObject = reset($hash);
-
-            echo "   * keeping object '{$pickedObject->name()}'\n";
-        }
-    }
-    else
-    {
-        if( isset($upperHashMap[$index]) )
-        {
-            $pickedObject = reset($upperHashMap[$index]);
-            echo "   * using object from upper level : '{$pickedObject->name()}'\n";
-        }
-        else
-        {
-            $pickedObject = reset($hash);
-            echo "   * keeping object '{$pickedObject->name()}'\n";
-        }
-    }
-
-
-    // Merging loop finally!
-    foreach( $hash as $objectIndex => $object)
-    {
-        /** @var Address $object */
-        if( isset($object->ancestor) )
-        {
-            $ancestor = $object->ancestor;
-            $ancestor_different_value = "";
-
-            if( !$ancestor->isAddress() )
+            else
             {
-                echo "    - SKIP: object name '{$object->name()}' as one ancestor is of type addressgroup\n";
+                $pickedObject = reset($hash);
+                echo "   * keeping object '{$pickedObject->name()}'\n";
+            }
+        }
+
+
+        // Merging loop finally!
+        foreach( $hash as $objectIndex => $object )
+        {
+            /** @var Address $object */
+            if( isset($object->ancestor) )
+            {
+                $ancestor = $object->ancestor;
+                $ancestor_different_value = "";
+
+                if( !$ancestor->isAddress() )
+                {
+                    echo "    - SKIP: object name '{$object->name()}' as one ancestor is of type addressgroup\n";
+                    continue;
+                }
+
+                /** @var Address $ancestor */
+                if( $upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
+                {
+                    if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
+                    {
+                        if( $dupAlg == 'identical' )
+                            if( $pickedObject->name() != $ancestor->name() )
+                            {
+                                echo "    - SKIP: object name '{$object->name()}' [with value '{$object->value()}'] is not IDENTICAL to object name from upperlevel '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] \n";
+                                continue;
+                            }
+
+                        echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
+                        $deletedObjects[$index]['kept'] = $pickedObject->name();
+                        if( $deletedObjects[$index]['removed'] == "" )
+                            $deletedObjects[$index]['removed'] = $object->name();
+                        else
+                            $deletedObjects[$index]['removed'] .= "|" . $object->name();
+                        $object->replaceMeGlobally($ancestor);
+                        if( $apiMode )
+                            $object->owner->API_remove($object);
+                        else
+                            $object->owner->remove($object);
+
+                        echo "OK!\n";
+
+                        echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                        if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                        else print "'{$ancestor->owner->owner->name()}'";
+                        print  "  value: '{$ancestor->value()}' \n";
+
+                        if( $pickedObject === $object )
+                            $pickedObject = $ancestor;
+
+                        $countRemoved++;
+
+                        if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+                        {
+                            echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+                            break 2;
+                        }
+
+                        continue;
+                    }
+                    else
+                        $ancestor_different_value = "with different value";
+
+
+                }
+                echo "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor " . $ancestor_different_value . "\n";
+
+                echo "         anchestor name: '{$ancestor->name()}' DG: ";
+                if( $ancestor->owner->owner->name() == "" ) print "'shared'";
+                else print "'{$ancestor->owner->owner->name()}'";
+                print  "  value: '{$ancestor->value()}' \n";
+
+                #unset($deletedObjects[$index]);
+                $deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '" . $object->name() . "' cannot be merged";
+
                 continue;
             }
 
-            /** @var Address $ancestor */
-            if( $upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask()||$ancestor->isType_ipRange()||$ancestor->isType_FQDN()) )
+            if( $object === $pickedObject )
+                continue;
+
+            if( $dupAlg != 'identical' )
             {
-                if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
+                echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
+                $object->__replaceWhereIamUsed($apiMode, $pickedObject, TRUE, 5);
+
+                echo "    - deleting '{$object->_PANC_shortName()}'\n";
+                $deletedObjects[$index]['kept'] = $pickedObject->name();
+                if( $deletedObjects[$index]['removed'] == "" )
+                    $deletedObjects[$index]['removed'] = $object->name();
+                else
+                    $deletedObjects[$index]['removed'] .= "|" . $object->name();
+                if( $apiMode )
                 {
-                    if( $dupAlg == 'identical' )
-                        if( $pickedObject->name() != $ancestor->name() )
-                        {
-                            echo "    - SKIP: object name '{$object->name()}' [with value '{$object->value()}'] is not IDENTICAL to object name from upperlevel '{$pickedObject->name()}' [with value '{$pickedObject->value()}'] \n";
-                            continue;
-                        }
-
-                    echo "    - object '{$object->name()}' merged with its ancestor, deleting this one... ";
-                    $deletedObjects[$index]['kept'] = $pickedObject->name();
-                    if( $deletedObjects[$index]['removed'] == "")
-                        $deletedObjects[$index]['removed'] = $object->name();
-                    else
-                        $deletedObjects[$index]['removed'] .= "|".$object->name();
-                    $object->replaceMeGlobally($ancestor);
-                    if( $apiMode )
-                        $object->owner->API_remove($object);
-                    else
-                        $object->owner->remove($object);
-
-                    echo "OK!\n";
-
-                    echo "         anchestor name: '{$ancestor->name()}' DG: ";
-                    if( $ancestor->owner->owner->name() == "" ) print "'shared'";
-                    else print "'{$ancestor->owner->owner->name()}'";
-                    print  "  value: '{$ancestor->value()}' \n";
-
-                    if( $pickedObject === $object )
-                        $pickedObject = $ancestor;
-
-                    $countRemoved++;
-
-                    if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
-                    {
-                        echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
-                        break 2;
-                    }
-
-                    continue;
+                    $object->owner->API_remove($object);
                 }
                 else
-                    $ancestor_different_value = "with different value";
+                {
+                    $object->owner->remove($object);
+                }
 
+                $countRemoved++;
 
-            }
-            echo "    - object '{$object->name()}' '{$ancestor->type()}' cannot be merged because it has an ancestor ".$ancestor_different_value."\n";
-
-            echo "         anchestor name: '{$ancestor->name()}' DG: ";
-            if( $ancestor->owner->owner->name() == "" ) print "'shared'";
-            else print "'{$ancestor->owner->owner->name()}'";
-            print  "  value: '{$ancestor->value()}' \n";
-
-            #unset($deletedObjects[$index]);
-            $deletedObjects[$index]['removed'] .= "|->ERROR ancestor: '".$object->name()."' cannot be merged";
-
-            continue;
-        }
-
-        if( $object === $pickedObject )
-            continue;
-
-        if( $dupAlg != 'identical' )
-        {
-            echo "    - replacing '{$object->_PANC_shortName()}' ...\n";
-            $object->__replaceWhereIamUsed($apiMode, $pickedObject, TRUE, 5);
-
-            echo "    - deleting '{$object->_PANC_shortName()}'\n";
-            $deletedObjects[$index]['kept'] = $pickedObject->name();
-            if( $deletedObjects[$index]['removed'] == "")
-                $deletedObjects[$index]['removed'] = $object->name();
-            else
-                $deletedObjects[$index]['removed'] .= "|".$object->name();
-            if( $apiMode )
-            {
-                $object->owner->API_remove($object);
+                if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
+                {
+                    echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
+                    break 2;
+                }
             }
             else
-            {
-                $object->owner->remove($object);
-            }
-
-            $countRemoved++;
-
-            if( $mergeCountLimit !== FALSE && $countRemoved >= $mergeCountLimit )
-            {
-                echo "\n *** STOPPING MERGE OPERATIONS NOW SINCE WE REACHED mergeCountLimit ({$mergeCountLimit})\n";
-                break 2;
-            }
+                echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL\n";
         }
-        else
-            echo "    - SKIP: object name '{$object->name()}' is not IDENTICAL\n";
     }
+
+    echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countRemoved} addresses)\n\n";
+
+    echo "\n\n***********************************************\n\n";
+
 }
-
-echo "\n\nDuplicates removal is now done. Number of objects after cleanup: '{$store->countAddresses()}' (removed {$countRemoved} addresses)\n\n";
-
-echo "\n\n***********************************************\n\n";
 
 echo "\n\n";
 
