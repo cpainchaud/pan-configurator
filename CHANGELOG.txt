@@ -55,7 +55,7 @@ bugfix:
 - fix class-IkeCryptoProfileStore | -IKEGateway | -IKEGatewayStore | -IPsecCryptoProfileStore | -IPsecTunnel | -IPsecTunnelStore || improve data handling during script execution
 - fix class-VirtualRouter | fix if object not found for getting the interface IP
 - fix description field for rules and objects was increased to 1023 characters with PAN-OS 7.1 | update all relevant places
-
+- fix class-AddressRuleContainer - improve setAny, offline config file has now any as correct entry
 
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
