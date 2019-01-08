@@ -745,12 +745,15 @@ class PanAPIConnector
      */
     public function register_getIp($vsys = 'vsys1')
     {
-        $cmd = "<show><object><registered-ip><all></all></registered-ip></object></show>";
+        $counter = 0;
+
+        $cmd = "<show><object><registered-ip><all><option>count</option></all></registered-ip></object></show>";
 
         $params = Array();
         $params['type'] = 'op';
         $params['vsys'] = $vsys;
         $params['cmd'] = &$cmd;
+
 
         $r = $this->sendRequest($params, TRUE);
 
@@ -758,22 +761,66 @@ class PanAPIConnector
         if( $configRoot === FALSE )
             derr("<result> was not found", $r);
 
-        $ip_array = array();
         foreach( $configRoot->childNodes as $node )
         {
             if( $node->nodeType != XML_ELEMENT_NODE )
                 continue;
 
-            /** @var DOMElement $node */
-            $ip = $node->getAttribute('ip');
-            $members = $node->getElementsByTagName('member');
-
-            foreach( $members as $member )
-            {
-                /** @var DOMElement $member */
-                $ip_array[$ip][$member->nodeValue] = $member->nodeValue;
-            }
+            $counter = $node->nodeValue;
+            print " - registered-ip: ".$counter."\n";
         }
+
+        $start = 1;
+        $end = 500;
+
+        if( $this->info_PANOS_version_int < 80 )
+        {
+            $cmd = "<show><object><registered-ip><all></all></registered-ip></object></show>";
+
+            if( $counter > 500 )
+                derr( "API for PAN-OS version < 8.0 can only display register-ip information if count <= 500" );
+
+            //output for PAN-OS < 8.0 is only max. 500
+            $counter = 500;
+        }
+        else
+            $cmd = "<show><object><registered-ip><start-point>".$start."</start-point><limit>".$end."</limit></registered-ip></object></show>";
+
+        $ip_array = array();
+        do
+        {
+            $params = Array();
+            $params['type'] = 'op';
+            $params['vsys'] = $vsys;
+            $params['cmd'] = &$cmd;
+
+            $r = $this->sendRequest($params, TRUE);
+
+            $configRoot = DH::findFirstElement('result', $r);
+            if( $configRoot === FALSE )
+                derr("<result> was not found", $r);
+
+            foreach( $configRoot->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                /** @var DOMElement $node */
+                $ip = $node->getAttribute('ip');
+
+                $members = $node->getElementsByTagName('member');
+                foreach( $members as $member )
+                {
+                    /** @var DOMElement $member */
+                    $ip_array[$ip][$member->nodeValue] = $member->nodeValue;
+                }
+            }
+
+            $start = $start + 500;
+
+        }
+        while ( $start < $counter );
+
         return $ip_array;
     }
 
