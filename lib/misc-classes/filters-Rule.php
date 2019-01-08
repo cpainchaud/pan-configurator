@@ -2416,7 +2416,11 @@ RQuery::$defaultFilters['rule']['rule']['operators']['is.unused.fast'] = Array(
 
                     foreach($device['vsyslist'] as $vsys)
                     {
-                        $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
+                        if( $context->object->owner->owner->version < 81 )
+                            $apiCmd = '<show><running><rule-use><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $vsys . '</vsys></rule-use></running></show>';
+                        else
+                            $apiCmd = '<show><running><rule-use><highlight><rule-base>' . $rule_base . '</rule-base><type>unused</type><vsys>' . $sub->name() . '</vsys></highlight></rule-use></running></show>';
+
                         $apiResult = $newConnector->sendCmdRequest($apiCmd);
 
                         $rulesXml = DH::findXPath('/result/rules/entry', $apiResult);
