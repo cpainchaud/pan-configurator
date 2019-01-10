@@ -332,15 +332,36 @@ class AppStore extends ObjStore
             }
 
             $icmpcur = DH::findFirstElement('ident-by-icmp-type', $cursor);
-            if( $icmpcur !== FALSE )
+            if( $icmpcur !== false )
             {
-                $app->icmpsub = $icmpcur->textContent;
+                $icmptype = DH::findFirstElement('type', $icmpcur);
+                if( $icmptype !== false )
+                {
+                    $app->icmpsub = $icmptype->textContent;
+                }
+                //TODO: <code>0</code>
+                $icmpcode = DH::findFirstElement('code', $icmpcur);
+                if( $icmpcode !== false )
+                {
+                    $app->icmpcode = $icmpcode->textContent;
+                }
             }
 
             $icmp6cur = DH::findFirstElement('ident-by-icmp6-type', $cursor);
-            if( $icmp6cur !== FALSE )
+            if( $icmp6cur !== false )
             {
-                $app->icmp6sub = $icmp6cur->textContent;
+                $icmp6type = DH::findFirstElement('type', $icmp6cur);
+                if( $icmp6type !== false )
+                {
+                    $app->icmp6sub = $icmp6type->textContent;
+                }
+                //TODO: <code>0</code>
+                $icmp6code = DH::findFirstElement('code', $icmp6cur);
+                if( $icmp6code !== false )
+                {
+                    $app->icmp6code = $icmp6code->textContent;
+                }
+
             }
 
             $portcur = DH::findFirstElement('port', $cursor);
@@ -720,6 +741,11 @@ class AppStore extends ObjStore
                         $app->icmpsub = $icmptype->textContent;
                     }
                     //TODO: <code>0</code>
+                    $icmpcode = DH::findFirstElement('code', $icmpcur);
+                    if( $icmpcode !== false )
+                    {
+                        $app->icmpcode = $icmpcode->textContent;
+                    }
                 }
 
                 $icmp6cur = DH::findFirstElement('ident-by-icmp6-type', $cursor);
@@ -731,6 +757,12 @@ class AppStore extends ObjStore
                         $app->icmp6sub = $icmp6type->textContent;
                     }
                     //TODO: <code>0</code>
+                    $icmp6code = DH::findFirstElement('code', $icmp6cur);
+                    if( $icmp6code !== false )
+                    {
+                        $app->icmp6code = $icmp6code->textContent;
+                    }
+
                 }
 
                 $cursor = DH::findFirstElement('port', $cursor);

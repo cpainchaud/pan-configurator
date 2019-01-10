@@ -37,7 +37,9 @@ class App
 
 	public $icmpsub = null;
     public $icmp6sub = null;
-	public $proto = null;
+    public $icmpcode = null;
+    public $icmp6code = null;
+    public $proto = null;
 
 	public $timeout = null;
     public $tcp_timeout = null;
