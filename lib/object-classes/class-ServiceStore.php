@@ -578,7 +578,7 @@ class ServiceStore
      * @return Service
      * @throws Exception
      */
-	public function newService($name, $protocol, $destinationPorts, $description = '')
+	public function newService($name, $protocol, $destinationPorts, $description = '', $sourcePorts = null)
 	{
 		
 		if( isset($this->_all[$name]) )
@@ -588,6 +588,8 @@ class ServiceStore
 		$s->setProtocol($protocol);
 		$s->setDestPort($destinationPorts);
 		$s->setDescription( $description);
+		if( $sourcePorts !== null)
+            $s->setSourcePort($sourcePorts);
 		$this->add($s);
 		return $s;
 	
@@ -601,9 +603,9 @@ class ServiceStore
      * @return Service
      * @throws Exception
      */
-    public function API_newService($name , $protocol, $destinationPorts, $description = '')
+    public function API_newService($name , $protocol, $destinationPorts, $description = '', $sourcePorts = null)
     {
-        $newObject = $this->newService($name, $protocol, $destinationPorts, $description);
+        $newObject = $this->newService($name, $protocol, $destinationPorts, $description, $sourcePorts);
 
         $con = findConnectorOrDie($this);
         $xpath = $newObject->getXPath();
