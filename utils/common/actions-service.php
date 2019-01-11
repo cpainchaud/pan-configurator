@@ -1029,3 +1029,36 @@ ServiceCallContext::$supportedActions[] = Array(
     },
     'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ))
 );
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'description-Delete',
+    'MainFunction' =>  function(ServiceCallContext $context)
+    {
+        $service = $context->object;
+
+        if( $service->isGroup())
+        {
+            echo $context->padding." *** SKIPPED : a service group has no description\n";
+            return;
+        }
+        if( $service->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : object is tmp\n";
+            return;
+        }
+        $description = $service->description();
+        if( $description == "")
+        {
+            echo $context->padding." *** SKIPPED : no description available\n";
+            return;
+        }
+
+        echo $context->padding." - new description will be: '' ... ";
+
+        if( $context->isAPI )
+            $service->API_setDescription("" );
+        else
+            $service->setDescription( "" );
+
+        echo "OK";
+    },
+);

@@ -1612,6 +1612,35 @@ AddressCallContext::$supportedActions[] = Array(
 );
 
 AddressCallContext::$supportedActions[] = Array(
+    'name' => 'description-Delete',
+    'MainFunction' =>  function(AddressCallContext $context)
+    {
+        $address = $context->object;
+        $description = $address->description();
+
+        if( $address->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : object is tmp\n";
+            return;
+        }
+        if( $description == "")
+        {
+            echo $context->padding." *** SKIPPED : no description available\n";
+            return;
+        }
+
+        echo $context->padding." - new description will be: '' ... ";
+
+        if( $context->isAPI )
+            $address->API_setDescription("");
+        else
+            $address->setDescription( "" );
+
+        echo "OK";
+    },
+);
+
+AddressCallContext::$supportedActions[] = Array(
     'name' => 'value-host-object-add-netmask-m32',
     'MainFunction' =>  function(AddressCallContext $context)
     {

@@ -740,7 +740,7 @@ class AppStore extends ObjStore
                     {
                         $app->icmpsub = $icmptype->textContent;
                     }
-                    //TODO: <code>0</code>
+
                     $icmpcode = DH::findFirstElement('code', $icmpcur);
                     if( $icmpcode !== false )
                     {
@@ -756,13 +756,12 @@ class AppStore extends ObjStore
                     {
                         $app->icmp6sub = $icmp6type->textContent;
                     }
-                    //TODO: <code>0</code>
+
                     $icmp6code = DH::findFirstElement('code', $icmp6cur);
                     if( $icmp6code !== false )
                     {
                         $app->icmp6code = $icmp6code->textContent;
                     }
-
                 }
 
                 $cursor = DH::findFirstElement('port', $cursor);
