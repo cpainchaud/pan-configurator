@@ -24,7 +24,7 @@ CHANGELOG
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
 address-edit: new filter '(value string.regex /[SEARCH-STRING]/)'
-address-edit: new actions=description-delete
+address-edit: new actions=description-delete | new 'filter=(description is.empty)'
 upload-config: extend in=api://[MGTM-IP]/panorama-pushed-config to download panorama pushed config
 rule-edit: introduce hip-profile for actions=display
 rule-edit: new actions=hip-set:[HIP-Profile]
@@ -39,7 +39,7 @@ pan-diff: introduce new util to easily compare two pan-os xml config file
 panos-xml-issue-detector: introduce new util to fine e.g. duplicate member in address-/service-group
 address-merger: extend location=any - especially for Panorama DG to merge all DG objects with one single script run - also possible with argument allowmergingwithupperlevel
 register-ip-mgr | introduce new util to display and unregister-unused dynamic registered-ip addresses
-service-edit: new actions=description-delete
+service-edit: new actions=description-delete | new 'filter=(description is.empty)'
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings

@@ -308,7 +308,7 @@ RQuery::$defaultFilters['service']['description']['operators']['regex'] = Array(
         $value = $context->value;
 
         if( !$object->isService() )
-            return false;
+            return null;
 
         if( strlen($value) > 0 && $value[0] == '%')
         {
@@ -329,6 +329,27 @@ RQuery::$defaultFilters['service']['description']['operators']['regex'] = Array(
     'arg' => true,
     'ci' => Array(
         'fString' => '(%PROP% /test/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['description']['operators']['is.empty'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( !$object->isService() )
+            return null;
+
+
+        if( strlen($object->description()) == 0 )
+            return true;
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'
     )
 );

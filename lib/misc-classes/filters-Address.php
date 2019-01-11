@@ -787,5 +787,21 @@ RQuery::$defaultFilters['address']['description']['operators']['regex'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['address']['description']['operators']['is.empty'] = Array(
+    'Function' => function(AddressRQueryContext $context )
+    {
+        $object = $context->object;
+        $value = $context->value;
 
+        if( strlen($object->description()) == 0 )
+            return true;
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 // </editor-fold>
