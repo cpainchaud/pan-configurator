@@ -162,6 +162,105 @@ RQuery::$defaultFilters['tag']['location']['operators']['regex'] = Array(
         'input' => 'input/panorama-8.0.xml'
     )
 );
+RQuery::$defaultFilters['tag']['location']['operators']['is.child.of'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $tag_location = $context->object->getLocationString();
+
+        $sub = $context->object->owner;
+        while( get_class($sub ) == "TagStore" || get_class($sub ) == "DeviceGroup" || get_class($sub) == "VirtualSystem" )
+            $sub = $sub->owner;
+
+        if( get_class($sub) == "PANConf")
+            derr( "filter location is.child.of is not working against a firewall configuration" );
+
+        if( strtolower($context->value) == 'shared' )
+            return true;
+
+        $DG = $sub->findDeviceGroup( $context->value );
+        if( $DG == null )
+        {
+            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
+            print " - shared\n";
+            foreach( $sub->getDeviceGroups() as $sub1 )
+            {
+                print " - ".$sub1->name()."\n";
+            }
+            print "\n\n";
+            exit(1);
+        }
+
+        $childDeviceGroups = $DG->childDeviceGroups( TRUE );
+
+        if( strtolower($context->value) == strtolower($tag_location) )
+            return true;
+
+        foreach( $childDeviceGroups as $childDeviceGroup )
+        {
+            if( $childDeviceGroup->name() == $tag_location )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is child the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  Datacenter-Firewalls)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['tag']['location']['operators']['is.parent.of'] = Array(
+    'Function' => function(TagRQueryContext $context )
+    {
+        $tag_location = $context->object->getLocationString();
+
+        $sub = $context->object->owner;
+        while( get_class($sub ) == "TagStore" || get_class($sub ) == "DeviceGroup" || get_class($sub) == "VirtualSystem" )
+            $sub = $sub->owner;
+
+        if( get_class($sub) == "PANConf")
+            derr( "filter location is.parent.of is not working against a firewall configuration" );
+
+        if( strtolower($context->value) == 'shared' )
+            return true;
+
+        $DG = $sub->findDeviceGroup( $context->value );
+        if( $DG == null )
+        {
+            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
+            print " - shared\n";
+            foreach( $sub->getDeviceGroups() as $sub1 )
+            {
+                print " - ".$sub1->name()."\n";
+            }
+            print "\n\n";
+            exit(1);
+        }
+
+        $parentDeviceGroups = $DG->parentDeviceGroups(  );
+
+        if( strtolower($context->value) == strtolower($tag_location) )
+            return true;
+
+        if( $tag_location == 'shared' )
+            return true;
+
+        foreach( $parentDeviceGroups as $childDeviceGroup )
+        {
+            if( $childDeviceGroup->name() == $tag_location )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is parent the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  Datacenter-Firewalls)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
 RQuery::$defaultFilters['tag']['reflocation']['operators']['is'] = Array(
     'Function' => function(TagRQueryContext $context )
     {
