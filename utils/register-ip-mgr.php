@@ -205,7 +205,7 @@ if( $action == 'display' || $action == 'unregister-unused')
 
         if( empty( $register_ip_array ) )
         {
-            #print "nothing registered\n";
+            print "nothing registered\n";
         }
         else
         {
@@ -218,6 +218,12 @@ if( $action == 'display' || $action == 'unregister-unused')
             {
                 $first_value = reset($reg); // First Element's Value
                 $first_key = key($reg); // First Element's Key
+
+                if( empty( $dynamicAddressGroup_array ) )
+                {
+                    $unregister_array[$sub->name()][$ip] = $reg;
+                    #print "unregister: ".$ip."\n";
+                }
 
                 foreach( $dynamicAddressGroup_array as $key => $group )
                 {
@@ -256,7 +262,7 @@ if( $action == 'display' || $action == 'unregister-unused')
 }
 elseif( $action == 'fakeregister' )
 {
-    $numberOfIPs = 499;
+    $numberOfIPs = 20;
     $tag = 'fake';
     $startingIP = ip2long('10.0.0.0');
 
