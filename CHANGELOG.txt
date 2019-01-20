@@ -41,6 +41,7 @@ address-merger: extend location=any - especially for Panorama DG to merge all DG
 register-ip-mgr | introduce new util to display and unregister-unused dynamic registered-ip addresses
 service-edit: new actions=description-delete | new 'filter=(description is.empty)' | new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])'
 tag-edit: new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])'
+address-edit: new actions=name-rename-character:[search],[replace]
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings
