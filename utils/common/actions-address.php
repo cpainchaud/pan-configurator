@@ -1104,7 +1104,7 @@ AddressCallContext::$supportedActions[] = Array(
 );
 
 AddressCallContext::$supportedActions[] = Array(
-    'name' => 'name-Rename-Character',
+    'name' => 'name-Replace-Character',
     'MainFunction' =>  function ( AddressCallContext $context )
     {
         $object = $context->object;
