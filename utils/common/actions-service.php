@@ -851,6 +851,60 @@ ServiceCallContext::$supportedActions[] = Array(
 );
 
 ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'name-Replace-Character',
+    'MainFunction' =>  function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
+        $characterToreplace = $context->arguments['search'];
+        $characterForreplace = $context->arguments['replace'];
+
+
+        $newName = str_replace( $characterToreplace, $characterForreplace, $object->name() );
+
+
+        if( $object->name() == $newName )
+        {
+            echo $context->padding." *** SKIPPED : new name and old name are the same\n";
+            return;
+        }
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        $findObject = $object->owner->find($newName);
+        if( $findObject !== null )
+        {
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        else
+        {
+            echo $context->padding." - renaming object... ";
+            if( $context->isAPI )
+                $object->API_setName($newName);
+            else
+                $object->setName($newName);
+            echo "OK!\n";
+        }
+
+    },
+    'args' => Array( 'search' => Array(
+        'type' => 'string',
+        'default' => '*nodefault*'),
+        'replace' => Array(
+            'type' => 'string',
+            'default' => '*nodefault*')
+    ),
+    'help' => ''
+);
+
+ServiceCallContext::$supportedActions[] = Array(
     'name' => 'displayReferences',
     'MainFunction' => function ( ServiceCallContext $context )
     {

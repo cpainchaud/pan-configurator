@@ -1115,8 +1115,8 @@ AddressCallContext::$supportedActions[] = Array(
             return;
         }
 
-        $characterToreplace = $context->arguments['oldCharacter'];
-        $characterForreplace = $context->arguments['newCharacter'];
+        $characterToreplace = $context->arguments['search'];
+        $characterForreplace = $context->arguments['replace'];
 
 
         $newName = str_replace( $characterToreplace, $characterForreplace, $object->name() );
@@ -1147,10 +1147,10 @@ AddressCallContext::$supportedActions[] = Array(
         }
 
     },
-    'args' => Array( 'oldCharacter' => Array(
+    'args' => Array( 'search' => Array(
         'type' => 'string',
         'default' => '*nodefault*'),
-        'newCharacter' => Array(
+        'replace' => Array(
             'type' => 'string',
             'default' => '*nodefault*')
     ),

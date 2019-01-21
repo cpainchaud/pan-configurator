@@ -2524,6 +2524,58 @@ RuleCallContext::$supportedActions[] = Array(
 ),
     'help' => ''
 );
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'name-Replace-Character',
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->numCount = 0;
+    },
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $characterToreplace = $context->arguments['search'];
+        $characterForreplace = $context->arguments['replace'];
+
+
+        $newName = str_replace( $characterToreplace, $characterForreplace, $rule->name() );
+
+
+        if( strlen($newName) > 31 && $context->object->owner->owner->version < 81 )
+        {
+            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+            return;
+        }
+
+        if( !$rule->owner->isRuleNameAvailable($newName) )
+        {
+            print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
+            return;
+        }
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        if( $context->isAPI )
+        {
+            $rule->API_setName($newName);
+        }
+        else
+        {
+            $rule->setName($newName);
+        }
+    },
+
+    'args' => Array( 'search' => Array(
+        'type' => 'string',
+        'default' => '*nodefault*'),
+        'replace' => Array(
+            'type' => 'string',
+            'default' => '*nodefault*')
+    ),
+    'help' => ''
+);
+
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'ruleType-Change',
     'MainFunction' => function(RuleCallContext $context)
