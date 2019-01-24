@@ -44,6 +44,7 @@ tag-edit: new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])
 address-edit: new actions=name-replace-character:[search],[replace]
 rule-edit: new action "name-Replace-Character:search,replace"
 service-edit: new action "name-Replace-Character:search,replace"
+rule-edit: new filters (from is.in.file [FILENAME]) / (to is.in.file [FILENAME])
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings

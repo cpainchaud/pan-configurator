@@ -39,6 +39,7 @@ RQuery::$defaultFilters['rule']['from']['operators']['has.only'] = Array(
     'argObjectFinder' => "\$objectFind=null;\n\$objectFind=\$object->from->parentCentralStore->find('!value!');"
 );
 
+
 RQuery::$defaultFilters['rule']['to']['operators']['has'] = Array(
     'eval' => function($object, &$nestedQueries, $value)
     {
@@ -156,6 +157,83 @@ RQuery::$defaultFilters['rule']['to']['operators']['is.any'] = Array(
     )
 );
 
+RQuery::$defaultFilters['rule']['from']['operators']['is.in.file'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === false )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        $return = false;
+        foreach( $list as $zone => $truefalse )
+        {
+            if( $object->from->hasZone($zone) )
+                $return = true;
+        }
+
+        return $return;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if rule name matches one of the names found in text file provided in argument'
+);
+
+RQuery::$defaultFilters['rule']['to']['operators']['is.in.file'] = Array(
+    'Function' => function(RuleRQueryContext $context )
+    {
+        $object = $context->object;
+
+        if( !isset($context->cachedList) )
+        {
+            $text = file_get_contents($context->value);
+
+            if( $text === false )
+                derr("cannot open file '{$context->value}");
+
+            $lines = explode("\n", $text);
+            foreach( $lines as  $line)
+            {
+                $line = trim($line);
+                if(strlen($line) == 0)
+                    continue;
+                $list[$line] = true;
+            }
+
+            $context->cachedList = &$list;
+        }
+        else
+            $list = &$context->cachedList;
+
+        $return = false;
+        foreach( $list as $zone => $truefalse )
+        {
+            if( $object->to->hasZone($zone) )
+                $return = true;
+        }
+
+        return $return;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if rule name matches one of the names found in text file provided in argument'
+);
 //                                              //
 //                NAT Dst/Src Based Actions     //
 //                                              //
