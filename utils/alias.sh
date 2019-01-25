@@ -26,7 +26,7 @@ alias pa_ckp-exclude='php -r "require_once '"'"'utils/checkpoint-exclude.php'"'"
 alias pa_download-predefined='php -r "require_once '"'"'utils/download_predefined.php'"'"';" $@'
 alias pa_diff='php -r "require_once '"'"'utils/pan-diff.php'"'"';" $@'
 alias pa_panos-xml-issue-detector='php -r "require_once '"'"'utils/panos-xml-issue-detector.php'"'"';" $@'
-
+alias pa_appid-enabler='php -r "require_once '"'"'utils/appid-enabler.php'"'"';" $@'
 
 
 
