@@ -20,6 +20,7 @@ CHANGELOG
 * class-IKEGateway - extend to cover IKEv2
 * class-PANAPIConnector - introduce hidden arguments: shadow-displaycurlrequest | shadow-hiddenapikey (new with PAN-OS 9.0 - send API key via Header)
 * update predefined.xml to 8110-5233
+* class-NatRule - extend with dynamic-destination-translation (PAN-OS 8.1)
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
@@ -46,6 +47,7 @@ rule-edit: new action "name-Replace-Character:search,replace"
 service-edit: new action "name-Replace-Character:search,replace"
 rule-edit: new filters (from is.in.file [FILENAME]) / (to is.in.file [FILENAME])
 appid-enable: introduce new script to enable APP-IDs which are set to disabled - directly against panorama or via panorama to all connected firewalls on panorama
+
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings

@@ -129,10 +129,13 @@ class NatRule extends Rule
 
 
 
-		//						//
+		//						                    //
 		// Destination NAT properties Extraction	//
-		//						//
+		//						                    //
 		$this->dnatroot = DH::findFirstElement('destination-translation', $xml);
+        if( $this->dnatroot === FALSE )
+		    $this->dnatroot = DH::findFirstElement('dynamic-destination-translation', $xml);
+
 		if( $this->dnatroot !== FALSE )
 		{
 			//print "rule '".$this->name."' has destination-translation\n";
@@ -152,14 +155,10 @@ class NatRule extends Rule
                         if( strlen($this->dnatports) < 0 )
                             $this->dnatports = null;
 					}
-					
 				}
 			}
-			
 		}
-		// end of destination translation extraction
-		
-		
+        // end of destination translation extraction
 		
 		
 		//										//
