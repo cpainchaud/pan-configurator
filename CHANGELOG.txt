@@ -47,7 +47,6 @@ service-edit: new action "name-Replace-Character:search,replace"
 rule-edit: new filters (from is.in.file [FILENAME]) / (to is.in.file [FILENAME])
 appid-enable: introduce new script to enable APP-IDs which are set to disabled - directly against panorama or via panorama to all connected firewalls on panorama
 
-
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings
 interface: new script to show interface settings
@@ -69,7 +68,7 @@ bugfix:
 - fix description field for rules and objects was increased to 1023 characters with PAN-OS 7.1 | update all relevant places
 - fix class-AddressRuleContainer - improve setAny, offline config file has now any as correct entry
 - fix rule 'filter=(rule is.unused.fast)' for PAN-OS version > 8.1
-
+- fix address-merger - duplicate FQDN are now also covered
 
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid

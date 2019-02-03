@@ -491,7 +491,7 @@ foreach( $location_array as $tmp_location )
                 /** @var Address $ancestor */
                 if( $upperLevelSearch && !$ancestor->isGroup() && !$ancestor->isTmpAddr() && ($ancestor->isType_ipNetmask() || $ancestor->isType_ipRange() || $ancestor->isType_FQDN()) )
                 {
-                    if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) )
+                    if( $object->getIP4Mapping()->equals($ancestor->getIP4Mapping()) || $ancestor->isType_FQDN() )
                     {
                         if( $dupAlg == 'identical' )
                             if( $pickedObject->name() != $ancestor->name() )
