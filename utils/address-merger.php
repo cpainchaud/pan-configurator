@@ -297,7 +297,10 @@ foreach( $location_array as $tmp_location )
     $childDeviceGroups = $tmp_location['childDeviceGroups'];
 
     echo " - upper level search status : " . boolYesNo($upperLevelSearch) . "\n";
-    echo " - location '{$findLocation->name()}' found\n";
+    if( is_string($findLocation) )
+        echo " - location 'shared' found\n";
+    else
+        echo " - location '{$findLocation->name()}' found\n";
     echo " - found {$store->countAddresses()} address Objects\n";
     echo " - DupAlgorithm selected: {$dupAlg}\n";
     echo " - computing address values database ... ";
