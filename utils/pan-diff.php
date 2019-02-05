@@ -34,29 +34,71 @@ function display_error_usage_exit($msg)
     display_usage_and_exit();
 }
 
-if( ! isset(PH::$args['file1']) )
-    display_error_usage_exit('"file1" is missing from arguments');
-$file1 = PH::$args['file1'];
-if( !is_string($file1) || strlen($file1) < 1 )
-    display_error_usage_exit('"file1" argument is not a valid string');
 
-if( ! isset(PH::$args['file2']) )
-    display_error_usage_exit('"file2" is missing from arguments');
-$file2 = PH::$args['file2'];
-if( !is_string($file2) || strlen($file2) < 1 )
-    display_error_usage_exit('"file1" argument is not a valid string');
+if( isset(PH::$args['debugapi'])  )
+    $debugAPI = true;
+else
+    $debugAPI = false;
 
-print "Opening ORIGINAL '{$file1}' XML file... ";
-$doc1 = new DOMDocument();
-if( $doc1->load($file1) === false )
-    derr( 'Error while parsing xml:'.libxml_get_last_error()->message );
-print "OK!\n";
+if( isset(PH::$args['in']) )
+{
+    $configInput = PH::processIOMethod(PH::$args['in'], true);
+    if( $configInput['status'] == 'fail' )
+        derr($configInput['msg']);
+
+    if ( $configInput['type'] == 'api'  )
+    {
+        $apiMode = true;
+        /** @var PanAPIConnector $connector */
+        $connector = $configInput['connector'];
+        if($debugAPI)
+            $connector->setShowApiCalls(true);
+        print " - Downloading config from API... \n";
+
+        print "Opening ORIGINAL 'RunningConfig' XML file... \n";
+        $doc1 = new DOMDocument();
+        $doc1 = $connector->getRunningConfig();
+        print "OK!\n";
+
+        print "Opening COMPARE 'Candidate' XML file... \n";
+        $doc2 = new DOMDocument();
+        $doc2 = $connector->getCandidateConfig();
+        print "OK!\n";
+    }
+    else
+        derr('only API is supported');
+}
+else
+{
+    if( ! isset(PH::$args['file1']) )
+        display_error_usage_exit('"file1" is missing from arguments');
+    $file1 = PH::$args['file1'];
+    if( !is_string($file1) || strlen($file1) < 1 )
+        display_error_usage_exit('"file1" argument is not a valid string');
+
+    if( ! isset(PH::$args['file2']) )
+        display_error_usage_exit('"file2" is missing from arguments');
+    $file2 = PH::$args['file2'];
+    if( !is_string($file2) || strlen($file2) < 1 )
+        display_error_usage_exit('"file1" argument is not a valid string');
+
+    print "Opening ORIGINAL '{$file1}' XML file... ";
+    $doc1 = new DOMDocument();
+    if( $doc1->load($file1) === false )
+        derr( 'Error while parsing xml:'.libxml_get_last_error()->message );
+    print "OK!\n";
 
     print "Opening COMPARE '{$file2}' XML file... ";
-$doc2 = new DOMDocument();
-if( $doc2->load($file2) === false )
-    derr( 'Error while parsing xml:'.libxml_get_last_error()->message );
-print "OK!\n";
+    $doc2 = new DOMDocument();
+    if( $doc2->load($file2) === false )
+        derr( 'Error while parsing xml:'.libxml_get_last_error()->message );
+    print "OK!\n";
+}
+
+
+
+
+
 
 print "*** NOW DISPLAY DIFF ***\n\n";
 
