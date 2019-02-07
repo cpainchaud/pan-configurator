@@ -678,6 +678,13 @@ ServiceCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( ServiceCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $newName = $object->name().$context->arguments['suffix'];
         print $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
@@ -707,6 +714,12 @@ ServiceCallContext::$supportedActions[] = Array(
     {
         $object = $context->object;
         $prefix = $context->arguments['prefix'];
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
@@ -745,6 +758,13 @@ ServiceCallContext::$supportedActions[] = Array(
     {
         $object = $context->object;
         $suffix = $context->arguments['suffix'];
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $suffixStartIndex = strlen($object->name()) - strlen($suffix);
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name()) ) != $suffix )
