@@ -72,6 +72,7 @@ bugfix:
 - fix rule 'filter=(rule is.unused.fast)' for PAN-OS version > 8.1
 - fix address-merger - duplicate FQDN are now also covered
 - fix address-merger - for location=shared | if config is panos
+- fix service-edit - action=rename, if service is tmp (e.g. service is from Panorama DG)
 
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid

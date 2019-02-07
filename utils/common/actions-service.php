@@ -643,6 +643,13 @@ ServiceCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( ServiceCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $newName = $context->arguments['prefix'].$object->name();
         print $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
