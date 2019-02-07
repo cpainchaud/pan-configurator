@@ -255,6 +255,8 @@ else
             $childDeviceGroups = $findLocation->childDeviceGroups(true);
         $location_array[0]['childDeviceGroups'] = $childDeviceGroups;
     }
+    else
+        $location_array[0]['childDeviceGroups'] = array();
 }
 
 
