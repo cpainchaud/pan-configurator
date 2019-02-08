@@ -221,7 +221,8 @@ foreach( $locationNodes as $locationName => $locationNode)
         foreach( $nodes as $node )
         {
             $staticNode = DH::findFirstElement('static', $node);
-            if( $staticNode === FALSE )
+            $dynamicNode = DH::findFirstElement('dynamic', $node);
+            if( $staticNode === FALSE && $dynamicNode === FALSE )
             {
                 echo "    - addressgroup object '{$objectName}' from DG/VSYS {$locationName} has no member ... (*FIX_MANUALLY*)\n";
                 print "       - type 'AddressGroup' at XML line #{$node->getLineNo()}\n";
