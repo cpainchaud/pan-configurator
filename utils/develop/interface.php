@@ -287,6 +287,14 @@ foreach( $template_array as $template)
         {
             if( !is_object($template) )
             {
+                $templatestack = $pan ->findTemplateStack( $template );
+                if( $templatestack !== null )
+                    if( $templatestack->isTemplateStack() )
+                    {
+                        print "\nTemplateSTack not supported right now\n";
+                        continue;
+                    }
+
                 $template = $pan->findTemplate($template);
             }
 
@@ -317,7 +325,18 @@ foreach( $template_array as $template)
             {
                 if( !is_object($template) )
                 {
-                    $template = $pan->findTemplate($template);
+
+                    $templatestack = $pan ->findTemplateStack( $template );
+                    if( $templatestack !== null )
+                        if( $templatestack->isTemplateStack() )
+                        {
+                            print "\nTemplateSTack not supported right now\n";
+                            continue;
+                        }
+
+                    $template = $pan->findTemplateS($template);
+
+
                 }
 
                 $sub = $template->deviceConfiguration->findVirtualSystem($objectslocation);
