@@ -27,6 +27,8 @@ class Template
     /** @var  PANConf */
     public $deviceConfiguration;
 
+    protected $FirewallsSerials = Array();
+
     /**
      * Template constructor.
      * @param string $name
@@ -51,6 +53,18 @@ class Template
 
         $this->deviceConfiguration->load_from_domxml($tmp);
 
+        $this->FirewallsSerials = $this->owner->managedFirewallsStore->get_serial_from_xml( $xml );
+        foreach( $this->FirewallsSerials as $serial)
+        {
+            $managedFirewall = $this->owner->managedFirewallsStore->find( $serial );
+            if( $managedFirewall !== null )
+                $managedFirewall->addTemplate( $this->name );
+        }
+    }
+
+    public function name()
+    {
+        return $this->name;
     }
 
     public function &getXPath()

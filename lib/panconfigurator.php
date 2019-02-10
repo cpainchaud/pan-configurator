@@ -161,6 +161,7 @@ require_once $basedir.'/device-and-system-classes/class-DeviceGroup.php';
 require_once $basedir.'/device-and-system-classes/class-Template.php';
 require_once $basedir.'/device-and-system-classes/class-TemplateStack.php';
 require_once $basedir.'/device-and-system-classes/class-ManagedDevice.php';
+require_once $basedir.'/device-and-system-classes/class-ManagedDeviceStore.php';
 
 require_once $basedir.'/network-classes/class-Zone.php';
 require_once $basedir.'/network-classes/class-ZoneStore.php';

@@ -17,16 +17,53 @@
 
 class ManagedDevice
 {
-    use PathableName;
     use ReferencableObject;
+    use PathableName;
+    use XmlConvertible;
 
-    /** @var  PanoramaConf */
+    /** @var  ManagedDeviceStore */
     public $owner;
 
-    function __construct($name, $owner)
+    public $devicegroup;
+    public $template;
+    public $template_stack;
+
+
+    function __construct( $name, $owner )
     {
-        $this->$owner = $owner;
+        $this->owner = $owner;
         $this->name = $name;
     }
 
+
+
+    public function addDeviceGroup( $devicegroup )
+    {
+        $this->devicegroup = $devicegroup;
+    }
+
+    public function addTemplate( $template )
+    {
+        $this->template = $template;
+    }
+
+    public function addTemplateStack( $template_stack )
+    {
+        $this->template_stack = $template_stack;
+    }
+
+    public function getDeviceGroup( )
+    {
+        return $this->devicegroup;
+    }
+
+    public function getTemplate(  )
+    {
+        return $this->template;
+    }
+
+    public function getTemplateStack( )
+    {
+        return $this->template_stack;
+    }
 }

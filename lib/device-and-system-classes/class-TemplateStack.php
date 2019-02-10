@@ -27,6 +27,8 @@ class TemplateStack
     /** @var  array */
     public $templates = array();
 
+    protected $FirewallsSerials = Array();
+
     /**
      * Template constructor.
      * @param string $name
@@ -59,12 +61,23 @@ class TemplateStack
                 $ldv = $node->textContent;
                 $this->templates[] = $ldv;
                 //print "Template '{$ldv}' found\n";
+                //Todo: add reference to Template
             }
             #print_r( $this->templates );
         }
 
+        $this->FirewallsSerials = $this->owner->managedFirewallsStore->get_serial_from_xml( $xml );
+        foreach( $this->FirewallsSerials as $serial)
+        {
+            $managedFirewall = $this->owner->managedFirewallsStore->find( $serial );
+            if( $managedFirewall !== null )
+                $managedFirewall->addTemplateStack( $this->name );
+        }
+    }
 
-
+    public function name()
+    {
+        return $this->name;
     }
 
     public function isTemplateStack()
