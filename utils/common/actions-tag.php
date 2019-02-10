@@ -56,6 +56,13 @@ TagCallContext::$supportedActions['name-addprefix'] = Array(
     {
         $object = $context->object;
         $newName = $context->arguments['prefix'].$object->name();
+
+        if( $object->isTmp() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         print $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 127 )
         {
@@ -85,6 +92,13 @@ TagCallContext::$supportedActions['name-addsuffix'] = Array(
     {
         $object = $context->object;
         $newName = $object->name().$context->arguments['suffix'];
+
+        if( $object->isTmp() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         print $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 127 )
         {
@@ -113,6 +127,12 @@ TagCallContext::$supportedActions['name-removeprefix'] = Array(
     {
         $object = $context->object;
         $prefix = $context->arguments['prefix'];
+
+        if( $object->isTmp() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
@@ -153,6 +173,12 @@ TagCallContext::$supportedActions['name-removesuffix'] = Array(
         $suffix = $context->arguments['suffix'];
         $suffixStartIndex = strlen($object->name()) - strlen($suffix);
 
+        if( $object->isTmp() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         if( substr($object->name(), $suffixStartIndex, strlen($object->name()) ) != $suffix )
         {
             echo $context->padding." *** SKIPPED : suffix not found\n";
@@ -185,6 +211,13 @@ TagCallContext::$supportedActions['name-touppercase'] = Array(
         $object = $context->object;
         #$newName = $context->arguments['prefix'].$object->name();
         $newName = mb_strtoupper($object->name(), 'UTF8' );
+
+        if( $object->isTmp() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         print $context->padding." - new name will be '{$newName}'\n";
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
 
@@ -215,6 +248,13 @@ TagCallContext::$supportedActions['name-tolowercase'] = Array(
         $object = $context->object;
         #$newName = $context->arguments['prefix'].$object->name();
         $newName = mb_strtolower( $object->name(), 'UTF8' );
+
+        if( $object->isTmp() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         print $context->padding." - new name will be '{$newName}'\n";
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
@@ -247,6 +287,13 @@ TagCallContext::$supportedActions['name-toucwords'] = Array(
         #$newName = $context->arguments['prefix'].$object->name();
         $newName = mb_strtolower( $object->name(), 'UTF8' );
         $newName = ucwords( $newName );
+
+        if( $object->isTmp() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         print $context->padding." - new name will be '{$newName}'\n";
 
         $rootObject = PH::findRootObjectOrDie($object->owner->owner);
