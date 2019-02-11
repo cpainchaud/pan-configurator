@@ -48,6 +48,7 @@ service-edit: new action "name-Replace-Character:search,replace"
 rule-edit: new filters (from is.in.file [FILENAME]) / (to is.in.file [FILENAME])
 appid-enable: introduce new script to enable APP-IDs which are set to disabled - directly against panorama or via panorama to all connected firewalls on panorama
 pan-diff: extend with API input - to easily compare running and candidate config
+tag-edit: new actions=exporttoexcel:[filename]
 
 utils(under development):
 ike: new script to show all IKE/IPsec profile and config settings
