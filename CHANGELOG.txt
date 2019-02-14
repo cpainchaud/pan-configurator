@@ -1,5 +1,17 @@
 CHANGELOG
 
+
+1.5.16 (20190214)
+
+GENERAL:
+
+UTILS:
+
+BUGFIX:
+
+
+------------------------------------------------------------------------------------------------------------------------
+
 1.5.15 (20180611)
 * introduce release 1.5.15
 * update predefined.xml to 8041-4843
@@ -75,6 +87,8 @@ bugfix:
 - fix address-merger - duplicate FQDN are now also covered
 - fix address-merger - for location=shared | if config is panos
 - fix service-edit - action=rename, if service is tmp (e.g. service is from Panorama DG)
+
+------------------------------------------------------------------------------------------------------------------------
 
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid
