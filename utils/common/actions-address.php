@@ -1640,7 +1640,18 @@ AddressCallContext::$supportedActions[] = Array(
         $textToAppend = "";
         if( $description != "" )
             $textToAppend = " ";
-        $textToAppend .= $context->rawArguments['text'];
+
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $textToAppend .= str_replace('$$current.name$$', $address->name(), $newName);
+        }
+        else{
+            $textToAppend .= $newName;
+        }
+
 
         if( $context->object->owner->owner->version < 71 )
             $max_length = 253;
@@ -1662,7 +1673,15 @@ AddressCallContext::$supportedActions[] = Array(
 
         echo "OK";
     },
-    'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ))
+    'args' => Array(
+            'stringFormula' => Array(
+                'type' => 'string',
+                'default' => '*nodefault*',
+                'help' =>
+                    "This string is used to compose a name. You can use the following aliases :\n".
+                    "  - \$\$current.name\$\$ : current name of the object\n")
+    ),
+    'help' => ''
 );
 
 AddressCallContext::$supportedActions[] = Array(
