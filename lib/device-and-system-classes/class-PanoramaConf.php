@@ -57,7 +57,8 @@ class PanoramaConf
 
     public $version = null;
 
-	protected $managedFirewallsSerials = Array();
+	public $managedFirewallsSerials = Array();
+    public $managedFirewallsStore;
     public $managedFirewallsSerialsModel = Array();
 
     /** @var DeviceGroup[] */
@@ -162,6 +163,7 @@ class PanoramaConf
         $this->dosRules->_networkStore = $this->_fakeNetworkProperties;
         $this->pbfRules->_networkStore = $this->_fakeNetworkProperties;
 
+        $this->managedFirewallsStore = new ManagedDeviceStore($this, 'managedFirewall', true);
 	}
 
 
@@ -169,7 +171,7 @@ class PanoramaConf
 	{
 		$this->xmldoc = new DOMDocument();
 
-		if( $this->xmldoc->loadXML($xml) !== TRUE )
+		if( $this->xmldoc->loadXML($xml, XML_PARSE_BIG_LINES) !== TRUE )
 			derr('Invalid XML file found');
 
 		$this->load_from_domxml($this->xmldoc);
@@ -210,21 +212,11 @@ class PanoramaConf
 
 
 		$tmp = DH::findFirstElementOrCreate('mgt-config', $this->xmlroot);
+		$this->managedFirewallsSerials = $this->managedFirewallsStore->get_serial_from_xml( $tmp, true );
 
-		$tmp = DH::findFirstElementOrCreate('devices', $tmp);
 
-		foreach( $tmp->childNodes as $serial )
-		{
-			if( $serial->nodeType != 1 )
-				continue;
-			$s = DH::findAttribute('name', $serial);
-			if( $s === FALSE )
-				derr('no serial found');
 
-			$this->managedFirewallsSerials[] = $s;
-		}
-
-		if( is_object( $this->connector ) )
+        if( is_object( $this->connector ) )
             $this->managedFirewallsSerialsModel = $this->connector->panorama_getConnectedFirewallsSerials();
 
 		$this->sharedroot = DH::findFirstElementOrCreate('shared', $this->xmlroot);
@@ -447,7 +439,7 @@ class PanoramaConf
             $tmpPost = null;
         else
         {
-            $tmpPost = DH::findFirstElement('authentication-portal', $postrulebase);
+            $tmpPost = DH::findFirstElement('authentication', $postrulebase);
             if( $tmpPost !== false )
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 
@@ -563,6 +555,8 @@ class PanoramaConf
             $ldv->load_from_domxml($node);
             $this->templatestacks[] = $ldv;
             //print "TemplateStack '{$ldv->name()}' found\n";
+
+            //Todo: add templates to templatestack
         }
         //
         // end of Templates
@@ -745,6 +739,20 @@ class PanoramaConf
         return null;
     }
 
+    /**
+     * @param string $name
+     * @return TemplateStack|null
+     */
+    public function findTemplateStack($name)
+    {
+        foreach($this->templatestacks as $templatestack )
+        {
+            if( $templatestack->name() == $name )
+                return $templatestack;
+        }
+
+        return null;
+    }
 
     /**
      * @param string $fileName

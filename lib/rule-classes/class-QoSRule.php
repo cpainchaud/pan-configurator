@@ -51,7 +51,7 @@ class QoSRule extends RuleWithUserID
     protected $action = self::ActionClass1;
 
     /** @var AppRuleContainer $apps */
-    protected $apps;
+    public $apps;
 
     /**
      * @param RuleStore $owner

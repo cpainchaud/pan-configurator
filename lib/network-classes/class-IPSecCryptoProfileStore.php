@@ -87,6 +87,8 @@ class IPSecCryptoProfileStore extends ObjStore
 
             $this->xmlroot->appendChild($CryptoProfile->xmlroot);
 
+            $ret = $this->add($CryptoProfile);
+
             return true;
         } else
             derr('You cannot add a Gateway that is already here :)');
@@ -107,5 +109,14 @@ class IPSecCryptoProfileStore extends ObjStore
 
             $this->xmlroot = DH::findFirstElementOrCreate('ipsec-crypto-profiles', $xml);
         }
+    }
+
+    /**
+     * @param $IPSecCryptoProfileName string
+     * @return null|IPsecTunnel
+     */
+    public function findIpsecCryptoProfil($IPSecCryptoProfileName)
+    {
+        return $this->findByName($IPSecCryptoProfileName);
     }
 } 

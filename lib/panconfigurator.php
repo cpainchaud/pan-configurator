@@ -39,6 +39,12 @@ if (!defined('STDERR'))
 }
 
 
+if (!defined('XML_PARSE_BIG_LINES'))
+{
+    define('XML_PARSE_BIG_LINES', 4194304);
+}
+
+
 date_default_timezone_set('UTC');
 
 if (!extension_loaded('curl')) {
@@ -155,6 +161,7 @@ require_once $basedir.'/device-and-system-classes/class-DeviceGroup.php';
 require_once $basedir.'/device-and-system-classes/class-Template.php';
 require_once $basedir.'/device-and-system-classes/class-TemplateStack.php';
 require_once $basedir.'/device-and-system-classes/class-ManagedDevice.php';
+require_once $basedir.'/device-and-system-classes/class-ManagedDeviceStore.php';
 
 require_once $basedir.'/network-classes/class-Zone.php';
 require_once $basedir.'/network-classes/class-ZoneStore.php';

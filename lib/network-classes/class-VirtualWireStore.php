@@ -26,6 +26,9 @@ class VirtualWireStore extends ObjStore
     /** @var null|PANConf */
     public $owner;
 
+    protected $fastMemToIndex=null;
+    protected $fastNameToIndex=null;
+
     public static $childn = 'VirtualWire';
 
     public function __construct($name, $owner)
@@ -52,5 +55,135 @@ class VirtualWireStore extends ObjStore
         return $this->findByName( $vwName );
     }
 
+
+    /**
+     * Creates a new VirtualWire in this store. It will be placed at the end of the list.
+     * @param string $name name of the new VirtualWire
+     * @return VirtualWire
+     */
+    public function newVirtualWire($name)
+    {
+        foreach( $this->virtualWires() as $vw)
+        {
+            if( $vw->name() == $name )
+                derr( "VirtualWire: ".$name." already available\n" );
+        }
+
+        $virtualWire = new VirtualWire( $name, $this);
+        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, VirtualWire::$templatexml);
+
+        $virtualWire->load_from_domxml($xmlElement);
+
+        $virtualWire->owner = null;
+        $virtualWire->setName($name);
+
+        $this->addVirtualWire( $virtualWire );
+
+        return $virtualWire;
+    }
+
+    public function API_newVirtualWire($name)
+    {
+        $newvw = $this->newVirtualWire($name);
+
+        $con = findConnectorOrDie($this);
+        //$xpath = $newvw->getXPath();
+        $xpath = $this->getEthernetIfStoreXPath();
+        $con->sendSetRequest($xpath, "<entry name='{$newvw->name()}'/>", true );
+
+        return $newvw;
+    }
+
+
+    /**
+     * @param VirtualWire $virtualWire
+     * @return bool
+     */
+    public function addVirtualWire($virtualWire )
+    {
+        if( !is_object($virtualWire) )
+            derr('this function only accepts VirtualWire class objects');
+
+        if( $virtualWire->owner !== null )
+            derr('Trying to add a VirtualWire that has a owner already !');
+
+
+        $ser = spl_object_hash($virtualWire);
+
+        if (!isset($this->fastMemToIndex[$ser]))
+        {
+            $virtualWire->owner = $this;
+
+            $this->fastMemToIndex[$ser] = $virtualWire;
+            $this->fastNameToIndex[$virtualWire->name()] = $virtualWire;
+
+            if( $this->xmlroot === null )
+                $this->createXmlRoot();
+
+            $this->xmlroot->appendChild($virtualWire->xmlroot);
+
+            return true;
+        } else
+            derr('You cannot add a VirtualWire that is already here :)');
+
+        return false;
+    }
+
+    /**
+     * @param EthernetInterface $s
+     * @return bool
+     */
+    public function API_addVirtualWire( $s )
+    {
+        $ret = $this->addVirtualWire($s);
+
+        if( $ret )
+        {
+            $con = findConnectorOrDie($this);
+
+            $xpath = $this->getEthernetIfStoreXPath();
+
+            $con->sendSetRequest($xpath, "<entry name='{$s->name()}'/>");
+        }
+
+        return $ret;
+    }
+
+    public function createXmlRoot()
+    {
+        if( $this->xmlroot === null )
+        {
+            $xml = DH::findFirstElementOrCreate('devices', $this->owner->xmlroot);
+            $xml = DH::findFirstElementOrCreate('entry', $xml);
+            $xml = DH::findFirstElementOrCreate('network', $xml);
+
+            $this->xmlroot = DH::findFirstElementOrCreate('virtual-wire', $xml);
+        }
+    }
+
+    private function &getBaseXPath()
+    {
+
+        $str = "";
+        /*
+                if( $this->owner->owner->isTemplate() )
+                    $str .= $this->owner->owner->getXPath();
+                elseif( $this->owner->isPanorama() || $this->owner->isFirewall() )
+                    $str = '/config/shared';
+                else
+                    derr('unsupported');
+        */
+
+        //TODO: intermediate solution
+        $str .= '/config/devices/entry/network';
+
+        return $str;
+    }
+
+    public function &getEthernetIfStoreXPath()
+    {
+        $path = $this->getBaseXPath().'/virtual-wire';
+        return $path;
+    }
 
 }

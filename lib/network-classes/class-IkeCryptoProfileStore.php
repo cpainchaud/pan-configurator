@@ -88,6 +88,7 @@ class IkeCryptoProfileStore extends ObjStore
                 $this->createXmlRoot();
 
             $this->xmlroot->appendChild($CryptoProfile->xmlroot);
+            $ret = $this->add($CryptoProfile);
             return true;
         } else
             derr('You cannot add a Gateway that is already here :)');
@@ -108,6 +109,15 @@ class IkeCryptoProfileStore extends ObjStore
 
             $this->xmlroot = DH::findFirstElementOrCreate('ike-crypto-profiles', $xml);
         }
+    }
+
+    /**
+     * @param $IKeCryptoProfileName string
+     * @return null|IKECryptoProfil
+     */
+    public function findIKECryptoProfil($IKECryptoProfileName)
+    {
+        return $this->findByName($IKECryptoProfileName);
     }
 
 }

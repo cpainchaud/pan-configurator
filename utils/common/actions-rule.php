@@ -91,7 +91,7 @@ RuleCallContext::$commonActionFunctions['calculate-zones'] = Array(
                         if( !file_exists($filename) )
                             derr("cannot read firewall configuration file '{$filename}''");
                         $doc = new DOMDocument();
-                        if( ! $doc->load($filename) )
+                        if( ! $doc->load($filename, XML_PARSE_BIG_LINES) )
                             derr("invalive xml file".libxml_get_last_error()->message);
                         unset($filename);
                     }
@@ -1827,6 +1827,36 @@ RuleCallContext::$supportedActions[] = Array(
 );
 
 RuleCallContext::$supportedActions[] = Array(
+    'name' => 'logSetting-set-FastAPI',
+    'section' => 'log',
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( ! $rule->isSecurityRule() )
+        {
+            print $context->padding."   * SKIPPED : this is not a security rule\n";
+            return;
+        }
+
+        if( !$context->isAPI )
+            derr("only supported in API mode!");
+
+        if( $rule->setLogSetting($context->arguments['profName']) )
+        {
+            print $context->padding." - QUEUED for bundled API call\n";
+            $context->addRuleToMergedApiChange('<log-setting>'.$context->arguments['profName'].'</log-setting>');
+        }
+    },
+    'GlobalFinishFunction' => function(RuleCallContext $context)
+    {
+        $context->doBundled_API_Call();
+    },
+    'args' => Array( 'profName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) ),
+    'help' => "Sets log setting/forwarding profile of a Security rule to the value specified."
+);
+
+RuleCallContext::$supportedActions[] = Array(
     'name' => 'logSetting-disable',
     'section' => 'log',
     'MainFunction' => function(RuleCallContext $context)
@@ -1846,7 +1876,6 @@ RuleCallContext::$supportedActions[] = Array(
     },
     'help' => "Remove log setting/forwarding profile of a Security rule if any."
 );
-
 
 
 //                                                   //
@@ -2013,7 +2042,12 @@ RuleCallContext::$supportedActions[] = Array(
             $textToAppend = "\n";
         $textToAppend .= $context->rawArguments['text'];
 
-        if( strlen($description) + strlen($textToAppend) > 253 )
+        if( $context->object->owner->owner->version < 71 )
+            $max_length = 253;
+        else
+            $max_length = 1020;
+
+        if( strlen($description) + strlen($textToAppend) > $max_length )
         {
             echo $context->padding." - SKIPPED : resulting description is too long\n";
             return;
@@ -2043,7 +2077,12 @@ RuleCallContext::$supportedActions[] = Array(
         if( $context->arguments['newline'] == 'yes' )
             $textToPrepend .= "\n";
 
-        if( strlen($description) + strlen($textToPrepend) > 253 )
+        if( $context->object->owner->owner->version < 71 )
+            $max_length = 253;
+        else
+            $max_length = 1020;
+
+        if( strlen($description) + strlen($textToPrepend) > $max_length )
         {
             echo $context->padding." - SKIPPED : resulting description is too long\n";
             return;
@@ -2485,6 +2524,58 @@ RuleCallContext::$supportedActions[] = Array(
 ),
     'help' => ''
 );
+
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'name-Replace-Character',
+    'GlobalInitFunction' => function(RuleCallContext $context)
+    {
+        $context->numCount = 0;
+    },
+    'MainFunction' => function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        $characterToreplace = $context->arguments['search'];
+        $characterForreplace = $context->arguments['replace'];
+
+
+        $newName = str_replace( $characterToreplace, $characterForreplace, $rule->name() );
+
+
+        if( strlen($newName) > 31 && $context->object->owner->owner->version < 81 )
+        {
+            print $context->padding." * SKIPPED because new name '{$newName}' is too long\n";
+            return;
+        }
+
+        if( !$rule->owner->isRuleNameAvailable($newName) )
+        {
+            print $context->padding." * SKIPPED because name '{$newName}' is not available\n";
+            return;
+        }
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        if( $context->isAPI )
+        {
+            $rule->API_setName($newName);
+        }
+        else
+        {
+            $rule->setName($newName);
+        }
+    },
+
+    'args' => Array( 'search' => Array(
+        'type' => 'string',
+        'default' => '*nodefault*'),
+        'replace' => Array(
+            'type' => 'string',
+            'default' => '*nodefault*')
+    ),
+    'help' => ''
+);
+
 RuleCallContext::$supportedActions[] = Array(
     'name' => 'ruleType-Change',
     'MainFunction' => function(RuleCallContext $context)
@@ -3169,6 +3260,54 @@ RuleCallContext::$supportedActions[] = Array(
         ),
     'help' => "This action will take a Security rule and clone it as an App-Override rule. By default all services specified in the rule will also be in the AppOverride rule."
 );
+
+//                                                   //
+//                User Based Actions     //
+//                                                   //
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'user-Set',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setUser($context->arguments['userName']);
+        else
+            $rule->setUser($context->arguments['userName']);
+    },
+    'args' => Array( 'userName' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+
+
+//                                                   //
+//                HIP Based Actions     //
+//                                                   //
+RuleCallContext::$supportedActions[] = Array(
+    'name' => 'hip-Set',
+    'MainFunction' =>  function(RuleCallContext $context)
+    {
+        $rule = $context->object;
+
+        if( !$rule->isSecurityRule() )
+        {
+            print $context->padding."  - SKIPPED : this is not a Security rule\n";
+            return;
+        }
+
+        if( $context->isAPI )
+            $rule->API_setHipProfil($context->arguments['HipProfile']);
+        else
+            $rule->setHipProfile($context->arguments['HipProfile']);
+    },
+    'args' => Array( 'HipProfile' => Array( 'type' => 'string', 'default' => '*nodefault*' ) )
+);
+
 // </editor-fold>
 /************************************ */
 

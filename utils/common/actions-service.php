@@ -643,6 +643,13 @@ ServiceCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( ServiceCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $newName = $context->arguments['prefix'].$object->name();
         print $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
@@ -671,6 +678,13 @@ ServiceCallContext::$supportedActions[] = Array(
     'MainFunction' =>  function ( ServiceCallContext $context )
     {
         $object = $context->object;
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $newName = $object->name().$context->arguments['suffix'];
         print $context->padding." - new name will be '{$newName}'\n";
         if( strlen($newName) > 63 )
@@ -700,6 +714,12 @@ ServiceCallContext::$supportedActions[] = Array(
     {
         $object = $context->object;
         $prefix = $context->arguments['prefix'];
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
 
         if( strpos($object->name(), $prefix) !== 0 )
         {
@@ -738,6 +758,13 @@ ServiceCallContext::$supportedActions[] = Array(
     {
         $object = $context->object;
         $suffix = $context->arguments['suffix'];
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
         $suffixStartIndex = strlen($object->name()) - strlen($suffix);
 
         if( substr($object->name(), $suffixStartIndex, strlen($object->name()) ) != $suffix )
@@ -846,6 +873,60 @@ ServiceCallContext::$supportedActions[] = Array(
             "  - \\$\$sourceport\\$\\$ : source Port\n".
             "  - \\$\$value\\$\\$ : value of the object\n"
     )
+    ),
+    'help' => ''
+);
+
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'name-Replace-Character',
+    'MainFunction' =>  function ( ServiceCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
+        $characterToreplace = $context->arguments['search'];
+        $characterForreplace = $context->arguments['replace'];
+
+
+        $newName = str_replace( $characterToreplace, $characterForreplace, $object->name() );
+
+
+        if( $object->name() == $newName )
+        {
+            echo $context->padding." *** SKIPPED : new name and old name are the same\n";
+            return;
+        }
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        $findObject = $object->owner->find($newName);
+        if( $findObject !== null )
+        {
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        else
+        {
+            echo $context->padding." - renaming object... ";
+            if( $context->isAPI )
+                $object->API_setName($newName);
+            else
+                $object->setName($newName);
+            echo "OK!\n";
+        }
+
+    },
+    'args' => Array( 'search' => Array(
+        'type' => 'string',
+        'default' => '*nodefault*'),
+        'replace' => Array(
+            'type' => 'string',
+            'default' => '*nodefault*')
     ),
     'help' => ''
 );
@@ -1007,7 +1088,12 @@ ServiceCallContext::$supportedActions[] = Array(
             $textToAppend = " ";
         $textToAppend .= $context->rawArguments['text'];
 
-        if( strlen($description) + strlen($textToAppend) > 253 )
+        if( $context->object->owner->owner->version < 71 )
+            $max_length = 253;
+        else
+            $max_length = 1020;
+
+        if( strlen($description) + strlen($textToAppend) > $max_length )
         {
             echo $context->padding." - SKIPPED : resulting description is too long\n";
             return;
@@ -1023,4 +1109,37 @@ ServiceCallContext::$supportedActions[] = Array(
         echo "OK";
     },
     'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ))
+);
+ServiceCallContext::$supportedActions[] = Array(
+    'name' => 'description-Delete',
+    'MainFunction' =>  function(ServiceCallContext $context)
+    {
+        $service = $context->object;
+
+        if( $service->isGroup())
+        {
+            echo $context->padding." *** SKIPPED : a service group has no description\n";
+            return;
+        }
+        if( $service->isTmpSrv() )
+        {
+            echo $context->padding." *** SKIPPED : object is tmp\n";
+            return;
+        }
+        $description = $service->description();
+        if( $description == "")
+        {
+            echo $context->padding." *** SKIPPED : no description available\n";
+            return;
+        }
+
+        echo $context->padding." - new description will be: '' ... ";
+
+        if( $context->isAPI )
+            $service->API_setDescription("" );
+        else
+            $service->setDescription( "" );
+
+        echo "OK";
+    },
 );

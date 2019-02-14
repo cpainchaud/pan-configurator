@@ -39,10 +39,19 @@ class Zone
     const TypeTmp = 0;
     const TypeLayer3 = 1;
     const TypeExternal = 2;
+    const TypeVirtualWire = 3;
+    const TypeTap = 4;
+    const TypeLayer2 = 5;
+    const TypeTunnel = 6;
 
-    static private $ZoneTypes = Array(self::TypeTmp => 'tmp',
+    static private $ZoneTypes = Array(
+        self::TypeTmp => 'tmp',
         self::TypeLayer3 => 'layer3',
         self::TypeExternal => 'external',
+        self::TypeVirtualWire => 'virtual-wire',
+        self::TypeVirtualWire => 'tap',
+        self::TypeVirtualWire => 'layer2',
+        self::TypeVirtualWire => 'tunnel',
          );
 
 
@@ -50,7 +59,7 @@ class Zone
      * @param string $name
      * @param ZoneStore $owner
      */
- 	public function __construct($name, $owner, $fromXmlTemplate = false)
+ 	public function __construct($name, $owner, $fromXmlTemplate = false, $type = 'layer3')
  	{
         if( !is_string($name) )
             derr('$name must be a string');
@@ -68,17 +77,26 @@ class Zone
         if( $fromXmlTemplate )
         {
             $doc = new DOMDocument();
-            $doc->loadXML(self::$templatexml);
+
+            if( $type == "virtual-wire" )
+                $doc->loadXML(self::$templatexmlvw, XML_PARSE_BIG_LINES);
+            elseif( $type == "layer2" )
+                $doc->loadXML(self::$templatexmll2, XML_PARSE_BIG_LINES);
+            else
+                $doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
 
             $node = DH::findFirstElementOrDie('entry',$doc);
 
             $rootDoc = $this->owner->xmlroot->ownerDocument;
             $this->xmlroot = $rootDoc->importNode($node, true);
-            $this->load_from_domxml($this->xmlroot);
 
             $this->owner = null;
             $this->setName($name);
             $this->owner = $owner;
+
+            $this->load_from_domxml($this->xmlroot);
+
+
         }
 
 		$this->name = $name;
@@ -133,9 +151,9 @@ class Zone
             if( $node->nodeType != XML_ELEMENT_NODE )
                 continue;
 
-            if( $node->tagName == 'layer3')
+            if( $node->tagName == 'layer3' || $node->tagName == 'virtual-wire')
             {
-                $this->_type = 'layer3';
+                $this->_type = $node->tagName;
 
                 $this->attachedInterfaces->load_from_domxml($node);
             }
@@ -151,6 +169,39 @@ class Zone
 
                 $this->attachedInterfaces->load_from_domxml($node);
             }
+            elseif( $node->tagName == 'tap' )
+            {
+                $this->_type = $node->tagName;
+                //print "node->tagName ".$node->tagName." found\n";
+            }
+            elseif( $node->tagName == 'tunnel' )
+            {
+                $this->_type = $node->tagName;
+                //print "node->tagName ".$node->tagName." found\n";
+            }
+            elseif( $node->tagName == 'layer2' )
+            {
+                $this->_type = $node->tagName;
+                //print "node->tagName ".$node->tagName." found\n";
+            }
+
+
+
+            elseif( $node->tagName == 'zone-protection-profile' )
+            {
+                //print "node->tagName ".$node->tagName." found\n";
+            }
+            elseif( $node->tagName == 'log-setting' )
+            {
+                //print "node->tagName ".$node->tagName." found\n";
+            }
+            elseif( $node->tagName == 'enable-packet-buffer-protection' )
+            {
+                //print "node->tagName ".$node->tagName." found\n";
+            }
+            else
+                mwarning( "zone type: ".$node->tagName." is not yet supported." );
+
         }
     }
 
@@ -214,7 +265,9 @@ class Zone
     }
 
 
-    static protected $templatexml = '<entry name="**temporarynamechangeme**"><network><layer3></layer3></network></entry>';
+    static protected $templatexml = '<entry name="**temporarynamechangemeL3**"><network><layer3></layer3></network></entry>';
+    static protected $templatexmlvw = '<entry name="**temporarynamechangemeVW**"><network><virtual-wire></virtual-wire></network></entry>';
+    static protected $templatexmll2 = '<entry name="**temporarynamechangemeL2**"><network><layer2></layer2></network></entry>';
 	
 }
 

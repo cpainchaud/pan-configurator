@@ -1104,6 +1104,60 @@ AddressCallContext::$supportedActions[] = Array(
 );
 
 AddressCallContext::$supportedActions[] = Array(
+    'name' => 'name-Replace-Character',
+    'MainFunction' =>  function ( AddressCallContext $context )
+    {
+        $object = $context->object;
+
+        if( $object->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : not applicable to TMP objects\n";
+            return;
+        }
+
+        $characterToreplace = $context->arguments['search'];
+        $characterForreplace = $context->arguments['replace'];
+
+
+        $newName = str_replace( $characterToreplace, $characterForreplace, $object->name() );
+
+
+        if( $object->name() == $newName )
+        {
+            echo $context->padding." *** SKIPPED : new name and old name are the same\n";
+            return;
+        }
+
+        echo $context->padding." - new name will be '{$newName}'\n";
+
+        $findObject = $object->owner->find($newName);
+        if( $findObject !== null )
+        {
+            echo $context->padding." *** SKIPPED : an object with same name already exists\n";
+            return;
+        }
+        else
+        {
+            echo $context->padding." - renaming object... ";
+            if( $context->isAPI )
+                $object->API_setName($newName);
+            else
+                $object->setName($newName);
+            echo "OK!\n";
+        }
+
+    },
+    'args' => Array( 'search' => Array(
+        'type' => 'string',
+        'default' => '*nodefault*'),
+        'replace' => Array(
+            'type' => 'string',
+            'default' => '*nodefault*')
+    ),
+    'help' => ''
+);
+
+AddressCallContext::$supportedActions[] = Array(
     'name' => 'name-addPrefix',
     'MainFunction' =>  function ( AddressCallContext $context )
     {
@@ -1586,9 +1640,25 @@ AddressCallContext::$supportedActions[] = Array(
         $textToAppend = "";
         if( $description != "" )
             $textToAppend = " ";
-        $textToAppend .= $context->rawArguments['text'];
 
-        if( strlen($description) + strlen($textToAppend) > 253 )
+
+        $newName = $context->arguments['stringFormula'];
+
+        if( strpos($newName, '$$current.name$$') !== FALSE )
+        {
+            $textToAppend .= str_replace('$$current.name$$', $address->name(), $newName);
+        }
+        else{
+            $textToAppend .= $newName;
+        }
+
+
+        if( $context->object->owner->owner->version < 71 )
+            $max_length = 253;
+        else
+            $max_length = 1020;
+
+        if( strlen($description) + strlen($textToAppend) > $max_length )
         {
             echo $context->padding." *** SKIPPED : resulting description is too long\n";
             return;
@@ -1603,7 +1673,85 @@ AddressCallContext::$supportedActions[] = Array(
 
         echo "OK";
     },
-    'args' => Array( 'text' => Array( 'type' => 'string', 'default' => '*nodefault*' ))
+    'args' => Array(
+            'stringFormula' => Array(
+                'type' => 'string',
+                'default' => '*nodefault*',
+                'help' =>
+                    "This string is used to compose a name. You can use the following aliases :\n".
+                    "  - \$\$current.name\$\$ : current name of the object\n")
+    ),
+    'help' => ''
+);
+
+AddressCallContext::$supportedActions[] = Array(
+    'name' => 'description-Delete',
+    'MainFunction' =>  function(AddressCallContext $context)
+    {
+        $address = $context->object;
+        $description = $address->description();
+
+        if( $address->isTmpAddr() )
+        {
+            echo $context->padding." *** SKIPPED : object is tmp\n";
+            return;
+        }
+        if( $description == "")
+        {
+            echo $context->padding." *** SKIPPED : no description available\n";
+            return;
+        }
+
+        echo $context->padding." - new description will be: '' ... ";
+
+        if( $context->isAPI )
+            $address->API_setDescription("");
+        else
+            $address->setDescription( "" );
+
+        echo "OK";
+    },
+);
+
+AddressCallContext::$supportedActions[] = Array(
+    'name' => 'value-host-object-add-netmask-m32',
+    'MainFunction' =>  function(AddressCallContext $context)
+    {
+        $address = $context->object;
+
+        if( $address->isGroup() )
+        {
+            echo $context->padding." *** SKIPPED : object is of type GROUP\n";
+            return;
+        }
+
+        if( !$address->isType_ipNetmask()  )
+        {
+            echo $context->padding." *** SKIPPED : object is not IP netmask\n";
+            return;
+        }
+
+        $value = $address->value();
+
+        if( strpos( $value, "/" ) !== false )
+        {
+            echo $context->padding." *** SKIPPED : object: ".$address->name()." with value: ".$value." is not a host object.\n";
+            return;
+        }
+
+
+        //
+        $new_value = $value."/32";
+
+        echo $context->padding." - new value will be: '".$new_value."'\n";
+
+        if( $context->isAPI )
+            $address->API_editValue( $new_value);
+        else
+            $address->setValue( $new_value);
+
+        echo "OK";
+    }
 );
 
 //starting with 7.0 PAN-OS support max. 2500 members per group, former 500

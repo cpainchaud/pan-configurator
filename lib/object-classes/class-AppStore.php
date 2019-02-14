@@ -332,21 +332,42 @@ class AppStore extends ObjStore
             }
 
             $icmpcur = DH::findFirstElement('ident-by-icmp-type', $cursor);
-            if( $icmpcur !== FALSE )
+            if( $icmpcur !== false )
             {
-                $app->icmpsub = $icmpcur->textContent;
+                $icmptype = DH::findFirstElement('type', $icmpcur);
+                if( $icmptype !== false )
+                {
+                    $app->icmpsub = $icmptype->textContent;
+                }
+                //TODO: <code>0</code>
+                $icmpcode = DH::findFirstElement('code', $icmpcur);
+                if( $icmpcode !== false )
+                {
+                    $app->icmpcode = $icmpcode->textContent;
+                }
             }
 
             $icmp6cur = DH::findFirstElement('ident-by-icmp6-type', $cursor);
-            if( $icmp6cur !== FALSE )
+            if( $icmp6cur !== false )
             {
-                $app->icmp6sub = $icmp6cur->textContent;
+                $icmp6type = DH::findFirstElement('type', $icmp6cur);
+                if( $icmp6type !== false )
+                {
+                    $app->icmp6sub = $icmp6type->textContent;
+                }
+                //TODO: <code>0</code>
+                $icmp6code = DH::findFirstElement('code', $icmp6cur);
+                if( $icmp6code !== false )
+                {
+                    $app->icmp6code = $icmp6code->textContent;
+                }
+
             }
 
-            $cursor = DH::findFirstElement('port', $cursor);
-            if( $cursor !== FALSE )
+            $portcur = DH::findFirstElement('port', $cursor);
+            if( $portcur !== FALSE )
             {
-                foreach( $cursor->childNodes as $portx )
+                foreach( $portcur->childNodes as $portx )
                 {
                     if( $portx->nodeType != XML_ELEMENT_NODE )
                         continue;
@@ -429,6 +450,144 @@ class AppStore extends ObjStore
                     elseif( $ex[0] == 'icmp6' )
                     {
                         $app->icmp6 = $ex[1];
+                    }
+                    else
+                        derr('unsupported port description: ' . $portx->textContent);
+                }
+            }
+
+            $ext_portcur = DH::findFirstElement('extended-port', $cursor);
+            if( $ext_portcur !== FALSE )
+            {
+                foreach( $ext_portcur->childNodes as $portx )
+                {
+                    $port_secure = false;
+
+                    if( $portx->nodeType != XML_ELEMENT_NODE )
+                        continue;
+
+                    /** @var  $portx DOMElement */
+
+                    $ex = explode('/', $portx->textContent);
+
+                    if( count($ex) == 3 )
+                    {
+                        $port_secure = true;
+                        unset( $ex[2] );
+                    }
+                    else
+                    {
+                        //not interested in the same ports as under <ports>
+                        continue;
+                    }
+
+                    if( count($ex) != 2 )
+                        derr('unsupported port description: ' . $portx->textContent);
+
+                    if( $ex[0] == 'tcp' )
+                    {
+                        $exports = explode(',', $ex[1]);
+                        $ports = Array();
+
+                        if( count($exports) < 1 )
+                            derr('unsupported port description: ' . $portx->textContent);
+
+                        foreach( $exports as &$sport )
+                        {
+                            if( $sport == 'dynamic' )
+                            {
+                                $ports[] = Array(0 => 'dynamic');
+                                continue;
+                            }
+                            $tmpex = explode('-', $sport);
+                            if( count($tmpex) < 2 )
+                            {
+                                $ports[] = Array(0 => 'single', 1 => $sport);
+                                continue;
+                            }
+
+                            $ports[] = Array(0 => 'range', 1 => $tmpex[0], 2 => $tmpex[1]);
+
+                        }
+                        //print_r($ports);
+                        if( !$port_secure )
+                        {
+                            if( $app->tcp === null )
+                                $app->tcp = $ports;
+                            else
+                                $app->tcp = array_merge($app->tcp, $ports);
+                        }
+                        else
+                        {
+                            if( $app->tcp_secure === null )
+                                $app->tcp_secure = $ports;
+                            else
+                                $app->tcp_secure = array_merge($app->tcp_secure, $ports);
+                        }
+
+                    }
+                    elseif( $ex[0] == 'udp' )
+                    {
+                        $exports = explode(',', $ex[1]);
+                        $ports = Array();
+
+                        if( count($exports) < 1 )
+                            derr('unsupported port description: ' . $portx->textContent);
+
+                        foreach( $exports as &$sport )
+                        {
+                            if( $sport == 'dynamic' )
+                            {
+                                $ports[] = Array(0 => 'dynamic');
+                                continue;
+                            }
+                            $tmpex = explode('-', $sport);
+                            if( count($tmpex) < 2 )
+                            {
+                                $ports[] = Array(0 => 'single', 1 => $sport);
+                                continue;
+                            }
+
+                            $ports[] = Array(0 => 'range', 1 => $tmpex[0], 2 => $tmpex[1]);
+
+                        }
+                        //print_r($ports);
+                        if( !$port_secure )
+                        {
+                            if( $app->udp === null )
+                                $app->udp = $ports;
+                            else
+                                $app->udp = array_merge($app->udp, $ports);
+                        }
+                        else{
+                            if( $app->udp_secure === null )
+                                $app->udp_secure = $ports;
+                            else
+                                $app->udp_secure = array_merge($app->udp_secure, $ports);
+                        }
+
+                    }
+                    elseif( $ex[0] == 'icmp' )
+                    {
+                        if( !$port_secure )
+                        {
+                            $app->icmp = $ex[1];
+                        }
+                        else
+                        {
+                            $app->icmp_secure = $ex[1];
+                        }
+                    }
+                    elseif( $ex[0] == 'icmp6' )
+                    {
+                        if( !$port_secure )
+                        {
+                            $app->icmp6 = $ex[1];
+                        }
+                        else
+                        {
+                            $app->icmp6_secure = $ex[1];
+                        }
                     }
                     else
                         derr('unsupported port description: ' . $portx->textContent);
@@ -581,7 +740,12 @@ class AppStore extends ObjStore
                     {
                         $app->icmpsub = $icmptype->textContent;
                     }
-                    //TODO: <code>0</code>
+
+                    $icmpcode = DH::findFirstElement('code', $icmpcur);
+                    if( $icmpcode !== false )
+                    {
+                        $app->icmpcode = $icmpcode->textContent;
+                    }
                 }
 
                 $icmp6cur = DH::findFirstElement('ident-by-icmp6-type', $cursor);
@@ -592,7 +756,12 @@ class AppStore extends ObjStore
                     {
                         $app->icmp6sub = $icmp6type->textContent;
                     }
-                    //TODO: <code>0</code>
+
+                    $icmp6code = DH::findFirstElement('code', $icmp6cur);
+                    if( $icmp6code !== false )
+                    {
+                        $app->icmp6code = $icmp6code->textContent;
+                    }
                 }
 
                 $cursor = DH::findFirstElement('port', $cursor);
@@ -919,7 +1088,7 @@ class AppStore extends ObjStore
 		}
 
         $xmlDoc = new DOMDocument();
-        $xmlDoc->load($filename);
+        $xmlDoc->load($filename, XML_PARSE_BIG_LINES);
 
         $cursor = DH::findXPathSingleEntryOrDie('/predefined/application', $xmlDoc);
 

@@ -1,21 +1,94 @@
 CHANGELOG
 
+
+1.5.16 (20190214)
+
+GENERAL:
+
+UTILS:
+
+BUGFIX:
+
+
+------------------------------------------------------------------------------------------------------------------------
+
 1.5.15 (20180611)
 * introduce release 1.5.15
 * update predefined.xml to 8041-4843
 * introduce class-VirtualWire
 * introduce class-TemplateStack
 * update predefined.xml to 8043-4857
+* class-EthernetInterface/-EthernetIfStore - extend with new Interface types
+* class-VirtualWire/-VirtualWireStore - extend with new methodes - setName/setInterface - newVirtualWire / addVirtualWire
+* class-Zone/ZoneStore - extend with virtual-wire
+* class-VirtualWire/VirtualWireStore - extend validation
+* class-InterfaceContainer - extend validation for addInterface - improve API_addInterface
+* class-EthernetInterface/EthernetIfStore - extend with ae information - extend validation
+* class-Zone - reduce warning if not yet supported in pan-c framework
+* class-Zone - extend with type: tap, layer2, tunnel
+* update predefined.xml to 8070-5032
+* class-Address - introduce address object of type ip-wildcard
+* class-AppStore/App - introduce App secure ports
+* class-IKEGateway - extend to cover IKEv2
+* class-PANAPIConnector - introduce hidden arguments: shadow-displaycurlrequest | shadow-hiddenapikey (new with PAN-OS 9.0 - send API key via Header)
+* update predefined.xml to 8110-5233
+* class-NatRule - extend with dynamic-destination-translation (PAN-OS 8.1)
 
 utils:
 address-edit: improvement for actions=decommisssion - extend interface (ethernet/vlan/loopback/tunnel) with add/removeIPv4address
+address-edit: new filter '(value string.regex /[SEARCH-STRING]/)'
+address-edit: new actions=description-delete | new 'filter=(description is.empty)' | new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])'
+upload-config: extend in=api://[MGTM-IP]/panorama-pushed-config to download panorama pushed config
+rule-edit: introduce hip-profile for actions=display
+rule-edit: new actions=hip-set:[HIP-Profile]
+rule-edit: new action "logsetting-set-FastAPI:[LOGFORWARD]"
+address-merger: extend skipped object output with DG information
+address-edit: new actions=value-host-object-add-netmask-m32
+userid-mgr: fix help / missing variable set
+register-ip-mgr: introduce new util
+rule-merger: merge for all methods the available tags
+rule-merger: merge for all methods the available description
+pan-diff: introduce new util to easily compare two pan-os xml config file
+panos-xml-issue-detector: introduce new util to fine e.g. duplicate member in address-/service-group
+address-merger: extend location=any - especially for Panorama DG to merge all DG objects with one single script run - also possible with argument allowmergingwithupperlevel
+register-ip-mgr | introduce new util to display and unregister-unused dynamic registered-ip addresses
+service-edit: new actions=description-delete | new 'filter=(description is.empty)' | new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])'
+tag-edit: new 'filter=(location is.child.of [DG]) / (location is.parent.of [DG])'
+address-edit: new actions=name-replace-character:[search],[replace]
+rule-edit: new action "name-Replace-Character:search,replace"
+service-edit: new action "name-Replace-Character:search,replace"
+rule-edit: new filters (from is.in.file [FILENAME]) / (to is.in.file [FILENAME])
+appid-enable: introduce new script to enable APP-IDs which are set to disabled - directly against panorama or via panorama to all connected firewalls on panorama
+pan-diff: extend with API input - to easily compare running and candidate config
+tag-edit: new actions=exporttoexcel:[filename]
+address-edit: extend actions=description-append:$$current.name$$
 
+utils(under development):
+ike: new script to show all IKE/IPsec profile and config settings
+interface: new script to show interface settings
+routing: new script to show route settings
+vsys: new script to show all vsys
+vwire: new script to show vwire settings
+zone: new script to show zone settings
 
 bugfix:
 - fix class-IpsecTunnel | related to proxy-id if <protocol> is not available
 - fix class-EthernetInterfaceStore | xpath fix
+- fix implementation of class-AggregateEthernetInterface
 - fix class-VirtualSystem | no warning if IPv4 address without netmask is used as interface IP
+- fix class-QosRule - fix access type related to app 'filter=(app is.any)'
+- fix error output for XMLline - correct lineNo if lineNo > 65535
+- fix class-authenticationRule |  fix for FW config - typos related to XML xpath finding
+- fix class-IkeCryptoProfileStore | -IKEGateway | -IKEGatewayStore | -IPsecCryptoProfileStore | -IPsecTunnel | -IPsecTunnelStore || improve data handling during script execution
+- fix class-VirtualRouter | fix if object not found for getting the interface IP
+- fix description field for rules and objects was increased to 1023 characters with PAN-OS 7.1 | update all relevant places
+- fix class-AddressRuleContainer - improve setAny, offline config file has now any as correct entry
+- fix rule 'filter=(rule is.unused.fast)' for PAN-OS version > 8.1
+- fix address-merger - duplicate FQDN are now also covered
+- fix address-merger - for location=shared | if config is panos
+- fix service-edit - action=rename, if service is tmp (e.g. service is from Panorama DG)
 
+------------------------------------------------------------------------------------------------------------------------
 
 1.5.14 (20180227)
 * class PanAPIConnector : added support for installed app/av/wildfire/threat-version / PA-VM uuid / cpuid

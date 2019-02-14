@@ -174,7 +174,7 @@ if( $configInput['status'] == 'fail' )
 if( $configInput['type'] == 'file' )
 {
     print "{$configInput['filename']} ... ";
-    $doc->Load($configInput['filename']);
+    $doc->Load($configInput['filename'], XML_PARSE_BIG_LINES);
 }
 elseif ( $configInput['type'] == 'api'  )
 {
@@ -192,6 +192,8 @@ elseif ( $configInput['type'] == 'api'  )
         $doc = $inputConnector->getRunningConfig();
     elseif ( $configInput['filename'] == 'merged-config' || $configInput['filename'] == 'merged' )
         $doc = $inputConnector->getMergedConfig();
+    elseif ( $configInput['filename'] == 'panorama-pushed-config' || $configInput['filename'] == 'panorama-pushed' )
+        $doc = $inputConnector->getPanoramaPushedConfig();
     else
         $doc = $inputConnector->getSavedConfig($configInput['filename']);
 

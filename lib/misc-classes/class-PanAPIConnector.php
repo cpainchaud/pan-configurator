@@ -745,7 +745,88 @@ class PanAPIConnector
      */
     public function register_getIp($vsys = 'vsys1')
     {
-        $cmd = "<show><object><registered-ip><all></all></registered-ip></object></show>";
+        $counter = 0;
+
+        $cmd = "<show><object><registered-ip><all><option>count</option></all></registered-ip></object></show>";
+
+        $params = Array();
+        $params['type'] = 'op';
+        $params['vsys'] = $vsys;
+        $params['cmd'] = &$cmd;
+
+
+        $r = $this->sendRequest($params, TRUE);
+
+        $configRoot = DH::findFirstElement('result', $r);
+        if( $configRoot === FALSE )
+            derr("<result> was not found", $r);
+
+        foreach( $configRoot->childNodes as $node )
+        {
+            if( $node->nodeType != XML_ELEMENT_NODE )
+                continue;
+
+            $counter = $node->nodeValue;
+            print " - registered-ip: ".$counter."\n";
+        }
+
+        $start = 1;
+        $end = 500;
+
+        if( $this->info_PANOS_version_int < 80 )
+        {
+            $cmd = "<show><object><registered-ip><all></all></registered-ip></object></show>";
+
+            if( $counter > 500 )
+                derr( "API for PAN-OS version < 8.0 can only display register-ip information if count <= 500" );
+
+            //output for PAN-OS < 8.0 is only max. 500
+            $counter = 500;
+        }
+        else
+            $cmd = "<show><object><registered-ip><start-point>".$start."</start-point><limit>".$end."</limit></registered-ip></object></show>";
+
+        $ip_array = array();
+        do
+        {
+            $params = Array();
+            $params['type'] = 'op';
+            $params['vsys'] = $vsys;
+            $params['cmd'] = &$cmd;
+
+            $r = $this->sendRequest($params, TRUE);
+
+            $configRoot = DH::findFirstElement('result', $r);
+            if( $configRoot === FALSE )
+                derr("<result> was not found", $r);
+
+            foreach( $configRoot->childNodes as $node )
+            {
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                /** @var DOMElement $node */
+                $ip = $node->getAttribute('ip');
+
+                $members = $node->getElementsByTagName('member');
+                foreach( $members as $member )
+                {
+                    /** @var DOMElement $member */
+                    $ip_array[$ip][$member->nodeValue] = $member->nodeValue;
+                }
+            }
+
+            $start = $start + 500;
+
+        }
+        while ( $start < $counter );
+
+        return $ip_array;
+    }
+
+    public function dynamicAddressGroup_get( $vsys = 'vsys1')
+    {
+        $cmd = "<show><object><dynamic-address-group><all></all></dynamic-address-group></object></show>";
 
         $params = Array();
         $params['type'] = 'op';
@@ -758,20 +839,45 @@ class PanAPIConnector
         if( $configRoot === FALSE )
             derr("<result> was not found", $r);
 
+        $configRoot = DH::findFirstElement('dyn-addr-grp', $configRoot);
+        if( $configRoot === FALSE )
+            derr("<dyn-addr-grp> was not found", $configRoot);
+
         $ip_array = array();
         foreach( $configRoot->childNodes as $node )
         {
             if( $node->nodeType != XML_ELEMENT_NODE )
                 continue;
 
-            /** @var DOMElement $node */
-            $ip = $node->getAttribute('ip');
-            $members = $node->getElementsByTagName('member');
+            if( $node->nodeType == XML_TEXT_NODE && empty( trim($node->nodeValue) ) )
+                continue;
 
-            foreach( $members as $member )
+            /** @var DOMElement $node */
+            foreach( $node->childNodes as $element )
             {
-                /** @var DOMElement $member */
-                $ip_array[$ip][$member->nodeValue] = $member->nodeValue;
+                if( $node->nodeType != XML_ELEMENT_NODE )
+                    continue;
+
+                if( $element->nodeName == 'vsys' )
+                    $tmp_vsys = $element->nodeValue;
+                elseif( $element->nodeName == 'group-name' )
+                    $tmp_group_name = $element->nodeValue;
+                elseif( $element->nodeName == 'filter' )
+                    $filter = $element->nodeValue;
+                elseif( $element->nodeName == 'member-list' )
+                {
+                    foreach( $element->childNodes as $member )
+                    {
+                        $ip_array[$tmp_group_name]['name'] = $tmp_group_name;
+                        if( $member->nodeType != XML_ELEMENT_NODE )
+                            continue;
+
+                        $tmp_ip = $member->getAttribute('name');
+                        $type = $member->getAttribute('type');
+
+                        $ip_array[$tmp_group_name][$tmp_ip] = $filter;
+                    }
+                }
             }
         }
         return $ip_array;
@@ -839,7 +945,18 @@ class PanAPIConnector
             else
                 $finalUrl = 'https://' . $host . '/api/';
             if( !$sendThroughPost )
-                $finalUrl .= '?key=' . urlencode($this->apikey);
+            {
+                if( !PH::$sendAPIkeyviaHeader )
+                    $finalUrl .= '?key=' . urlencode($this->apikey);
+                else
+                {
+                    //Todo: possible improvements for API security with PAN-OS 9.0 [20181030]
+                    $finalUrl .= '?';
+                    curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, Array('X-PAN-KEY: '. $this->apikey));
+                }
+
+            }
+
         }
 
         if( !$sendThroughPost )
@@ -868,7 +985,14 @@ class PanAPIConnector
             {
                 $parameters['target'] = $this->serial;
             }
-            $parameters['key'] = $this->apikey;
+            if( !PH::$sendAPIkeyviaHeader )
+                $parameters['key'] = $this->apikey;
+            else
+            {
+                //Todo: possible improvements for API security with PAN-OS 9.0 [20181030]
+                curl_setopt($this->_curl_handle, CURLOPT_HTTPHEADER, Array('X-PAN-KEY: '. $this->apikey));
+            }
+
             $properParams = http_build_query($parameters);
             curl_setopt($this->_curl_handle, CURLOPT_POSTFIELDS, $properParams);
         }
@@ -892,6 +1016,13 @@ class PanAPIConnector
         //$this->showApiCalls = true;
         if( $this->showApiCalls )
         {
+            if( PH::$displayCurlRequest )
+            {
+                curl_setopt($this->_curl_handle, CURLOPT_FOLLOWLOCATION, true);
+                curl_setopt($this->_curl_handle, CURLOPT_VERBOSE, true);
+            }
+
+
             if( $sendThroughPost )
             {
                 $paramURl = '?';
@@ -917,7 +1048,7 @@ class PanAPIConnector
             derr("HTTP API returned (code : {$curlHttpStatusCode}); " . $httpReplyContent);
 
         $xmlDoc = new DOMDocument();
-        if( !$xmlDoc->loadXML($httpReplyContent, LIBXML_PARSEHUGE|4194304) )
+        if( !$xmlDoc->loadXML($httpReplyContent, XML_PARSE_BIG_LINES) )
             derr('Invalid xml input :' . $httpReplyContent);
 
         $firstElement = DH::firstChildElement($xmlDoc);
@@ -1175,7 +1306,8 @@ class PanAPIConnector
     public function getCandidateConfigAlt()
     {
         $doc = new DOMDocument();
-        $doc->loadXML($this->sendExportRequest('configuration'), LIBXML_PARSEHUGE|4194304);
+        $doc->loadXML($this->sendExportRequest('configuration'), XML_PARSE_BIG_LINES);
+
         return $doc;
     }
 

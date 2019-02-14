@@ -383,7 +383,7 @@ class DeviceGroup
             $tmpPost = null;
         else
         {
-            $tmpPost = DH::findFirstElement('authenticaiton', $postrulebase);
+            $tmpPost = DH::findFirstElement('authentication', $postrulebase);
             if( $tmpPost !== false )
                 $tmpPost = DH::findFirstElement('rules', $tmpPost);
 
@@ -499,6 +499,12 @@ class DeviceGroup
 			}
 
 			$this->devices[$devname] = Array('serial' => $devname, 'vsyslist' => $vsyslist );
+            foreach( $this->devices as $serial => $array)
+            {
+                $managedFirewall = $this->owner->managedFirewallsStore->find( $serial );
+                if( $managedFirewall !== null )
+                    $managedFirewall->addDeviceGroup( $this->name );
+            }
 		}
 	}
 

@@ -50,6 +50,7 @@ function runCommand($bin, &$stream, $force = true, $command = '')
 
 $totalFilterCount = 0;
 $totalFilterWithCiCount = 0;
+$missing_filters = array();
 
 foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 {
@@ -60,7 +61,11 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
             $totalFilterCount++;
 
             if( !isset($filter['ci']) )
+            {
+                $missing_filters[$type][] = $fieldName . " ".$operator;
                 continue;
+            }
+
 
             $totalFilterWithCiCount++;
 
@@ -126,6 +131,8 @@ foreach( RQuery::$defaultFilters as $type => &$filtersByField )
 echo "\n*****  *****\n";
 echo " - Processed {$totalFilterCount} filters\n";
 echo " - Found {$totalFilterWithCiCount} that are CI enabled\n";
+
+print_r($missing_filters);
 
 echo "\n";
 echo "\n*********** FINISHED TESTING FILTERS ************\n";

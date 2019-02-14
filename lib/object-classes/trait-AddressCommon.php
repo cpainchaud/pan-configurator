@@ -81,7 +81,7 @@ trait AddressCommon
                 /** @var AddressRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
-                if( $ruleClass == 'SecurityRule'  || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' || $ruleClass == 'CaptivePortalRule')
+                if( $ruleClass == 'SecurityRule'  || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' || $ruleClass == 'CaptivePortalRule' || $ruleClass == 'AuthenticationRule')
                 {
                     if( $displayOutput )
                         print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";
@@ -153,7 +153,7 @@ trait AddressCommon
                 /** @var AddressRuleContainer $ref */
 
                 $ruleClass = get_class($ref->owner);
-                if( $ruleClass == 'SecurityRule' || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' || $ruleClass == 'CaptivePortalRule' )
+                if( $ruleClass == 'SecurityRule' || $ruleClass == 'DecryptionRule' || $ruleClass == 'AppOverrideRule' || $ruleClass == 'CaptivePortalRule' || $ruleClass == 'AuthenticationRule')
                 {
                     if( $displayOutput )
                         print $outputPadding."- adding in {$ref->owner->_PANC_shortName()}\n";

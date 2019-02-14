@@ -40,12 +40,16 @@ class Address
 	const TypeIpRange = 2;
 	const TypeFQDN = 3;
 	const TypeDynamic = 4;
+	const TypeIpWildcard = 5;
+
 
 	static private $AddressTypes = Array(self::TypeTmp => 'tmp',
 										self::TypeIpNetmask => 'ip-netmask',
 										self::TypeIpRange => 'ip-range',
 										self::TypeFQDN => 'fqdn',
-										self::TypeDynamic => 'dynamic'  );
+										self::TypeDynamic => 'dynamic',
+                                        self::TypeIpWildcard =>  'ip-wildcard'
+                                    );
 
 	protected $type = self::TypeTmp;
 
@@ -63,7 +67,7 @@ class Address
         if( $fromXmlTemplate )
         {
 			$doc = new DOMDocument();
-			$doc->loadXML(self::$templatexml);
+			$doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
 
 			$node = DH::findFirstElementOrDie('entry', $doc);
 
@@ -89,9 +93,8 @@ class Address
 	*/
 	public function load_from_domxml(DOMElement $xml)
 	{
-		
 		$this->xmlroot = $xml;
-		
+
 		$this->name = DH::findAttribute('name', $xml);
 		if( $this->name === FALSE )
 			derr("address name not found\n");
@@ -122,7 +125,7 @@ class Address
 		if( !$typeFound )
         {
             if( !PH::$ignoreInvalidAddressObjects )
-                derr('Object type not found or not supported for address object ' . $this->name . '. Please check your configuration file and fix it or invoke ith argument "shadow-ignoreInvalidAddressObjects"', $xml);
+                derr('Object type not found or not supported for address object ' . $this->name . '. Please check your configuration file and fix it or invoke with argument "shadow-ignoreInvalidAddressObjects"', $xml);
 
             mwarning('Object type not found or not supported for address object ' . $this->name . ' but you manually did bypass this error', $xml);
             return false;
@@ -248,7 +251,25 @@ class Address
 
         return true;
 	}
-	
+
+    /**
+     * @param string $newValue
+     * @return bool
+     */
+    public function API_editValue($newValue)
+    {
+        if( !$this->setValue($newValue) )
+            return false;
+
+        $c = findConnectorOrDie($this);
+        $xpath = $this->getXPath();
+
+        $c->sendEditRequest($xpath,  DH::dom_to_xml($this->xmlroot,-1,false) );
+
+        $this->setValue($newValue);
+
+        return true;
+    }
 	
 	
 	public function rewriteXML()
@@ -354,6 +375,11 @@ class Address
     public function isType_TMP()
     {
         return $this->type == self::TypeTmp;
+    }
+
+    public function isType_ipWildcard()
+    {
+        return $this->type == self::TypeIpWildcard;
     }
 
     /**

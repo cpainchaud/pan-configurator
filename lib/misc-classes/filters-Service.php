@@ -308,7 +308,7 @@ RQuery::$defaultFilters['service']['description']['operators']['regex'] = Array(
         $value = $context->value;
 
         if( !$object->isService() )
-            return false;
+            return null;
 
         if( strlen($value) > 0 && $value[0] == '%')
         {
@@ -329,6 +329,27 @@ RQuery::$defaultFilters['service']['description']['operators']['regex'] = Array(
     'arg' => true,
     'ci' => Array(
         'fString' => '(%PROP% /test/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['description']['operators']['is.empty'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $object = $context->object;
+        $value = $context->value;
+
+        if( !$object->isService() )
+            return null;
+
+
+        if( strlen($object->description()) == 0 )
+            return true;
+
+        return false;
+    },
+    'arg' => false,
+    'ci' => Array(
+        'fString' => '(%PROP%)',
         'input' => 'input/panorama-8.0.xml'
     )
 );
@@ -369,6 +390,105 @@ RQuery::$defaultFilters['service']['location']['operators']['regex'] = Array(
     'arg' => true,
     'ci' => Array(
         'fString' => '(%PROP% /shared/)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['location']['operators']['is.child.of'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $service_location = $context->object->getLocationString();
+
+        $sub = $context->object->owner;
+        while( get_class($sub ) == "ServiceStore" || get_class($sub ) == "DeviceGroup" || get_class($sub) == "VirtualSystem" )
+            $sub = $sub->owner;
+
+        if( get_class($sub) == "PANConf")
+            derr( "filter location is.child.of is not working against a firewall configuration" );
+
+        if( strtolower($context->value) == 'shared' )
+            return true;
+
+        $DG = $sub->findDeviceGroup( $context->value );
+        if( $DG == null )
+        {
+            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
+            print " - shared\n";
+            foreach( $sub->getDeviceGroups() as $sub1 )
+            {
+                print " - ".$sub1->name()."\n";
+            }
+            print "\n\n";
+            exit(1);
+        }
+
+        $childDeviceGroups = $DG->childDeviceGroups( TRUE );
+
+        if( strtolower($context->value) == strtolower($service_location) )
+            return true;
+
+        foreach( $childDeviceGroups as $childDeviceGroup )
+        {
+            if( $childDeviceGroup->name() == $service_location )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is child the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  Datacenter-Firewalls)',
+        'input' => 'input/panorama-8.0.xml'
+    )
+);
+RQuery::$defaultFilters['service']['location']['operators']['is.parent.of'] = Array(
+    'Function' => function(ServiceRQueryContext $context )
+    {
+        $service_location = $context->object->getLocationString();
+
+        $sub = $context->object->owner;
+        while( get_class($sub ) == "ServiceStore" || get_class($sub ) == "DeviceGroup" || get_class($sub) == "VirtualSystem" )
+            $sub = $sub->owner;
+
+        if( get_class($sub) == "PANConf")
+            derr( "filter location is.parent.of is not working against a firewall configuration" );
+
+        if( strtolower($context->value) == 'shared' )
+            return true;
+
+        $DG = $sub->findDeviceGroup( $context->value );
+        if( $DG == null )
+        {
+            print "ERROR: location '$context->value' was not found. Here is a list of available ones:\n";
+            print " - shared\n";
+            foreach( $sub->getDeviceGroups() as $sub1 )
+            {
+                print " - ".$sub1->name()."\n";
+            }
+            print "\n\n";
+            exit(1);
+        }
+
+        $parentDeviceGroups = $DG->parentDeviceGroups(  );
+
+        if( strtolower($context->value) == strtolower($service_location) )
+            return true;
+
+        if( $service_location == 'shared' )
+            return true;
+
+        foreach( $parentDeviceGroups as $childDeviceGroup )
+        {
+            if( $childDeviceGroup->name() == $service_location )
+                return true;
+        }
+
+        return false;
+    },
+    'arg' => true,
+    'help' => 'returns TRUE if object location (shared/device-group/vsys name) matches / is parent the one specified in argument',
+    'ci' => Array(
+        'fString' => '(%PROP%  Datacenter-Firewalls)',
         'input' => 'input/panorama-8.0.xml'
     )
 );

@@ -25,4 +25,24 @@ class AggregateEthernetInterface extends EthernetInterface
 
     public function isAggregateType() { return true; }
 
+
+    static public $templatexml = '<entry name="**temporarynamechangeme**">
+  <layer3>
+    <ipv6>
+      <neighbor-discovery>
+        <router-advertisement>
+          <enable>no</enable>
+        </router-advertisement>
+      </neighbor-discovery>
+    </ipv6>
+    <ndp-proxy>
+      <enabled>no</enabled>
+    </ndp-proxy>
+    <lldp>
+      <enable>no</enable>
+    </lldp>
+    <ip></ip>
+  </layer3>
+</entry>';
+
 }

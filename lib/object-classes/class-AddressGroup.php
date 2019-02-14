@@ -37,6 +37,8 @@ class AddressGroup
     /** @var TagRuleContainer */
     public $tags;
 
+    public $filter;
+
 	
 	/**
 	* Constructor for AddressGroup. There is little chance that you will ever need that. Look at AddressStore if you want to create an AddressGroup
@@ -53,9 +55,9 @@ class AddressGroup
 		{
 			$doc = new DOMDocument();
 			if( $this->owner->owner->version < 60 )
-				$doc->loadXML(self::$templatexml);
+				$doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
 			else
-				$doc->loadXML(self::$templatexml_v6);
+				$doc->loadXML(self::$templatexml_v6, XML_PARSE_BIG_LINES);
 
 			$node = DH::findFirstElement('entry',$doc);
 
@@ -136,7 +138,12 @@ class AddressGroup
                         mwarning('unsupported AddressGroup type: ', $xml);
                 }
                 else
+                {
                     $this->isDynamic = true;
+                    $tmp_filter = DH::findFirstElement('filter', $tmp);
+                    $this->filter = $tmp_filter->nodeValue;
+                }
+
 			}
 			else
 			{

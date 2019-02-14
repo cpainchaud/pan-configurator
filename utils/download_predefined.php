@@ -135,7 +135,7 @@ if( $configInput['type'] == 'file' )
         derr("file '{$configInput['filename']}' not found");
 
     $xmlDoc1 = new DOMDocument();
-    if( ! $xmlDoc1->load($configInput['filename']) )
+    if( ! $xmlDoc1->load($configInput['filename'], XML_PARSE_BIG_LINES) )
         derr("error while reading xml config file");
 
 }

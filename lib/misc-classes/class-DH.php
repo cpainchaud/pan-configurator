@@ -380,7 +380,7 @@ class DH
 	static public function importXmlStringOrDie(DOMDocument $xmlDoc, $xmlString)
 	{
         $newDoc = new DOMDocument();
-        if( !$newDoc->loadXML($xmlString) )
+        if( !$newDoc->loadXML($xmlString, XML_PARSE_BIG_LINES) )
             derr('malformed xml: '.$xmlString);
 
         $element = DH::firstChildElement($newDoc);

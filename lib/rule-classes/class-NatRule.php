@@ -129,10 +129,13 @@ class NatRule extends Rule
 
 
 
-		//						//
+		//						                    //
 		// Destination NAT properties Extraction	//
-		//						//
+		//						                    //
 		$this->dnatroot = DH::findFirstElement('destination-translation', $xml);
+        if( $this->dnatroot === FALSE )
+		    $this->dnatroot = DH::findFirstElement('dynamic-destination-translation', $xml);
+
 		if( $this->dnatroot !== FALSE )
 		{
 			//print "rule '".$this->name."' has destination-translation\n";
@@ -152,14 +155,10 @@ class NatRule extends Rule
                         if( strlen($this->dnatports) < 0 )
                             $this->dnatports = null;
 					}
-					
 				}
 			}
-			
 		}
-		// end of destination translation extraction
-		
-		
+        // end of destination translation extraction
 		
 		
 		//										//
@@ -456,6 +455,15 @@ class NatRule extends Rule
 				
 			}
 		}
+        elseif( $this->snattype == 'dynamic-ip' )
+        {
+            $subroot = DH::createOrResetElement($this->snatroot, 'dynamic-ip');
+
+            $subsubroot = DH::createOrResetElement($subroot, 'translated-address');
+            $translatedObjects = $this->snathosts->all();
+
+            DH::Hosts_to_xmlDom($subsubroot, $translatedObjects, 'member', false);
+        }
 		else if( $this->snattype == 'static-ip' )
 		{
 			$subroot = DH::createOrResetElement($this->snatroot, 'static-ip');

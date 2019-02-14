@@ -104,7 +104,7 @@ if( $configInput['type'] == 'file' )
 
     $xmlDoc = new DOMDocument();
     echo " - Reading XML file from disk... ";
-    if( ! $xmlDoc->load($configInput['filename']) )
+    if( ! $xmlDoc->load($configInput['filename'], XML_PARSE_BIG_LINES) )
         derr("error while reading xml config file");
     echo "OK!\n";
 

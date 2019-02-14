@@ -148,7 +148,7 @@ class Tag
             if( $owner->owner->version < 60 )
                 derr('tag stores were introduced in v6.0');
             else
-                $doc->loadXML(self::$templatexml);
+                $doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
 
             $node = DH::findFirstElement('entry',$doc);
 

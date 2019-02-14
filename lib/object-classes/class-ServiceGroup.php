@@ -40,7 +40,7 @@ class ServiceGroup
         if( $fromTemplateXml )
         {
             $doc = new DOMDocument();
-            $doc->loadXML(self::$templatexml);
+            $doc->loadXML(self::$templatexml, XML_PARSE_BIG_LINES);
 
             $node = DH::findFirstElement('entry',$doc);
 

@@ -48,10 +48,13 @@ class IKEGatewayStore extends ObjStore
      * @param string $name name of the new IKEGateway
      * @return IKEGateway
      */
-    public function newIKEGateway($name)
+    public function newIKEGateway($name, $ikev2 = false )
     {
         $gateway = new IKEGateway( $name, $this);
-        $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IKEGateway::$templatexml);
+        if( $ikev2 )
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IKEGateway::$templatexml_ikev2);
+        else
+            $xmlElement = DH::importXmlStringOrDie($this->owner->xmlroot->ownerDocument, IKEGateway::$templatexml);
 
         $gateway->load_from_domxml($xmlElement);
 
@@ -87,6 +90,8 @@ class IKEGatewayStore extends ObjStore
                 $this->createXmlRoot();
 
             $this->xmlroot->appendChild($gateway->xmlroot);
+
+            $ret = $this->add($gateway);
 
             return true;
         } else
