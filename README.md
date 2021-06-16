@@ -1,6 +1,6 @@
 IMPORTANT NOTICE
 ========
-Since my departure, a friend and fantastic programmer [Sven Waschkut](https://github.com/swaschkut) from Palo Alto Networks has been actively supporting and updating this project. PAN has now officially added a repository on their official Github account. So latest features and cool things can be found (Docker CLI!) [here](https://github.com/PaloAltoNetworks/pan-os-php)
+Since my departure, my friend and fantastic programmer [Sven Waschkut](https://github.com/swaschkut) from Palo Alto Networks has been actively supporting and updating this project. PAN has now officially added a repository on their official Github account. So latest features and cool things can be found (Docker CLI!) [here](https://github.com/PaloAltoNetworks/pan-os-php)
 
 Anything below here will remain for the purpose of archiving!
 
